@@ -5,8 +5,8 @@
 //import org.junit.jupiter.api.Assertions.assertTrue
 //import org.junit.jupiter.api.DisplayName
 //import org.junit.jupiter.api.Test
-//import uk.whitecrescent.waqti.Duration
-//import uk.whitecrescent.waqti.Time
+//import uk.whitecrescent.waqti.model.Duration
+//import uk.whitecrescent.waqti.model.Time
 //import uk.whitecrescent.waqti.task.Checklist
 //import uk.whitecrescent.waqti.task.DEFAULT_BEFORE_PROPERTY
 //import uk.whitecrescent.waqti.task.DEFAULT_CHECKLIST_PROPERTY
@@ -23,7 +23,7 @@
 //import uk.whitecrescent.waqti.task.OPTIONAL
 //import uk.whitecrescent.waqti.task.Priority
 //import uk.whitecrescent.waqti.task.Task
-//import uk.whitecrescent.waqti.taskIDs
+//import uk.whitecrescent.waqti.model.taskIDs
 //
 //@DisplayName("Template Task Tests")
 //class Template {

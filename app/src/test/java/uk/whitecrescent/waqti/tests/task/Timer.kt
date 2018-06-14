@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.sleep
+import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.task.Timer
 
 @DisplayName("Timer Tests")

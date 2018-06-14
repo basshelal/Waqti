@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import uk.whitecrescent.waqti.collections.AbstractWaqtiList
-import uk.whitecrescent.waqti.collections.ElementNotFoundException
+import uk.whitecrescent.waqti.model.collections.AbstractWaqtiList
+import uk.whitecrescent.waqti.model.collections.ElementNotFoundException
 
 @DisplayName("Abstract Waqti List Tests")
 class AbstractWaqtiListTests {

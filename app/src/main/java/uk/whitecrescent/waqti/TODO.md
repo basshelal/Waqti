@@ -1,7 +1,5 @@
 # TODO (Short)
 
-* Move everything to Android!
-
 * Fix up Template Tasks and Bundles, when done implement it in the Cache
 
 * Fix the Timer
@@ -61,6 +59,8 @@ the anonymous Task's Properties (like a placeholder)
 -----------------------------------------------------------------------------------------------------------------------
 
 # Done
+
+* ~~Move everything to Android!~~
 
 * ~~Migrate all Time to use Jake Wharton's Time (or at least be easy to migrate it in the codebase)~~
 

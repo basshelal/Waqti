@@ -8,16 +8,16 @@ import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import uk.whitecrescent.waqti.ChronoUnit
-import uk.whitecrescent.waqti.Date
-import uk.whitecrescent.waqti.collections.Tuple
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.sleep
+import uk.whitecrescent.waqti.model.ChronoUnit
+import uk.whitecrescent.waqti.model.Date
+import uk.whitecrescent.waqti.model.collections.Tuple
+import uk.whitecrescent.waqti.model.sleep
+import uk.whitecrescent.waqti.model.today
 import uk.whitecrescent.waqti.task.DEFAULT_BEFORE_PROPERTY
 import uk.whitecrescent.waqti.task.Task
 import uk.whitecrescent.waqti.task.Timer
 import uk.whitecrescent.waqti.testTask
-import uk.whitecrescent.waqti.today
 
 @DisplayName("Tuple Tests")
 class TupleTests {

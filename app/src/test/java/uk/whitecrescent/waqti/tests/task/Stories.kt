@@ -5,12 +5,15 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.Duration
-import uk.whitecrescent.waqti.at
-import uk.whitecrescent.waqti.minutes
-import uk.whitecrescent.waqti.now
-import uk.whitecrescent.waqti.seconds
-import uk.whitecrescent.waqti.sleep
+import uk.whitecrescent.waqti.model.Duration
+import uk.whitecrescent.waqti.model.at
+import uk.whitecrescent.waqti.model.minutes
+import uk.whitecrescent.waqti.model.now
+import uk.whitecrescent.waqti.model.seconds
+import uk.whitecrescent.waqti.model.sleep
+import uk.whitecrescent.waqti.model.tasks
+import uk.whitecrescent.waqti.model.today
+import uk.whitecrescent.waqti.model.tomorrow
 import uk.whitecrescent.waqti.task.Checklist
 import uk.whitecrescent.waqti.task.Label
 import uk.whitecrescent.waqti.task.MANDATORY
@@ -19,9 +22,6 @@ import uk.whitecrescent.waqti.task.Priority
 import uk.whitecrescent.waqti.task.Task
 import uk.whitecrescent.waqti.task.TaskState
 import uk.whitecrescent.waqti.task.TaskStateException
-import uk.whitecrescent.waqti.tasks
-import uk.whitecrescent.waqti.today
-import uk.whitecrescent.waqti.tomorrow
 
 // TODO: 27-Mar-18 Finish this too
 @DisplayName("Task Stories")

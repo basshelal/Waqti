@@ -2,8 +2,8 @@ package uk.whitecrescent.waqti.tests.collections
 
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.ChronoUnit
-import uk.whitecrescent.waqti.collections.Calendar
+import uk.whitecrescent.waqti.model.ChronoUnit
+import uk.whitecrescent.waqti.model.collections.Calendar
 
 @DisplayName("Calendar Tests")
 class CalendarTests {

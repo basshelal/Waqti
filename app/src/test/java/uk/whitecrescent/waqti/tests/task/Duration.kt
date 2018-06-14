@@ -7,9 +7,10 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.sleep
+import uk.whitecrescent.waqti.model.Duration
+import uk.whitecrescent.waqti.model.sleep
+import uk.whitecrescent.waqti.model.today
 import uk.whitecrescent.waqti.task.Constraint
 import uk.whitecrescent.waqti.task.DEFAULT_DURATION
 import uk.whitecrescent.waqti.task.DEFAULT_DURATION_PROPERTY
@@ -21,7 +22,6 @@ import uk.whitecrescent.waqti.task.TaskStateException
 import uk.whitecrescent.waqti.task.TimeUnit
 import uk.whitecrescent.waqti.task.UNMET
 import uk.whitecrescent.waqti.testTask
-import uk.whitecrescent.waqti.today
 
 @DisplayName("Duration Tests")
 class Duration {
