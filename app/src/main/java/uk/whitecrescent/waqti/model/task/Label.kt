@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.task
+package uk.whitecrescent.waqti.model.task
 
 import uk.whitecrescent.waqti.model.Cacheable
 
@@ -14,17 +14,17 @@ private constructor(var name: String)
 
         fun getOrCreateLabel(name: String): Label {
             val newLabel = Label(name)
-            val found = Label.allLabels.find { it == newLabel }
+            val found = allLabels.find { it == newLabel }
 
             if (found == null) {
-                Label.allLabels.add(newLabel)
+                allLabels.add(newLabel)
                 return newLabel
             } else return found
         }
 
         fun getLabel(name: String): Label {
             val newLabel = Label(name)
-            val found = Label.allLabels.find { it == newLabel }
+            val found = allLabels.find { it == newLabel }
 
             if (found == null) {
                 throw IllegalArgumentException("Label not found")

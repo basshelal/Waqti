@@ -1,11 +1,11 @@
 package uk.whitecrescent.waqti.model.collections
 
 import io.reactivex.Observable
-import uk.whitecrescent.waqti.task.ObserverException
-import uk.whitecrescent.waqti.task.TIME_CHECKING_PERIOD
-import uk.whitecrescent.waqti.task.TIME_CHECKING_UNIT
-import uk.whitecrescent.waqti.task.Task
-import uk.whitecrescent.waqti.task.TaskState
+import uk.whitecrescent.waqti.model.task.ObserverException
+import uk.whitecrescent.waqti.model.task.TIME_CHECKING_PERIOD
+import uk.whitecrescent.waqti.model.task.TIME_CHECKING_UNIT
+import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.model.task.TaskState
 
 open class BasicList(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
 

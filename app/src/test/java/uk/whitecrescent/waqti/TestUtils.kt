@@ -1,7 +1,7 @@
 package uk.whitecrescent.waqti
 
 import uk.whitecrescent.waqti.model.Duration
-import uk.whitecrescent.waqti.task.Task
+import uk.whitecrescent.waqti.model.task.Task
 
 fun testTask() = Task("TestTask")
 

@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.task
+package uk.whitecrescent.waqti.model.task
 
 open class Property<V>(open var isVisible: Boolean, open val value: V) {
 
@@ -6,10 +6,10 @@ open class Property<V>(open var isVisible: Boolean, open val value: V) {
         fun <T> toConstraint(property: Property<T>) = Constraint(property.isVisible, property.value, false)
     }
 
-    fun toConstraint() = Property.toConstraint(this)
+    fun toConstraint() = toConstraint(this)
 
     val constraint: Constraint<V>
-        get() = Property.toConstraint(this)
+        get() = toConstraint(this)
 
     // sugar for a cast, unsafe if you're not careful!
     val asConstraint: Constraint<V>

@@ -7,9 +7,9 @@ import android.support.design.widget.Snackbar
 import android.util.Log
 import android.view.View
 import uk.whitecrescent.waqti.model.collections.Tuple
-import uk.whitecrescent.waqti.task.GRACE_PERIOD
-import uk.whitecrescent.waqti.task.ID
-import uk.whitecrescent.waqti.task.Task
+import uk.whitecrescent.waqti.model.task.GRACE_PERIOD
+import uk.whitecrescent.waqti.model.task.ID
+import uk.whitecrescent.waqti.model.task.Task
 
 inline fun sleep(seconds: Int) = Thread.sleep((seconds) * 1000L)
 
@@ -46,7 +46,7 @@ inline val Collection<Cacheable>.ids: List<ID>
     get() = this.map { it.id() }
 
 inline val Collection<ID>.tasks: List<Task>
-    get() = Cache.getTasks(this)
+    get() = Caches.tasks.getByIDs(this)
 
 inline val Collection<Tuple>.tasks: Array<Task>
     get() {
@@ -58,7 +58,7 @@ inline val Collection<Tuple>.tasks: Array<Task>
     }
 
 inline fun Collection<Task>.putAll() {
-    this.forEach { Cache.putTask(it) }
+    this.forEach { Caches.tasks.put(it) }
 }
 
 inline fun Activity.shortSnackbar(view: View, string: CharSequence) =

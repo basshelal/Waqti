@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.task
+package uk.whitecrescent.waqti.model.task
 
 open class TaskException(string: String) : IllegalStateException(string)
 

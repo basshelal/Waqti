@@ -1,10 +1,10 @@
-package uk.whitecrescent.waqti.task
+package uk.whitecrescent.waqti.model.task
 
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import uk.whitecrescent.waqti.model.Cache
 import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.Caches
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Listable
 import uk.whitecrescent.waqti.model.Time
@@ -53,7 +53,7 @@ class Task(var title: String = "") : Listable, Cacheable {
      * The list of all currently used IDs should be stored persistently.
      * @see java.util.Random.nextLong
      */
-    val taskID = Cache.newTaskID() // TODO: 19-May-18 remember to make this private
+    val taskID = Caches.tasks.newID() // TODO: 19-May-18 remember to make this private
 
     // TODO: 26-Mar-18 Document this stuff!
 
@@ -76,7 +76,7 @@ class Task(var title: String = "") : Listable, Cacheable {
 
     // Put this in the Database and make sure this' key is unique
     init {
-        Cache.putTask(this)
+        Caches.tasks.put(this)
         checkNotDead()
     }
 
@@ -951,8 +951,8 @@ class Task(var title: String = "") : Listable, Cacheable {
      * If the passed in `beforeProperty` is not a Constraint then the Task's state will remain the same.
      *
      * @see Task.beforeConstraintChecking
-     * @param beforeProperty the `Property` of type `uk.whitecrescent.waqti.task.ID` that this Task's before property will be set to, this is
-     * the before Task's uk.whitecrescent.waqti.task.ID
+     * @param beforeProperty the `Property` of type `uk.whitecrescent.waqti.model.task.ID` that this Task's before property will be set to, this is
+     * the before Task's uk.whitecrescent.waqti.model.task.ID
      * @return this Task after setting the Task's before Property
      */
     fun setBeforeProperty(beforeProperty: Property<ID>): Task {
@@ -969,29 +969,29 @@ class Task(var title: String = "") : Listable, Cacheable {
      * Sets this Task's before Constraint.
      *
      * @see Task.setBeforeProperty
-     * @param beforeConstraint the `Constraint` of type `uk.whitecrescent.waqti.task.ID` that this Task's before will be set to
+     * @param beforeConstraint the `Constraint` of type `uk.whitecrescent.waqti.model.task.ID` that this Task's before will be set to
      * @return this Task after setting the Task's before Constraint
      */
     fun setBeforeConstraint(beforeConstraint: Constraint<ID>) = setBeforeProperty(beforeConstraint)
 
     /**
-     * Sets this Task's before Property with the given uk.whitecrescent.waqti.task.ID value and makes the Property showing.
+     * Sets this Task's before Property with the given uk.whitecrescent.waqti.model.task.ID value and makes the Property showing.
      *
      * This is a shorthand of writing `setBeforeProperty(Property(SHOWING, myBefore))`.
      *
      * @see Task.setBeforeProperty
-     * @param beforeuk.whitecrescent.waqti.task.ID the uk.whitecrescent.waqti.task.ID of the Task that is before this one that this Task's before value will be set to
+     * @param beforeuk.whitecrescent.waqti.task.ID the uk.whitecrescent.waqti.model.task.ID of the Task that is before this one that this Task's before value will be set to
      * @return this Task after setting the Task's before Property
      */
     fun setBeforePropertyValue(beforeID: ID) = setBeforeProperty(Property(SHOWING, beforeID))
 
     /**
-     * Sets this Task's before Constraint with the given uk.whitecrescent.waqti.task.ID value and makes the Constraint showing and unmet.
+     * Sets this Task's before Constraint with the given uk.whitecrescent.waqti.model.task.ID value and makes the Constraint showing and unmet.
      *
      * This is a shorthand of writing `setBeforeConstraint(Constraint(SHOWING, myBefore, UNMET))`.
      *
      * @see Task.setBeforeProperty
-     * @param beforeuk.whitecrescent.waqti.task.ID the uk.whitecrescent.waqti.task.ID of the Task that is before this one that this Task's before value will be set to
+     * @param beforeuk.whitecrescent.waqti.task.ID the uk.whitecrescent.waqti.model.task.ID of the Task that is before this one that this Task's before value will be set to
      * @return this Task after setting the Task's before Constraint
      */
     fun setBeforeConstraintValue(beforeID: ID) = setBeforeProperty(Constraint(SHOWING, beforeID, UNMET))
@@ -1033,7 +1033,7 @@ class Task(var title: String = "") : Listable, Cacheable {
      * If the passed in `subTasksProperty` is not a Constraint then the Task's state will remain the same.
      *
      * @see Task.subTasksConstraintChecking
-     * @param subTasksProperty the `Property` of type `ArrayList<uk.whitecrescent.waqti.task.ID>` that this Task's subTasks property will be
+     * @param subTasksProperty the `Property` of type `ArrayList<uk.whitecrescent.waqti.model.task.ID>` that this Task's subTasks property will be
      * set to, this is the list of uk.whitecrescent.waqti.task.IDs of the sub-Tasks
      * @return this Task after setting the Task's subTasks Property
      */
@@ -1051,7 +1051,7 @@ class Task(var title: String = "") : Listable, Cacheable {
      * Sets this Task's subTasks Constraint.
      *
      * @see Task.setSubTasksProperty
-     * @param subTasksConstraint the `Constraint` of type `ArrayList<uk.whitecrescent.waqti.task.ID>` that this Task's subTasks will be set to
+     * @param subTasksConstraint the `Constraint` of type `ArrayList<uk.whitecrescent.waqti.model.task.ID>` that this Task's subTasks will be set to
      * @return this Task after setting the Task's subTasks Constraint
      */
     fun setSubTasksConstraint(subTasksConstraint: Constraint<ArrayList<ID>>) = setSubTasksProperty(subTasksConstraint)
@@ -1140,7 +1140,7 @@ class Task(var title: String = "") : Listable, Cacheable {
     }
 
     private fun update() {
-        Cache.putTask(this)
+        Caches.tasks.put(this)
     }
 
     //endregion Property setters for chaining
@@ -1632,7 +1632,7 @@ class Task(var title: String = "") : Listable, Cacheable {
     private fun beforeConstraintChecking() {
         var done = false
         val originalValue = this.before.value
-        val beforeTask = Cache.getTask(this.before.value)
+        val beforeTask = Caches.tasks.get(this.before.value)
 
         val disposable = Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
                 .takeWhile { !done }
@@ -1641,7 +1641,7 @@ class Task(var title: String = "") : Listable, Cacheable {
                 .subscribe(
                         {
                             when {
-                                !Cache.containsTask(beforeTask) -> {
+                                !Caches.tasks.contains(beforeTask) -> {
                                     throw ObserverException("Before Constraint checking failed!" +
                                             " Before is null in database")
                                 }
@@ -1709,7 +1709,7 @@ class Task(var title: String = "") : Listable, Cacheable {
                 .subscribe(
                         {
                             when {
-                                !Cache.containsTasks(this.subTasks.value.tasks) -> {
+                                !Caches.tasks.containsAll(this.subTasks.value.tasks) -> {
                                     throw ObserverException("SubTasks Constraint checking failed!" +
                                             " Some SubTask is null in database")
                                 }
@@ -1759,7 +1759,7 @@ class Task(var title: String = "") : Listable, Cacheable {
                 .subscribeOn(Schedulers.computation())
                 .subscribe(
                         {
-                            if (!Cache.containsTask(this)) {
+                            if (!Caches.tasks.contains(this)) {
                                 endObservers()
                                 done = true
                             }

@@ -10,17 +10,17 @@ import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.sleep
+import uk.whitecrescent.waqti.model.task.Constraint
+import uk.whitecrescent.waqti.model.task.DEFAULT_DURATION
+import uk.whitecrescent.waqti.model.task.DEFAULT_DURATION_PROPERTY
+import uk.whitecrescent.waqti.model.task.HIDDEN
+import uk.whitecrescent.waqti.model.task.Property
+import uk.whitecrescent.waqti.model.task.SHOWING
+import uk.whitecrescent.waqti.model.task.TaskState
+import uk.whitecrescent.waqti.model.task.TaskStateException
+import uk.whitecrescent.waqti.model.task.TimeUnit
+import uk.whitecrescent.waqti.model.task.UNMET
 import uk.whitecrescent.waqti.model.today
-import uk.whitecrescent.waqti.task.Constraint
-import uk.whitecrescent.waqti.task.DEFAULT_DURATION
-import uk.whitecrescent.waqti.task.DEFAULT_DURATION_PROPERTY
-import uk.whitecrescent.waqti.task.HIDDEN
-import uk.whitecrescent.waqti.task.Property
-import uk.whitecrescent.waqti.task.SHOWING
-import uk.whitecrescent.waqti.task.TaskState
-import uk.whitecrescent.waqti.task.TaskStateException
-import uk.whitecrescent.waqti.task.TimeUnit
-import uk.whitecrescent.waqti.task.UNMET
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Duration Tests")

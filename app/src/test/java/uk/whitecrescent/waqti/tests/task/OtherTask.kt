@@ -10,15 +10,15 @@ import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Time
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.sleep
+import uk.whitecrescent.waqti.model.task.Checklist
+import uk.whitecrescent.waqti.model.task.Constraint
+import uk.whitecrescent.waqti.model.task.Label
+import uk.whitecrescent.waqti.model.task.MANDATORY
+import uk.whitecrescent.waqti.model.task.OPTIONAL
+import uk.whitecrescent.waqti.model.task.Priority
+import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.taskIDs
 import uk.whitecrescent.waqti.model.toArrayList
-import uk.whitecrescent.waqti.task.Checklist
-import uk.whitecrescent.waqti.task.Constraint
-import uk.whitecrescent.waqti.task.Label
-import uk.whitecrescent.waqti.task.MANDATORY
-import uk.whitecrescent.waqti.task.OPTIONAL
-import uk.whitecrescent.waqti.task.Priority
-import uk.whitecrescent.waqti.task.Task
 
 @DisplayName("Other Task Tests")
 class OtherTask {

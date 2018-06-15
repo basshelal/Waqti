@@ -1,8 +1,13 @@
 # TODO (Short)
 
+* Figure out how to test 310ABP Time because we can't test anything without it
+
 * Fix up Template Tasks and Bundles, when done implement it in the Cache
 
-* Fix the Timer
+* Test Timer to see if it needs to be fixed
+
+* Work on Cache
+
 # TODO (Long)
 
 * Write Markdown Documentation for Tuple

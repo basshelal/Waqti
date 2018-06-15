@@ -11,17 +11,17 @@ import uk.whitecrescent.waqti.model.minutes
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.seconds
 import uk.whitecrescent.waqti.model.sleep
+import uk.whitecrescent.waqti.model.task.Checklist
+import uk.whitecrescent.waqti.model.task.Label
+import uk.whitecrescent.waqti.model.task.MANDATORY
+import uk.whitecrescent.waqti.model.task.OPTIONAL
+import uk.whitecrescent.waqti.model.task.Priority
+import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.model.task.TaskState
+import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.model.tasks
 import uk.whitecrescent.waqti.model.today
 import uk.whitecrescent.waqti.model.tomorrow
-import uk.whitecrescent.waqti.task.Checklist
-import uk.whitecrescent.waqti.task.Label
-import uk.whitecrescent.waqti.task.MANDATORY
-import uk.whitecrescent.waqti.task.OPTIONAL
-import uk.whitecrescent.waqti.task.Priority
-import uk.whitecrescent.waqti.task.Task
-import uk.whitecrescent.waqti.task.TaskState
-import uk.whitecrescent.waqti.task.TaskStateException
 
 // TODO: 27-Mar-18 Finish this too
 @DisplayName("Task Stories")

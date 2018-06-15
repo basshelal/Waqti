@@ -1,7 +1,5 @@
 package uk.whitecrescent.waqti.tests.task
 
-import android.support.test.InstrumentationRegistry
-import com.jakewharton.threetenabp.AndroidThreeTen
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -17,16 +15,16 @@ import uk.whitecrescent.waqti.model.days
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.seconds
 import uk.whitecrescent.waqti.model.sleep
+import uk.whitecrescent.waqti.model.task.Constraint
+import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
+import uk.whitecrescent.waqti.model.task.DEFAULT_TIME_PROPERTY
+import uk.whitecrescent.waqti.model.task.HIDDEN
+import uk.whitecrescent.waqti.model.task.Property
+import uk.whitecrescent.waqti.model.task.SHOWING
+import uk.whitecrescent.waqti.model.task.TaskState
+import uk.whitecrescent.waqti.model.task.TaskStateException
+import uk.whitecrescent.waqti.model.task.UNMET
 import uk.whitecrescent.waqti.model.time
-import uk.whitecrescent.waqti.task.Constraint
-import uk.whitecrescent.waqti.task.DEFAULT_TIME
-import uk.whitecrescent.waqti.task.DEFAULT_TIME_PROPERTY
-import uk.whitecrescent.waqti.task.HIDDEN
-import uk.whitecrescent.waqti.task.Property
-import uk.whitecrescent.waqti.task.SHOWING
-import uk.whitecrescent.waqti.task.TaskState
-import uk.whitecrescent.waqti.task.TaskStateException
-import uk.whitecrescent.waqti.task.UNMET
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Time Tests")
@@ -36,7 +34,7 @@ class Time {
         @BeforeAll
         @JvmStatic
         fun beforeAll() {
-            AndroidThreeTen.init(InstrumentationRegistry.getTargetContext())
+            //AndroidThreeTen.init(InstrumentationRegistry.getTargetContext())
         }
         // TODO: 15-Jun-18 Mock the application to let the 310ABP initialize properly
         // or just use Java Time but I don't want to do that, we should use 310ABP time

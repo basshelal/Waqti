@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.task
+package uk.whitecrescent.waqti.model.task
 
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit
 
 // TODO: 14-May-18 Does a Timer need a Task to exist?
 // TODO: 14-May-18 This isn't 100% Accurate, tested on Android, a second is too long
+// but worked perfectly on JVM, needs to be thoroughly tested
 class Timer {
 
     private val thread = Schedulers.newThread()

@@ -13,10 +13,10 @@ import uk.whitecrescent.waqti.model.ChronoUnit
 import uk.whitecrescent.waqti.model.Date
 import uk.whitecrescent.waqti.model.collections.Tuple
 import uk.whitecrescent.waqti.model.sleep
+import uk.whitecrescent.waqti.model.task.DEFAULT_BEFORE_PROPERTY
+import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.model.task.Timer
 import uk.whitecrescent.waqti.model.today
-import uk.whitecrescent.waqti.task.DEFAULT_BEFORE_PROPERTY
-import uk.whitecrescent.waqti.task.Task
-import uk.whitecrescent.waqti.task.Timer
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Tuple Tests")

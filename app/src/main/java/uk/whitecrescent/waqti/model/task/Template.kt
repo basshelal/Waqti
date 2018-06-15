@@ -1,17 +1,17 @@
-package uk.whitecrescent.waqti.task
+package uk.whitecrescent.waqti.model.task
 
-import uk.whitecrescent.waqti.model.Cache
 import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.Caches
 
 // TODO: 19-May-18 Templates, PropertyBundles and that whole thing need to be tested and doc'd
 
 class Template(val task: Task) : Cacheable {
 
     private val propertyBundle = PropertyBundle(task)
-    private val id = Cache.newTemplateID()
+    private val id = Caches.templates.newID()
 
     init {
-        Cache.putTemplate(this)
+        Caches.templates.put(this)
     }
 
     companion object {

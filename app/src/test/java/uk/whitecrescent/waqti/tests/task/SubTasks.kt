@@ -7,21 +7,21 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.model.Cache
+import uk.whitecrescent.waqti.model.Caches
 import uk.whitecrescent.waqti.model.sleep
+import uk.whitecrescent.waqti.model.task.Constraint
+import uk.whitecrescent.waqti.model.task.DEFAULT_SUB_TASKS
+import uk.whitecrescent.waqti.model.task.DEFAULT_SUB_TASKS_PROPERTY
+import uk.whitecrescent.waqti.model.task.HIDDEN
+import uk.whitecrescent.waqti.model.task.Property
+import uk.whitecrescent.waqti.model.task.SHOWING
+import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.model.task.TaskState
+import uk.whitecrescent.waqti.model.task.TaskStateException
+import uk.whitecrescent.waqti.model.task.UNMET
 import uk.whitecrescent.waqti.model.taskIDs
 import uk.whitecrescent.waqti.model.tasks
 import uk.whitecrescent.waqti.model.toArrayList
-import uk.whitecrescent.waqti.task.Constraint
-import uk.whitecrescent.waqti.task.DEFAULT_SUB_TASKS
-import uk.whitecrescent.waqti.task.DEFAULT_SUB_TASKS_PROPERTY
-import uk.whitecrescent.waqti.task.HIDDEN
-import uk.whitecrescent.waqti.task.Property
-import uk.whitecrescent.waqti.task.SHOWING
-import uk.whitecrescent.waqti.task.Task
-import uk.whitecrescent.waqti.task.TaskState
-import uk.whitecrescent.waqti.task.TaskStateException
-import uk.whitecrescent.waqti.task.UNMET
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("SubTasks Tests")
@@ -253,12 +253,12 @@ class SubTasks {
 
         assertFalse(task.state == TaskState.KILLED)
 
-        Cache.getTask(subTasksIDs[0]).kill()
-        Cache.getTask(subTasksIDs[1]).kill()
+        Caches.tasks.get(subTasksIDs[0]).kill()
+        Caches.tasks.get(subTasksIDs[1]).kill()
 
         assertThrows(TaskStateException::class.java, { task.kill() })
 
-        Cache.getTask(subTasksIDs[2]).kill()
+        Caches.tasks.get(subTasksIDs[2]).kill()
 
         sleep(2)
 
@@ -287,9 +287,9 @@ class SubTasks {
 
         assertFalse(task.state == TaskState.KILLED)
 
-        Cache.getTask(subTasksIDs[0]).fail()
-        Cache.getTask(subTasksIDs[1]).kill()
-        Cache.getTask(subTasksIDs[2]).kill()
+        Caches.tasks.get(subTasksIDs[0]).fail()
+        Caches.tasks.get(subTasksIDs[1]).kill()
+        Caches.tasks.get(subTasksIDs[2]).kill()
 
         sleep(2)
 
@@ -314,9 +314,9 @@ class SubTasks {
 
         assertThrows(TaskStateException::class.java, { tasks.forEach { it.kill() } })
 
-        Cache.getTask(subTasksIDs[0]).kill()
-        Cache.getTask(subTasksIDs[1]).kill()
-        Cache.getTask(subTasksIDs[2]).kill()
+        Caches.tasks.get(subTasksIDs[0]).kill()
+        Caches.tasks.get(subTasksIDs[1]).kill()
+        Caches.tasks.get(subTasksIDs[2]).kill()
 
         sleep(2)
 
@@ -432,7 +432,7 @@ class SubTasks {
     @Test
     fun testTaskSubTasksExtraDepth() {
 
-        Cache.clearTasks()
+        Caches.tasks.clear()
 
         val list = getTasks(500)
 
@@ -451,9 +451,9 @@ class SubTasks {
         assertEquals(300, list[199].getSubTasksLevelsDepth())
         assertEquals(0, list[499].getSubTasksLevelsDepth())
 
-        assertTrue(Cache.allTasks().size == 500)
+        assertTrue(Caches.tasks.size == 500)
 
-        Cache.clearTasks()
+        Caches.tasks.clear()
     }
 
     @DisplayName("SubTasks varied depth")

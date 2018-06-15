@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.task
+package uk.whitecrescent.waqti.model.task
 
 import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.Duration

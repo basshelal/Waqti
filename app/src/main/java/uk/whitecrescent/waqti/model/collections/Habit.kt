@@ -4,10 +4,10 @@ import io.reactivex.Observable
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Time
 import uk.whitecrescent.waqti.model.now
-import uk.whitecrescent.waqti.task.ObserverException
-import uk.whitecrescent.waqti.task.TIME_CHECKING_PERIOD
-import uk.whitecrescent.waqti.task.TIME_CHECKING_UNIT
-import uk.whitecrescent.waqti.task.Timer
+import uk.whitecrescent.waqti.model.task.ObserverException
+import uk.whitecrescent.waqti.model.task.TIME_CHECKING_PERIOD
+import uk.whitecrescent.waqti.model.task.TIME_CHECKING_UNIT
+import uk.whitecrescent.waqti.model.task.Timer
 
 
 class Habit(var tuple: Tuple, var interval: Duration) {

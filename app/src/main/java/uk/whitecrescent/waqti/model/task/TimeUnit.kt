@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.task
+package uk.whitecrescent.waqti.model.task
 
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Duration
@@ -15,17 +15,17 @@ class TimeUnit(val name: String, val duration: Duration) : Cacheable {
 
         fun getOrCreateTimeUnit(name: String, duration: Duration): TimeUnit {
             val newTimeUnit = TimeUnit(name, duration)
-            val found = TimeUnit.allTimeUnits.find { it == newTimeUnit }
+            val found = allTimeUnits.find { it == newTimeUnit }
 
             if (found == null) {
-                TimeUnit.allTimeUnits.add(newTimeUnit)
+                allTimeUnits.add(newTimeUnit)
                 return newTimeUnit
             } else return found
         }
 
         fun getTimeUnit(name: String, duration: Duration): TimeUnit {
             val newTimeUnit = TimeUnit(name, duration)
-            val found = TimeUnit.allTimeUnits.find { it == newTimeUnit }
+            val found = allTimeUnits.find { it == newTimeUnit }
 
             if (found == null) {
                 throw IllegalArgumentException("TimeUnit not found")
@@ -33,7 +33,7 @@ class TimeUnit(val name: String, val duration: Duration) : Cacheable {
         }
 
         fun deleteTimeUnit(name: String, duration: Duration) {
-            TimeUnit.allTimeUnits.remove(getTimeUnit(name, duration))
+            allTimeUnits.remove(getTimeUnit(name, duration))
         }
 
     }

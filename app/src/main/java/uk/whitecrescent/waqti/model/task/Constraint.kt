@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.task
+package uk.whitecrescent.waqti.model.task
 
 class Constraint<V>(override var isVisible: Boolean,
                     override val value: V,
@@ -9,10 +9,10 @@ class Constraint<V>(override var isVisible: Boolean,
         fun <T> toProperty(constraint: Constraint<T>) = Property(constraint.isVisible, constraint.value)
     }
 
-    fun toProperty() = Constraint.toProperty(this)
+    fun toProperty() = toProperty(this)
 
     val property: Property<V>
-        get() = Constraint.toProperty(this)
+        get() = toProperty(this)
 
     override fun hashCode() =
             value!!.hashCode() + isVisible.hashCode() + isMet.hashCode()

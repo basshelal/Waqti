@@ -7,8 +7,8 @@ import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.model.Time
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.sleep
-import uk.whitecrescent.waqti.task.TaskState
-import uk.whitecrescent.waqti.task.TaskStateException
+import uk.whitecrescent.waqti.model.task.TaskState
+import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Lifecycle Tests")
