@@ -40,7 +40,7 @@ class PropertyBundle(val task: Task) {
 
     var description: Property<Description>
         set(value) {
-            properties[descriptionIndex] = description
+            properties[descriptionIndex] = value
         }
         get() = properties[descriptionIndex] as Property<Description>
 

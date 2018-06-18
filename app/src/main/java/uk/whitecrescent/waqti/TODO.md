@@ -1,12 +1,8 @@
 # TODO (Short)
 
-* Figure out how to test 310ABP Time because we can't test anything without it
+* Finish up Task by testing everything, making sure the tests are thorough and deep
 
-* Fix up Template Tasks and Bundles, when done implement it in the Cache
-
-* Test Timer to see if it needs to be fixed
-
-* Work on Cache
+* Finish the task package classes 
 
 # TODO (Long)
 
@@ -64,6 +60,14 @@ the anonymous Task's Properties (like a placeholder)
 -----------------------------------------------------------------------------------------------------------------------
 
 # Done
+
+* ~~Fix up Template Tasks and Bundles, when done implement it in the Cache~~
+
+* ~~Work on Cache~~
+
+* ~~Test Timer to see if it needs to be fixed~~
+
+* ~~Figure out how to test 310ABP Time because we can't test anything without it~~
 
 * ~~Move everything to Android!~~
 

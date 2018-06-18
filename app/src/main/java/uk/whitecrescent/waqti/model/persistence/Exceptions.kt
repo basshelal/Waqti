@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.model
+package uk.whitecrescent.waqti.model.persistence
 
 import uk.whitecrescent.waqti.model.task.ID
 
@@ -19,4 +19,4 @@ import uk.whitecrescent.waqti.model.task.ID
  *
  */
 class CacheElementNotFoundException(val elementID: ID) :
-        NoSuchElementException("Element of ID $elementID not found")
+        NoSuchElementException("Element of ID $elementID not found in this Cache")

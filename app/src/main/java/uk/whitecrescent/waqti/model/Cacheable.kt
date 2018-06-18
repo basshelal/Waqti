@@ -4,5 +4,6 @@ import uk.whitecrescent.waqti.model.task.ID
 
 interface Cacheable {
 
-    fun id(): ID
+    val id: ID
+
 }

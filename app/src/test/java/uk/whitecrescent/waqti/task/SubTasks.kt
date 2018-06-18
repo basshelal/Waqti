@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.tests.task
+package uk.whitecrescent.waqti.task
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.model.Caches
+import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.Constraint
 import uk.whitecrescent.waqti.model.task.DEFAULT_SUB_TASKS
@@ -333,10 +333,10 @@ class SubTasks {
         val level3 = Task("Level3")
         val level4 = Task("Level4")
 
-        level3.setSubTasksConstraintValue(arrayListOf(level4.taskID))
-        level2.setSubTasksConstraintValue(arrayListOf(level3.taskID))
-        level1.setSubTasksConstraintValue(arrayListOf(level2.taskID))
-        root.setSubTasksConstraintValue(arrayListOf(level1.taskID))
+        level3.setSubTasksConstraintValue(arrayListOf(level4.id))
+        level2.setSubTasksConstraintValue(arrayListOf(level3.id))
+        level1.setSubTasksConstraintValue(arrayListOf(level2.id))
+        root.setSubTasksConstraintValue(arrayListOf(level1.id))
 
         assertThrows(TaskStateException::class.java, { root.kill() })
         assertThrows(TaskStateException::class.java, { level1.kill() })
@@ -428,17 +428,16 @@ class SubTasks {
         task.kill()
     }
 
+
     @DisplayName("SubTasks Extra depth")
     @Test
     fun testTaskSubTasksExtraDepth() {
-
-        Caches.tasks.clear()
 
         val list = getTasks(500)
 
         list.forEachIndexed { index, task ->
             run {
-                if (index != 499) task.setSubTasksConstraintValue(arrayListOf(list[index + 1].taskID))
+                if (index != 499) task.setSubTasksConstraintValue(arrayListOf(list[index + 1].id))
             }
         }
 
@@ -451,9 +450,6 @@ class SubTasks {
         assertEquals(300, list[199].getSubTasksLevelsDepth())
         assertEquals(0, list[499].getSubTasksLevelsDepth())
 
-        assertTrue(Caches.tasks.size == 500)
-
-        Caches.tasks.clear()
     }
 
     @DisplayName("SubTasks varied depth")
@@ -469,11 +465,11 @@ class SubTasks {
 
         assertEquals(0, root.getSubTasksLevelsDepth())
 
-        level3A.setSubTasksConstraintValue(arrayListOf(level4A.taskID))
-        level2A.setSubTasksConstraintValue(arrayListOf(level3A.taskID))
-        level1B.setSubTasksConstraintValue(arrayListOf(level2B.taskID))
-        level1A.setSubTasksConstraintValue(arrayListOf(level2A.taskID))
-        root.setSubTasksConstraintValue(arrayListOf(level1A.taskID, level1B.taskID))
+        level3A.setSubTasksConstraintValue(arrayListOf(level4A.id))
+        level2A.setSubTasksConstraintValue(arrayListOf(level3A.id))
+        level1B.setSubTasksConstraintValue(arrayListOf(level2B.id))
+        level1A.setSubTasksConstraintValue(arrayListOf(level2A.id))
+        root.setSubTasksConstraintValue(arrayListOf(level1A.id, level1B.id))
 
         assertEquals(4, root.getSubTasksLevelsDepth())
     }

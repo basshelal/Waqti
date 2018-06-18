@@ -1,12 +1,18 @@
 package uk.whitecrescent.waqti.model.task
 
 import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.persistence.Caches
 
 class Label
 private constructor(var name: String)
     : Cacheable {
 
     var children = arrayListOf<Label>()
+
+    val labelID = Caches.labels.newID()
+
+    override val id: ID
+        get() = labelID
 
     companion object {
 
@@ -38,10 +44,6 @@ private constructor(var name: String)
             allLabels.remove(getLabel(name))
         }
 
-    }
-
-    override fun id(): ID {
-        return System.currentTimeMillis()
     }
 
     override fun hashCode() = name.hashCode()

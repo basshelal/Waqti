@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.tests.task
+package uk.whitecrescent.waqti.task
 
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals

@@ -4,16 +4,15 @@ import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.Cacheable
-import uk.whitecrescent.waqti.model.Caches
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Listable
 import uk.whitecrescent.waqti.model.Time
 import uk.whitecrescent.waqti.model.now
+import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.taskIDs
 import uk.whitecrescent.waqti.model.tasks
 
 // TODO: 27-Mar-18 Make sure all KDoc is up to date!!!
-// TODO: 14-May-18 Can Task be extended?
 class Task(var title: String = "") : Listable, Cacheable {
 
     //region Class Properties
@@ -53,7 +52,10 @@ class Task(var title: String = "") : Listable, Cacheable {
      * The list of all currently used IDs should be stored persistently.
      * @see java.util.Random.nextLong
      */
-    val taskID = Caches.tasks.newID() // TODO: 19-May-18 remember to make this private
+    private val taskID = Caches.tasks.newID()
+
+    override val id: ID
+        get() = taskID
 
     // TODO: 26-Mar-18 Document this stuff!
 
@@ -1351,7 +1353,7 @@ class Task(var title: String = "") : Listable, Cacheable {
 
     // Can't restart them (not that I know of). dangerous!
     // Lifecycle will not happen automatically if there are no observers checking, even when it should
-    fun endObservers() = composite.clear()
+    private fun endObservers() = composite.clear()
 
     /**
      * Checks the time on the `stateCheckingThread` to match it with this Task's time Constraint value.
@@ -1736,7 +1738,10 @@ class Task(var title: String = "") : Listable, Cacheable {
                             }
                         },
                         {
-                            throw ObserverException("SubTasks Constraint checking failed!")
+                            println(this.id)
+                            println(this in Caches.tasks)
+                            it.printStackTrace()
+                            //throw ObserverException("SubTasks Constraint checking failed!")
                         }
                 )
 
@@ -1759,7 +1764,7 @@ class Task(var title: String = "") : Listable, Cacheable {
                 .subscribeOn(Schedulers.computation())
                 .subscribe(
                         {
-                            if (!Caches.tasks.contains(this)) {
+                            if (this !in Caches.tasks) {
                                 endObservers()
                                 done = true
                             }
@@ -1773,8 +1778,6 @@ class Task(var title: String = "") : Listable, Cacheable {
     //endregion Observers
 
     //region Overriden
-
-    override fun id() = taskID
 
     /**
      * Returns the hash code of this Task, this is the hash code of this Task's equalityBundle, see [equalityBundle]

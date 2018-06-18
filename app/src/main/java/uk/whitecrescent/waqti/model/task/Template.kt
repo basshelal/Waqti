@@ -1,14 +1,17 @@
 package uk.whitecrescent.waqti.model.task
 
 import uk.whitecrescent.waqti.model.Cacheable
-import uk.whitecrescent.waqti.model.Caches
+import uk.whitecrescent.waqti.model.persistence.Caches
 
 // TODO: 19-May-18 Templates, PropertyBundles and that whole thing need to be tested and doc'd
 
 class Template(val task: Task) : Cacheable {
 
     private val propertyBundle = PropertyBundle(task)
-    private val id = Caches.templates.newID()
+    private val templateID = Caches.templates.newID()
+
+    override val id: ID
+        get() = templateID
 
     init {
         Caches.templates.put(this)
@@ -35,5 +38,4 @@ class Template(val task: Task) : Cacheable {
 
     }
 
-    override fun id() = id
 }

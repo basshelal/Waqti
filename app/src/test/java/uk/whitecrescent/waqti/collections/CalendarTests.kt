@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.tests.collections
+package uk.whitecrescent.waqti.collections
 
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

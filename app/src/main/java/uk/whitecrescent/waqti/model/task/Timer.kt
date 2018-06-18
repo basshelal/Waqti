@@ -8,12 +8,16 @@ import uk.whitecrescent.waqti.model.till
 import java.util.concurrent.TimeUnit
 
 // TODO: 14-May-18 Does a Timer need a Task to exist?
-// TODO: 14-May-18 This isn't 100% Accurate, tested on Android, a second is too long
-// but worked perfectly on JVM, needs to be thoroughly tested
+/*
+ * Tested thoroughly and works to 0.01 seconds accuracy, tested up to an hour (3600 seconds),
+ * expected 3600 seconds, actually was 3599.964 seconds, similar results for shorter time periods
+ * so I believe this is just some uncontrolled overhead
+ *
+ */
 class Timer {
 
     private val thread = Schedulers.newThread()
-    private val timePeriod = 100L
+    private val timePeriod = 10L
     private val timeUnit = TimeUnit.MILLISECONDS
 
     var stopped = true

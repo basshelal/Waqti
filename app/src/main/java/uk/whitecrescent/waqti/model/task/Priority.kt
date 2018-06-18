@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.model.task
 
 import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.persistence.Caches
 
 /**
  * The user defined level of importance of a Task represented as a String with a number representing importance
@@ -20,6 +21,11 @@ import uk.whitecrescent.waqti.model.Cacheable
 class Priority
 private constructor(var name: String, var importanceLevel: Int)
     : Cacheable {
+
+    private val priorityID = Caches.priorities.newID()
+
+    override val id: ID
+        get() = priorityID
 
     companion object {
 
@@ -47,10 +53,6 @@ private constructor(var name: String, var importanceLevel: Int)
         fun deletePriority(name: String, importanceLevel: Int) {
             allPriorities.remove(getPriority(name, importanceLevel))
         }
-    }
-
-    override fun id(): ID {
-        return System.currentTimeMillis()
     }
 
     override fun hashCode() = name.hashCode() + importanceLevel.hashCode()

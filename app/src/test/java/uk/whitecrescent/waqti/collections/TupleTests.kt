@@ -1,10 +1,9 @@
-package uk.whitecrescent.waqti.tests.collections
+package uk.whitecrescent.waqti.collections
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
@@ -12,10 +11,8 @@ import uk.whitecrescent.waqti.getTasks
 import uk.whitecrescent.waqti.model.ChronoUnit
 import uk.whitecrescent.waqti.model.Date
 import uk.whitecrescent.waqti.model.collections.Tuple
-import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.DEFAULT_BEFORE_PROPERTY
 import uk.whitecrescent.waqti.model.task.Task
-import uk.whitecrescent.waqti.model.task.Timer
 import uk.whitecrescent.waqti.model.today
 import uk.whitecrescent.waqti.testTask
 
@@ -27,7 +24,7 @@ class TupleTests {
                 if (it == 0) {
                     assertEquals(DEFAULT_BEFORE_PROPERTY, tuple[it].before)
                 }
-                assertEquals(tuple[it].taskID, tuple[it + 1].before.value)
+                assertEquals(tuple[it].id, tuple[it + 1].before.value)
             }
 
     @DisplayName("Tuple creation zero Tasks")
@@ -76,7 +73,7 @@ class TupleTests {
         assertEquals(task1, tuple[1])
         assertFalse(tuple[0].before.isVisible)
         assertTrue(tuple[1].before.isVisible)
-        assertEquals(tuple[0].taskID, tuple[1].before.value)
+        assertEquals(tuple[0].id, tuple[1].before.value)
     }
 
     @DisplayName("Tuple Add At")
@@ -94,8 +91,8 @@ class TupleTests {
         assertFalse(tuple[0].before.isVisible)
         assertTrue(tuple[1].before.isVisible)
         assertTrue(tuple[2].before.isVisible)
-        assertEquals(tuple[0].taskID, tuple[1].before.value)
-        assertEquals(tuple[1].taskID, tuple[2].before.value)
+        assertEquals(tuple[0].id, tuple[1].before.value)
+        assertEquals(tuple[1].id, tuple[2].before.value)
 
         tuple.addAt(1, task)
 
@@ -111,9 +108,9 @@ class TupleTests {
         assertTrue(tuple[3].before.isVisible)
 
 
-        assertEquals(tuple[0].taskID, tuple[1].before.value)
-        assertEquals(tuple[1].taskID, tuple[2].before.value)
-        assertEquals(tuple[2].taskID, tuple[3].before.value)
+        assertEquals(tuple[0].id, tuple[1].before.value)
+        assertEquals(tuple[1].id, tuple[2].before.value)
+        assertEquals(tuple[2].id, tuple[3].before.value)
 
 //        assertEquals("Task0", tuple[1].before.value.task().title)
 //        assertEquals("Task", tuple[2].before.value.task().title)
@@ -294,28 +291,10 @@ class TupleTests {
     fun testTupleMove() {
         val tuple = Tuple().addAll(getTasks(6))
         tuple.move(1, 3)
-        val titles = listOf("TestTask0", "TestTask2", "TestTask3", "TestTask1", "TestTask4", "TestTask5")
+        val titles = listOf("TestTask 0", "TestTask 2", "TestTask 3", "TestTask 1", "TestTask 4",
+                "TestTask 5")
         titles.forEachIndexed { index, string -> assertTrue(string == tuple[index].title) }
         testOrdered(tuple)
-    }
-
-    @Disabled
-    @DisplayName("Test")
-    @Test
-    fun testTimer() {
-        val timer = Timer()
-
-        val startTime = System.currentTimeMillis();timer.start()
-        for (i in 0..9) {
-            println("My Timer: ${timer.duration.toMillis()}")
-            println("System Timer: ${System.currentTimeMillis() - startTime}")
-            sleep(60)
-        }
-
-        println("END \n\n")
-        println("My Timer: ${timer.duration.toMillis()}")
-        println("System Timer: ${System.currentTimeMillis() - startTime}")
-        timer.stop()
     }
 
     // For Calendar using Days

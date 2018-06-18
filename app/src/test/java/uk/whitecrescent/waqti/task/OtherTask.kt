@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.tests.task
+package uk.whitecrescent.waqti.task
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Time
+import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.Checklist
@@ -17,7 +18,6 @@ import uk.whitecrescent.waqti.model.task.MANDATORY
 import uk.whitecrescent.waqti.model.task.OPTIONAL
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
-import uk.whitecrescent.waqti.model.taskIDs
 import uk.whitecrescent.waqti.model.toArrayList
 
 @DisplayName("Other Task Tests")
@@ -332,7 +332,7 @@ class OtherTask {
     @DisplayName("Task Equals SubTasks")
     @Test
     fun testTaskEqualsSubTasks() {
-        val subTasks = arrayListOf(Task("SubTask1"), Task("SubTask2")).taskIDs()
+        val subTasks = arrayListOf(Task("SubTask1"), Task("SubTask2")).ids
         val task1 = Task("Task").setSubTasksPropertyValue(subTasks.toArrayList)
         val task2 = Task("Task").setSubTasksPropertyValue(subTasks.toArrayList)
 
@@ -355,7 +355,7 @@ class OtherTask {
     @Test
     fun testTaskToString() {
         val task = Task("My Task")
-        assertEquals("${task.title}\nID: ${task.taskID} " +
+        assertEquals("${task.title}\nID: ${task.id} " +
                 "isKillable: ${task.isKillable} " +
                 "isFailable: ${task.isFailable} " +
                 "state: ${task.state}\n\tP:\n\tC:\n", task.toString())
@@ -379,7 +379,7 @@ class OtherTask {
                 .setDeadlinePropertyValue(Time.of(2018, 6, 6, 6, 6))
                 .setTargetConstraintValue("My Target")
                 .setBeforePropertyValue(beforeTask)
-                .setSubTasksPropertyValue(arrayListOf(subTask1, subTask2).taskIDs().toArrayList)
+                .setSubTasksPropertyValue(arrayListOf(subTask1, subTask2).ids.toArrayList)
 
         task.unConstrainAll()
 
@@ -423,11 +423,11 @@ class OtherTask {
         assertTrue(task.target.isVisible)
 
         assertFalse(task.before is Constraint)
-        assertEquals(beforeTask.taskID, task.before.value)
+        assertEquals(beforeTask.id, task.before.value)
         assertTrue(task.before.isVisible)
 
         assertFalse(task.subTasks is Constraint)
-        assertEquals(arrayListOf(subTask1, subTask2).taskIDs(), task.subTasks.value)
+        assertEquals(arrayListOf(subTask1, subTask2).ids, task.subTasks.value)
         assertTrue(task.subTasks.isVisible)
     }
 

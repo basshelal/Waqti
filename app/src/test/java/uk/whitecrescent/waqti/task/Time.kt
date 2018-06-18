@@ -1,10 +1,9 @@
-package uk.whitecrescent.waqti.tests.task
+package uk.whitecrescent.waqti.task
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.after
@@ -29,16 +28,6 @@ import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Time Tests")
 class Time {
-
-    companion object {
-        @BeforeAll
-        @JvmStatic
-        fun beforeAll() {
-            //AndroidThreeTen.init(InstrumentationRegistry.getTargetContext())
-        }
-        // TODO: 15-Jun-18 Mock the application to let the 310ABP initialize properly
-        // or just use Java Time but I don't want to do that, we should use 310ABP time
-    }
 
     @DisplayName("Time Default Values")
     @Test

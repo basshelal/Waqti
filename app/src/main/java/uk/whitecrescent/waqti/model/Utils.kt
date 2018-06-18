@@ -2,11 +2,9 @@
 
 package uk.whitecrescent.waqti.model
 
-import android.app.Activity
-import android.support.design.widget.Snackbar
 import android.util.Log
-import android.view.View
 import uk.whitecrescent.waqti.model.collections.Tuple
+import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.GRACE_PERIOD
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
@@ -33,7 +31,7 @@ inline fun setGracePeriod(duration: Duration) {
 
 inline fun Collection<Task>.taskIDs(): List<ID> {
     val ids = ArrayList<ID>(this.size)
-    this.forEach { ids.add(it.taskID) }
+    this.forEach { ids.add(it.id) }
     return ids
 }
 
@@ -43,7 +41,7 @@ inline val <E> List<E>.toArrayList: ArrayList<E>
     }
 
 inline val Collection<Cacheable>.ids: List<ID>
-    get() = this.map { it.id() }
+    get() = this.map { it.id }
 
 inline val Collection<ID>.tasks: List<Task>
     get() = Caches.tasks.getByIDs(this)
@@ -60,6 +58,3 @@ inline val Collection<Tuple>.tasks: Array<Task>
 inline fun Collection<Task>.putAll() {
     this.forEach { Caches.tasks.put(it) }
 }
-
-inline fun Activity.shortSnackbar(view: View, string: CharSequence) =
-        Snackbar.make(view, string, Snackbar.LENGTH_SHORT).show()

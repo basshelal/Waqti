@@ -1,5 +1,6 @@
-package uk.whitecrescent.waqti.model
+package uk.whitecrescent.waqti.model.persistence
 
+import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Priority
@@ -75,14 +76,18 @@ class Cache<E : Cacheable> : Collection<E> {
 
     // Creates if doesn't exist, updates if does
     fun put(element: E) {
-        db[element.id()] = element
+        db[element.id] = element
     }
 
     fun put(elements: Collection<E>) =
             elements.forEach { this.put(it) }
 
+    operator fun set(id: ID, element: E) {
+        db[id] = element
+    }
+
     operator fun get(element: E) =
-            db.safeGet(element.id())
+            db.safeGet(element.id)
 
     operator fun get(id: ID) =
             db.safeGet(id)
@@ -90,37 +95,43 @@ class Cache<E : Cacheable> : Collection<E> {
     operator fun get(elements: Collection<E>) =
             elements.map { this[it] }
 
+    operator fun plus(element: E): Cache<E> {
+        this.put(element)
+        return this
+    }
+
+    operator fun plus(elements: Collection<E>): Cache<E> {
+        this.put(elements)
+        return this
+    }
+
+    operator fun minus(element: E): Cache<E> {
+        this.remove(element)
+        return this
+    }
+
+    operator fun minus(elements: Collection<E>): Cache<E> {
+        this.remove(elements)
+        return this
+    }
+
     fun getByIDs(ids: Collection<ID>) =
             ids.map { this[it] }
 
-    operator fun plus(element: E) = this.put(element)
-
-    operator fun plus(elements: Collection<E>) = this.put(elements)
-
-    operator fun minus(element: E) = this.remove(element)
-
-    operator fun minus(elements: Collection<E>) = this.remove(elements)
-
-    operator fun not() {}
-
     fun idOf(element: E): ID {
-        if (element !in this) throw CacheElementNotFoundException(element.id())
-        else return this[element].id()
+        if (element !in this) throw CacheElementNotFoundException(element.id)
+        else return this[element].id
     }
 
     fun idsOf(elements: Collection<E>) =
             elements.map { idOf(it) }
-
-    operator fun set(id: ID, element: E) {
-        db[id] = element
-    }
 
     fun remove(id: ID) {
         if (db.containsKey(id)) db.remove(id)
     }
 
     fun remove(element: E) =
-            this.remove(element.id())
+            this.remove(element.id)
 
     fun remove(elements: Collection<E>) =
             elements.forEach { this.remove(it) }
@@ -133,6 +144,10 @@ class Cache<E : Cacheable> : Collection<E> {
 
     fun clear() = db.clear()
 
+    fun query() = ArrayList(db.values).toList() as List<E>
+
+    fun toImmutableMap() = db.toMap()
+
     override fun isEmpty() = db.isEmpty()
 
     override operator fun iterator() = db.values.iterator()
@@ -141,22 +156,29 @@ class Cache<E : Cacheable> : Collection<E> {
 
     override fun containsAll(elements: Collection<E>) = elements.all { this.contains(it) }
 
-    fun query() = ArrayList(db.values).toList()
+    override fun hashCode() = db.hashCode()
 
-    fun toImmutableMap() = db.toMap()
+    override fun equals(other: Any?) =
+            other is Cache<*> &&
+                    other.hashCode() == this.hashCode() &&
+                    other.toImmutableMap() == this.toImmutableMap()
+
+    override fun toString(): String {
+        return db.toString()
+    }
 
 }
 
 
 //region Extensions
 
-fun <V : Cacheable> ConcurrentHashMap<ID, V>.safeGet(id: ID): V {
+private fun <V : Cacheable> ConcurrentHashMap<ID, V>.safeGet(id: ID): V {
     val found = this[id]
     if (found == null) throw CacheElementNotFoundException(id)
     else return found
 }
 
-fun <V : Cacheable> ConcurrentHashMap<ID, V>.newID(): ID {
+private fun <V : Cacheable> ConcurrentHashMap<ID, V>.newID(): ID {
     var id = Math.abs(Random().nextLong())
     while (this.containsKey(id)) {
         id = Math.abs(Random().nextLong())
@@ -164,30 +186,30 @@ fun <V : Cacheable> ConcurrentHashMap<ID, V>.newID(): ID {
     return id
 }
 
-operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.get(value: V): V {
-    val found = this[value.id()]
-    if (found == null) throw CacheElementNotFoundException(value.id())
+private operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.get(value: V): V {
+    val found = this[value.id]
+    if (found == null) throw CacheElementNotFoundException(value.id)
     else return found
 }
 
-operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.set(old: V, new: V) {
-    this[old.id()] = new
+private operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.set(old: V, new: V) {
+    this[old.id] = new
 }
 
-operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.plus(value: V) {
-    this[value.id()] = value
+private operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.plus(value: V) {
+    this[value.id] = value
 }
 
-operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.plus(collection: Collection<V>) {
-    collection.forEach { this.putIfAbsent(it.id(), it) }
+private operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.plus(collection: Collection<V>) {
+    collection.forEach { this.putIfAbsent(it.id, it) }
 }
 
-operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.minus(value: V) {
-    this.remove(value.id())
+private operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.minus(value: V) {
+    this.remove(value.id)
 }
 
-operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.minus(collection: Collection<V>) {
-    collection.forEach { this.remove(it.id()) }
+private operator fun <V : Cacheable> ConcurrentHashMap<ID, V>.minus(collection: Collection<V>) {
+    collection.forEach { this.remove(it.id) }
 }
 
 //endregion Extensions

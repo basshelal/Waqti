@@ -68,6 +68,14 @@ inline val Triple<Number, Number, Number>.am: LocalTime
 inline val Triple<Number, Number, Number>.pm: LocalTime
     get() = LocalTime.of(this.first.toInt() + 12, this.second.toInt(), this.third.toInt())
 
+inline val Duration.millis: Long
+    get() = this.toMillis()
+
+inline val Duration.secs: Double
+    get() {
+        return (this.millis) / 1000.0
+    }
+
 inline fun time(year: Int, month: Int, dayOfMonth: Int,
                 hour: Int = 0, minute: Int = 0, second: Int = 0, nanoOfSecond: Int = 0) =
         Time.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond)
