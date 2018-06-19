@@ -19,6 +19,10 @@ inline fun after(duration: Duration, func: () -> Any) {
     func.invoke()
 }
 
+inline fun sleep(duration: Duration) {
+    Thread.sleep(duration.toMillis())
+}
+
 inline fun <T> message(expected: T, actual: T) {
     println("Expected:\t${expected.toString()} \nActual:\t\t${actual.toString()}")
 }

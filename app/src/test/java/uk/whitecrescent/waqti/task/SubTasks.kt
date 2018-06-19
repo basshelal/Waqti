@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
+import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.Constraint
@@ -25,7 +26,9 @@ import uk.whitecrescent.waqti.model.toArrayList
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("SubTasks Tests")
-class SubTasks {
+class SubTasks : BaseTaskTest() {
+
+    // TODO: 18-Jun-18 lots of shit doesn't pass when run with others
 
     @DisplayName("SubTasks Default Values")
     @Test
@@ -206,13 +209,13 @@ class SubTasks {
     @DisplayName("Get SubTasks List")
     @Test
     fun testTaskGetSubTasksList() {
-        val task = testTask().addSubTasks(
+        val task = testTask.addSubTasks(
                 Task("SubTask1"),
                 Task("SubTask2"),
                 Task("SubTask3")
         )
 
-        val subTasksIDs = task.getSubTasksList().taskIDs()
+        val subTasksIDs = task.getSubTasksList().ids
         assertEquals(subTasksIDs, task.getSubTasksIDsList())
         assertEquals(subTasksIDs.tasks, task.getSubTasksList())
 
@@ -428,16 +431,15 @@ class SubTasks {
         task.kill()
     }
 
-
     @DisplayName("SubTasks Extra depth")
     @Test
     fun testTaskSubTasksExtraDepth() {
 
-        val list = getTasks(500)
+        val list = getTasks(100)
 
         list.forEachIndexed { index, task ->
             run {
-                if (index != 499) task.setSubTasksConstraintValue(arrayListOf(list[index + 1].id))
+                if (index != 99) task.setSubTasksConstraintValue(arrayListOf(list[index + 1].id))
             }
         }
 
@@ -446,9 +448,9 @@ class SubTasks {
         list.minus(list.last()).reversed().forEach { assertTrue(it.subTasks.value.size == 1) }
         list.minus(list.last()).reversed().forEach { assertThrows(TaskStateException::class.java, { it.kill() }) }
 
-        assertEquals(499, list[0].getSubTasksLevelsDepth())
-        assertEquals(300, list[199].getSubTasksLevelsDepth())
-        assertEquals(0, list[499].getSubTasksLevelsDepth())
+        assertEquals(99, list[0].getSubTasksLevelsDepth())
+        assertEquals(50, list[49].getSubTasksLevelsDepth())
+        assertEquals(0, list[99].getSubTasksLevelsDepth())
 
     }
 

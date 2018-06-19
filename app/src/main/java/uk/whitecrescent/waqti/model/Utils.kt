@@ -8,6 +8,7 @@ import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.GRACE_PERIOD
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
+import java.util.Objects
 
 inline fun sleep(seconds: Int) = Thread.sleep((seconds) * 1000L)
 
@@ -26,6 +27,9 @@ inline fun <T> logE(t: T) {
 inline fun setGracePeriod(duration: Duration) {
     GRACE_PERIOD = duration
 }
+
+inline fun hash(vararg elements: Any) =
+        Objects.hash(*elements)
 
 // Extensions
 

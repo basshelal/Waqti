@@ -12,7 +12,7 @@ import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Lifecycle Tests")
-class Lifecycle {
+class Lifecycle : BaseTaskTest() {
 
     /*
      * The Task Lifecycle is as follows:

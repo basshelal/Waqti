@@ -16,7 +16,7 @@ import uk.whitecrescent.waqti.model.task.UNMET
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Target Tests")
-class Target {
+class Target : BaseTaskTest() {
 
     @DisplayName("Target Default Values")
     @Test

@@ -8,7 +8,6 @@ import uk.whitecrescent.waqti.model.now
 class Calendar private constructor() {
 
     companion object {
-        // TODO: 15-Apr-18 Come back to this
         fun get(period: Long, unit: TemporalUnit, from: Time = now): HashMap<Int, Time> {
             val hashMap = HashMap<Int, Time>(period.toInt())
             val duration = Duration.of(period, unit)

@@ -46,7 +46,7 @@ val DEFAULT_TASK_STATE = TaskState.EXISTING
 
 val DEFAULT_TIME: Time = Time.MIN
 val DEFAULT_DURATION: Duration = Duration.ZERO
-val DEFAULT_PRIORITY = Priority.getOrCreatePriority("", -1)
+val DEFAULT_PRIORITY = Priority("", -1)
 val DEFAULT_LABELS_LIST = arrayListOf<Label>()
 const val DEFAULT_OPTIONAL = MANDATORY
 const val DEFAULT_DESCRIPTION = ""

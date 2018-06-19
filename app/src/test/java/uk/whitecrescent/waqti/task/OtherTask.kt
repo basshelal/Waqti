@@ -21,7 +21,7 @@ import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.toArrayList
 
 @DisplayName("Other Task Tests")
-class OtherTask {
+class OtherTask : BaseTaskTest() {
 
     @DisplayName("Task Title")
     @Test
@@ -193,13 +193,13 @@ class OtherTask {
     @DisplayName("Task Equals Priority")
     @Test
     fun testTaskEqualsPriority() {
-        val priority = Priority.getOrCreatePriority("Priority", 1)
+        val priority = Priority("Priority", 1)
         val task1 = Task("Task").setPriorityValue(priority)
         val task2 = Task("Task").setPriorityValue(priority)
 
         assertTrue(task1 == task2)
 
-        task2.setPriorityValue(Priority.getOrCreatePriority("Priority ", 1))
+        task2.setPriorityValue(priority)
 
         assertNotEquals(task1.priority.value, task2.priority.value)
         assertFalse(task1 == task2)
@@ -368,10 +368,12 @@ class OtherTask {
         val subTask1 = Task("SubTask1")
         val subTask2 = Task("SubTask2")
 
+        val priority = Priority("Priority", 5)
+
         val task = Task("My Task")
                 .setTimePropertyValue(Time.of(2018, 5, 5, 5, 5))
                 .setDurationPropertyValue(Duration.ofMinutes(30))
-                .setPriorityValue(Priority.getOrCreatePriority("Priority", 5))
+                .setPriorityValue(priority)
                 .setLabelsValue(Label.getOrCreateLabel("Label1"), Label.getOrCreateLabel("Label2"))
                 .setOptionalValue(OPTIONAL)
                 .setDescriptionValue("Description")
@@ -395,7 +397,7 @@ class OtherTask {
         assertTrue(task.duration.isVisible)
 
         assertFalse(task.priority is Constraint)
-        assertEquals(Priority.getOrCreatePriority("Priority", 5), task.priority.value)
+        assertEquals(priority, task.priority.value)
         assertTrue(task.priority.isVisible)
 
         assertFalse(task.labels is Constraint)

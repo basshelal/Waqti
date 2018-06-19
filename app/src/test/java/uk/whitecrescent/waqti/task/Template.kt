@@ -29,7 +29,7 @@ import uk.whitecrescent.waqti.model.time
 import uk.whitecrescent.waqti.model.toArrayList
 
 @DisplayName("Template Task Tests")
-class Template {
+class Template : BaseTaskTest() {
 
     @DisplayName("Sending to Template using Object Functions")
     @Test
@@ -100,7 +100,7 @@ class Template {
         val task = Task("My Task")
                 .setTimePropertyValue(time(2018, 5, 5, 5, 5))
                 .setDurationPropertyValue(30.minutes)
-                .setPriorityValue(Priority.getOrCreatePriority("Priority", 5))
+                .setPriorityValue(Priority("Priority", 5))
                 .setLabelsValue(Label.getOrCreateLabel("Label1"), Label.getOrCreateLabel("Label2"))
                 .setOptionalValue(OPTIONAL)
                 .setDescriptionValue("Description")
@@ -167,7 +167,7 @@ class Template {
         val realTask = Task("My Task")
                 .setTimePropertyValue(time(2018, 5, 5, 5, 5))
                 .setDurationPropertyValue(30.minutes)
-                .setPriorityValue(Priority.getOrCreatePriority("Priority", 5))
+                .setPriorityValue(Priority("Priority", 5))
                 .setLabelsValue(Label.getOrCreateLabel("Label1"), Label.getOrCreateLabel("Label2"))
                 .setOptionalValue(OPTIONAL)
                 .setDescriptionValue("Description")

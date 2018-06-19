@@ -22,7 +22,7 @@ import uk.whitecrescent.waqti.model.task.UNMET
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Before Tests")
-class Before {
+class Before : BaseTaskTest() {
 
     @DisplayName("Before Default Values")
     @Test

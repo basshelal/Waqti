@@ -16,7 +16,6 @@ package uk.whitecrescent.waqti.model.collections
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.CLASS, AnnotationTarget.CONSTRUCTOR)
 annotation class NoOverride
 
-// TODO: 16-Apr-18 Document this
 @Retention(AnnotationRetention.SOURCE)
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION)

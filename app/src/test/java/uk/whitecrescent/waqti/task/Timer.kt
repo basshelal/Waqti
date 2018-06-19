@@ -10,7 +10,7 @@ import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.Timer
 
 @DisplayName("Timer Tests")
-class Timer {
+class Timer : BaseTaskTest() {
 
     @DisplayName("Timer Test Start and Pause")
     @Test

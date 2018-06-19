@@ -17,7 +17,7 @@ import uk.whitecrescent.waqti.model.task.UNMET
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Label Tests")
-class Label {
+class Label : BaseTaskTest() {
 
     // Before All
     companion object {

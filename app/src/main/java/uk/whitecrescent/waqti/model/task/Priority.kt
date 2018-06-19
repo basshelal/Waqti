@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.model.task
 
 import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.hash
 import uk.whitecrescent.waqti.model.persistence.Caches
 
 /**
@@ -18,44 +19,33 @@ import uk.whitecrescent.waqti.model.persistence.Caches
  * @see Task
  * @author Bassam Helal
  */
-class Priority
-private constructor(var name: String, var importanceLevel: Int)
-    : Cacheable {
+class Priority(name: String, importanceLevel: Int) : Cacheable {
 
-    private val priorityID = Caches.priorities.newID()
+    override val id = Caches.priorities.newID()
 
-    override val id: ID
-        get() = priorityID
-
-    companion object {
-
-        val allPriorities = ArrayList<Priority>()
-
-        fun getOrCreatePriority(name: String, importanceLevel: Int): Priority {
-            val newPriority = Priority(name, importanceLevel)
-            val found = allPriorities.find { it == newPriority }
-
-            if (found == null) {
-                allPriorities.add(newPriority)
-                return newPriority
-            } else return found
-        }
-
-        fun getPriority(name: String, importanceLevel: Int): Priority {
-            val newPriority = Priority(name, importanceLevel)
-            val found = allPriorities.find { it == newPriority }
-
-            if (found == null) {
-                throw IllegalArgumentException("Priority not found")
-            } else return found
-        }
-
-        fun deletePriority(name: String, importanceLevel: Int) {
-            allPriorities.remove(getPriority(name, importanceLevel))
-        }
+    init {
+        Caches.priorities.put(this)
     }
 
-    override fun hashCode() = name.hashCode() + importanceLevel.hashCode()
+    var name = name
+        set(value) {
+            field = value
+            update()
+        }
+
+    var importanceLevel = importanceLevel
+        set(value) {
+            field = value
+            update()
+        }
+
+    private fun update() = Caches.priorities.put(this)
+
+    operator fun component1() = name
+
+    operator fun component2() = importanceLevel
+
+    override fun hashCode() = hash(name, importanceLevel)
 
     override fun equals(other: Any?) =
             other is Priority &&

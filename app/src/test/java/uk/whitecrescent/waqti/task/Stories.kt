@@ -25,7 +25,7 @@ import uk.whitecrescent.waqti.model.tomorrow
 
 // TODO: 27-Mar-18 Finish this too
 @DisplayName("Task Stories")
-class Stories {
+class Stories : BaseTaskTest() {
 
     @DisplayName("Simple Task 1: Go out for a walk")
     @Test
@@ -90,7 +90,7 @@ class Stories {
         val task = Task("Buy Groceries")
                 .setTimePropertyValue(tomorrow at 11)
                 .setDurationPropertyValue(60.minutes)
-                .setPriorityValue(Priority.getOrCreatePriority("Low", 1))
+                .setPriorityValue(Priority("Low", 1))
                 .setLabelsValue(Label.getOrCreateLabel("Personal"), Label.getOrCreateLabel("Health"))
                 .setOptionalValue(OPTIONAL)
                 .setDescriptionValue("Buy food for this week")
@@ -148,7 +148,7 @@ class Stories {
         val task = Task("Finish Software Engineering Assignment 1")
                 .setDeadlineConstraintValue(today.plusDays(7).atTime(16, 0))
                 .addLabels(Label.getOrCreateLabel("University"))
-                .setPriorityValue(Priority.getOrCreatePriority("High", 1))
+                .setPriorityValue(Priority("High", 1))
                 .addSubTasksConstraint(
                         Task("Write User Requirements")
                                 .setDeadlineConstraintValue(today.plusDays(3).atTime(23, 55))

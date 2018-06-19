@@ -4,6 +4,10 @@
 
 * Finish the task package classes 
 
+* Start figuring out how to do Persistence with ObjectBox on Task
+
+* Figure out a way to fix the Test Coverage 
+
 # TODO (Long)
 
 * Write Markdown Documentation for Tuple

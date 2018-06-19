@@ -23,7 +23,7 @@ import uk.whitecrescent.waqti.model.task.UNMET
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Deadline Tests")
-class Deadline {
+class Deadline : BaseTaskTest() {
 
     @DisplayName("Deadline Default Values")
     @Test

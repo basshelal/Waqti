@@ -1,7 +1,6 @@
 package uk.whitecrescent.waqti.model.collections
 
-// TODO: 05-Apr-18 Finish Documenting this and make sure documentation is up to date
-// TODO: 05-Apr-18 I'm not sure if this thing is Thread safe or not, and how do I check?
+// Document this and check to see if this is thread safe or not
 abstract class AbstractWaqtiList<E> : WaqtiList<E> {
 
     //region Properties

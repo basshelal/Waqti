@@ -11,9 +11,6 @@ class Constraint<V>(override var isVisible: Boolean,
 
     fun toProperty() = toProperty(this)
 
-    val property: Property<V>
-        get() = toProperty(this)
-
     override fun hashCode() =
             value!!.hashCode() + isVisible.hashCode() + isMet.hashCode()
 

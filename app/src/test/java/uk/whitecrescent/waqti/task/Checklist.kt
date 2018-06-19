@@ -22,7 +22,7 @@ import uk.whitecrescent.waqti.testTask
 
 
 @DisplayName("Checklist Tests")
-class Checklist {
+class Checklist : BaseTaskTest() {
 
     @DisplayName("Checklist add and delete")
     @Test
