@@ -16,9 +16,10 @@ import uk.whitecrescent.waqti.model.task.SHOWING
 import uk.whitecrescent.waqti.model.task.UNMET
 import uk.whitecrescent.waqti.testTask
 
-// TODO: 19-Jun-18 come back here!!!
-
-
+/*
+ * All good, maybe not extensive enough though so no seal yet
+ * TODO
+ */
 @DisplayName("Priority Tests")
 class Priority : BaseTaskTest() {
 

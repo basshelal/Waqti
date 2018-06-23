@@ -3,6 +3,19 @@ package uk.whitecrescent.waqti.model.task
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Time
 
+
+private const val timeIndex = 0
+private const val durationIndex = 1
+private const val priorityIndex = 2
+private const val labelsIndex = 3
+private const val optionalIndex = 4
+private const val descriptionIndex = 5
+private const val checklistIndex = 6
+private const val targetIndex = 7
+private const val deadlineIndex = 8
+private const val beforeIndex = 9
+private const val subTasksIndex = 10
+
 @Suppress("UNCHECKED_CAST")
 class PropertyBundle(val task: Task) {
 
@@ -132,15 +145,3 @@ class PropertyBundle(val task: Task) {
     }
 
 }
-
-private const val timeIndex = 0
-private const val durationIndex = 1
-private const val priorityIndex = 2
-private const val labelsIndex = 3
-private const val optionalIndex = 4
-private const val descriptionIndex = 5
-private const val checklistIndex = 6
-private const val targetIndex = 7
-private const val deadlineIndex = 8
-private const val beforeIndex = 9
-private const val subTasksIndex = 10

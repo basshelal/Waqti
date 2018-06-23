@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.minutes
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.Checklist
@@ -24,7 +25,6 @@ import uk.whitecrescent.waqti.model.task.OPTIONAL
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.PropertyBundle
 import uk.whitecrescent.waqti.model.task.Task
-import uk.whitecrescent.waqti.model.taskIDs
 import uk.whitecrescent.waqti.model.time
 import uk.whitecrescent.waqti.model.toArrayList
 
@@ -101,7 +101,7 @@ class Template : BaseTaskTest() {
                 .setTimePropertyValue(time(2018, 5, 5, 5, 5))
                 .setDurationPropertyValue(30.minutes)
                 .setPriorityValue(Priority("Priority", 5))
-                .setLabelsValue(Label.getOrCreateLabel("Label1"), Label.getOrCreateLabel("Label2"))
+                .setLabelsValue(Label("Label1"), Label("Label2"))
                 .setOptionalValue(OPTIONAL)
                 .setDescriptionValue("Description")
                 .setChecklistPropertyValue(Checklist("ZERO", "ONE", "TWO"))
@@ -109,7 +109,7 @@ class Template : BaseTaskTest() {
                 .setTargetConstraintValue("My Target")
                 .setBeforePropertyValue(Task("Before"))
                 .setSubTasksPropertyValue(
-                        arrayListOf(Task("SubTask1"), Task("SubTask2")).taskIDs().toArrayList)
+                        arrayListOf(Task("SubTask1"), Task("SubTask2")).ids.toArrayList)
 
 
         val taskFromTemplate = Task.fromTemplate(task.toTemplate())
@@ -161,14 +161,14 @@ class Template : BaseTaskTest() {
         val anonTask = Task()
                 .setTimePropertyValue(time(2018, 5, 5, 5, 5))
                 .setDurationPropertyValue(30.minutes)
-                .setLabelsValue(Label.getOrCreateLabel("Label1"), Label.getOrCreateLabel("Label2"))
+                .setLabelsValue(Label("Label1"), Label("Label2"))
                 .setDeadlinePropertyValue(time(2018, 6, 6, 6, 6))
 
         val realTask = Task("My Task")
                 .setTimePropertyValue(time(2018, 5, 5, 5, 5))
                 .setDurationPropertyValue(30.minutes)
                 .setPriorityValue(Priority("Priority", 5))
-                .setLabelsValue(Label.getOrCreateLabel("Label1"), Label.getOrCreateLabel("Label2"))
+                .setLabelsValue(Label("Label1"), Label("Label2"))
                 .setOptionalValue(OPTIONAL)
                 .setDescriptionValue("Description")
                 .setChecklistPropertyValue(Checklist("ZERO", "ONE", "TWO"))
@@ -176,7 +176,7 @@ class Template : BaseTaskTest() {
                 .setTargetConstraintValue("My Target")
                 .setBeforePropertyValue(Task("Before"))
                 .setSubTasksPropertyValue(
-                        arrayListOf(Task("SubTask1"), Task("SubTask2")).taskIDs().toArrayList)
+                        arrayListOf(Task("SubTask1"), Task("SubTask2")).ids.toArrayList)
 
 
         assertTrue(Task.taskBundlesAreSubset(anonTask, realTask))

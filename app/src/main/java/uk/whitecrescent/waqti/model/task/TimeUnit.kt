@@ -10,7 +10,7 @@ class TimeUnit(name: String, duration: Duration) : Cacheable {
     override val id = Caches.timeUnits.newID()
 
     init {
-        Caches.timeUnits.put(this)
+        update()
     }
 
     // TODO: 19-Jun-18 more tests to check for the mutability and other things

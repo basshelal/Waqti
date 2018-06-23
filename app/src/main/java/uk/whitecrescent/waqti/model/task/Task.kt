@@ -10,7 +10,6 @@ import uk.whitecrescent.waqti.model.Time
 import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.persistence.Caches
-import uk.whitecrescent.waqti.model.taskIDs
 import uk.whitecrescent.waqti.model.tasks
 
 // TODO: 18-Jun-18 When done, make sure everything is tested and doc'd
@@ -121,6 +120,10 @@ class Task(var title: String = "") : Listable, Cacheable {
     //endregion Class Properties
 
     //region Task Properties
+
+    // TODO: 23-Jun-18 Change the Properties with ArrayList's to take in Collections in their set methods
+
+    // TODO: 23-Jun-18 Should we change the ArrayLists to be Lists??
 
     /**
      * The point in natural time after which this Task will be relevant, this can also be referred to as scheduled
@@ -1128,7 +1131,7 @@ class Task(var title: String = "") : Listable, Cacheable {
         val value = this.subTasks.value
         val list = ArrayList<Task>()
         list.addAll(tasks)
-        value.addAll(list.taskIDs())
+        value.addAll(list.ids)
         setSubTasksProperty(Constraint(SHOWING, value, UNMET))
         return this
     }

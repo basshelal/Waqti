@@ -5,8 +5,8 @@ import uk.whitecrescent.waqti.model.task.ID
 import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
 
-@Suppress("unused")
-class Cache<E : Cacheable> : Collection<E> {
+@Suppress("unused", "MemberVisibilityCanBePrivate")
+open class Cache<E : Cacheable> : Collection<E> {
 
     private val db = ConcurrentHashMap<ID, E>()
 
@@ -73,7 +73,7 @@ class Cache<E : Cacheable> : Collection<E> {
     fun idsOf(elements: Collection<E>) =
             elements.map { idOf(it) }
 
-    fun remove(id: ID) {
+    open fun remove(id: ID) {
         if (db.containsKey(id)) db.remove(id)
     }
 
@@ -91,7 +91,7 @@ class Cache<E : Cacheable> : Collection<E> {
 
     fun clear() = db.clear()
 
-    fun query() = ArrayList(db.values).toList()
+    fun query() = db.values.toList()
 
     fun toImmutableMap() = db.toMap()
 
@@ -114,7 +114,7 @@ class Cache<E : Cacheable> : Collection<E> {
         return db.toString()
     }
 
-    private fun safeGet(id: ID): E {
+    protected fun safeGet(id: ID): E {
         val found = db[id]
         if (found == null) throw CacheElementNotFoundException(id)
         else return found

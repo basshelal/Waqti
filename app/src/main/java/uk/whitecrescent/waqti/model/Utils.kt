@@ -33,13 +33,7 @@ inline fun hash(vararg elements: Any) =
 
 // Extensions
 
-inline fun Collection<Task>.taskIDs(): List<ID> {
-    val ids = ArrayList<ID>(this.size)
-    this.forEach { ids.add(it.id) }
-    return ids
-}
-
-inline val <E> List<E>.toArrayList: ArrayList<E>
+inline val <E> Collection<E>.toArrayList: ArrayList<E>
     get() {
         return ArrayList(this)
     }
@@ -58,7 +52,3 @@ inline val Collection<Tuple>.tasks: Array<Task>
         }
         return result.toTypedArray()
     }
-
-inline fun Collection<Task>.putAll() {
-    this.forEach { Caches.tasks.put(it) }
-}

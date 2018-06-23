@@ -91,7 +91,7 @@ class Stories : BaseTaskTest() {
                 .setTimePropertyValue(tomorrow at 11)
                 .setDurationPropertyValue(60.minutes)
                 .setPriorityValue(Priority("Low", 1))
-                .setLabelsValue(Label.getOrCreateLabel("Personal"), Label.getOrCreateLabel("Health"))
+                .setLabelsValue(Label("Personal"), Label("Health"))
                 .setOptionalValue(OPTIONAL)
                 .setDescriptionValue("Buy food for this week")
                 .setChecklistPropertyValue(Checklist("Milk", "Eggs", "Chicken", "Mushrooms"))
@@ -147,7 +147,7 @@ class Stories : BaseTaskTest() {
 
         val task = Task("Finish Software Engineering Assignment 1")
                 .setDeadlineConstraintValue(today.plusDays(7).atTime(16, 0))
-                .addLabels(Label.getOrCreateLabel("University"))
+                .addLabels(Label("University"))
                 .setPriorityValue(Priority("High", 1))
                 .addSubTasksConstraint(
                         Task("Write User Requirements")

@@ -1,7 +1,5 @@
 package uk.whitecrescent.waqti.task
 
-import org.junit.AfterClass
-import org.junit.BeforeClass
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeAll
@@ -13,11 +11,6 @@ open class BaseTaskTest {
     companion object {
 
         @JvmStatic
-        @BeforeClass
-        fun beforeClass() {
-        }
-
-        @JvmStatic
         @BeforeAll
         fun beforeAll() {
             Caches.allTaskCachesList.forEach { assert(it.isEmpty()) }
@@ -27,11 +20,6 @@ open class BaseTaskTest {
         @AfterAll
         fun afterAll() {
             Caches.allTaskCachesList.forEach { assert(it.isEmpty()) }
-        }
-
-        @JvmStatic
-        @AfterClass
-        fun afterClass() {
         }
     }
 

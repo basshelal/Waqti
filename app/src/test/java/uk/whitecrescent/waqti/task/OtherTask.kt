@@ -208,13 +208,13 @@ class OtherTask : BaseTaskTest() {
     @DisplayName("Task Equals Labels")
     @Test
     fun testTaskEqualsLabels() {
-        val label = Label.getOrCreateLabel("Label")
+        val label = Label("Label")
         val task1 = Task("Task").setLabelsValue(label)
         val task2 = Task("Task").setLabelsValue(label)
 
         assertTrue(task1 == task2)
 
-        task2.setLabelsValue(Label.getOrCreateLabel("Label "))
+        task2.setLabelsValue(label)
 
         assertNotEquals(task1.labels.value, task2.labels.value)
         assertFalse(task1 == task2)
@@ -368,13 +368,16 @@ class OtherTask : BaseTaskTest() {
         val subTask1 = Task("SubTask1")
         val subTask2 = Task("SubTask2")
 
+        val label1 = Label("Label1")
+        val label2 = Label("Label2")
+
         val priority = Priority("Priority", 5)
 
         val task = Task("My Task")
                 .setTimePropertyValue(Time.of(2018, 5, 5, 5, 5))
                 .setDurationPropertyValue(Duration.ofMinutes(30))
                 .setPriorityValue(priority)
-                .setLabelsValue(Label.getOrCreateLabel("Label1"), Label.getOrCreateLabel("Label2"))
+                .setLabelsValue(label1, label2)
                 .setOptionalValue(OPTIONAL)
                 .setDescriptionValue("Description")
                 .setChecklistPropertyValue(Checklist("ZERO", "ONE", "TWO"))
@@ -401,7 +404,7 @@ class OtherTask : BaseTaskTest() {
         assertTrue(task.priority.isVisible)
 
         assertFalse(task.labels is Constraint)
-        assertEquals(arrayListOf(Label.getOrCreateLabel("Label1"), Label.getOrCreateLabel("Label2")), task.labels.value)
+        assertEquals(arrayListOf(label1, label2), task.labels.value)
         assertTrue(task.labels.isVisible)
 
         assertFalse(task.optional is Constraint)

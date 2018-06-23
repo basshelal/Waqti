@@ -24,7 +24,7 @@ class Priority(name: String, importanceLevel: Int) : Cacheable {
     override val id = Caches.priorities.newID()
 
     init {
-        Caches.priorities.put(this)
+        update()
     }
 
     var name = name
