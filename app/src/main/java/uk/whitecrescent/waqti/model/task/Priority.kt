@@ -39,7 +39,7 @@ class Priority(name: String, importanceLevel: Int) : Cacheable {
             update()
         }
 
-    private fun update() = Caches.priorities.put(this)
+    override fun update() = Caches.priorities.put(this)
 
     operator fun component1() = name
 

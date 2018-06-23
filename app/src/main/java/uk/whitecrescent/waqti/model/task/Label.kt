@@ -31,7 +31,7 @@ class Label(name: String) : Cacheable {
         _children.remove(label)
     }
 
-    private fun update() = Caches.labels.put(this)
+    override fun update() = Caches.labels.put(this)
 
     operator fun component1() = name
 

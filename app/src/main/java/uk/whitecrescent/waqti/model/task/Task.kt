@@ -1258,7 +1258,7 @@ class Task(var title: String = "") : Listable, Cacheable {
 
     //region Task lifecycle
 
-    private fun update() {
+    override fun update() {
         Caches.tasks.put(this)
     }
 

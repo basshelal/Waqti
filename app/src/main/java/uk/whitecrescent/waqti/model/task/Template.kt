@@ -16,7 +16,7 @@ class Template(val task: Task) : Cacheable {
         update()
     }
 
-    fun update() = Caches.templates.put(this)
+    override fun update() = Caches.templates.put(this)
 
     override fun hashCode() = hash(task, propertyBundle)
 

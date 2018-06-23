@@ -35,7 +35,7 @@ class TimeUnit(name: String, duration: Duration) : Cacheable {
 
     }
 
-    private fun update() = Caches.timeUnits.put(this)
+    override fun update() = Caches.timeUnits.put(this)
 
     operator fun component1() = name
 

@@ -8,4 +8,6 @@ interface Cacheable {
 
     val id: ID
 
+    fun update()
+
 }
