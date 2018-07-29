@@ -16,10 +16,6 @@ import uk.whitecrescent.waqti.model.task.SHOWING
 import uk.whitecrescent.waqti.model.task.UNMET
 import uk.whitecrescent.waqti.testTask
 
-/*
- * All good, maybe not extensive enough though so no seal yet
- * TODO
- */
 @DisplayName("Priority Tests")
 class Priority : BaseTaskTest() {
 

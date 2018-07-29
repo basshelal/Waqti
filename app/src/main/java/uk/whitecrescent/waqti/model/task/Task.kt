@@ -1119,20 +1119,13 @@ class Task(var title: String = "") : Listable, Cacheable {
      * @param tasks the Tasks to add to this Task's subTasks Property
      * @return this Task after adding the given subTasks to the Task's subTasks Property
      */
-    fun addSubTasks(vararg tasks: Task): Task {
-        setSubTasksProperty(
-                Property(SHOWING,
-                        ArrayList(this.subTasks.value + tasks.toList().ids))
-        )
-        return this
-    }
-
-    fun addSubTasksConstraint(vararg tasks: Task): Task {
-        val value = this.subTasks.value
-        val list = ArrayList<Task>()
-        list.addAll(tasks)
-        value.addAll(list.ids)
-        setSubTasksProperty(Constraint(SHOWING, value, UNMET))
+    fun addSubTasks(tasks: Collection<Task>): Task {
+        if (tasks.isNotEmpty()) {
+            this.subTasks.value.addAll(tasks.ids)
+            if (!subTasks.isVisible) {
+                subTasks.isVisible = true
+            }
+        }
         return this
     }
 
@@ -1141,8 +1134,8 @@ class Task(var title: String = "") : Listable, Cacheable {
      *
      * @return the ArrayList of uk.whitecrescent.waqti.task.IDs of the sub-Tasks of this Task
      */
-    fun getSubTasksIDsList(): ArrayList<ID> {
-        return this.subTasks.value
+    fun getSubTasksIDsList(): List<ID> {
+        return this.subTasks.value.toList()
     }
 
     /**
@@ -1151,7 +1144,7 @@ class Task(var title: String = "") : Listable, Cacheable {
      * @return the ArrayList of Tasks of the sub-Tasks of this Task
      */
     fun getSubTasksList(): List<Task> {
-        return ArrayList(this.subTasks.value.tasks).toList()
+        return this.subTasks.value.tasks.toList()
     }
 
     /**
@@ -1765,43 +1758,36 @@ class Task(var title: String = "") : Listable, Cacheable {
                 .takeWhile { !done }
                 .doOnComplete { update() }
                 .subscribeOn(SUB_TASKS_CONSTRAINT_THREAD)
-                .subscribe(
-                        {
-                            when {
-                            // TODO: 18-Jun-18 problems here when running SubTasks tests,
-                                !Caches.tasks.containsAll(this.subTasks.value.tasks) -> {
-                                    throw ObserverException("SubTasks Constraint checking failed!" +
-                                            " Some SubTask is null in database")
-                                }
-                                this.subTasks !is Constraint -> {
-                                    makeNonFailableIfNoConstraints()
-                                    done = true
-                                }
-                                this.subTasks.value != originalValue -> {
-                                    done = true
-                                }
-                            // SubTasks contains more than 0 failed Tasks
-                                this.subTasks.value.tasks.any { it.state == TaskState.FAILED } -> {
-                                    (subTasks as Constraint).isMet = false
-                                    if (canFail()) fail()
-                                    done = true
-                                }
-                            // All SubTasks are killed
-                                this.subTasks.value.tasks
-                                        .all { it.state == TaskState.KILLED } -> {
-                                    (subTasks as Constraint).isMet = true
-                                    done = true
-                                }
-
-                            }
-                        },
-                        {
-                            //println(this.id)
-                            //println(this in Caches.tasks)
-                            //it.printStackTrace()
-                            //throw ObserverException("SubTasks Constraint checking failed!")
+                .subscribe {
+                    when {
+                    // TODO: 18-Jun-18 problems here when running SubTasks tests together
+                        !Caches.tasks.containsAll(this.subTasks.value.tasks) -> {
+                            throw ObserverException("SubTasks Constraint checking failed!" +
+                                    " Some SubTask is null in database")
                         }
-                )
+                        this.subTasks !is Constraint -> {
+                            makeNonFailableIfNoConstraints()
+                            done = true
+                        }
+                    //// TODO: 29-Jul-18 What if we add to the subtasks??
+                    // this.subTasks.value != originalValue -> {
+                    // done = true
+                    // }
+                    // SubTasks contains more than 0 failed Tasks
+                        this.subTasks.value.tasks.any { it.state == TaskState.FAILED } -> {
+                            subTasks.asConstraint.isMet = false
+                            if (canFail()) fail()
+                            done = true
+                        }
+                    // All SubTasks are killed
+                        this.subTasks.value.tasks
+                                .all { it.state == TaskState.KILLED } -> {
+                            subTasks.asConstraint.isMet = true
+                            done = true
+                        }
+
+                    }
+                }
 
         composite.add(disposable)
     }

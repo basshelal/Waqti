@@ -1,7 +1,6 @@
 package uk.whitecrescent.waqti.model.persistence
 
 import uk.whitecrescent.waqti.model.Committable
-import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
@@ -50,14 +49,6 @@ object Caches {
     val labels = Cache<Label>()
     val priorities = Cache<Priority>()
     val timeUnits = Cache<TimeUnit>()
-
-    //trying something out, ignore
-    val test = object : Cache<Label>() {
-        override fun remove(id: ID) {
-            super.remove(id)
-            remove(this.safeGet(id).children)
-        }
-    }
 
     private val allTaskCaches = mutableListOf(
             tasks,

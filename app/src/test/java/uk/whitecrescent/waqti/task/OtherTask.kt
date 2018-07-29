@@ -198,8 +198,9 @@ class OtherTask : BaseTaskTest() {
         val task2 = Task("Task").setPriorityValue(priority)
 
         assertTrue(task1 == task2)
+        assertEquals(task1.priority.value, task2.priority.value)
 
-        task2.setPriorityValue(priority)
+        task2.setPriorityValue(Priority("Priority", 2))
 
         assertNotEquals(task1.priority.value, task2.priority.value)
         assertFalse(task1 == task2)
@@ -213,8 +214,9 @@ class OtherTask : BaseTaskTest() {
         val task2 = Task("Task").setLabelsValue(label)
 
         assertTrue(task1 == task2)
+        assertEquals(task1.labels.value, task2.labels.value)
 
-        task2.setLabelsValue(label)
+        task2.setLabelsValue(Label("Label2"))
 
         assertNotEquals(task1.labels.value, task2.labels.value)
         assertFalse(task1 == task2)

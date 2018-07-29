@@ -5,17 +5,18 @@ import uk.whitecrescent.waqti.model.task.ID
 import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
 
-@Suppress("unused", "MemberVisibilityCanBePrivate")
+// TODO: 28-Jul-18 Test and doc
+
 open class Cache<E : Cacheable> : Collection<E> {
 
-    private val db = ConcurrentHashMap<ID, E>()
+    private val map = ConcurrentHashMap<ID, E>()
 
     override val size: Int
-        get() = db.size
+        get() = map.size
 
     fun newID(): ID {
         var id = Math.abs(Random().nextLong())
-        while (db.containsKey(id)) {
+        while (map.containsKey(id)) {
             id = Math.abs(Random().nextLong())
         }
         return id
@@ -23,14 +24,14 @@ open class Cache<E : Cacheable> : Collection<E> {
 
     // Creates if doesn't exist, updates if does
     fun put(element: E) {
-        db[element.id] = element
+        map[element.id] = element
     }
 
     fun put(elements: Collection<E>) =
             elements.forEach { this.put(it) }
 
     operator fun set(id: ID, element: E) {
-        db[id] = element
+        map[id] = element
     }
 
     operator fun get(element: E) =
@@ -74,7 +75,7 @@ open class Cache<E : Cacheable> : Collection<E> {
             elements.map { idOf(it) }
 
     open fun remove(id: ID) {
-        if (db.containsKey(id)) db.remove(id)
+        if (map.containsKey(id)) map.remove(id)
     }
 
     fun remove(element: E) =
@@ -87,23 +88,23 @@ open class Cache<E : Cacheable> : Collection<E> {
             ids.forEach { this.remove(it) }
 
     fun removeIf(predicate: () -> Boolean) =
-            db.forEach { if (predicate.invoke()) remove(it.value) }
+            map.forEach { if (predicate.invoke()) remove(it.value) }
 
-    fun clear() = db.clear()
+    fun clear() = map.clear()
 
-    fun query() = db.values.toList()
+    fun query() = map.values.toList()
 
-    fun toImmutableMap() = db.toMap()
+    fun toImmutableMap() = map.toMap()
 
-    override fun isEmpty() = db.isEmpty()
+    override fun isEmpty() = map.isEmpty()
 
-    override operator fun iterator() = db.values.iterator()
+    override operator fun iterator() = map.values.iterator()
 
-    override operator fun contains(element: E) = element in db
+    override operator fun contains(element: E) = element in map
 
     override fun containsAll(elements: Collection<E>) = elements.all { this.contains(it) }
 
-    override fun hashCode() = db.hashCode()
+    override fun hashCode() = map.hashCode()
 
     override fun equals(other: Any?) =
             other is Cache<*> &&
@@ -111,11 +112,11 @@ open class Cache<E : Cacheable> : Collection<E> {
                     other.toImmutableMap() == this.toImmutableMap()
 
     override fun toString(): String {
-        return db.toString()
+        return map.toString()
     }
 
     protected fun safeGet(id: ID): E {
-        val found = db[id]
+        val found = map[id]
         if (found == null) throw CacheElementNotFoundException(id)
         else return found
     }

@@ -2,12 +2,14 @@
   <dictionary name="bassh">
     <words>
       <w>bassam</w>
+      <w>cacheable</w>
       <w>failable</w>
       <w>helal</w>
       <w>killable</w>
       <w>overriden</w>
       <w>snackbar</w>
       <w>waqti</w>
+      <w>whitecrescent</w>
     </words>
   </dictionary>
 </component>
