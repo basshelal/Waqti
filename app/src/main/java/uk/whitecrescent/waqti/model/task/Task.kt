@@ -13,7 +13,25 @@ import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.tasks
 
 // TODO: 18-Jun-18 When done, make sure everything is tested and doc'd
-class Task(var title: String = "") : Listable, Cacheable {
+class Task(title: String = "") : Listable, Cacheable {
+
+    var title = title
+        set(value) {
+            field = value
+            update()
+        }
+
+    var debug = false
+
+    private inline fun debug(exec: () -> Any) {
+        if (debug) exec.invoke()
+    }
+
+    private fun debug(string: String) {
+        if (debug) println(string)
+    }
+
+    val activeObservers = ArrayList<String>()
 
     //region Class Properties
 
@@ -1397,13 +1415,26 @@ class Task(var title: String = "") : Listable, Cacheable {
                         },
                         {
                             throw ObserverException("Checking Not Dead Failed!")
+                        },
+                        {
+                            debug("$id is no longer in Cache! Check not dead completed END")
                         }
                 )
     }
 
     // Can't restart them (not that I know of). dangerous!
     // Lifecycle will not happen automatically if there are no observers checking, even when it should
-    private fun endObservers() = composite.clear()
+    private fun endObservers() {
+        val message = when {
+            activeObservers.isEmpty() -> "None"
+            else -> activeObservers.toString()
+        }
+
+        composite.clear()
+        activeObservers.clear()
+
+        debug("$id has ended its observers! $message")
+    }
 
     /**
      * Checks the time on the `stateCheckingThread` to match it with this Task's time Constraint value.
@@ -1438,7 +1469,6 @@ class Task(var title: String = "") : Listable, Cacheable {
 
         val disposable = Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
                 .takeWhile { !done }
-                .doOnComplete { update() }
                 .subscribeOn(TIME_CONSTRAINT_THREAD)
                 .subscribe(
                         {
@@ -1462,9 +1492,20 @@ class Task(var title: String = "") : Listable, Cacheable {
                         },
                         {
                             throw ObserverException("Time Constraint time checking failed!")
+                        },
+                        {
+                            activeObservers.remove("Time")
+                            debug("$id time observer completed")
+                            update()
+                        },
+                        {
+                            debug("$id time observer subscribed")
                         }
                 )
+        // TODO: 05-Aug-18 test keeping and removing it from the composite, and do it on others
         composite.add(disposable)
+        activeObservers.add("Time")
+        update()
     }
 
     /**
@@ -1525,9 +1566,16 @@ class Task(var title: String = "") : Listable, Cacheable {
                         },
                         {
                             throw ObserverException("Duration Constraint timer checking failed!")
+                        },
+                        {
+                            activeObservers.remove("Duration")
+                            debug("$id duration observer completed")
+                            update()
                         }
                 )
         composite.add(disposable)
+        activeObservers.add("Duration")
+        update()
     }
 
     /**
@@ -1582,10 +1630,16 @@ class Task(var title: String = "") : Listable, Cacheable {
                         },
                         {
                             throw ObserverException("Checklist Constraint checking failed")
+                        },
+                        {
+                            activeObservers.remove("Checklist")
+                            debug("$id checklist observer completed")
+                            update()
                         }
                 )
-
         composite.add(disposable)
+        activeObservers.add("Checklist")
+        update()
     }
 
     /**
@@ -1646,10 +1700,16 @@ class Task(var title: String = "") : Listable, Cacheable {
                         },
                         {
                             throw ObserverException("Deadline Constraint checking failed!")
+                        },
+                        {
+                            activeObservers.remove("Deadline")
+                            debug("$id deadline observer completed")
+                            update()
                         }
                 )
         composite.add(disposable)
-
+        activeObservers.add("Deadline")
+        update()
     }
 
     /**
@@ -1718,9 +1778,16 @@ class Task(var title: String = "") : Listable, Cacheable {
                         },
                         {
                             throw ObserverException("Before Constraint checking failed!")
+                        },
+                        {
+                            activeObservers.remove("Before")
+                            debug("$id before observer completed")
+                            update()
                         }
                 )
         composite.add(disposable)
+        activeObservers.add("Before")
+        update()
     }
 
     /**
@@ -1758,38 +1825,50 @@ class Task(var title: String = "") : Listable, Cacheable {
                 .takeWhile { !done }
                 .doOnComplete { update() }
                 .subscribeOn(SUB_TASKS_CONSTRAINT_THREAD)
-                .subscribe {
-                    when {
-                    // TODO: 18-Jun-18 problems here when running SubTasks tests together
-                        !Caches.tasks.containsAll(this.subTasks.value.tasks) -> {
-                            throw ObserverException("SubTasks Constraint checking failed!" +
-                                    " Some SubTask is null in database")
-                        }
-                        this.subTasks !is Constraint -> {
-                            makeNonFailableIfNoConstraints()
-                            done = true
-                        }
-                    //// TODO: 29-Jul-18 What if we add to the subtasks??
-                    // this.subTasks.value != originalValue -> {
-                    // done = true
-                    // }
-                    // SubTasks contains more than 0 failed Tasks
-                        this.subTasks.value.tasks.any { it.state == TaskState.FAILED } -> {
-                            subTasks.asConstraint.isMet = false
-                            if (canFail()) fail()
-                            done = true
-                        }
-                    // All SubTasks are killed
-                        this.subTasks.value.tasks
-                                .all { it.state == TaskState.KILLED } -> {
-                            subTasks.asConstraint.isMet = true
-                            done = true
-                        }
+                .subscribe(
+                        {
+                            when {
+                            // TODO: 18-Jun-18 problems here when running SubTasks tests together
+                                !Caches.tasks.containsAll(this.subTasks.value.tasks) -> {
+                                    throw ObserverException("SubTasks Constraint checking failed!" +
+                                            " Some SubTask is null in database")
+                                }
+                                this.subTasks !is Constraint -> {
+                                    makeNonFailableIfNoConstraints()
+                                    done = true
+                                }
+                            //// TODO: 29-Jul-18 What if we add to the subtasks??
+                            // this.subTasks.value != originalValue -> {
+                            // done = true
+                            // }
+                            // SubTasks contains more than 0 failed Tasks
+                                this.subTasks.value.tasks.any { it.state == TaskState.FAILED } -> {
+                                    subTasks.asConstraint.isMet = false
+                                    if (canFail()) fail()
+                                    done = true
+                                }
+                            // All SubTasks are killed
+                                this.subTasks.value.tasks
+                                        .all { it.state == TaskState.KILLED } -> {
+                                    subTasks.asConstraint.isMet = true
+                                    done = true
+                                }
 
-                    }
-                }
+                            }
+                        },
+                        {
+                            throw ObserverException("SubTasks checking failed!")
+                        },
+                        {
+                            activeObservers.remove("SubTasks")
+                            debug("$id SubTasks observer completed")
+                            update()
+                        }
+                )
 
         composite.add(disposable)
+        activeObservers.add("SubTasks")
+        update()
     }
 
     //endregion Observers

@@ -58,13 +58,13 @@ object Caches {
             timeUnits
     )
 
-    val allTaskCachesList = ArrayList(allTaskCaches).toList()
+    val allTaskCachesList = allTaskCaches.toList()
 
     private val allCaches = mutableListOf(
             *allTaskCaches.toTypedArray()
     )
 
-    val allCachesList = ArrayList(allCaches).toList()
+    val allCachesList = allCaches.toList()
 
     fun clearAllTaskCaches(): Committable {
         return object : Committable {

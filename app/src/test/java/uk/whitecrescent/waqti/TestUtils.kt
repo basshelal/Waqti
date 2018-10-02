@@ -5,13 +5,25 @@ package uk.whitecrescent.waqti
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.task.Task
 
-fun testTask() = Task("TestTask")
+fun testTask() = testTask
 
 val testTask: Task
-    get() = Task("TestTask")
+    get() {
+        val task = Task("TestTask")
+        task.debug = true
+        return task
+    }
+
+fun testTask(name: String): Task {
+    val task = Task(name)
+    task.debug = true
+    return task
+}
 
 fun getTasks(amount: Int): List<Task> {
-    return (0 until amount).map { Task("TestTask $it") }.toList()
+    return (0 until amount).map {
+        testTask("TestTask $it")
+    }
 }
 
 inline fun after(duration: Duration, func: () -> Any) {

@@ -11,18 +11,29 @@ class TestCacheable(name: String) : Cacheable {
             update()
         }
 
-    override val id = TestCaches.testCache.newID()
+    override val id = TestCaches.cache.newID()
 
     init {
         update()
     }
 
     override fun update() {
-        TestCaches.testCache.put(this)
+        TestCaches.cache.put(this)
     }
 
+    override fun toString() = "TestCacheable: $name"
+}
+
+class CacheableString(var name: String) : Cacheable {
+
+    override val id = TestCaches.stringCache.newID()
+
+    override fun update() = TestCaches.stringCache.put(this)
+
+    override fun toString() = name
 }
 
 object TestCaches {
-    val testCache = Cache<TestCacheable>()
+    val cache = Cache<TestCacheable>()
+    val stringCache = Cache<CacheableString>()
 }

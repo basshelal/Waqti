@@ -7,9 +7,10 @@ import java.util.concurrent.ConcurrentHashMap
 
 // TODO: 28-Jul-18 Test and doc
 
+// no guarantee for order!
 open class Cache<E : Cacheable> : Collection<E> {
 
-    private val map = ConcurrentHashMap<ID, E>()
+    protected val map = ConcurrentHashMap<ID, E>()
 
     override val size: Int
         get() = map.size
@@ -23,7 +24,7 @@ open class Cache<E : Cacheable> : Collection<E> {
     }
 
     // Creates if doesn't exist, updates if does
-    fun put(element: E) {
+    open fun put(element: E) {
         map[element.id] = element
     }
 
@@ -96,6 +97,8 @@ open class Cache<E : Cacheable> : Collection<E> {
 
     fun toImmutableMap() = map.toMap()
 
+    fun toSortedMap() = map.toSortedMap() //useful??
+
     override fun isEmpty() = map.isEmpty()
 
     override operator fun iterator() = map.values.iterator()
@@ -115,7 +118,7 @@ open class Cache<E : Cacheable> : Collection<E> {
         return map.toString()
     }
 
-    protected fun safeGet(id: ID): E {
+    protected open fun safeGet(id: ID): E {
         val found = map[id]
         if (found == null) throw CacheElementNotFoundException(id)
         else return found

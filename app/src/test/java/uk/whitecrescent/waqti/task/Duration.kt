@@ -368,6 +368,9 @@ class Duration : BaseTaskTest() {
         assertTrue(task.timerDuration().secs in 1.95..2.05)
 
         task.stopTimer()
+
+        sleep(1.seconds)
+
         assertTrue(task.timerIsStopped())
         assertFalse(task.timerIsRunning())
         assertFalse(task.timerIsPaused())

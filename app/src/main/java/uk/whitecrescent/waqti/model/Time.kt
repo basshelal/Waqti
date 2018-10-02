@@ -14,6 +14,7 @@ typealias TemporalAmount = org.threeten.bp.temporal.TemporalAmount
 typealias TemporalUnit = org.threeten.bp.temporal.TemporalUnit
 typealias LocalTime = org.threeten.bp.LocalTime
 typealias ChronoUnit = org.threeten.bp.temporal.ChronoUnit
+typealias ChronoField = org.threeten.bp.temporal.ChronoField
 typealias Instant = org.threeten.bp.Instant
 typealias DayOfWeek = org.threeten.bp.DayOfWeek
 typealias Year = org.threeten.bp.Year
