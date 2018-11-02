@@ -19,17 +19,17 @@ import uk.whitecrescent.waqti.testTask
 @DisplayName("Label Tests")
 class Label : BaseTaskTest() {
 
-    @DisplayName("Label")
-    @Test
-    fun testLabel() {
-        val myLabel = Label("My Label")
-
-        assertEquals("My Label", myLabel.name)
-        myLabel.addChild(Label("My Child Label"))
-        assertTrue(myLabel.children.isNotEmpty())
-        assertTrue(myLabel.children.size == 1)
-        assertEquals("My Child Label", myLabel.children[0].name)
-    }
+//    @DisplayName("Label")
+//    @Test
+//    fun testLabel() {
+//        val myLabel = Label("My Label")
+//
+//        assertEquals("My Label", myLabel.name)
+//        myLabel.addChild(Label("My Child Label"))
+//        assertTrue(myLabel.children.isNotEmpty())
+//        assertTrue(myLabel.children.size == 1)
+//        assertEquals("My Child Label", myLabel.children[0].name)
+//    }
 
     @DisplayName("Label Default Values")
     @Test

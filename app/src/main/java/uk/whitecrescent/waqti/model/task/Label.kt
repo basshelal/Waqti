@@ -4,6 +4,7 @@ import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.hash
 import uk.whitecrescent.waqti.model.persistence.Caches
 
+// we've removed the nested labels feature for now as it may prove to be problematic
 class Label(name: String) : Cacheable {
 
     override val id = Caches.labels.newID()
@@ -12,7 +13,11 @@ class Label(name: String) : Cacheable {
         update()
     }
 
-    private val _children = hashSetOf<Label>()
+    companion object {
+        fun fromString(string: String) = Label(string)
+    }
+
+    //private val _children = hashSetOf<Label>()
 
     var name = name
         set(value) {
@@ -20,35 +25,35 @@ class Label(name: String) : Cacheable {
             update()
         }
 
-    val children: List<Label>
-        get() = _children.toList()
-
-    fun addChild(label: Label) {
-        _children.add(label)
-    }
-
-    fun removeChild(label: Label) {
-        _children.remove(label)
-    }
+//    val children: List<Label>
+//        get() = _children.toList()
+//
+//    fun addChild(label: Label) {
+//        _children.add(label)
+//    }
+//
+//    fun removeChild(label: Label) {
+//        _children.remove(label)
+//    }
 
     override fun update() = Caches.labels.put(this)
 
-    operator fun component1() = name
+    //operator fun component1() = name
 
-    operator fun component2() = children
+    //operator fun component2() = children
 
-    override fun hashCode() = hash(name, children)
+    override fun hashCode() = hash(name /*children*/)
 
     override fun equals(other: Any?) =
             other is Label &&
-                    other.name == this.name &&
-                    other.children == this.children
+                    other.name == this.name
+    //&& other.children == this.children
 
     override fun toString(): String {
         val s = StringBuilder(name)
-        if (_children.isNotEmpty()) {
-            s.append("\n\t$_children\n")
-        }
+//        if (_children.isNotEmpty()) {
+//            s.append("\n\t$_children\n")
+//        }
         return s.toString()
     }
 }

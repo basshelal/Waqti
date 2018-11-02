@@ -1,5 +1,7 @@
 package uk.whitecrescent.waqti.model.task
 
+import uk.whitecrescent.waqti.model.hash
+
 open class Property<V>(open var isVisible: Boolean, open val value: V) {
 
     companion object {
@@ -15,7 +17,7 @@ open class Property<V>(open var isVisible: Boolean, open val value: V) {
         get() = this as Constraint<V>
 
     override fun hashCode() =
-            value!!.hashCode() + isVisible.hashCode()
+            hash(value!!, isVisible)
 
     override fun equals(other: Any?) =
             other is Property<*> &&

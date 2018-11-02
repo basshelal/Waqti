@@ -21,7 +21,8 @@ class Task(title: String = "") : Listable, Cacheable {
             update()
         }
 
-    var debug = false
+    //region Debug
+    var debug = true
 
     private inline fun debug(exec: () -> Any) {
         if (debug) exec.invoke()
@@ -30,7 +31,9 @@ class Task(title: String = "") : Listable, Cacheable {
     private fun debug(string: String) {
         if (debug) println(string)
     }
+    //endregion Debug
 
+    // not persisted?
     val activeObservers = ArrayList<String>()
 
     //region Class Properties
@@ -89,9 +92,11 @@ class Task(title: String = "") : Listable, Cacheable {
         private set
 
     // Used for Duration Constraint
+    // persistence is unclear!
     private val timer = Timer()
 
     // Used to compile all Observables
+    // not persisted
     private val composite = CompositeDisposable()
 
     /**

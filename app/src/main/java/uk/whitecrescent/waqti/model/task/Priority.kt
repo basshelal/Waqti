@@ -1,5 +1,7 @@
 package uk.whitecrescent.waqti.model.task
 
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.hash
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -19,12 +21,22 @@ import uk.whitecrescent.waqti.model.persistence.Caches
  * @see Task
  * @author Bassam Helal
  */
-class Priority(name: String, importanceLevel: Int) : Cacheable {
+@Entity
+class Priority(name: String = "", importanceLevel: Int = 0) : Cacheable {
 
-    override val id = Caches.priorities.newID()
+    @Id
+    override var id = 0L //Caches.priorities.newID()
 
     init {
         update()
+    }
+
+    companion object {
+        fun fromString(string: String): Priority {
+            val name = string.substringAfter("name:")
+            val importanceLevel = string.substringAfter("importanceLevel:").toInt()
+            return Priority(name, importanceLevel)
+        }
     }
 
     var name = name
@@ -52,6 +64,6 @@ class Priority(name: String, importanceLevel: Int) : Cacheable {
                     other.name == this.name &&
                     other.importanceLevel == this.importanceLevel
 
-    override fun toString() = "$name $importanceLevel"
+    override fun toString() = "name:$name importanceLevel:$importanceLevel"
 
 }

@@ -1,5 +1,7 @@
 package uk.whitecrescent.waqti.model.task
 
+import uk.whitecrescent.waqti.model.hash
+
 class Constraint<V>(override var isVisible: Boolean,
                     override val value: V,
                     var isMet: Boolean)
@@ -12,7 +14,7 @@ class Constraint<V>(override var isVisible: Boolean,
     fun toProperty() = toProperty(this)
 
     override fun hashCode() =
-            value!!.hashCode() + isVisible.hashCode() + isMet.hashCode()
+            hash(value!!, isVisible, isMet)
 
     override fun equals(other: Any?) =
             other is Constraint<*> &&
