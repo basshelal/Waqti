@@ -1,32 +1,35 @@
 package uk.whitecrescent.waqti.persistence
 
 import io.objectbox.BoxStore
-import io.objectbox.DebugFlags
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.whitecrescent.waqti.model.now
+import uk.whitecrescent.waqti.model.task.LabelArrayListProperty
 import uk.whitecrescent.waqti.model.task.MyObjectBox
-import uk.whitecrescent.waqti.model.task.Priority
+import uk.whitecrescent.waqti.model.task.TestEntity
+import uk.whitecrescent.waqti.model.task.TestTask
+import uk.whitecrescent.waqti.model.task.TimeProperty
 import java.io.File
 
 @DisplayName("ObjectBox Tests")
 class ObjectBoxTests {
 
-    private val directory = File("/test-db")
+    private val directory = File("/testDB")
     private lateinit var store: BoxStore
 
-    fun setUp() {
-        // delete database files before each test to start with a clean database
+    @BeforeEach
+    fun beforeEach() {
         BoxStore.deleteAllFiles(directory)
         store = MyObjectBox.builder()
                 .directory(directory)
-                // optional: add debug flags for more detailed ObjectBox log output
-                .debugFlags(DebugFlags.LOG_QUERIES)
                 .build()
     }
 
-
-    fun tearDown() {
+    @AfterEach
+    fun afterEach() {
         store.close()
         BoxStore.deleteAllFiles(directory)
     }
@@ -35,17 +38,33 @@ class ObjectBoxTests {
     @DisplayName("Test")
     @Test
     fun test() {
-        setUp()
-        val box = store.boxFor(Priority::class.java)
+        val box = store.boxFor(TestEntity::class.java)
 
-        box.put(Priority("TEST", 5))
-        box.put(Priority("TEST", 5))
-        box.put(Priority("TEST", 5))
+        val list = arrayListOf(
+                TestEntity(TimeProperty(true, now)),
+                TestEntity(TimeProperty(false, now.plusDays(12)), LabelArrayListProperty(true)),
+                TestEntity(TimeProperty(true, now.minusHours(59)))
+        )
+
+        box.put(list)
 
         assertEquals(box.count(), 3)
-        println(box.all)
 
-        tearDown()
+        assertEquals(list, box.all)
+
+    }
+
+    @DisplayName("Test1")
+    @Test
+    fun test1() {
+        val box = store.boxFor(TestTask::class.java)
+
+        val data = Array<TestTask>(10, { TestTask() }).toList()
+
+        box.put(data)
+
+        assertEquals(box.count(), 10)
+
     }
 
 }

@@ -18,24 +18,10 @@ import uk.whitecrescent.waqti.model.task.MANDATORY
 import uk.whitecrescent.waqti.model.task.OPTIONAL
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
-import uk.whitecrescent.waqti.model.task.convert
-import uk.whitecrescent.waqti.model.task.reverseConvert
 import uk.whitecrescent.waqti.model.toArrayList
-import uk.whitecrescent.waqti.model.today
 
 @DisplayName("Other Task Tests")
 class OtherTask : BaseTaskTest() {
-
-
-    @DisplayName("Random stuff")
-    @Test
-    fun test() {
-        val x = arrayListOf(today, today.plusDays(1))
-
-        println(reverseConvert(x.convert()))
-
-        assertEquals(x, reverseConvert(x.convert()))
-    }
 
 
     @DisplayName("Task Title")
@@ -360,7 +346,7 @@ class OtherTask : BaseTaskTest() {
 
         assertTrue(task1 == task2)
 
-        val newSubTasks = arrayListOf(subTasks.get(0))
+        val newSubTasks = arrayListOf(subTasks[0])
 
         task1.setSubTasksConstraintValue(newSubTasks)
 

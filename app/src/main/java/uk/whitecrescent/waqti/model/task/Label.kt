@@ -1,13 +1,17 @@
 package uk.whitecrescent.waqti.model.task
 
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.hash
 import uk.whitecrescent.waqti.model.persistence.Caches
 
 // we've removed the nested labels feature for now as it may prove to be problematic
-class Label(name: String) : Cacheable {
+@Entity
+class Label(name: String = "") : Cacheable {
 
-    override val id = Caches.labels.newID()
+    @Id
+    override var id = 0L
 
     init {
         update()

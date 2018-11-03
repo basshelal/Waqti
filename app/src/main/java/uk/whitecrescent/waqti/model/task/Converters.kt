@@ -1,76 +1,38 @@
 package uk.whitecrescent.waqti.model.task
 
+import com.google.gson.Gson
 import io.objectbox.converter.PropertyConverter
-import uk.whitecrescent.waqti.model.Date
-import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Time
-import java.util.Scanner
 
-class WaqtiPropertyConverter<T> : PropertyConverter<T, String> {
+private val gson = Gson()
 
-    override fun convertToDatabaseValue(entityProperty: T): String {
-        return entityProperty.convert()
-    }
+class TaskStateConverter : PropertyConverter<TaskState, String> {
 
-    @Suppress("UNCHECKED_CAST")
-    override fun convertToEntityProperty(databaseValue: String?): T {
-        if (databaseValue == null) throw NullPointerException("Database value is null in " +
-                "WaqtiPropertyConverter")
-        return reverseConvert(databaseValue) as T
-    }
+    override fun convertToDatabaseValue(entityProperty: TaskState?) =
+            gson.toJson(entityProperty)
 
+    override fun convertToEntityProperty(databaseValue: String?) =
+            gson.fromJson(databaseValue, TaskState::class.java)
 }
 
-fun Any?.convert(): String {
-    return when {
-        this == null -> throw NullPointerException("Cannot convert null value!")
-        Iterable::class.java.isAssignableFrom(this::class.java) -> {
+class TimeArrayList : ArrayList<Time>()
 
-            val result = StringBuilder("${this::class.simpleName}\n")
+class TimeArrayListConverter : PropertyConverter<TimeArrayList, String> {
+    val gson = Gson()
 
-            @Suppress("UNCHECKED_CAST")
-            (this as Iterable<Any?>).forEach { result.append("${it.convert()}\n") }
+    override fun convertToDatabaseValue(entityProperty: TimeArrayList?) =
+            gson.toJson(entityProperty)
 
-            result.toString()
-        }
-        else -> "${this::class.simpleName}\n$this"
-    }
+    override fun convertToEntityProperty(databaseValue: String?) =
+            gson.fromJson(databaseValue, TimeArrayList::class.java)
 }
 
-// returns the type based on the given string
-fun reverseConvert(string: String): Any {
-    val type = string.firstLine()
-    val contents = string.removeType()
-    return when (type) {
-        "LocalDateTime" -> Time.parse(contents)
-        "LocalDate" -> Date.parse(contents)
-        "Duration" -> Duration.parse(contents)
-        "Priority" -> Priority.fromString(contents)
-        "Label" -> Label.fromString(contents)
-        "ArrayList" -> parseArrayList(contents)
-        "Boolean" -> (contents == "true")
-        "String" -> contents
-        "Long" -> contents.toLong()
-        "Int" -> contents.toInt()
-        else -> throw UnsupportedOperationException("Reverse convert failed!\n$type\n\n $contents")
-    }
-}
+class TimeConverter : PropertyConverter<Time, String> {
+    override fun convertToDatabaseValue(entityProperty: Time?) =
+            gson.toJson(entityProperty)
 
-fun parseArrayList(string: String): ArrayList<Any> {
-    val result = ArrayList<Any>()
 
-    val scanner = Scanner(string)
-    while (scanner.hasNextLine()) {
-        result.add(reverseConvert(scanner.nextLine() + "\n" + scanner.nextLine()))
-    }
+    override fun convertToEntityProperty(databaseValue: String?) =
+            gson.fromJson(databaseValue, Time::class.java)
 
-    return result
-}
-
-fun String.removeType(): String {
-    return this.substringAfter("\n")
-}
-
-fun String.firstLine(): String {
-    return this.substringBefore("\n")
 }

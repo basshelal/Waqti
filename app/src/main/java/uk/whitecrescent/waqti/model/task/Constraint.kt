@@ -2,9 +2,9 @@ package uk.whitecrescent.waqti.model.task
 
 import uk.whitecrescent.waqti.model.hash
 
-class Constraint<V>(override var isVisible: Boolean,
-                    override val value: V,
-                    var isMet: Boolean)
+open class Constraint<V>(override var isVisible: Boolean,
+                         override val value: V,
+                         open var isMet: Boolean)
     : Property<V>(isVisible, value) {
 
     companion object {

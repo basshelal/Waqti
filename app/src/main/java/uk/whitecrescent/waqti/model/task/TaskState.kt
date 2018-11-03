@@ -4,5 +4,6 @@ enum class TaskState {
     SLEEPING,
     EXISTING,
     FAILED,
-    KILLED
+    KILLED,
+    UNKNOWN
 }
