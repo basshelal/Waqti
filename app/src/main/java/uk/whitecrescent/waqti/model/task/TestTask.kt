@@ -102,7 +102,7 @@ class TestTask(title: String = "") : Listable, Cacheable {
         private set
 
     private fun makeFailableIfConstraint(property: Property<*>) {
-        if (!this.isFailable && property is Constraint) {
+        if (!this.isFailable && property.isConstrained) {
             this.isFailable = true
         }
     }
@@ -125,23 +125,18 @@ class TestTask(title: String = "") : Listable, Cacheable {
             subTasks
     )
 
-//    fun unConstrainAll(): TestTask {
-//        if (time.isConstraint) time = time.asConstraint.toProperty()
-//        if (duration.isConstraint) duration = duration.asConstraint.toProperty()
-//        if (priority.isConstraint) priority = priority.asConstraint.toProperty()
-//        if (labels.isConstraint) labels = labels.asConstraint.toProperty()
-//        if (optional.isConstraint) optional = optional.asConstraint.toProperty()
-//        if (description.isConstraint) description = description.asConstraint.toProperty()
-//        if (checklist.isConstraint) checklist = checklist.asConstraint.toProperty()
-//        if (deadline.isConstraint) deadline = deadline.asConstraint.toProperty()
-//        if (target.isConstraint) target = target.asConstraint.toProperty()
-//        if (before.isConstraint) before = before.asConstraint.toProperty()
-//        if (subTasks.isConstraint) subTasks = subTasks.asConstraint.toProperty()
-//        return this
-//    }
+    fun unConstrainAll(): TestTask {
+        getAllProperties()
+                .filter { it.isConstrained }
+                .forEach {
+                    it.isConstrained = false
+                    it.isMet = false
+                }
+        return this
+    }
 
     private fun getAllConstraints() =
-            getAllProperties().filter { it is Constraint }
+            getAllProperties().filter { it.isConstrained }
 
     fun getAllShowingProperties() =
             getAllProperties().filter { it.isVisible }
@@ -150,7 +145,7 @@ class TestTask(title: String = "") : Listable, Cacheable {
             getAllConstraints().filter { it.isVisible }
 
     fun getAllUnmetAndShowingConstraints() =
-            getAllConstraints().filter { !(it as Constraint).isMet && it.isVisible }
+            getAllConstraints().filter { !it.isMet && it.isVisible }
 
     override fun hashCode() = equalityBundle().hashCode()
 
@@ -162,7 +157,7 @@ class TestTask(title: String = "") : Listable, Cacheable {
         result.append("ID: $id isKillable: $isKillable isFailable: $isFailable state: $state\n")
 
         result.append("\tP:\n")
-        getAllShowingProperties().filter { it !is Constraint }.forEach { result.append("\t\t$it\n") }
+        getAllShowingProperties().filter { !it.isConstrained }.forEach { result.append("\t\t$it\n") }
 
         result.append("\tC:\n")
         getAllShowingConstraints().forEach { result.append("\t\t$it\n") }

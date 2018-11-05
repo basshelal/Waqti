@@ -11,10 +11,11 @@ import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Time
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.sleep
-import uk.whitecrescent.waqti.model.task.Constraint
+import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_DEADLINE
 import uk.whitecrescent.waqti.model.task.DEFAULT_DEADLINE_PROPERTY
 import uk.whitecrescent.waqti.model.task.HIDDEN
+import uk.whitecrescent.waqti.model.task.NOT_CONSTRAINED
 import uk.whitecrescent.waqti.model.task.Property
 import uk.whitecrescent.waqti.model.task.SHOWING
 import uk.whitecrescent.waqti.model.task.TaskState
@@ -29,7 +30,7 @@ class Deadline : BaseTaskTest() {
     @Test
     fun testTaskDeadlineDefaultValues() {
         val task = testTask()
-        assertFalse(task.deadline is Constraint)
+        assertFalse(task.deadline.isConstrained)
         assertEquals(DEFAULT_DEADLINE, task.deadline.value)
         assertFalse(task.deadline.isVisible)
     }
@@ -39,16 +40,16 @@ class Deadline : BaseTaskTest() {
     fun testTaskSetDeadlineProperty() {
         val task = testTask()
                 .setDeadlineProperty(
-                        Property(SHOWING, Time.of(1970, 1, 1, 1, 1))
+                        Property(SHOWING, Time.of(1970, 1, 1, 1, 1), NOT_CONSTRAINED, UNMET)
                 )
 
-        assertFalse(task.deadline is Constraint)
+        assertFalse(task.deadline.isConstrained)
         assertEquals(Time.of(1970, 1, 1, 1, 1), task.deadline.value)
         assertTrue(task.deadline.isVisible)
 
 
         task.hideDeadline()
-        assertEquals(Property(HIDDEN, DEFAULT_DEADLINE), task.deadline)
+        assertEquals(Property(HIDDEN, DEFAULT_DEADLINE, NOT_CONSTRAINED, UNMET), task.deadline)
     }
 
     @DisplayName("Set Deadline Property using setDeadlinePropertyValue")
@@ -59,12 +60,12 @@ class Deadline : BaseTaskTest() {
                         Time.of(1970, 1, 1, 1, 1)
                 )
 
-        assertFalse(task.deadline is Constraint)
+        assertFalse(task.deadline.isConstrained)
         assertEquals(Time.of(1970, 1, 1, 1, 1), task.deadline.value)
         assertTrue(task.deadline.isVisible)
 
         task.hideDeadline()
-        assertEquals(Property(HIDDEN, DEFAULT_DEADLINE), task.deadline)
+        assertEquals(Property(HIDDEN, DEFAULT_DEADLINE, NOT_CONSTRAINED, UNMET), task.deadline)
     }
 
     @DisplayName("Set Deadline Constraint using setDeadlineProperty")
@@ -72,27 +73,13 @@ class Deadline : BaseTaskTest() {
     fun testTaskSetDeadlinePropertyWithConstraint() {
         val task = testTask()
                 .setDeadlineProperty(
-                        Constraint(SHOWING, Time.of(1970, 1, 1, 1, 1), UNMET)
+                        Property(SHOWING, Time.of(1970, 1, 1, 1, 1), CONSTRAINED, UNMET)
                 )
 
-        assertTrue(task.deadline is Constraint)
+        assertTrue(task.deadline.isConstrained)
         assertEquals(Time.of(1970, 1, 1, 1, 1), task.deadline.value)
         assertTrue(task.deadline.isVisible)
-        assertFalse((task.deadline as Constraint).isMet)
-    }
-
-    @DisplayName("Set Deadline Constraint using setDeadlineConstraint")
-    @Test
-    fun testTaskSetDeadlineConstraint() {
-        val task = testTask()
-                .setDeadlineConstraint(
-                        Constraint(SHOWING, Time.of(1970, 1, 1, 1, 1), UNMET)
-                )
-
-        assertTrue(task.deadline is Constraint)
-        assertEquals(Time.of(1970, 1, 1, 1, 1), task.deadline.value)
-        assertTrue(task.deadline.isVisible)
-        assertFalse((task.deadline as Constraint).isMet)
+        assertFalse((task.deadline).isMet)
     }
 
     @DisplayName("Set Deadline Constraint using setDeadlineConstraintValue")
@@ -101,10 +88,10 @@ class Deadline : BaseTaskTest() {
         val task = testTask()
                 .setDeadlineConstraintValue(Time.of(1970, 1, 1, 1, 1))
 
-        assertTrue(task.deadline is Constraint)
+        assertTrue(task.deadline.isConstrained)
         assertEquals(Time.of(1970, 1, 1, 1, 1), task.deadline.value)
         assertTrue(task.deadline.isVisible)
-        assertFalse((task.deadline as Constraint).isMet)
+        assertFalse((task.deadline).isMet)
     }
 
     @DisplayName("Set Deadline Property failable")
@@ -115,7 +102,7 @@ class Deadline : BaseTaskTest() {
                 .setDeadlinePropertyValue(deadline)
 
         assertFalse(task.isFailable)
-        assertFalse(task.deadline is Constraint)
+        assertFalse(task.deadline.isConstrained)
         assertEquals(deadline, task.deadline.value)
         assertTrue(task.deadline.isVisible)
     }
@@ -125,19 +112,19 @@ class Deadline : BaseTaskTest() {
     fun testTaskSetDeadlineConstraintFailable() {
         val deadline = now.plusSeconds(2)
         val task = testTask()
-                .setDeadlineConstraint(Constraint(SHOWING, deadline, UNMET))
+                .setDeadlineProperty(Property(SHOWING, deadline, CONSTRAINED, UNMET))
 
 
         assertTrue(task.isFailable)
-        assertTrue(task.deadline is Constraint)
+        assertTrue(task.deadline.isConstrained)
         assertEquals(deadline, task.deadline.value)
         assertTrue(task.deadline.isVisible)
-        assertFalse((task.deadline as Constraint).isMet)
+        assertFalse((task.deadline).isMet)
 
         sleep(4)
 
         assertEquals(TaskState.FAILED, task.state)
-        assertFalse((task.deadline as Constraint).isMet)
+        assertFalse((task.deadline).isMet)
     }
 
     @DisplayName("Kill with deadline Constraint past")
@@ -145,19 +132,19 @@ class Deadline : BaseTaskTest() {
     fun testTaskKillDeadlineConstraintPast() {
         val deadline = now.plusSeconds(2)
         val task = testTask()
-                .setDeadlineConstraint(Constraint(SHOWING, deadline, UNMET))
+                .setDeadlineProperty(Property(SHOWING, deadline, CONSTRAINED, UNMET))
 
         assertTrue(task.isFailable)
-        assertTrue(task.deadline is Constraint)
+        assertTrue(task.deadline.isConstrained)
         assertEquals(deadline, task.deadline.value)
         assertTrue(task.deadline.isVisible)
-        assertFalse((task.deadline as Constraint).isMet)
+        assertFalse((task.deadline).isMet)
 
         sleep(4)
         assertThrows(TaskStateException::class.java, { task.kill() })
 
         assertEquals(TaskState.FAILED, task.state)
-        assertFalse((task.deadline as Constraint).isMet)
+        assertFalse((task.deadline).isMet)
 
     }
 
@@ -166,24 +153,24 @@ class Deadline : BaseTaskTest() {
     fun testTaskKillDeadlineConstraintLater() {
         val deadline = now.plusSeconds(5)
         val task = testTask()
-                .setDeadlineConstraint(Constraint(SHOWING, deadline, UNMET))
+                .setDeadlineProperty(Property(SHOWING, deadline, CONSTRAINED, UNMET))
 
         assertTrue(task.isFailable)
-        assertTrue(task.deadline is Constraint)
+        assertTrue(task.deadline.isConstrained)
         assertEquals(deadline, task.deadline.value)
         assertTrue(task.deadline.isVisible)
-        assertFalse((task.deadline as Constraint).isMet)
+        assertFalse((task.deadline).isMet)
 
         sleep(3)
         task.kill()
 
         assertEquals(TaskState.KILLED, task.state)
-        assertTrue((task.deadline as Constraint).isMet)
+        assertTrue((task.deadline).isMet)
 
         sleep(3)
 
         assertEquals(TaskState.KILLED, task.state)
-        assertTrue((task.deadline as Constraint).isMet)
+        assertTrue((task.deadline).isMet)
 
     }
 
@@ -227,7 +214,7 @@ class Deadline : BaseTaskTest() {
                 .setDeadlineConstraintValue(Time.from(now.plusDays(7)))
 
         sleep(1)
-        task.setDeadlineProperty((task.deadline as Constraint).toProperty())
+        task.setDeadlineProperty((task.deadline).unConstrain())
 
         sleep(2)
 

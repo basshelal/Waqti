@@ -1,14 +1,14 @@
 package uk.whitecrescent.waqti.model.persistence
 
+import io.objectbox.Box
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.task.ID
-import java.util.Random
 import java.util.concurrent.ConcurrentHashMap
 
 // TODO: 28-Jul-18 Test and doc
 
 // no guarantee for order!
-open class Cache<E : Cacheable> : Collection<E> {
+open class Cache<E : Cacheable>(private val db: Box<E>?) : Collection<E> {
 
     protected val map = ConcurrentHashMap<ID, E>()
 
@@ -16,11 +16,13 @@ open class Cache<E : Cacheable> : Collection<E> {
         get() = map.size
 
     fun newID(): ID {
-        var id = Math.abs(Random().nextLong())
-        while (map.containsKey(id)) {
-            id = Math.abs(Random().nextLong())
-        }
-        return id
+        return db!!.all.maxBy { it.id }?.id ?: 0
+
+//        var id = Math.abs(Random().nextLong())
+//        while (map.containsKey(id)) {
+//            id = Math.abs(Random().nextLong())
+//        }
+//        return id
     }
 
     // Creates if doesn't exist, updates if does
@@ -30,10 +32,6 @@ open class Cache<E : Cacheable> : Collection<E> {
 
     fun put(elements: Collection<E>) =
             elements.forEach { this.put(it) }
-
-    operator fun set(id: ID, element: E) {
-        map[id] = element
-    }
 
     operator fun get(element: E) =
             this.safeGet(element.id)
@@ -97,8 +95,6 @@ open class Cache<E : Cacheable> : Collection<E> {
 
     fun toImmutableMap() = map.toMap()
 
-    fun toSortedMap() = map.toSortedMap() //useful??
-
     override fun isEmpty() = map.isEmpty()
 
     override operator fun iterator() = map.values.iterator()
@@ -122,6 +118,17 @@ open class Cache<E : Cacheable> : Collection<E> {
         val found = map[id]
         if (found == null) throw CacheElementNotFoundException(id)
         else return found
+    }
+
+    // not slow for 10_000!
+    fun readAll() {
+        db!!.all.forEach { map.put(it.id, it) }
+    }
+
+    fun readFirst(amount: Int) {
+        if (amount < 1 || amount > size) throw IllegalArgumentException("Amount cannot be grater " +
+                "than $size or less than 1")
+        db!!.all.subList(0, amount - 1).forEach { map.put(it.id, it) }
     }
 
 }

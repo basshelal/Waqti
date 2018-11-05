@@ -10,13 +10,11 @@ fun testTask() = testTask
 val testTask: Task
     get() {
         val task = Task("TestTask")
-        task.debug = true
         return task
     }
 
 fun testTask(name: String): Task {
     val task = Task(name)
-    task.debug = true
     return task
 }
 

@@ -7,12 +7,13 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.model.sleep
+import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.Checklist
-import uk.whitecrescent.waqti.model.task.Constraint
 import uk.whitecrescent.waqti.model.task.DEFAULT_CHECKLIST
 import uk.whitecrescent.waqti.model.task.DEFAULT_CHECKLIST_PROPERTY
 import uk.whitecrescent.waqti.model.task.HIDDEN
 import uk.whitecrescent.waqti.model.task.ListItem
+import uk.whitecrescent.waqti.model.task.NOT_CONSTRAINED
 import uk.whitecrescent.waqti.model.task.Property
 import uk.whitecrescent.waqti.model.task.SHOWING
 import uk.whitecrescent.waqti.model.task.TaskState
@@ -122,7 +123,7 @@ class Checklist : BaseTaskTest() {
     @Test
     fun testTaskChecklistDefaultValues() {
         val task = testTask()
-        assertFalse(task.checklist is Constraint)
+        assertFalse(task.checklist.isConstrained)
         assertEquals(DEFAULT_CHECKLIST, task.checklist.value)
         assertFalse(task.checklist.isVisible)
     }
@@ -132,16 +133,16 @@ class Checklist : BaseTaskTest() {
     fun testTaskSetChecklistProperty() {
         val task = testTask()
                 .setChecklistProperty(
-                        Property(SHOWING, Checklist("Zero", "One", "Two"))
+                        Property(SHOWING, Checklist("Zero", "One", "Two"), NOT_CONSTRAINED, UNMET)
                 )
 
-        assertFalse(task.checklist is Constraint)
+        assertFalse(task.checklist.isConstrained)
         assertEquals(Checklist("Zero", "One", "Two"), task.checklist.value)
         assertTrue(task.checklist.isVisible)
 
 
         task.hideChecklist()
-        assertEquals(Property(HIDDEN, DEFAULT_CHECKLIST), task.checklist)
+        assertEquals(Property(HIDDEN, DEFAULT_CHECKLIST, NOT_CONSTRAINED, UNMET), task.checklist)
     }
 
     @DisplayName("Set Checklist Property using setChecklistPropertyValue")
@@ -152,12 +153,12 @@ class Checklist : BaseTaskTest() {
                         Checklist("Zero", "One", "Two")
                 )
 
-        assertFalse(task.checklist is Constraint)
+        assertFalse(task.checklist.isConstrained)
         assertEquals(Checklist("Zero", "One", "Two"), task.checklist.value)
         assertTrue(task.checklist.isVisible)
 
         task.hideChecklist()
-        assertEquals(Property(HIDDEN, DEFAULT_CHECKLIST), task.checklist)
+        assertEquals(Property(HIDDEN, DEFAULT_CHECKLIST, NOT_CONSTRAINED, UNMET), task.checklist)
     }
 
     @DisplayName("Set Checklist Constraint using setChecklistProperty")
@@ -165,27 +166,13 @@ class Checklist : BaseTaskTest() {
     fun testTaskSetChecklistPropertyWithConstraint() {
         val task = testTask()
                 .setChecklistProperty(
-                        Constraint(SHOWING, Checklist("Zero", "One", "Two"), UNMET)
+                        Property(SHOWING, Checklist("Zero", "One", "Two"), CONSTRAINED, UNMET)
                 )
 
-        assertTrue(task.checklist is Constraint)
+        assertTrue(task.checklist.isConstrained)
         assertEquals(Checklist("Zero", "One", "Two"), task.checklist.value)
         assertTrue(task.checklist.isVisible)
-        assertFalse((task.checklist as Constraint).isMet)
-    }
-
-    @DisplayName("Set Checklist Constraint using setChecklistConstraint")
-    @Test
-    fun testTaskSetChecklistConstraint() {
-        val task = testTask()
-                .setChecklistConstraint(
-                        Constraint(SHOWING, Checklist("Zero", "One", "Two"), UNMET)
-                )
-
-        assertTrue(task.checklist is Constraint)
-        assertEquals(Checklist("Zero", "One", "Two"), task.checklist.value)
-        assertTrue(task.checklist.isVisible)
-        assertFalse((task.checklist as Constraint).isMet)
+        assertFalse((task.checklist).isMet)
     }
 
     @DisplayName("Set Checklist Constraint using setChecklistConstraintValue")
@@ -194,10 +181,10 @@ class Checklist : BaseTaskTest() {
         val task = testTask()
                 .setChecklistConstraintValue(Checklist("Zero", "One", "Two"))
 
-        assertTrue(task.checklist is Constraint)
+        assertTrue(task.checklist.isConstrained)
         assertEquals(Checklist("Zero", "One", "Two"), task.checklist.value)
         assertTrue(task.checklist.isVisible)
-        assertFalse((task.checklist as Constraint).isMet)
+        assertFalse((task.checklist).isMet)
     }
 
     @DisplayName("Set Checklist Property failable")
@@ -207,7 +194,7 @@ class Checklist : BaseTaskTest() {
                 .setChecklistPropertyValue(Checklist("Zero", "One", "Two"))
 
         assertFalse(task.isFailable)
-        assertFalse(task.checklist is Constraint)
+        assertFalse(task.checklist.isConstrained)
         assertEquals(Checklist("Zero", "One", "Two"), task.checklist.value)
         assertTrue(task.checklist.isVisible)
     }
@@ -216,13 +203,13 @@ class Checklist : BaseTaskTest() {
     @Test
     fun testTaskSetChecklistConstraintFailableChecked() {
         val task = testTask()
-                .setChecklistConstraint(Constraint(SHOWING, Checklist("Zero", "One", "Two"), UNMET))
+                .setChecklistProperty(Property(SHOWING, Checklist("Zero", "One", "Two"), CONSTRAINED, UNMET))
 
         assertTrue(task.isFailable)
-        assertTrue(task.checklist is Constraint)
+        assertTrue(task.checklist.isConstrained)
         assertEquals(Checklist("Zero", "One", "Two"), task.checklist.value)
         assertTrue(task.checklist.isVisible)
-        assertFalse((task.checklist as Constraint).isMet)
+        assertFalse((task.checklist).isMet)
         assertThrows(TaskStateException::class.java, { task.kill() })
 
         for (listItem in task.checklist.value) {
@@ -234,20 +221,20 @@ class Checklist : BaseTaskTest() {
         task.kill()
 
         assertEquals(TaskState.KILLED, task.state)
-        assertTrue((task.checklist as Constraint).isMet)
+        assertTrue((task.checklist).isMet)
     }
 
     @DisplayName("Set Checklist Constraint failable and killing when empty later")
     @Test
     fun testTaskSetChecklistConstraintFailableEmptyLater() {
         val task = testTask()
-                .setChecklistConstraint(Constraint(SHOWING, Checklist("Zero", "One", "Two"), UNMET))
+                .setChecklistProperty(Property(SHOWING, Checklist("Zero", "One", "Two"), CONSTRAINED, UNMET))
 
         assertTrue(task.isFailable)
-        assertTrue(task.checklist is Constraint)
+        assertTrue(task.checklist.isConstrained)
         assertEquals(Checklist("Zero", "One", "Two"), task.checklist.value)
         assertTrue(task.checklist.isVisible)
-        assertFalse((task.checklist as Constraint).isMet)
+        assertFalse((task.checklist).isMet)
         assertThrows(TaskStateException::class.java, { task.kill() })
 
         task.checklist.value.clear()
@@ -257,27 +244,27 @@ class Checklist : BaseTaskTest() {
         task.kill()
 
         assertEquals(TaskState.KILLED, task.state)
-        assertTrue((task.checklist as Constraint).isMet)
+        assertTrue((task.checklist).isMet)
     }
 
     @DisplayName("Set Checklist Constraint failable and killing when empty early")
     @Test
     fun testTaskSetChecklistConstraintFailableEmptyEarly() {
         val task = testTask()
-                .setChecklistConstraint(Constraint(SHOWING, Checklist(), UNMET))
+                .setChecklistProperty(Property(SHOWING, Checklist(), CONSTRAINED, UNMET))
 
         assertTrue(task.isFailable)
-        assertTrue(task.checklist is Constraint)
+        assertTrue(task.checklist.isConstrained)
         assertEquals(Checklist(), task.checklist.value)
         assertTrue(task.checklist.isVisible)
-        assertFalse((task.checklist as Constraint).isMet)
+        assertFalse((task.checklist).isMet)
 
         sleep(2)
 
         task.kill()
 
         assertEquals(TaskState.KILLED, task.state)
-        assertTrue((task.checklist as Constraint).isMet)
+        assertTrue((task.checklist).isMet)
     }
 
     @DisplayName("Checklist Un-constraining")
@@ -289,7 +276,7 @@ class Checklist : BaseTaskTest() {
         sleep(1)
         assertThrows(TaskStateException::class.java, { task.kill() })
         assertTrue(task.getAllUnmetAndShowingConstraints().size == 1)
-        task.setChecklistProperty((task.checklist as Constraint).toProperty())
+        task.setChecklistProperty((task.checklist).unConstrain())
 
         sleep(1)
 

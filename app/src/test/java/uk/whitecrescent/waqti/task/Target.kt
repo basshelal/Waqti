@@ -6,10 +6,11 @@ import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.model.task.Constraint
+import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_TARGET
 import uk.whitecrescent.waqti.model.task.DEFAULT_TARGET_PROPERTY
 import uk.whitecrescent.waqti.model.task.HIDDEN
+import uk.whitecrescent.waqti.model.task.NOT_CONSTRAINED
 import uk.whitecrescent.waqti.model.task.Property
 import uk.whitecrescent.waqti.model.task.SHOWING
 import uk.whitecrescent.waqti.model.task.UNMET
@@ -22,7 +23,7 @@ class Target : BaseTaskTest() {
     @Test
     fun testTaskTargetDefaultValues() {
         val task = testTask()
-        assertFalse(task.target is Constraint)
+        assertFalse(task.target.isConstrained)
         assertEquals(DEFAULT_TARGET, task.target.value)
         assertFalse(task.target.isVisible)
     }
@@ -32,16 +33,16 @@ class Target : BaseTaskTest() {
     fun testTaskSetTargetProperty() {
         val task = testTask()
                 .setTargetProperty(
-                        Property(SHOWING, "Test Target")
+                        Property(SHOWING, "Test Target", NOT_CONSTRAINED, UNMET)
                 )
 
-        assertFalse(task.target is Constraint)
+        assertFalse(task.target.isConstrained)
         assertEquals("Test Target", task.target.value)
         assertTrue(task.target.isVisible)
 
 
         task.hideTarget()
-        assertEquals(Property(HIDDEN, DEFAULT_TARGET), task.target)
+        assertEquals(Property(HIDDEN, DEFAULT_TARGET, NOT_CONSTRAINED, UNMET), task.target)
     }
 
     @DisplayName("Set Target Property using setTargetPropertyValue")
@@ -52,12 +53,12 @@ class Target : BaseTaskTest() {
                         "Test Target"
                 )
 
-        assertFalse(task.target is Constraint)
+        assertFalse(task.target.isConstrained)
         assertEquals("Test Target", task.target.value)
         assertTrue(task.target.isVisible)
 
         task.hideTarget()
-        assertEquals(Property(HIDDEN, DEFAULT_TARGET), task.target)
+        assertEquals(Property(HIDDEN, DEFAULT_TARGET, NOT_CONSTRAINED, UNMET), task.target)
     }
 
     @DisplayName("Set Target Constraint using setTargetProperty")
@@ -65,39 +66,25 @@ class Target : BaseTaskTest() {
     fun testTaskSetTargetPropertyWithConstraint() {
         val task = testTask()
                 .setTargetProperty(
-                        Constraint(SHOWING, "Test Target", UNMET)
+                        Property(SHOWING, "Test Target", CONSTRAINED, UNMET)
                 )
 
-        assertTrue(task.target is Constraint)
+        assertTrue(task.target.isConstrained)
         assertEquals("Test Target", task.target.value)
         assertTrue(task.target.isVisible)
-        assertFalse((task.target as Constraint).isMet)
-    }
-
-    @DisplayName("Set Target Constraint using setTargetConstraint")
-    @Test
-    fun testTaskSetTargetConstraint() {
-        val task = testTask()
-                .setTargetConstraint(
-                        Constraint(SHOWING, "Test Target", UNMET)
-                )
-
-        assertTrue(task.target is Constraint)
-        assertEquals("Test Target", task.target.value)
-        assertTrue(task.target.isVisible)
-        assertFalse((task.target as Constraint).isMet)
+        assertFalse((task.target).isMet)
     }
 
     @DisplayName("Set Target Constraint using setTargetConstraintValue")
     @Test
     fun testTaskSetTargetConstraintValue() {
-        val task = testTask()
+        val task = testTask
                 .setTargetConstraintValue("Test Target")
 
-        assertTrue(task.target is Constraint)
+        assertTrue(task.target.isConstrained)
         assertEquals("Test Target", task.target.value)
         assertTrue(task.target.isVisible)
-        assertFalse((task.target as Constraint).isMet)
+        assertFalse((task.target).isMet)
     }
 
     @DisplayName("Set Target Property failable")
@@ -107,7 +94,7 @@ class Target : BaseTaskTest() {
                 .setTargetPropertyValue("Test Target")
 
         assertFalse(task.isFailable)
-        assertFalse(task.target is Constraint)
+        assertFalse(task.target.isConstrained)
         assertEquals("Test Target", task.target.value)
         assertTrue(task.target.isVisible)
     }
@@ -116,14 +103,14 @@ class Target : BaseTaskTest() {
     @Test
     fun testTaskSetTargetConstraintFailable() {
         val task = testTask()
-                .setTargetConstraint(Constraint(SHOWING, "Test Target", UNMET))
+                .setTargetProperty(Property(SHOWING, "Test Target", CONSTRAINED, UNMET))
 
 
         assertTrue(task.isFailable)
-        assertTrue(task.target is Constraint)
+        assertTrue(task.target.isConstrained)
         assertEquals("Test Target", task.target.value)
         assertTrue(task.target.isVisible)
-        assertFalse((task.target as Constraint).isMet)
+        assertFalse((task.target).isMet)
     }
 
     @DisplayName("Target Hiding")

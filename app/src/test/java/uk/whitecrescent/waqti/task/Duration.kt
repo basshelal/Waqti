@@ -14,10 +14,11 @@ import uk.whitecrescent.waqti.model.hours
 import uk.whitecrescent.waqti.model.minutes
 import uk.whitecrescent.waqti.model.seconds
 import uk.whitecrescent.waqti.model.secs
-import uk.whitecrescent.waqti.model.task.Constraint
+import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_DURATION
 import uk.whitecrescent.waqti.model.task.DEFAULT_DURATION_PROPERTY
 import uk.whitecrescent.waqti.model.task.HIDDEN
+import uk.whitecrescent.waqti.model.task.NOT_CONSTRAINED
 import uk.whitecrescent.waqti.model.task.Property
 import uk.whitecrescent.waqti.model.task.SHOWING
 import uk.whitecrescent.waqti.model.task.TaskException
@@ -55,19 +56,20 @@ class Duration : BaseTaskTest() {
     fun testTaskDurationDefaultValues() {
         val task = testTask
 
-        assertFalse(task.duration is Constraint)
+        assertFalse(task.duration.isConstrained)
         assertEquals(DEFAULT_DURATION, task.duration.value)
         assertFalse(task.duration.isVisible)
-        assertEquals(DEFAULT_DURATION_PROPERTY, Property(HIDDEN, DEFAULT_DURATION))
+        assertEquals(DEFAULT_DURATION_PROPERTY,
+                Property(HIDDEN, DEFAULT_DURATION, NOT_CONSTRAINED, UNMET))
     }
 
     @DisplayName("Set Duration Property using setDurationProperty")
     @Test
     fun testTaskSetDurationProperty() {
         val task = testTask
-                .setDurationProperty(Property(SHOWING, 7.days))
+                .setDurationProperty(Property(SHOWING, 7.days, NOT_CONSTRAINED, UNMET))
 
-        assertFalse(task.duration is Constraint)
+        assertFalse(task.duration.isConstrained)
         assertEquals(7.days, task.duration.value)
         assertTrue(task.duration.isVisible)
 
@@ -81,7 +83,7 @@ class Duration : BaseTaskTest() {
         val task = testTask
                 .setDurationPropertyValue(7.days)
 
-        assertFalse(task.duration is Constraint)
+        assertFalse(task.duration.isConstrained)
         assertEquals(7.days, task.duration.value)
         assertTrue(task.duration.isVisible)
 
@@ -94,27 +96,13 @@ class Duration : BaseTaskTest() {
     fun testTaskSetDurationPropertyWithConstraint() {
         val task = testTask
                 .setDurationProperty(
-                        Constraint(SHOWING, 7.days, UNMET)
+                        Property(SHOWING, 7.days, CONSTRAINED, UNMET)
                 )
 
-        assertTrue(task.duration is Constraint)
+        assertTrue(task.duration.isConstrained)
         assertEquals(7.days, task.duration.value)
         assertTrue(task.duration.isVisible)
-        assertFalse(task.duration.asConstraint.isMet)
-    }
-
-    @DisplayName("Set Duration Constraint using setDurationConstraint")
-    @Test
-    fun testTaskSetDurationConstraint() {
-        val task = testTask
-                .setDurationConstraint(
-                        Constraint(SHOWING, 7.days, UNMET)
-                )
-
-        assertTrue(task.duration is Constraint)
-        assertEquals(7.days, task.duration.value)
-        assertTrue(task.duration.isVisible)
-        assertFalse(task.duration.asConstraint.isMet)
+        assertFalse(task.duration.isMet)
     }
 
     @DisplayName("Set Duration Constraint using setDurationConstraintValue")
@@ -123,10 +111,10 @@ class Duration : BaseTaskTest() {
         val task = testTask
                 .setDurationConstraintValue(7.days)
 
-        assertTrue(task.duration is Constraint)
+        assertTrue(task.duration.isConstrained)
         assertEquals(7.days, task.duration.value)
         assertTrue(task.duration.isVisible)
-        assertFalse(task.duration.asConstraint.isMet)
+        assertFalse(task.duration.isMet)
     }
 
     @DisplayName("Set Duration Property using setDurationProperty with TimeUnits")
@@ -136,9 +124,9 @@ class Duration : BaseTaskTest() {
 
         val task = testTask
                 .setDurationPropertyTimeUnits(
-                        Property(SHOWING, timeUnit), 6)
+                        Property(SHOWING, timeUnit, NOT_CONSTRAINED, UNMET), 6)
 
-        assertFalse(task.duration is Constraint)
+        assertFalse(task.duration.isConstrained)
         assertEquals(1.hours, task.duration.value)
         assertTrue(task.duration.isVisible)
 
@@ -154,7 +142,7 @@ class Duration : BaseTaskTest() {
         val task = testTask
                 .setDurationPropertyTimeUnitsValue(timeUnit, 6)
 
-        assertFalse(task.duration is Constraint)
+        assertFalse(task.duration.isConstrained)
         assertEquals(1.hours, task.duration.value)
         assertTrue(task.duration.isVisible)
 
@@ -169,27 +157,12 @@ class Duration : BaseTaskTest() {
 
         val task = testTask
                 .setDurationPropertyTimeUnits(
-                        Constraint(SHOWING, timeUnit, UNMET), 6)
+                        Property(SHOWING, timeUnit, CONSTRAINED, UNMET), 6)
 
-        assertTrue(task.duration is Constraint)
+        assertTrue(task.duration.isConstrained)
         assertEquals(1.hours, task.duration.value)
         assertTrue(task.duration.isVisible)
-        assertFalse(task.duration.asConstraint.isMet)
-    }
-
-    @DisplayName("Set Duration Constraint using setDurationConstraint with TimeUnits")
-    @Test
-    fun testTaskSetDurationConstraintWithTimeUnits() {
-        val timeUnit = TimeUnit("TestTimeUnit", 10.minutes)
-
-        val task = testTask
-                .setDurationConstraintTimeUnits(
-                        Constraint(SHOWING, timeUnit, UNMET), 6)
-
-        assertTrue(task.duration is Constraint)
-        assertEquals(1.hours, task.duration.value)
-        assertTrue(task.duration.isVisible)
-        assertFalse(task.duration.asConstraint.isMet)
+        assertFalse(task.duration.isMet)
     }
 
     @DisplayName("Set Duration Constraint using setDurationConstraintValue with TimeUnits")
@@ -200,10 +173,10 @@ class Duration : BaseTaskTest() {
         val task = testTask
                 .setDurationConstraintTimeUnitsValue(timeUnit, 6)
 
-        assertTrue(task.duration is Constraint)
+        assertTrue(task.duration.isConstrained)
         assertEquals(1.hours, task.duration.value)
         assertTrue(task.duration.isVisible)
-        assertFalse(task.duration.asConstraint.isMet)
+        assertFalse(task.duration.isMet)
     }
 
     @DisplayName("Set Duration Property failable")
@@ -215,7 +188,7 @@ class Duration : BaseTaskTest() {
                 .setDurationPropertyValue(duration)
 
         assertFalse(task.isFailable)
-        assertFalse(task.duration is Constraint)
+        assertFalse(task.duration.isConstrained)
         assertEquals(duration, task.duration.value)
         assertTrue(task.duration.isVisible)
     }
@@ -226,14 +199,14 @@ class Duration : BaseTaskTest() {
         val duration = 1.seconds
 
         val task = testTask
-                .setDurationConstraint(Constraint(SHOWING, duration, UNMET))
+                .setDurationProperty(Property(SHOWING, duration, CONSTRAINED, UNMET))
 
 
         assertTrue(task.isFailable)
-        assertTrue(task.duration is Constraint)
+        assertTrue(task.duration.isConstrained)
         assertEquals(duration, task.duration.value)
         assertTrue(task.duration.isVisible)
-        assertFalse(task.duration.asConstraint.isMet)
+        assertFalse(task.duration.isMet)
 
         assertThrows(TaskStateException::class.java) { task.kill() }
 
@@ -244,7 +217,7 @@ class Duration : BaseTaskTest() {
         assertAll({ task.kill() })
 
         assertTrue(task.state == TaskState.KILLED)
-        assertTrue(task.duration.asConstraint.isMet)
+        assertTrue(task.duration.isMet)
     }
 
     @DisplayName("Set Duration Constraint on many Tasks")
@@ -282,7 +255,7 @@ class Duration : BaseTaskTest() {
         sleep(1.seconds)
         assertThrows(TaskStateException::class.java) { task.kill() }
         assertTrue(task.getAllUnmetAndShowingConstraints().size == 1)
-        task.setDurationProperty(task.duration.asConstraint.toProperty())
+        task.setDurationProperty(task.duration.unConstrain())
 
         task.stopTimer()
         assertFalse(task.timerIsRunning())
@@ -390,7 +363,7 @@ class Duration : BaseTaskTest() {
 
         sleep(2.seconds)
 
-        assertFalse(task.duration.asConstraint.isMet)
+        assertFalse(task.duration.isMet)
         assertTrue(task.getAllUnmetAndShowingConstraints().isNotEmpty())
         assertThrows(TaskStateException::class.java) { task.kill() }
 

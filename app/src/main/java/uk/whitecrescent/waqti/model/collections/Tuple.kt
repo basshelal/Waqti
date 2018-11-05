@@ -2,7 +2,6 @@ package uk.whitecrescent.waqti.model.collections
 
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Listable
-import uk.whitecrescent.waqti.model.task.Constraint
 import uk.whitecrescent.waqti.model.task.Task
 
 // Name should change to something like Ordering or Series or Sequence
@@ -267,7 +266,7 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>(), Listable {
         }
         if (index > 0) {
             when {
-                task.before is Constraint -> {
+                task.before.isConstrained -> {
                     task.setBeforeConstraintValue(this[index - 1])
                 }
                 else -> {

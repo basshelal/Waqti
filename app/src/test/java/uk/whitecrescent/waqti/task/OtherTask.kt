@@ -12,7 +12,6 @@ import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.Checklist
-import uk.whitecrescent.waqti.model.task.Constraint
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.MANDATORY
 import uk.whitecrescent.waqti.model.task.OPTIONAL
@@ -158,8 +157,8 @@ class OtherTask : BaseTaskTest() {
 
         assertTrue(task1 == task2)
 
-        task1.setTimeProperty(task1.time.toConstraint())
-        task2.setTimeProperty(task2.time.toConstraint())
+        task1.setTimeProperty(task1.time.constrain())
+        task2.setTimeProperty(task2.time.constrain())
 
         assertTrue(task1 == task2)
 
@@ -179,8 +178,8 @@ class OtherTask : BaseTaskTest() {
 
         assertTrue(task1 == task2)
 
-        task1.setDurationProperty(task1.duration.toConstraint())
-        task2.setDurationProperty(task2.duration.toConstraint())
+        task1.setDurationProperty(task1.duration.constrain())
+        task2.setDurationProperty(task2.duration.constrain())
 
         assertTrue(task1 == task2)
 
@@ -260,8 +259,8 @@ class OtherTask : BaseTaskTest() {
 
         assertTrue(task1 == task2)
 
-        task1.setChecklistProperty(task1.checklist.toConstraint())
-        task2.setChecklistProperty(task2.checklist.toConstraint())
+        task1.setChecklistProperty(task1.checklist.constrain())
+        task2.setChecklistProperty(task2.checklist.constrain())
 
         assertTrue(task1 == task2)
 
@@ -282,8 +281,8 @@ class OtherTask : BaseTaskTest() {
 
         assertTrue(task1 == task2)
 
-        task1.setDeadlineProperty(task1.deadline.toConstraint())
-        task2.setDeadlineProperty(task2.deadline.toConstraint())
+        task1.setDeadlineProperty(task1.deadline.constrain())
+        task2.setDeadlineProperty(task2.deadline.constrain())
 
         assertTrue(task1 == task2)
 
@@ -301,8 +300,8 @@ class OtherTask : BaseTaskTest() {
 
         assertTrue(task1 == task2)
 
-        task1.setTargetProperty(task1.target.toConstraint())
-        task2.setTargetProperty(task2.target.toConstraint())
+        task1.setTargetProperty(task1.target.constrain())
+        task2.setTargetProperty(task2.target.constrain())
 
         assertTrue(task1 == task2)
 
@@ -321,8 +320,8 @@ class OtherTask : BaseTaskTest() {
 
         assertTrue(task1 == task2)
 
-        task1.setBeforeProperty(task1.before.toConstraint())
-        task2.setBeforeProperty(task2.before.toConstraint())
+        task1.setBeforeProperty(task1.before.constrain())
+        task2.setBeforeProperty(task2.before.constrain())
 
         assertTrue(task1 == task2)
 
@@ -341,8 +340,8 @@ class OtherTask : BaseTaskTest() {
 
         assertTrue(task1 == task2)
 
-        task1.setSubTasksProperty(task1.subTasks.toConstraint())
-        task2.setSubTasksProperty(task2.subTasks.toConstraint())
+        task1.setSubTasksProperty(task1.subTasks.constrain())
+        task2.setSubTasksProperty(task2.subTasks.constrain())
 
         assertTrue(task1 == task2)
 
@@ -394,47 +393,47 @@ class OtherTask : BaseTaskTest() {
         assertTrue(task.getAllShowingConstraints().isEmpty())
         assertTrue(task.getAllUnmetAndShowingConstraints().isEmpty())
 
-        assertFalse(task.time is Constraint)
+        assertFalse(task.time.isConstrained)
         assertEquals(Time.of(2018, 5, 5, 5, 5), task.time.value)
         assertTrue(task.time.isVisible)
 
-        assertFalse(task.duration is Constraint)
+        assertFalse(task.duration.isConstrained)
         assertEquals(Duration.ofMinutes(30), task.duration.value)
         assertTrue(task.duration.isVisible)
 
-        assertFalse(task.priority is Constraint)
+        assertFalse(task.priority.isConstrained)
         assertEquals(priority, task.priority.value)
         assertTrue(task.priority.isVisible)
 
-        assertFalse(task.labels is Constraint)
+        assertFalse(task.labels.isConstrained)
         assertEquals(arrayListOf(label1, label2), task.labels.value)
         assertTrue(task.labels.isVisible)
 
-        assertFalse(task.optional is Constraint)
+        assertFalse(task.optional.isConstrained)
         assertEquals(OPTIONAL, task.optional.value)
         assertTrue(task.optional.isVisible)
 
-        assertFalse(task.description is Constraint)
+        assertFalse(task.description.isConstrained)
         assertEquals("Description", task.description.value)
         assertTrue(task.description.isVisible)
 
-        assertFalse(task.checklist is Constraint)
+        assertFalse(task.checklist.isConstrained)
         assertEquals(Checklist("ZERO", "ONE", "TWO"), task.checklist.value)
         assertTrue(task.checklist.isVisible)
 
-        assertFalse(task.deadline is Constraint)
+        assertFalse(task.deadline.isConstrained)
         assertEquals(Time.of(2018, 6, 6, 6, 6), task.deadline.value)
         assertTrue(task.deadline.isVisible)
 
-        assertFalse(task.target is Constraint)
+        assertFalse(task.target.isConstrained)
         assertEquals("My Target", task.target.value)
         assertTrue(task.target.isVisible)
 
-        assertFalse(task.before is Constraint)
+        assertFalse(task.before.isConstrained)
         assertEquals(beforeTask.id, task.before.value)
         assertTrue(task.before.isVisible)
 
-        assertFalse(task.subTasks is Constraint)
+        assertFalse(task.subTasks.isConstrained)
         assertEquals(arrayListOf(subTask1, subTask2).ids, task.subTasks.value)
         assertTrue(task.subTasks.isVisible)
     }

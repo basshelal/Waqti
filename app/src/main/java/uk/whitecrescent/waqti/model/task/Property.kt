@@ -2,52 +2,39 @@ package uk.whitecrescent.waqti.model.task
 
 import uk.whitecrescent.waqti.model.hash
 
-open class Property<V>(open var isVisible: Boolean, open val value: V) {
+open class Property<V>(open var isVisible: Boolean,
+                       open var value: V,
+                       open var isConstrained: Boolean,
+                       open var isMet: Boolean) {
 
-    var id = 0L
-
-    companion object {
-        fun <T> toConstraint(property: Property<T>) = Constraint(property.isVisible, property.value, false)
+    fun constrain(): Property<V> {
+        this.isConstrained = true
+        return this
     }
 
-    fun toConstraint() = toConstraint(this)
-
-    // sugar for a cast, unsafe if you're not careful!
-    // better to ensure  that it is Constraint before using this so
-    // if (x is Constraint) x.asConstraint.toProperty()
-    val asConstraint: Constraint<V>
-        get() = this as Constraint<V>
-
-    override fun hashCode() =
-            hash(value!!, isVisible)
-
-    override fun equals(other: Any?) =
-            other is Property<*> &&
-                    this.value == other.value &&
-                    this.isVisible == other.isVisible
-
-    override fun toString() =
-            "isVisible = $isVisible value = $value"
+    fun unConstrain(): Property<V> {
+        this.isConstrained = false
+        return this
+    }
 
     operator fun component1() = isVisible
 
     operator fun component2() = value
 
-    val isConstraint: Boolean
-        get() = this is Constraint
+    operator fun component3() = isConstrained
 
-    val isNotConstraint: Boolean
-        get() = this !is Constraint
-}
+    operator fun component4() = isMet
 
-enum class IsConstrained(number: Int) {
-    NA(-1),
-    NOT_CONSTRAINT(0),
-    CONSTRAINT(1)
-}
+    override fun hashCode() =
+            hash(value!!, isVisible, isConstrained, isMet)
 
-enum class IsMet(number: Int) {
-    NA(-1),
-    UNMET(0),
-    MET(1)
+    override fun equals(other: Any?) =
+            other is Property<*> &&
+                    this.value == other.value &&
+                    this.isVisible == other.isVisible &&
+                    this.isConstrained == other.isConstrained &&
+                    this.isMet == other.isMet
+
+    override fun toString() =
+            "isVisible = $isVisible value = $value isConstrained $isConstrained isMet $isMet"
 }

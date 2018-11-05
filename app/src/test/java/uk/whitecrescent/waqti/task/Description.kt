@@ -2,13 +2,13 @@ package uk.whitecrescent.waqti.task
 
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.model.task.Constraint
+import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.model.task.HIDDEN
+import uk.whitecrescent.waqti.model.task.NOT_CONSTRAINED
 import uk.whitecrescent.waqti.model.task.Property
 import uk.whitecrescent.waqti.model.task.SHOWING
 import uk.whitecrescent.waqti.model.task.UNMET
@@ -21,7 +21,7 @@ class Description : BaseTaskTest() {
     @Test
     fun testTaskDescriptionDefaultValues() {
         val task = testTask()
-        assertFalse(task.description is Constraint)
+        assertFalse(task.description.isConstrained)
         assertEquals(DEFAULT_DESCRIPTION, task.description.value)
         assertFalse(task.description.isVisible)
     }
@@ -30,15 +30,15 @@ class Description : BaseTaskTest() {
     @Test
     fun testTaskSetDescriptionProperty() {
         val task = testTask()
-                .setDescriptionProperty(Property(SHOWING, "Test Description"))
+                .setDescriptionProperty(Property(SHOWING, "Test Description", NOT_CONSTRAINED, UNMET))
 
-        assertFalse(task.description is Constraint)
+        assertFalse(task.description.isConstrained)
         assertEquals("Test Description", task.description.value)
         assertTrue(task.description.isVisible)
 
 
         task.hideDescription()
-        assertEquals(Property(HIDDEN, DEFAULT_DESCRIPTION), task.description)
+        assertEquals(Property(HIDDEN, DEFAULT_DESCRIPTION, NOT_CONSTRAINED, UNMET), task.description)
     }
 
     @DisplayName("Set Description Property using setDescriptionValue")
@@ -47,26 +47,24 @@ class Description : BaseTaskTest() {
         val task = testTask()
                 .setDescriptionValue("Test Description")
 
-        assertFalse(task.description is Constraint)
+        assertFalse(task.description.isConstrained)
         assertEquals("Test Description", task.description.value)
         assertTrue(task.description.isVisible)
 
         task.hideDescription()
-        assertEquals(Property(HIDDEN, DEFAULT_DESCRIPTION), task.description)
+        assertEquals(Property(HIDDEN, DEFAULT_DESCRIPTION, NOT_CONSTRAINED, UNMET), task.description)
     }
 
     @DisplayName("Set Description Constraint")
     @Test
     fun testTaskSetDescriptionConstraint() {
         val task = testTask()
-                .setDescriptionProperty(Constraint(SHOWING, "Test Description", UNMET))
+                .setDescriptionProperty(Property(SHOWING, "Test Description", CONSTRAINED, UNMET))
 
-        assertFalse(task.description is Constraint)
+        assertFalse(task.description.isConstrained)
         assertTrue(task.getAllUnmetAndShowingConstraints().isEmpty())
         assertEquals("Test Description", task.description.value)
         assertTrue(task.description.isVisible)
-        assertThrows(ClassCastException::class.java,
-                { assertTrue((task.description as Constraint).isMet == true) })
 
     }
 }

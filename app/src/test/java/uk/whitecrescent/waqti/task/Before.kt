@@ -9,10 +9,11 @@ import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.sleep
-import uk.whitecrescent.waqti.model.task.Constraint
+import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_BEFORE_PROPERTY
 import uk.whitecrescent.waqti.model.task.DEFAULT_TASK_ID
 import uk.whitecrescent.waqti.model.task.HIDDEN
+import uk.whitecrescent.waqti.model.task.NOT_CONSTRAINED
 import uk.whitecrescent.waqti.model.task.Property
 import uk.whitecrescent.waqti.model.task.SHOWING
 import uk.whitecrescent.waqti.model.task.Task
@@ -27,8 +28,8 @@ class Before : BaseTaskTest() {
     @DisplayName("Before Default Values")
     @Test
     fun testTaskBeforeDefaultValues() {
-        val task = testTask()
-        assertFalse(task.before is Constraint)
+        val task = testTask
+        assertFalse(task.before.isConstrained)
         assertEquals(DEFAULT_TASK_ID, task.before.value)
         assertFalse(task.before.isVisible)
     }
@@ -37,19 +38,19 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskSetBeforeProperty() {
         val beforeTask = Task("Before Task")
-        val task = testTask()
+        val task = testTask
                 .setBeforeProperty(
-                        Property(SHOWING, beforeTask.id)
+                        Property(SHOWING, beforeTask.id, NOT_CONSTRAINED, UNMET)
                 )
 
-        assertFalse(task.before is Constraint)
+        assertFalse(task.before.isConstrained)
         assertEquals(beforeTask.id, task.before.value)
         assertEquals(beforeTask, Caches.tasks.get(task.before.value))
         assertTrue(task.before.isVisible)
 
 
         task.hideBefore()
-        assertEquals(Property(HIDDEN, DEFAULT_TASK_ID), task.before)
+        assertEquals(Property(HIDDEN, DEFAULT_TASK_ID, NOT_CONSTRAINED, UNMET), task.before)
     }
 
     @DisplayName("Set Before Property using setBeforeValue ID")
@@ -61,13 +62,13 @@ class Before : BaseTaskTest() {
                         beforeTask.id
                 )
 
-        assertFalse(task.before is Constraint)
+        assertFalse(task.before.isConstrained)
         assertEquals(beforeTask.id, task.before.value)
         assertEquals(beforeTask, Caches.tasks.get(task.before.value))
         assertTrue(task.before.isVisible)
 
         task.hideBefore()
-        assertEquals(Property(HIDDEN, DEFAULT_TASK_ID), task.before)
+        assertEquals(Property(HIDDEN, DEFAULT_TASK_ID, NOT_CONSTRAINED, UNMET), task.before)
     }
 
     @DisplayName("Set Before Property using setBeforeValue Task")
@@ -79,13 +80,13 @@ class Before : BaseTaskTest() {
                         beforeTask
                 )
 
-        assertFalse(task.before is Constraint)
+        assertFalse(task.before.isConstrained)
         assertEquals(beforeTask.id, task.before.value)
         assertEquals(beforeTask, Caches.tasks.get(task.before.value))
         assertTrue(task.before.isVisible)
 
         task.hideBefore()
-        assertEquals(Property(HIDDEN, DEFAULT_TASK_ID), task.before)
+        assertEquals(Property(HIDDEN, DEFAULT_TASK_ID, NOT_CONSTRAINED, UNMET), task.before)
     }
 
     @DisplayName("Set Before Constraint using setBeforeProperty")
@@ -94,30 +95,14 @@ class Before : BaseTaskTest() {
         val beforeTask = Task("Before Task")
         val task = testTask()
                 .setBeforeProperty(
-                        Constraint(SHOWING, beforeTask.id, UNMET)
+                        Property(SHOWING, beforeTask.id, CONSTRAINED, UNMET)
                 )
 
-        assertTrue(task.before is Constraint)
+        assertTrue(task.before.isConstrained)
         assertEquals(beforeTask.id, task.before.value)
         assertEquals(beforeTask, Caches.tasks.get(task.before.value))
         assertTrue(task.before.isVisible)
-        assertFalse((task.before as Constraint).isMet)
-    }
-
-    @DisplayName("Set Before Constraint using setBeforeConstraint")
-    @Test
-    fun testTaskSetBeforeConstraint() {
-        val beforeTask = Task("Before Task")
-        val task = testTask()
-                .setBeforeConstraint(
-                        Constraint(SHOWING, beforeTask.id, UNMET)
-                )
-
-        assertTrue(task.before is Constraint)
-        assertEquals(beforeTask.id, task.before.value)
-        assertEquals(beforeTask, Caches.tasks.get(task.before.value))
-        assertTrue(task.before.isVisible)
-        assertFalse((task.before as Constraint).isMet)
+        assertFalse((task.before).isMet)
     }
 
     @DisplayName("Set Before Constraint using setBeforeConstraintValue ID")
@@ -127,11 +112,11 @@ class Before : BaseTaskTest() {
         val task = testTask()
                 .setBeforeConstraintValue(beforeTask.id)
 
-        assertTrue(task.before is Constraint)
+        assertTrue(task.before.isConstrained)
         assertEquals(beforeTask.id, task.before.value)
         assertEquals(beforeTask, Caches.tasks.get(task.before.value))
         assertTrue(task.before.isVisible)
-        assertFalse((task.before as Constraint).isMet)
+        assertFalse((task.before).isMet)
     }
 
     @DisplayName("Set Before Constraint using setBeforeConstraintValue Task")
@@ -141,11 +126,11 @@ class Before : BaseTaskTest() {
         val task = testTask()
                 .setBeforeConstraintValue(beforeTask)
 
-        assertTrue(task.before is Constraint)
+        assertTrue(task.before.isConstrained)
         assertEquals(beforeTask.id, task.before.value)
         assertEquals(beforeTask, Caches.tasks.get(task.before.value))
         assertTrue(task.before.isVisible)
-        assertFalse((task.before as Constraint).isMet)
+        assertFalse((task.before).isMet)
     }
 
     @DisplayName("Set Before Property failable")
@@ -156,25 +141,9 @@ class Before : BaseTaskTest() {
                 .setBeforePropertyValue(beforeTask)
 
         assertFalse(task.isFailable)
-        assertFalse(task.before is Constraint)
+        assertFalse(task.before.isConstrained)
         assertEquals(beforeTask.id, task.before.value)
         assertTrue(task.before.isVisible)
-    }
-
-    @DisplayName("Set Before Constraint failable")
-    @Test
-    fun testTaskSetBeforeConstraintFailable() {
-        val beforeTask = Task("Before Task")
-        val task = testTask()
-                .setBeforeConstraint(
-                        Constraint(SHOWING, beforeTask.id, UNMET)
-                )
-
-        assertTrue(task.isFailable)
-        assertTrue(task.before is Constraint)
-        assertEquals(beforeTask.id, task.before.value)
-        assertTrue(task.before.isVisible)
-        assertFalse((task.before as Constraint).isMet)
     }
 
     @DisplayName("Kill with Before Property")
@@ -193,7 +162,7 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskKillWithBeforeConstraint() {
         val beforeTask = Task("Before Task")
-        val task = testTask()
+        val task = testTask
                 .setBeforeConstraintValue(beforeTask)
 
         assertThrows(TaskStateException::class.java, { task.kill() })
@@ -259,7 +228,7 @@ class Before : BaseTaskTest() {
         sleep(1)
         assertThrows(TaskStateException::class.java, { task.kill() })
         assertTrue(task.getAllUnmetAndShowingConstraints().size == 1)
-        task.setBeforeProperty((task.before as Constraint).toProperty())
+        task.setBeforeProperty(task.before.unConstrain())
 
         sleep(1)
 

@@ -1,9 +1,9 @@
 package uk.whitecrescent.waqti.model.persistence
 
 import uk.whitecrescent.waqti.model.Committable
+import uk.whitecrescent.waqti.model.Database
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Priority
-import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.Template
 import uk.whitecrescent.waqti.model.task.TimeUnit
 
@@ -44,11 +44,11 @@ import uk.whitecrescent.waqti.model.task.TimeUnit
  * */
 object Caches {
 
-    val tasks = Cache<Task>()
-    val templates = Cache<Template>()
-    val labels = Cache<Label>()
-    val priorities = Cache<Priority>()
-    val timeUnits = Cache<TimeUnit>()
+    val tasks = Cache(Database.taskDB)
+    val templates: Cache<Template> = Cache(null)
+    val labels: Cache<Label> = Cache(null)
+    val priorities: Cache<Priority> = Cache(null)
+    val timeUnits: Cache<TimeUnit> = Cache(null)
 
     private val allTaskCaches = mutableListOf(
             tasks,
