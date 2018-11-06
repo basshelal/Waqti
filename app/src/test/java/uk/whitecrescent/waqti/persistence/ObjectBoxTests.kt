@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.persistence
 
 import io.objectbox.BoxStore
+import io.objectbox.kotlin.boxFor
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -60,7 +61,7 @@ class ObjectBoxTests {
     @DisplayName("Test1")
     @Test
     fun test1() {
-        val box = Database.taskDB
+        val box = Database.store.boxFor<Task>()
 
         val data = Array<Task>(10_000, { Task() }).toList()
 
@@ -80,7 +81,7 @@ class ObjectBoxTests {
 
         assertEquals(Caches.tasks[10_000], box.get(10_000))
 
-        Database.deleteDB()
+        //Database.deleteDB()
     }
 
 }

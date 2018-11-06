@@ -1250,6 +1250,7 @@ class Task(title: String = "") : Listable, Cacheable {
 
     //region Task lifecycle
 
+    // TODO: 05-Nov-18 needs to be put in way more places 
     override fun update() {
         Caches.tasks.put(this)
     }

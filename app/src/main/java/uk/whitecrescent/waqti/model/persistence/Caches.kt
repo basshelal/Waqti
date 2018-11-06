@@ -1,9 +1,11 @@
 package uk.whitecrescent.waqti.model.persistence
 
+import io.objectbox.kotlin.boxFor
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.Database
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Priority
+import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.Template
 import uk.whitecrescent.waqti.model.task.TimeUnit
 
@@ -44,7 +46,7 @@ import uk.whitecrescent.waqti.model.task.TimeUnit
  * */
 object Caches {
 
-    val tasks = Cache(Database.taskDB)
+    val tasks = Cache(Database.store.boxFor<Task>())
     val templates: Cache<Template> = Cache(null)
     val labels: Cache<Label> = Cache(null)
     val priorities: Cache<Priority> = Cache(null)

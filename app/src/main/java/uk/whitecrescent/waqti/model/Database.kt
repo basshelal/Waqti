@@ -1,14 +1,17 @@
 package uk.whitecrescent.waqti.model
 
+import android.content.Context
 import io.objectbox.BoxStore
-import io.objectbox.kotlin.boxFor
 import uk.whitecrescent.waqti.model.task.MyObjectBox
-import uk.whitecrescent.waqti.model.task.Task
-import java.io.File
 
 object Database {
-    val store: BoxStore = MyObjectBox.builder().directory(File("DEBUG_DB")).build()
-    val taskDB = store.boxFor<Task>()
+
+    lateinit var store: BoxStore
+
+    fun build(context: Context) {
+        store = MyObjectBox.builder().androidContext(context.applicationContext).build()
+    }
+//    val taskDB = store.boxFor<Task>()
 //    val templateDB = store.boxFor<Template>()
 //    val labelDB = store.boxFor<Label>()
 //    val priorityDB = store.boxFor<Priority>()
