@@ -1898,11 +1898,15 @@ class Task(title: String = "") : Listable, Cacheable {
         val result = StringBuilder("$title\n")
         result.append("ID: $id isKillable: $isKillable isFailable: $isFailable state: $state\n")
 
-        result.append("\tP:\n")
-        getAllShowingProperties().filter { !it.isConstrained }.forEach { result.append("\t\t$it\n") }
+        if (getAllShowingProperties().isNotEmpty()) {
+            result.append("\tP:\n")
+            getAllShowingProperties().filter { !it.isConstrained }.forEach { result.append("\t\t$it\n") }
+        }
 
-        result.append("\tC:\n")
-        getAllShowingConstraints().forEach { result.append("\t\t$it\n") }
+        if (getAllShowingConstraints().isNotEmpty()) {
+            result.append("\tC:\n")
+            getAllShowingConstraints().forEach { result.append("\t\t$it\n") }
+        }
 
         return result.toString()
     }

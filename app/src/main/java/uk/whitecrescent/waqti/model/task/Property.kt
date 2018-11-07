@@ -36,5 +36,5 @@ open class Property<V>(open var isVisible: Boolean,
                     this.isMet == other.isMet
 
     override fun toString() =
-            "isVisible = $isVisible value = $value isConstrained $isConstrained isMet $isMet"
+            "isVisible = $isVisible value = $value isConstrained = $isConstrained isMet = $isMet"
 }

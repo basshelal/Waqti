@@ -1,7 +1,9 @@
 package uk.whitecrescent.waqti.model.task
 
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import io.objectbox.converter.PropertyConverter
+import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Time
 
 private val gson = Gson()
@@ -125,4 +127,35 @@ class TimeConverter : PropertyConverter<Time, String> {
     override fun convertToEntityProperty(databaseValue: String?) =
             gson.fromJson(databaseValue, Time::class.java)
 
+}
+
+class DurationConverter : PropertyConverter<Duration, String> {
+    override fun convertToDatabaseValue(entityProperty: Duration?) =
+            gson.toJson(entityProperty)
+
+
+    override fun convertToEntityProperty(databaseValue: String?) =
+            gson.fromJson(databaseValue, Duration::class.java)
+
+}
+
+class PropertyBundleConverter : PropertyConverter<PropertyBundle, String> {
+
+    override fun convertToDatabaseValue(entityProperty: PropertyBundle?): String {
+        return gson.toJson(entityProperty)
+    }
+
+    override fun convertToEntityProperty(databaseValue: String?): PropertyBundle {
+        return gson.fromJson(databaseValue, PropertyBundle::class.java)
+    }
+}
+
+class ArrayListConverter<E> : PropertyConverter<ArrayList<E>, String> {
+    override fun convertToDatabaseValue(entityProperty: ArrayList<E>?): String {
+        return gson.toJson(entityProperty)
+    }
+
+    override fun convertToEntityProperty(databaseValue: String?): ArrayList<E> {
+        return gson.fromJson(databaseValue, object : TypeToken<ArrayList<E>>() {}.type)
+    }
 }

@@ -7,31 +7,30 @@ import java.util.concurrent.ConcurrentHashMap
 
 // TODO: 28-Jul-18 Test and doc
 
-// no guarantee for order!
-open class Cache<E : Cacheable>(private val db: Box<E>?) : Collection<E> {
+// TODO: 07-Nov-18 Fix the interactions between this and DB and runtime entities!!!
 
-    protected val map = ConcurrentHashMap<ID, E>()
+// no guarantee for order!
+open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
+
+    private val map = ConcurrentHashMap<ID, E>()
 
     override val size: Int
         get() = map.size
 
     fun newID(): ID {
-        return db!!.all.maxBy { it.id }?.id ?: 0
-
-//        var id = Math.abs(Random().nextLong())
-//        while (map.containsKey(id)) {
-//            id = Math.abs(Random().nextLong())
-//        }
-//        return id
+        return db.all.maxBy { it.id }?.id?.plus(1) ?: 1
     }
 
     // Creates if doesn't exist, updates if does
     open fun put(element: E) {
         map[element.id] = element
+        //db.put(element)
     }
 
-    fun put(elements: Collection<E>) =
-            elements.forEach { this.put(it) }
+    fun put(elements: Collection<E>) {
+        elements.forEach { map[it.id] = it }
+        //db.put(elements)
+    }
 
     operator fun get(element: E) =
             this.safeGet(element.id)
@@ -74,17 +73,21 @@ open class Cache<E : Cacheable>(private val db: Box<E>?) : Collection<E> {
             elements.map { idOf(it) }
 
     open fun remove(id: ID) {
-        if (map.containsKey(id)) map.remove(id)
+        map.remove(id)
+        db.remove(id)
     }
 
-    fun remove(element: E) =
-            this.remove(element.id)
+    fun remove(element: E) {
+        this.remove(element.id)
+    }
 
-    fun remove(elements: Collection<E>) =
-            elements.forEach { this.remove(it) }
+    fun remove(elements: Collection<E>) {
+        elements.forEach { map.remove(it.id) }
+        db.remove(elements)
+    }
 
     fun removeIDs(ids: Collection<ID>) =
-            ids.forEach { this.remove(it) }
+            this.remove(ids.map { this.get(it) })
 
     fun removeIf(predicate: () -> Boolean) =
             map.forEach { if (predicate.invoke()) remove(it.value) }
@@ -115,20 +118,41 @@ open class Cache<E : Cacheable>(private val db: Box<E>?) : Collection<E> {
     }
 
     protected open fun safeGet(id: ID): E {
-        val found = map[id]
-        if (found == null) throw CacheElementNotFoundException(id)
-        else return found
+        val mapFound = map[id]
+        val dbFound = db[id]
+
+        if (mapFound == null) throw  CacheElementNotFoundException(id)
+        return mapFound
+
+//        return when {
+//            mapFound == null -> {
+//                if (dbFound == null) throw CacheElementNotFoundException(id)
+//                else {
+//                    map[dbFound.id] = dbFound
+//                    return dbFound
+//                }
+//            }
+//            mapFound != dbFound -> {
+//                map[dbFound.id] = dbFound
+//                dbFound
+//            }
+//            else -> mapFound
+//        }
     }
 
     // not slow for 10_000!
-    fun readAll() {
-        db!!.all.forEach { map.put(it.id, it) }
-    }
+    private fun updateMap(amount: Int = size, throwIfGreater: Boolean = false) {
+        if (size != 0) {
+            if (amount < 1 || (amount > size && throwIfGreater))
+                throw IllegalArgumentException("Amount cannot be greater than $size or less than 1")
 
-    fun readFirst(amount: Int) {
-        if (amount < 1 || amount > size) throw IllegalArgumentException("Amount cannot be grater " +
-                "than $size or less than 1")
-        db!!.all.subList(0, amount - 1).forEach { map.put(it.id, it) }
+            var end = amount - 1
+
+            if (amount > size && !throwIfGreater) {
+                end = size - 1
+            }
+            db.all.subList(0, end).forEach { map[it.id] = it }
+        }
     }
 
 }

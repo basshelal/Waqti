@@ -1,13 +1,18 @@
 package uk.whitecrescent.waqti.model.task
 
+import io.objectbox.annotation.Convert
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.hash
 import uk.whitecrescent.waqti.model.persistence.Caches
 
+@Entity
 class TimeUnit(name: String, duration: Duration) : Cacheable {
 
-    override val id = Caches.timeUnits.newID()
+    @Id
+    override var id = 0L
 
     init {
         update()
@@ -21,6 +26,7 @@ class TimeUnit(name: String, duration: Duration) : Cacheable {
             update()
         }
 
+    @Convert(converter = DurationConverter::class, dbType = String::class)
     var duration = duration
         set(value) {
             field = value

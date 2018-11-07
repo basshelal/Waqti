@@ -2,8 +2,10 @@
   <dictionary name="bassh">
     <words>
       <w>cacheable</w>
+      <w>committable</w>
       <w>failable</w>
       <w>killable</w>
+      <w>overriden</w>
       <w>waqti</w>
     </words>
   </dictionary>

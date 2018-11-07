@@ -1,16 +1,22 @@
 package uk.whitecrescent.waqti.model.task
 
+import io.objectbox.annotation.Convert
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.hash
 import uk.whitecrescent.waqti.model.persistence.Caches
 
 // TODO: 19-May-18 Templates, PropertyBundles and that whole thing need to be tested and doc'd
 
-class Template(val task: Task) : Cacheable {
+@Entity
+class Template(@Transient val task: Task) : Cacheable {
 
-    private val propertyBundle = PropertyBundle(task)
+    @Convert(converter = PropertyBundleConverter::class, dbType = String::class)
+    val propertyBundle = PropertyBundle(task)
 
-    override val id = Caches.templates.newID()
+    @Id
+    override var id = 0L
 
     init {
         update()
