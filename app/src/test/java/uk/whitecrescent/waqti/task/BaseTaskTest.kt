@@ -9,27 +9,10 @@ import java.io.File
 
 open class BaseTaskTest {
 
-//    companion object {
-//
-//        @JvmStatic
-//        @BeforeAll
-//        fun beforeAll() {
-//            Caches.clearAllTaskCaches().commit()
-//            Caches.allTaskCachesList.forEach { assertTrue(it.isEmpty()) }
-//        }
-//
-//        @JvmStatic
-//        @AfterAll
-//        fun afterAll() {
-//            Caches.clearAllTaskCaches().commit()
-//            Caches.allTaskCachesList.forEach { assertTrue(it.isEmpty()) }
-//        }
-//    }
-
     @BeforeEach
     open fun beforeEach() {
         Database.buildTest(File("DEBUG_DB"))
-        Caches.clearAllTaskCaches().commit()
+        Caches.allCachesList
         Caches.allTaskCachesList.forEach { assertTrue(it.isEmpty()) }
     }
 

@@ -3,6 +3,8 @@
 package uk.whitecrescent.waqti.model
 
 import android.util.Log
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.collections.Tuple
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.GRACE_PERIOD
@@ -52,3 +54,9 @@ inline val Collection<Tuple>.tasks: Array<Task>
         }
         return result.toTypedArray()
     }
+
+fun <T> Observable<T>.doAsync(func: () -> Any) {
+    Observable.fromCallable(func)
+            .subscribeOn(Schedulers.newThread())
+            .subscribe()
+}

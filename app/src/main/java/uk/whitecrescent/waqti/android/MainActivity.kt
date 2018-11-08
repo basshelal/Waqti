@@ -26,6 +26,8 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = Adapter()
+
+        // use BoardView for Boards
     }
 }
 

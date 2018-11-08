@@ -1,35 +1,41 @@
 package uk.whitecrescent.waqti.model.persistence
 
+import android.annotation.SuppressLint
 import io.objectbox.Box
+import io.reactivex.Observable
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.task.ID
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.TimeUnit
 
 // TODO: 28-Jul-18 Test and doc
 
-// TODO: 07-Nov-18 Fix the interactions between this and DB and runtime entities!!!
-
+// TODO: 08-Nov-18 Is this thread safe?
 // no guarantee for order!
 open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
 
     private val map = ConcurrentHashMap<ID, E>()
+    var checkSeconds = 10L
 
     override val size: Int
         get() = map.size
 
-    fun newID(): ID {
-        return db.all.maxBy { it.id }?.id?.plus(1) ?: 1
-    }
+    // probably delete this
+    val newID: ID
+        get() {
+            return db.all.maxBy { it.id }?.id?.plus(1) ?: 1
+        }
 
-    // Creates if doesn't exist, updates if does
-    open fun put(element: E) {
-        map[element.id] = element
-        //db.put(element)
+    fun put(element: E) {
+        val id = db.put(element)
+        assert(element.id == id)
+        map[id] = element
     }
 
     fun put(elements: Collection<E>) {
+        db.put(elements)
+        elements.forEach { assert(it.id != 0L) }
         elements.forEach { map[it.id] = it }
-        //db.put(elements)
     }
 
     operator fun get(element: E) =
@@ -40,6 +46,20 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
 
     operator fun get(elements: Collection<E>) =
             elements.map { this[it] }
+
+    fun remove(id: ID) {
+        db.remove(id)
+        map.remove(id)
+    }
+
+    fun remove(element: E) {
+        this.remove(element.id)
+    }
+
+    fun remove(elements: Collection<E>) {
+        db.remove(elements)
+        elements.forEach { map.remove(it.id) }
+    }
 
     operator fun plus(element: E): Cache<E> {
         this.put(element)
@@ -65,26 +85,14 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
             ids.map { this[it] }
 
     fun idOf(element: E): ID {
-        if (element !in this) throw CacheElementNotFoundException(element.id, element)
-        else return this[element].id
+        //if (element !in this) throw CacheElementNotFoundException(element.id, element)
+        //else
+        return this[element].id
+        // above will throw exception since it calls safeGet()
     }
 
     fun idsOf(elements: Collection<E>) =
             elements.map { idOf(it) }
-
-    open fun remove(id: ID) {
-        map.remove(id)
-        db.remove(id)
-    }
-
-    fun remove(element: E) {
-        this.remove(element.id)
-    }
-
-    fun remove(elements: Collection<E>) {
-        elements.forEach { map.remove(it.id) }
-        db.remove(elements)
-    }
 
     fun removeIDs(ids: Collection<ID>) =
             this.remove(ids.map { this.get(it) })
@@ -117,12 +125,17 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
         return map.toString()
     }
 
-    protected open fun safeGet(id: ID): E {
+    protected fun safeGet(id: ID): E {
         val mapFound = map[id]
-        val dbFound = db[id]
+        //val dbFound = db.get(id)
 
         if (mapFound == null) throw  CacheElementNotFoundException(id)
         return mapFound
+
+        // below queries the DB, we want to reduce this as much as possible
+        // we do this by making sure every update made to the db will also be done to the cache
+        // we may also let the cache update itself every once in a while to keep the values
+        // correct in the cache
 
 //        return when {
 //            mapFound == null -> {
@@ -140,19 +153,31 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
 //        }
     }
 
-    // not slow for 10_000!
-    private fun updateMap(amount: Int = size, throwIfGreater: Boolean = false) {
-        if (size != 0) {
-            if (amount < 1 || (amount > size && throwIfGreater))
-                throw IllegalArgumentException("Amount cannot be greater than $size or less than 1")
-
-            var end = amount - 1
-
-            if (amount > size && !throwIfGreater) {
-                end = size - 1
+    private fun isInconsistent(): Boolean {
+        if (map.size.toLong() != db.count()) {
+            if (map.values.sortedBy { it.id } != db.all.sortedBy { it.id }) {
+                return true
             }
-            db.all.subList(0, end).forEach { map[it.id] = it }
         }
+        return false
+    }
+
+    // not slow for 10_000!
+    // only executes something if the map and db are different for whatever reason
+    fun update() {
+        if (isInconsistent()) {
+            map.clear()
+            db.all.forEach { map[it.id] = it }
+        }
+    }
+
+    // if designed right, we will never need this implementation!
+    @SuppressLint("CheckResult")
+    fun asyncCheck() {
+        Observable.interval(checkSeconds, TimeUnit.SECONDS)
+                .subscribe {
+                    update()
+                }
     }
 
 }

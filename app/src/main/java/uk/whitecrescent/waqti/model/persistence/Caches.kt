@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.model.persistence
 
 import uk.whitecrescent.waqti.model.Committable
+import uk.whitecrescent.waqti.model.TestEntity
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Template
@@ -48,6 +49,7 @@ object Caches {
     val labels: Cache<Label> = Cache(Database.labelDB)
     val priorities: Cache<Priority> = Cache(Database.priorityDB)
     val timeUnits: Cache<TimeUnit> = Cache(Database.timeUnitDB)
+    val testEntities: Cache<TestEntity> = Cache(Database.testEntityDB)
 
     private val allTaskCaches = mutableListOf(
             tasks,
@@ -69,6 +71,16 @@ object Caches {
         return object : Committable {
             override fun commit() {
                 allTaskCaches.forEach { it.clear() }
+                testEntities.clear()
+            }
+        }
+    }
+
+    fun clearAllCaches(): Committable {
+        return object : Committable {
+            override fun commit() {
+                allCaches.forEach { it.clear() }
+                testEntities.clear()
             }
         }
     }
