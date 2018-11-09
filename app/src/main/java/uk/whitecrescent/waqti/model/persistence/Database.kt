@@ -20,17 +20,17 @@ object Database {
 
     lateinit var store: BoxStore
         private set
-    lateinit var taskDB: Box<Task>
+    lateinit var tasks: Box<Task>
         private set
-    lateinit var templateDB: Box<Template>
+    lateinit var templates: Box<Template>
         private set
-    lateinit var labelDB: Box<Label>
+    lateinit var labels: Box<Label>
         private set
-    lateinit var priorityDB: Box<Priority>
+    lateinit var priorities: Box<Priority>
         private set
-    lateinit var timeUnitDB: Box<TimeUnit>
+    lateinit var timeUnits: Box<TimeUnit>
         private set
-    lateinit var testEntityDB: Box<TestEntity>
+    lateinit var testEntities: Box<TestEntity>
         private set
     lateinit var allDBs: List<Box<*>>
         private set
@@ -48,14 +48,14 @@ object Database {
     }
 
     fun build() {
-        taskDB = store.boxFor()
-        templateDB = store.boxFor()
-        labelDB = store.boxFor()
-        priorityDB = store.boxFor()
-        timeUnitDB = store.boxFor()
-        testEntityDB = store.boxFor()
+        tasks = store.boxFor()
+        templates = store.boxFor()
+        labels = store.boxFor()
+        priorities = store.boxFor()
+        timeUnits = store.boxFor()
+        testEntities = store.boxFor()
         allDBs = listOf(
-                taskDB, templateDB, labelDB, priorityDB, timeUnitDB, testEntityDB
+                tasks, templates, labels, priorities, timeUnits, testEntities
         )
     }
 

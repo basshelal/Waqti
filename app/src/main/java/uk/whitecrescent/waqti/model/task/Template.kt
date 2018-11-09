@@ -22,6 +22,10 @@ class Template(@Transient val task: Task) : Cacheable {
         update()
     }
 
+    override fun notDefault(): Boolean {
+        return false
+    }
+
     override fun update() = Caches.templates.put(this)
 
     override fun hashCode() = hash(task, propertyBundle)

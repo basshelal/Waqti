@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import io.objectbox.Box
 import io.reactivex.Observable
 import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.forEach
+import uk.whitecrescent.waqti.model.size
 import uk.whitecrescent.waqti.model.task.ID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
@@ -15,16 +17,10 @@ import java.util.concurrent.TimeUnit
 open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
 
     private val map = ConcurrentHashMap<ID, E>()
-    var checkSeconds = 10L
+    private var isChecking = false
 
     override val size: Int
         get() = map.size
-
-    // probably delete this
-    val newID: ID
-        get() {
-            return db.all.maxBy { it.id }?.id?.plus(1) ?: 1
-        }
 
     fun put(element: E) {
         val id = db.put(element)
@@ -85,8 +81,6 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
             ids.map { this[it] }
 
     fun idOf(element: E): ID {
-        //if (element !in this) throw CacheElementNotFoundException(element.id, element)
-        //else
         return this[element].id
         // above will throw exception since it calls safeGet()
     }
@@ -153,31 +147,38 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
 //        }
     }
 
-    private fun isInconsistent(): Boolean {
-        if (map.size.toLong() != db.count()) {
-            if (map.values.sortedBy { it.id } != db.all.sortedBy { it.id }) {
-                return true
+    private val isInconsistent: Boolean
+        get() {
+            if (map.size != db.size) {
+                if (map.values.sortedBy { it.id } != db.all.sortedBy { it.id }) {
+                    return true
+                }
             }
+            return false
         }
-        return false
-    }
 
     // not slow for 10_000!
     // only executes something if the map and db are different for whatever reason
     fun update() {
-        if (isInconsistent()) {
+        if (isInconsistent) {
             map.clear()
-            db.all.forEach { map[it.id] = it }
+            db.forEach { map[it.id] = it }
         }
     }
 
     // if designed right, we will never need this implementation!
     @SuppressLint("CheckResult")
-    fun asyncCheck() {
+    fun startAsyncCheck(checkSeconds: Long = 30L) {
+        isChecking = true
         Observable.interval(checkSeconds, TimeUnit.SECONDS)
+                .takeWhile { isChecking }
                 .subscribe {
                     update()
                 }
+    }
+
+    fun stopAsyncCheck() {
+        isChecking = false
     }
 
 }

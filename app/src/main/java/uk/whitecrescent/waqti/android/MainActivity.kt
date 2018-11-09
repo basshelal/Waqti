@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
         checkWritePermission()
 
-        logE(Database.taskDB.count())
+        logE(Database.tasks.count())
 
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = Adapter()
@@ -35,7 +35,7 @@ class ViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
 class Adapter : RecyclerView.Adapter<ViewHolder>() {
 
-    val db = Database.taskDB
+    val db = Database.tasks
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.task_card, parent, false))
@@ -50,5 +50,5 @@ class Adapter : RecyclerView.Adapter<ViewHolder>() {
 }
 
 fun addTasks(amount: Int) {
-    Database.taskDB.put(Array(amount, { Task() }).toList())
+    Database.tasks.put(Array(amount, { Task() }).toList())
 }

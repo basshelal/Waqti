@@ -13,51 +13,34 @@ class Label(name: String = "") : Cacheable {
     @Id
     override var id = 0L
 
-    init {
-        update()
-    }
-
-    companion object {
-        fun fromString(string: String) = Label(string)
-    }
-
-    //private val _children = hashSetOf<Label>()
-
     var name = name
         set(value) {
             field = value
             update()
         }
 
-//    val children: List<Label>
-//        get() = _children.toList()
-//
-//    fun addChild(label: Label) {
-//        _children.add(label)
-//    }
-//
-//    fun removeChild(label: Label) {
-//        _children.remove(label)
-//    }
+    //where init is placed matters! Always place it after all fields
+    init {
+        if (notDefault()) {
+            update()
+        }
+    }
+
+    override fun notDefault(): Boolean {
+        // if all these are false then this has been constructed using default constructor
+        return this.name != "" || this.id != 0L
+    }
 
     override fun update() = Caches.labels.put(this)
 
-    //operator fun component1() = name
-
-    //operator fun component2() = children
-
-    override fun hashCode() = hash(name /*children*/)
+    override fun hashCode() = hash(name)
 
     override fun equals(other: Any?) =
             other is Label &&
-                    other.name == this.name
-    //&& other.children == this.children
+                    other.name == this.name &&
+                    other.id == this.id
 
     override fun toString(): String {
-        val s = StringBuilder(name)
-//        if (_children.isNotEmpty()) {
-//            s.append("\n\t$_children\n")
-//        }
-        return s.toString()
+        return "Name: $name Id: $id"
     }
 }

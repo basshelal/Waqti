@@ -23,6 +23,8 @@ import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.model.task.UNMET
 import uk.whitecrescent.waqti.testTask
 
+
+// TODO: 09-Nov-18 Check this, unsure this is perfect
 @DisplayName("Deadline Tests")
 class Deadline : BaseTaskTest() {
 
@@ -71,7 +73,7 @@ class Deadline : BaseTaskTest() {
     @DisplayName("Set Deadline Constraint using setDeadlineProperty")
     @Test
     fun testTaskSetDeadlinePropertyWithConstraint() {
-        val task = testTask()
+        val task = testTask
                 .setDeadlineProperty(
                         Property(SHOWING, Time.of(1970, 1, 1, 1, 1), CONSTRAINED, UNMET)
                 )
@@ -79,19 +81,19 @@ class Deadline : BaseTaskTest() {
         assertTrue(task.deadline.isConstrained)
         assertEquals(Time.of(1970, 1, 1, 1, 1), task.deadline.value)
         assertTrue(task.deadline.isVisible)
-        assertFalse((task.deadline).isMet)
+        assertTrue(task.deadline.isMet)
     }
 
     @DisplayName("Set Deadline Constraint using setDeadlineConstraintValue")
     @Test
     fun testTaskSetDeadlineConstraintValue() {
-        val task = testTask()
+        val task = testTask
                 .setDeadlineConstraintValue(Time.of(1970, 1, 1, 1, 1))
 
         assertTrue(task.deadline.isConstrained)
         assertEquals(Time.of(1970, 1, 1, 1, 1), task.deadline.value)
         assertTrue(task.deadline.isVisible)
-        assertFalse((task.deadline).isMet)
+        assertTrue(task.deadline.isMet)
     }
 
     @DisplayName("Set Deadline Property failable")
@@ -124,7 +126,7 @@ class Deadline : BaseTaskTest() {
         sleep(4)
 
         assertEquals(TaskState.FAILED, task.state)
-        assertFalse((task.deadline).isMet)
+        assertTrue(task.deadline.isMet)
     }
 
     @DisplayName("Kill with deadline Constraint past")
@@ -138,7 +140,7 @@ class Deadline : BaseTaskTest() {
         assertTrue(task.deadline.isConstrained)
         assertEquals(deadline, task.deadline.value)
         assertTrue(task.deadline.isVisible)
-        assertFalse((task.deadline).isMet)
+        assertTrue(task.deadline.isMet)
 
         sleep(4)
         assertThrows(TaskStateException::class.java, { task.kill() })
@@ -170,7 +172,7 @@ class Deadline : BaseTaskTest() {
         sleep(3)
 
         assertEquals(TaskState.KILLED, task.state)
-        assertTrue((task.deadline).isMet)
+        assertTrue(task.deadline.isMet)
 
     }
 

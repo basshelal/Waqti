@@ -33,6 +33,10 @@ class TimeUnit(name: String, duration: Duration) : Cacheable {
             update()
         }
 
+    override fun notDefault(): Boolean {
+        return false
+    }
+
     companion object {
 
         fun toJavaDuration(timeUnit: TimeUnit, count: Int): Duration {

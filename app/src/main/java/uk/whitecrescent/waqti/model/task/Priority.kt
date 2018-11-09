@@ -39,6 +39,10 @@ class Priority(name: String = "", importanceLevel: Int = 0) : Cacheable {
         }
     }
 
+    override fun notDefault(): Boolean {
+        return false
+    }
+
     var name = name
         set(value) {
             field = value

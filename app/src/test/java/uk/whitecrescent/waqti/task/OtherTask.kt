@@ -360,7 +360,7 @@ class OtherTask : BaseTaskTest() {
         assertEquals("${task.title}\nID: ${task.id} " +
                 "isKillable: ${task.isKillable} " +
                 "isFailable: ${task.isFailable} " +
-                "state: ${task.state}\n\tP:\n\tC:\n", task.toString())
+                "state: ${task.state}\n", task.toString())
     }
 
     @DisplayName("Task UnConstrainAll")

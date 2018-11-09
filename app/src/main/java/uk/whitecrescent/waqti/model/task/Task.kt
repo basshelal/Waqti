@@ -55,8 +55,10 @@ class Task(title: String = "") : Listable, Cacheable {
     override var id = 0L
 
     init {
-        Caches.tasks.put(this)
-        checkNotDead()
+        if (notDefault()) {
+            update()
+            checkNotDead()
+        }
     }
 
     /**
@@ -1400,7 +1402,7 @@ class Task(title: String = "") : Listable, Cacheable {
                             throw ObserverException("Checking Not Dead Failed!")
                         },
                         {
-                            debug("$id is no longer in Cache! Check not dead completed END")
+                            debug("$id DEAD ")
                         }
                 )
     }
@@ -1409,14 +1411,15 @@ class Task(title: String = "") : Listable, Cacheable {
     // Lifecycle will not happen automatically if there are no observers checking, even when it should
     private fun endObservers() {
         val message = when {
-            activeObservers.isEmpty() -> "None"
+            activeObservers.isEmpty() -> "none"
             else -> activeObservers.toString()
         }
+        val message0 = activeObservers.toString()
 
         composite.clear()
         activeObservers.clear()
 
-        debug("$id has ended its observers! $message")
+        debug("$id has ended its observers: $message0")
     }
 
     /**
@@ -1857,6 +1860,10 @@ class Task(title: String = "") : Listable, Cacheable {
     //endregion Observers
 
     //region Overriden
+
+    override fun notDefault(): Boolean {
+        return title != "" || id != 0L
+    }
 
     /**
      * Returns the hash code of this Task, this is the hash code of this Task's equalityBundle, see [equalityBundle]

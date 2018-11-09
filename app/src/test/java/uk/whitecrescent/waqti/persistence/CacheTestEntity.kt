@@ -1,5 +1,7 @@
 package uk.whitecrescent.waqti.persistence
 
+import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
@@ -10,8 +12,8 @@ import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.sleep
 
-@DisplayName("Cache Tests")
-class Cache : BasePersistenceTest() {
+@DisplayName("Test Entity Cache & Database Tests")
+class CacheTestEntity : BasePersistenceTest() {
 
     private fun createEntities(amount: Int): List<TestEntity> {
         val list = ArrayList<TestEntity>(amount)
@@ -22,7 +24,7 @@ class Cache : BasePersistenceTest() {
         return list
     }
 
-    @DisplayName("Cache New ID")
+    @DisplayName("Cache Unique IDs")
     @Test
     fun testCacheNewID() {
         (1..100).forEach {
@@ -41,35 +43,35 @@ class Cache : BasePersistenceTest() {
         val cacheable = TestEntity(name = "First")
 
         assertTrue(cacheable in cache)
-        assertTrue(cacheable in Database.testEntityDB.all)
+        assertTrue(cacheable in Database.testEntities.all)
 
         assertTrue(cache[cacheable].name == "First")
-        assertTrue(Database.testEntityDB[cacheable.id].name == "First")
+        assertTrue(Database.testEntities[cacheable.id].name == "First")
 
         assertTrue(cache.size == 1)
-        assertTrue(Database.testEntityDB.count().toInt() == 1)
+        assertTrue(Database.testEntities.count().toInt() == 1)
 
         cacheable.name = "Second"
 
         assertTrue(cacheable in cache)
-        assertTrue(cacheable in Database.testEntityDB.all)
+        assertTrue(cacheable in Database.testEntities.all)
 
         assertTrue(cache[cacheable].name == "Second")
-        assertTrue(Database.testEntityDB[cacheable.id].name == "Second")
+        assertTrue(Database.testEntities[cacheable.id].name == "Second")
 
         assertTrue(cache.size == 1)
-        assertTrue(Database.testEntityDB.count().toInt() == 1)
+        assertTrue(Database.testEntities.count().toInt() == 1)
 
         cacheable.name = "Third"
 
         assertTrue(cacheable in cache)
-        assertTrue(cacheable in Database.testEntityDB.all)
+        assertTrue(cacheable in Database.testEntities.all)
 
         assertTrue(cache[cacheable].name == "Third")
-        assertTrue(Database.testEntityDB[cacheable.id].name == "Third")
+        assertTrue(Database.testEntities[cacheable.id].name == "Third")
 
         assertTrue(cache.size == 1)
-        assertTrue(Database.testEntityDB.count().toInt() == 1)
+        assertTrue(Database.testEntities.count().toInt() == 1)
 
     }
 
@@ -79,14 +81,14 @@ class Cache : BasePersistenceTest() {
         val cache = Caches.testEntities
         createEntities(100)
         assertEquals(100, cache.size)
-        assertEquals(100, Database.testEntityDB.count())
+        assertEquals(100, Database.testEntities.count())
 
         cache.clear()
         assertEquals(0, cache.size)
         assertTrue(cache.isEmpty())
 
-        assertEquals(100, Database.testEntityDB.count())
-        assertTrue(Database.testEntityDB.all.isNotEmpty())
+        assertEquals(100, Database.testEntities.count())
+        assertTrue(Database.testEntities.all.isNotEmpty())
     }
 
     @DisplayName("Cache Put and Update Element Auto")
@@ -95,18 +97,18 @@ class Cache : BasePersistenceTest() {
         val cache = Caches.testEntities
         val new = TestEntity(name = "New")
         assertEquals(new, cache.query().first())
-        assertEquals(new, Database.testEntityDB[new.id])
+        assertEquals(new, Database.testEntities[new.id])
 
         assertEquals("New", cache.query().first().name)
-        assertEquals("New", Database.testEntityDB[new.id].name)
+        assertEquals("New", Database.testEntities[new.id].name)
 
         new.name = "Updated"
 
         assertEquals(new, cache.query().first())
-        assertEquals(new, Database.testEntityDB[new.id])
+        assertEquals(new, Database.testEntities[new.id])
 
         assertEquals("Updated", cache.query().first().name)
-        assertEquals("Updated", Database.testEntityDB[new.id].name)
+        assertEquals("Updated", Database.testEntities[new.id].name)
     }
 
     @DisplayName("Cache Put and Update Collection Auto")
@@ -115,13 +117,13 @@ class Cache : BasePersistenceTest() {
         val cache = Caches.testEntities
         createEntities(100)
         assertEquals(100, cache.size)
-        assertEquals(100, Database.testEntityDB.count())
+        assertEquals(100, Database.testEntities.count())
 
         val randomElement = cache.query()[69]
 
         cache[randomElement.id].name = "Updated!"
         assertEquals(randomElement.name, "Updated!")
-        assertTrue(Database.testEntityDB[randomElement.id].name == "Updated!")
+        assertTrue(Database.testEntities[randomElement.id].name == "Updated!")
 
     }
 
@@ -131,21 +133,21 @@ class Cache : BasePersistenceTest() {
         val cache = Caches.testEntities
         createEntities(100)
         assertEquals(100, cache.size)
-        assertEquals(100, Database.testEntityDB.count())
+        assertEquals(100, Database.testEntities.count())
 
         cache.clear()
         assertEquals(0, cache.size)
         assertTrue(cache.isEmpty())
 
-        assertEquals(100, Database.testEntityDB.count())
-        assertTrue(Database.testEntityDB.all.isNotEmpty())
+        assertEquals(100, Database.testEntities.count())
+        assertTrue(Database.testEntities.all.isNotEmpty())
 
         cache.update()
 
         assertEquals(100, cache.size)
-        assertEquals(100, Database.testEntityDB.count())
+        assertEquals(100, Database.testEntities.count())
 
-        assertEquals(Database.testEntityDB.all.sortedBy { it.id }, cache.query().sortedBy { it.id })
+        assertEquals(Database.testEntities.all.sortedBy { it.id }, cache.query().sortedBy { it.id })
     }
 
     @DisplayName("Async Check")
@@ -154,24 +156,39 @@ class Cache : BasePersistenceTest() {
         val cache = Caches.testEntities
         createEntities(100)
         assertEquals(100, cache.size)
-        assertEquals(100, Database.testEntityDB.count())
+        assertEquals(100, Database.testEntities.count())
 
         cache.clear()
         assertEquals(0, cache.size)
         assertTrue(cache.isEmpty())
 
-        assertEquals(100, Database.testEntityDB.count())
-        assertTrue(Database.testEntityDB.all.isNotEmpty())
+        assertEquals(100, Database.testEntities.count())
+        assertTrue(Database.testEntities.all.isNotEmpty())
 
-        cache.checkSeconds = 1L
-        cache.asyncCheck()
+        cache.startAsyncCheck(1L)
 
         sleep(2)
 
         assertEquals(100, cache.size)
-        assertEquals(100, Database.testEntityDB.count())
+        assertEquals(100, Database.testEntities.count())
 
-        assertEquals(Database.testEntityDB.all.sortedBy { it.id }, cache.query().sortedBy { it.id })
+        assertEquals(Database.testEntities.all.sortedBy { it.id }, cache.query().sortedBy { it.id })
+        cache.stopAsyncCheck()
+    }
+
+    @DisplayName("Concurrent")
+    @Test
+    fun testConcurrent() {
+        val cache = Caches.testEntities
+        Observable.fromCallable { createEntities(1000) }.subscribeOn(Schedulers.newThread())
+                .subscribe()
+        Observable.fromCallable { createEntities(1000) }.subscribeOn(Schedulers.newThread())
+                .subscribe()
+
+        sleep(4) // how do we have blocking reading? Concurrent Read is important!
+
+        assertEquals(2000, cache.size)
+        assertEquals(2000, Database.testEntities.count())
     }
 
 }

@@ -3,6 +3,7 @@
 package uk.whitecrescent.waqti.model
 
 import android.util.Log
+import io.objectbox.Box
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.collections.Tuple
@@ -60,3 +61,9 @@ fun <T> Observable<T>.doAsync(func: () -> Any) {
             .subscribeOn(Schedulers.newThread())
             .subscribe()
 }
+
+val <T> Box<T>.size: Int
+    get() = this.count().toInt()
+
+fun <T> Box<T>.forEach(action: (T) -> Unit) =
+        this.all.forEach(action)
