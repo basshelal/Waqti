@@ -51,6 +51,7 @@ object Caches {
     val priorities: Cache<Priority> = Cache(Database.priorities)
     val timeUnits: Cache<TimeUnit> = Cache(Database.timeUnits)
     val testEntities: Cache<TestEntity> = Cache(Database.testEntities)
+    // TODO: 09-Nov-18 Get rid of TestEntities altogether when everything works
 
     private val allTaskCaches = mutableListOf(
             tasks,

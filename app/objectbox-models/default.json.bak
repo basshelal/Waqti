@@ -158,9 +158,41 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "10:1443816588941720172",
+      "lastPropertyId": "3:7736196011292137480",
+      "name": "TestEntity",
+      "properties": [
+        {
+          "id": "1:7562197359671642422",
+          "name": "id"
+        },
+        {
+          "id": "2:4889485592616527080",
+          "name": "name"
+        },
+        {
+          "id": "3:7736196011292137480",
+          "name": "number"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "11:2738591931670337151",
+      "lastPropertyId": "1:4379230671249839484",
+      "name": "BasicList",
+      "properties": [
+        {
+          "id": "1:4379230671249839484",
+          "name": "id"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "9:4005571448960804553",
+  "lastEntityId": "11:2738591931670337151",
   "lastIndexId": "0:0",
   "lastRelationId": "0:0",
   "lastSequenceId": "0:0",

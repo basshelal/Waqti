@@ -2,13 +2,16 @@ package uk.whitecrescent.waqti.model.collections
 
 import android.annotation.SuppressLint
 import io.reactivex.Observable
+import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.task.ObserverException
 import uk.whitecrescent.waqti.model.task.TIME_CHECKING_PERIOD
 import uk.whitecrescent.waqti.model.task.TIME_CHECKING_UNIT
 import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.TaskState
 
-open class BasicList(tasks: Collection<Task> = emptyList()) : AbstractWaqtiList<Task>() {
+open class BasicList(tasks: Collection<Task> = emptyList()) : AbstractWaqtiList<Task>(), Cacheable {
+
+    override var id: Long = 0L
 
     init {
         this.growTo(tasks.size)
@@ -20,6 +23,14 @@ open class BasicList(tasks: Collection<Task> = emptyList()) : AbstractWaqtiList<
             field = value
             autoRemoveKilled()
         }
+
+    override fun update() {
+
+    }
+
+    override fun notDefault(): Boolean {
+        return this.list == emptyList<Task>()
+    }
 
 //    fun add(collection: Collection<Tuple>): BasicList {
 //        collection.forEach { this.addAll(it.toList()) }

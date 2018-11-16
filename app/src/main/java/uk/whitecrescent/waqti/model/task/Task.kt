@@ -38,7 +38,6 @@ class Task(title: String = "") : Listable, Cacheable {
     }
     //endregion Debug
 
-    // not persisted?
     @Transient
     val activeObservers = ArrayList<String>()
 
