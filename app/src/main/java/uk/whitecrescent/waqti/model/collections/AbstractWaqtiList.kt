@@ -3,6 +3,7 @@ package uk.whitecrescent.waqti.model.collections
 // Document this and check to see if this is thread safe or not
 // TODO: 09-Nov-18 Persisting collections is a HUGE problem, may need a big re-write for Collections
 // but consider using ObjectBox Relations like @ToMany etc
+// TODO: 16-Nov-18 This is just a bunch of functions, better to have this(or some TaskList) be nearly empty and add extenstions but maybe not
 abstract class AbstractWaqtiList<E> : WaqtiList<E> {
 
     //region Properties

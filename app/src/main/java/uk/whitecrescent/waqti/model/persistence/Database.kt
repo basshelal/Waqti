@@ -35,7 +35,6 @@ object Database {
     lateinit var allDBs: List<Box<*>>
         private set
 
-    // TODO: 08-Nov-18 make Database Queries on each box be asynchronous using Rx possibly
 
     fun build(context: Context) {
         store = MyObjectBox.builder().androidContext(context.applicationContext).build()

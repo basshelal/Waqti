@@ -9,6 +9,8 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.view.View
+import uk.whitecrescent.waqti.model.persistence.Database
+import uk.whitecrescent.waqti.model.task.Task
 
 inline fun Activity.shortSnackbar(view: View, string: CharSequence) =
         Snackbar.make(view, string, Snackbar.LENGTH_SHORT).show()
@@ -20,4 +22,9 @@ inline fun Activity.checkWritePermission() {
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
 
     }
+}
+
+inline fun addTasks(amount: Int) {
+    Database.tasks.put(
+            Array(amount, { Task("Auto Generated Task #$it") }).toList())
 }

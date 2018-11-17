@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android
+package uk.whitecrescent.waqti.android.views
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -10,9 +10,9 @@ import android.view.ViewGroup
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.android.checkWritePermission
 import uk.whitecrescent.waqti.model.logE
 import uk.whitecrescent.waqti.model.persistence.Database
-import uk.whitecrescent.waqti.model.task.Task
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,8 +47,4 @@ class Adapter : RecyclerView.Adapter<ViewHolder>() {
         (holder.itemView as TextView).text = db[position.toLong() + 1].toString()
     }
 
-}
-
-fun addTasks(amount: Int) {
-    Database.tasks.put(Array(amount, { Task() }).toList())
 }

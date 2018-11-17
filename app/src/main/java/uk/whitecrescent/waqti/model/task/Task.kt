@@ -18,6 +18,7 @@ import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.tasks
 
 // TODO: 18-Jun-18 When done, make sure everything is tested and doc'd
+// TODO: 16-Nov-18 Update doc
 @Entity
 class Task(title: String = "") : Listable, Cacheable {
 
@@ -29,17 +30,14 @@ class Task(title: String = "") : Listable, Cacheable {
 
     //region Debug
 
-    private inline fun debug(exec: () -> Any) {
-        if (DEBUG) exec.invoke()
-    }
-
     private fun debug(string: String) {
         if (DEBUG) println(string)
     }
-    //endregion Debug
 
     @Transient
-    val activeObservers = ArrayList<String>()
+    private val activeObservers = ArrayList<String>()
+
+    //endregion Debug
 
     //region Class Properties
 

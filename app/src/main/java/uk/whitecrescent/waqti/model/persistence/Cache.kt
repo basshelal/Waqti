@@ -119,6 +119,7 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
         return map.toString()
     }
 
+    @Throws(CacheElementNotFoundException::class)
     protected fun safeGet(id: ID): E {
         val mapFound = map[id]
         //val dbFound = db.get(id)
