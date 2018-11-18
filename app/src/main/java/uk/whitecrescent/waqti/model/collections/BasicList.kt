@@ -32,12 +32,12 @@ open class BasicList(tasks: Collection<Task> = emptyList()) : AbstractWaqtiList<
         return this.list == emptyList<Task>()
     }
 
-//    fun add(collection: Collection<Tuple>): BasicList {
-//        collection.forEach { this.addAll(it.toList()) }
-//        return this
-//    }
-//
-//    fun add(vararg tuples: Tuple) = add(tuples.toList())
+    fun add(collection: Collection<Tuple>): BasicList {
+        collection.forEach { this.addAll(it.toList()) }
+        return this
+    }
+
+    fun add(vararg tuples: Tuple) = add(tuples.toList())
 
     fun sortByTime(): BasicList {
         this.sort(Comparator { t1, t2 -> t1.time.value.compareTo(t2.time.value) })

@@ -36,3 +36,6 @@ inline fun sleep(duration: Duration) {
 inline fun <T> message(expected: T, actual: T) {
     println("Expected:\t${expected.toString()} \nActual:\t\t${actual.toString()}")
 }
+
+// Global variable to check if the DB has been built
+var DB_BUILT = false
