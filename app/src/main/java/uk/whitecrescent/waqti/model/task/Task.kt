@@ -1175,7 +1175,7 @@ class Task(title: String = "") : Listable, Cacheable {
 
     // hiding means setting to default which in the user's perspective means remove this
     // property completely, this currently only works if the property is not constrained
-    // if you want to remove a constraint, first you must unconstrain then you can hide
+    // if you want to remove a constraint, first you must un-constrain then you can hide
     // we may change this later
     fun hideTime() {
         if (!time.isConstrained) {
@@ -1258,7 +1258,7 @@ class Task(title: String = "") : Listable, Cacheable {
 
     //region Task lifecycle
 
-    // TODO: 05-Nov-18 needs to be put in way more places 
+    // TODO: 05-Nov-18 needs to be put in way more places maybe?
     override fun update() {
         Caches.tasks.put(this)
     }

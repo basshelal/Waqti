@@ -9,7 +9,7 @@ import uk.whitecrescent.waqti.model.hash
 import uk.whitecrescent.waqti.model.persistence.Caches
 
 @Entity
-class TimeUnit(name: String, duration: Duration) : Cacheable {
+class TimeUnit(name: String = "", duration: Duration = Duration.ZERO) : Cacheable {
 
     @Id
     override var id = 0L
@@ -34,7 +34,7 @@ class TimeUnit(name: String, duration: Duration) : Cacheable {
         }
 
     override fun notDefault(): Boolean {
-        return false
+        return name != "" || duration != Duration.ZERO
     }
 
     companion object {

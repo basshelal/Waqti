@@ -178,11 +178,32 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "12:4292655057614788197",
+      "lastPropertyId": "2:6277015241882235539",
+      "name": "TaskList",
+      "properties": [
+        {
+          "id": "1:6364545451447930927",
+          "name": "id"
+        },
+        {
+          "id": "2:6277015241882235539",
+          "name": "isAutoRemovingKilled"
+        }
+      ],
+      "relations": [
+        {
+          "id": "1:6347487514119236147",
+          "name": "tasks"
+        }
+      ]
     }
   ],
-  "lastEntityId": "11:2738591931670337151",
+  "lastEntityId": "12:4292655057614788197",
   "lastIndexId": "0:0",
-  "lastRelationId": "0:0",
+  "lastRelationId": "1:6347487514119236147",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
   "modelVersionParserMinimum": 4,
