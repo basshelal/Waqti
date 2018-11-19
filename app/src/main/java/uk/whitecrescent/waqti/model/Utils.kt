@@ -65,5 +65,7 @@ fun <T> Observable<T>.doAsync(func: () -> Any) {
 val <T> Box<T>.size: Int
     get() = this.count().toInt()
 
+fun <T> Box<T>.isEmpty() = this.count() == 0L
+
 fun <T> Box<T>.forEach(action: (T) -> Unit) =
         this.all.forEach(action)

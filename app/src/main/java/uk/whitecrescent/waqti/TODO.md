@@ -1,28 +1,19 @@
 # TODO (Short)
 
-* Finish up Task by testing everything, making sure the tests are thorough and deep
-
 * Finish the task package classes 
 
-* Start figuring out how to do Persistence with ObjectBox on Task
+* Test ALL Task functionality
 
-* Figure out a way to fix the Test Coverage 
+* Finish documentation of all Task subsystem
+
+* Persistence for Collections
 
 # TODO (Long)
 
-* Write Markdown Documentation for Tuple
-
-* Write Markdown Documentation for Habit subsystem (Routine, Habit, Goal)
-
-* Write Markdown Documentation for Lists
-
-* Write Markdown Documentation for Habit subsystem (Routine, Habit, Goal)
+* Write/Update Markdown Documentation 
 
 * Write stories tests to test as many possible scenarios, here we try to write tests to break the thing
 
-* Finish documentation inside Task class
-
-* Update Task Markdown Documentation when Task is finalized
 
 # Notes
 
@@ -64,6 +55,10 @@ the anonymous Task's Properties (like a placeholder)
 -----------------------------------------------------------------------------------------------------------------------
 
 # Done
+
+* ~~Start figuring out how to do Persistence with ObjectBox on Task~~
+
+* ~~Figure out a way to fix the Test Coverage~~
 
 * ~~Fix up Template Tasks and Bundles, when done implement it in the Cache~~
 

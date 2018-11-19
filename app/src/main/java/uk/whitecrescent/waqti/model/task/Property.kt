@@ -2,6 +2,7 @@ package uk.whitecrescent.waqti.model.task
 
 import uk.whitecrescent.waqti.model.hash
 
+//isMet doesn't mean anything if isConstrained is false!
 open class Property<V>(open var isVisible: Boolean,
                        open var value: V,
                        open var isConstrained: Boolean,

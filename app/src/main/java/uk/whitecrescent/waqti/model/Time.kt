@@ -34,6 +34,9 @@ inline val today: Date
 inline val tomorrow: Date
     get() = Date.now().plusDays(1)
 
+inline val yesterday: Date
+    get() = Date.now().minusDays(1)
+
 inline val Number.millis: Duration
     get() = Duration.ofMillis(this.toLong())
 

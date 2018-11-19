@@ -447,10 +447,15 @@ class Task(title: String = "") : Listable, Cacheable {
     fun setTimeProperty(timeProperty: Property<Time>): Task {
         this.time = TimeProperty(
                 timeProperty.isVisible, timeProperty.value, timeProperty.isConstrained, timeProperty.isMet)
-        if (timeProperty.isConstrained) {
-            if (timeProperty.value.isAfter(now)) {
+
+        if (this.time.isConstrained) {
+            if (this.time.value.isAfter(now)) {
                 if (canSleep()) sleep()
-                makeFailableIfConstraint(timeProperty)
+                makeFailableIfConstraint(this.time)
+            }
+
+            if (this.time.value.isBefore(now)) {
+                this.time.isMet = MET
             }
             timeConstraintTimeChecking()
         }
@@ -1168,6 +1173,10 @@ class Task(title: String = "") : Listable, Cacheable {
 
     //region Hide Properties
 
+    // hiding means setting to default which in the user's perspective means remove this
+    // property completely, this currently only works if the property is not constrained
+    // if you want to remove a constraint, first you must unconstrain then you can hide
+    // we may change this later
     fun hideTime() {
         if (!time.isConstrained) {
             time = DEFAULT_TIME_PROPERTY
@@ -1466,7 +1475,7 @@ class Task(title: String = "") : Listable, Cacheable {
                                 }
                                 now.isAfter(this.time.value) -> {
                                     if (this.state == TaskState.SLEEPING) this.state = TaskState.EXISTING
-                                    if (this.time.isConstrained && this.time.isMet != MET) {
+                                    if (this.time.isConstrained && !this.time.isMet) {
                                         this.time.isMet = MET
                                     }
                                     done = true
