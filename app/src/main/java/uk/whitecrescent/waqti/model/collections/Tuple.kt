@@ -7,6 +7,10 @@ import uk.whitecrescent.waqti.model.task.Task
 // Name should change to something like Ordering or Series or Sequence
 class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>(), Listable {
 
+    override var list: ArrayList<Task>
+        get() = ArrayList()
+        set(value) {}
+
     constructor(vararg tasks: Task) : this(tasks.toList())
 
     init {
@@ -17,47 +21,47 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>(), Listable {
     //region Add
 
     //By default adds all unconstrained
-    @Throws(IndexOutOfBoundsException::class)
-    override fun addAllAt(index: Int, collection: Collection<Task>): Tuple {
-        when {
-            !inRange(index) -> {
-                throw  IndexOutOfBoundsException("Cannot add $collection at index $index, limits are 0 to $nextIndex")
-            }
-            collection.isNotEmpty() -> {
-                val collectionList = collection.toList()
-                if (collectionList.size > 1) {
-                    for (i in 1..collectionList.lastIndex) {
-                        collectionList[i]
-                                .setBeforePropertyValue(collectionList[i - 1])
-                    }
-                }
-                if (this.isNotEmpty()) {
-                    collectionList[0].setBeforePropertyValue(this[index - 1])
-                    if (index < size) {
-                        this[index].setBeforePropertyValue(collectionList.last())
-                    }
-                }
-                list.addAll(index, collectionList)
-            }
-        }
-        return this
-    }
+//    @Throws(IndexOutOfBoundsException::class)
+//    override fun addAllAt(index: Int, collection: Collection<Task>): Tuple {
+//        when {
+//            !inRange(index) -> {
+//                throw  IndexOutOfBoundsException("Cannot add $collection at index $index, limits are 0 to $nextIndex")
+//            }
+//            collection.isNotEmpty() -> {
+//                val collectionList = collection.toList()
+//                if (collectionList.size > 1) {
+//                    for (i in 1..collectionList.lastIndex) {
+//                        collectionList[i]
+//                                .setBeforePropertyValue(collectionList[i - 1])
+//                    }
+//                }
+//                if (this.isNotEmpty()) {
+//                    collectionList[0].setBeforePropertyValue(this[index - 1])
+//                    if (index < size) {
+//                        this[index].setBeforePropertyValue(collectionList.last())
+//                    }
+//                }
+//                list.addAll(index, collectionList)
+//            }
+//        }
+//        return this
+//    }
 
-    @Throws(IndexOutOfBoundsException::class)
-    override fun addAt(index: Int, element: Task): Tuple {
-        if (!inRange(index)) {
-            throw  IndexOutOfBoundsException("Cannot add $element at index $index, limits are 0 to $nextIndex")
-        } else {
-            if (this.isNotEmpty()) {
-                element.setBeforePropertyValue(this[index - 1])
-                if (index < size) {
-                    this[index].setBeforePropertyValue(element)
-                }
-            }
-            list.add(index, element)
-            return this
-        }
-    }
+//    @Throws(IndexOutOfBoundsException::class)
+//    override fun addAt(index: Int, element: Task): Tuple {
+//        if (!inRange(index)) {
+//            throw  IndexOutOfBoundsException("Cannot add $element at index $index, limits are 0 to $nextIndex")
+//        } else {
+//            if (this.isNotEmpty()) {
+//                element.setBeforePropertyValue(this[index - 1])
+//                if (index < size) {
+//                    this[index].setBeforePropertyValue(element)
+//                }
+//            }
+//            list.add(index, element)
+//            return this
+//        }
+//    }
 
     //Simple Override changes return type to be more specific
     @SimpleOverride
@@ -96,40 +100,40 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>(), Listable {
 
     //region Remove
 
-    override fun removeAt(index: Int): Tuple {
-        when {
-            !inRange(index) -> {
-                throw  IndexOutOfBoundsException("Cannot remove at index $index, limits are 0 to $nextIndex")
-            }
-            this.size == 1 -> {
-                this[index].hideBefore()
-                list.removeAt(index)
-            }
-            index == 0 -> {
-                this[index + 1].hideBefore()
-                list.removeAt(index)
-            }
-            index == size - 1 -> {
-                this[index].hideBefore()
-                list.removeAt(index)
-            }
-            else -> {
-                this[index].hideBefore()
-                this[index + 1].setBeforePropertyValue(this[index - 1])
-                list.removeAt(index)
-            }
-        }
-        return this
-    }
-
-    override fun removeAll(collection: Collection<Task>): Tuple {
-        if (collection.isNotEmpty()) {
-            this.getAll(collection).forEach { it.hideBefore() }
-            list.removeAll(collection)
-            adjust()
-        }
-        return this
-    }
+//    override fun removeAt(index: Int): Tuple {
+//        when {
+//            !inRange(index) -> {
+//                throw  IndexOutOfBoundsException("Cannot remove at index $index, limits are 0 to $nextIndex")
+//            }
+//            this.size == 1 -> {
+//                this[index].hideBefore()
+//                list.removeAt(index)
+//            }
+//            index == 0 -> {
+//                this[index + 1].hideBefore()
+//                list.removeAt(index)
+//            }
+//            index == size - 1 -> {
+//                this[index].hideBefore()
+//                list.removeAt(index)
+//            }
+//            else -> {
+//                this[index].hideBefore()
+//                this[index + 1].setBeforePropertyValue(this[index - 1])
+//                list.removeAt(index)
+//            }
+//        }
+//        return this
+//    }
+//
+//    override fun removeAll(collection: Collection<Task>): Tuple {
+//        if (collection.isNotEmpty()) {
+//            this.getAll(collection).forEach { it.hideBefore() }
+//            list.removeAll(collection)
+//            adjust()
+//        }
+//        return this
+//    }
 
     @SimpleOverride
     override fun removeFirst(element: Task) = super.removeFirst(element) as Tuple

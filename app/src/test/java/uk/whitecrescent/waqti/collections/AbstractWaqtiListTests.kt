@@ -15,7 +15,11 @@ import uk.whitecrescent.waqti.model.collections.ElementNotFoundException
 class AbstractWaqtiListTests {
 
     // Dummy class for testing AbstractWaqtiList
-    private class AbstractWaqtiListDummy : AbstractWaqtiList<String>()
+    private class AbstractWaqtiListDummy : AbstractWaqtiList<String>() {
+        override var list: ArrayList<String>
+            get() = ArrayList()
+            set(value) {}
+    }
 
     @DisplayName("Empty List")
     @Test
@@ -1119,21 +1123,21 @@ class AbstractWaqtiListTests {
         assertEquals("ZERO", list.stream().findFirst().get())
     }
 
-    @DisplayName("List List Iterator")
-    @Test
-    fun testListListIterator() {
-        val list = AbstractWaqtiListDummy()
-                .addAll(
-                        "ZERO",
-                        "ONE",
-                        "TWO",
-                        "THREE",
-                        "FOUR",
-                        "FIVE"
-                ) as AbstractWaqtiListDummy
-        list.listIterator().add("SIX")
-        assertEquals(7, list.size)
-    }
+//    @DisplayName("List List Iterator")
+//    @Test
+//    fun testListListIterator() {
+//        val list = AbstractWaqtiListDummy()
+//                .addAll(
+//                        "ZERO",
+//                        "ONE",
+//                        "TWO",
+//                        "THREE",
+//                        "FOUR",
+//                        "FIVE"
+//                ) as AbstractWaqtiListDummy
+//        list.listIterator().add("SIX")
+//        assertEquals(7, list.size)
+//    }
 
     @DisplayName("List List Iterator Indexed")
     @Test

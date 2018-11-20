@@ -58,6 +58,14 @@ object Database {
         )
     }
 
+    inline fun <reified T> put(vararg elements: T) {
+        store.boxFor<T>().put(*elements)
+    }
+
+//    inline fun <reified T> get(element: T): T? {
+//        return store.boxFor<T>().all.firstOrNull { it == element }
+//    }
+
     fun clearAllDBs(): Committable {
         return object : Committable {
             override fun commit() {

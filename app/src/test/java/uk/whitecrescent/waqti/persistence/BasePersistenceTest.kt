@@ -19,7 +19,6 @@ open class BasePersistenceTest {
         @BeforeAll
         fun beforeAll() {
             if (!DB_BUILT || Database.store.isClosed) {
-                println("BUILT: $DB_BUILT")
                 Database.buildTest(File("DEBUG_DB"))
                 DB_BUILT = true
             }
@@ -44,11 +43,9 @@ open class BasePersistenceTest {
 
     @AfterEach
     fun afterEach() {
-        //println("DELETING...")
         Database.clearAllDBs().commit()
         Caches.clearAllCaches().commit()
         Database.allDBs.forEach { assertTrue(it.count().toInt() == 0) }
         Caches.allCachesList.forEach { assertTrue(it.isEmpty()) }
-        //println("DELETED!")
     }
 }

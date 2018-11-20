@@ -178,11 +178,48 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "12:4292655057614788197",
+      "lastPropertyId": "2:6277015241882235539",
+      "name": "TaskList",
+      "properties": [
+        {
+          "id": "1:6364545451447930927",
+          "name": "id"
+        },
+        {
+          "id": "2:6277015241882235539",
+          "name": "isAutoRemovingKilled"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "13:9065599662120120134",
+      "lastPropertyId": "2:4603706049672705558",
+      "name": "TestTaskList",
+      "properties": [
+        {
+          "id": "1:4611776873821675876",
+          "name": "id"
+        },
+        {
+          "id": "2:4603706049672705558",
+          "name": "arrayList"
+        }
+      ],
+      "relations": [
+        {
+          "id": "3:8985201363338834308",
+          "name": "list"
+        }
+      ]
     }
   ],
-  "lastEntityId": "11:2738591931670337151",
+  "lastEntityId": "13:9065599662120120134",
   "lastIndexId": "0:0",
-  "lastRelationId": "0:0",
+  "lastRelationId": "3:8985201363338834308",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
   "modelVersionParserMinimum": 4,
@@ -223,6 +260,9 @@
     1437445340731273311,
     4379230671249839484
   ],
-  "retiredRelationUids": [],
+  "retiredRelationUids": [
+    6347487514119236147,
+    7292405226433464990
+  ],
   "version": 1
 }

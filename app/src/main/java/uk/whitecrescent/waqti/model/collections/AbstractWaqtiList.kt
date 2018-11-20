@@ -1,9 +1,12 @@
 package uk.whitecrescent.waqti.model.collections
 
+import io.objectbox.annotation.BaseEntity
+
 // Document this and check to see if this is thread safe or not
 // TODO: 09-Nov-18 Persisting collections is a HUGE problem, may need a big re-write for Collections
 // but consider using ObjectBox Relations like @ToMany etc
 // TODO: 16-Nov-18 This is just a bunch of functions, better to have this(or some TaskList) be nearly empty and add extenstions but maybe not
+@BaseEntity
 abstract class AbstractWaqtiList<E> : WaqtiList<E> {
 
     //region Properties
@@ -16,8 +19,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      *
      * @see java.util.ArrayList
      */
-    @NoOverride
-    protected open val list = ArrayList<E>(15)
+    protected abstract var list: ArrayList<E>
 
     /**
      * The integer value representing the size of this list.
@@ -154,6 +156,9 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
         if (!inRange(index)) {
             throw  IndexOutOfBoundsException("Cannot add $element at index $index, limits are 0 to $nextIndex")
         } else {
+//            val list0 = ArrayList(list)
+//            list0.add(index, element)
+//            list = list0.toList()
             list.add(index, element)
             return this
         }
@@ -208,6 +213,9 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
         if (!inRange(index)) {
             throw  IndexOutOfBoundsException("Cannot add $collection at index $index, limits are 0 to $nextIndex")
         } else {
+//            val list0 = ArrayList(list)
+//            list0.addAll(index, collection)
+//            list = list0.toList()
             list.addAll(index, collection)
             return this
         }
@@ -349,6 +357,9 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
         if (!inRange(index)) {
             throw  IndexOutOfBoundsException("Cannot remove at index $index, limits are 0 to $nextIndex")
         } else {
+//            val list0 = ArrayList(list)
+//            list0.removeAt(index)
+//            list = list0.toList()
             list.removeAt(index)
             return this
         }
@@ -376,6 +387,9 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      * @return this list after removing all the elements
      */
     override fun removeAll(collection: Collection<E>): AbstractWaqtiList<E> {
+//        val list0 = ArrayList(list)
+//        list0.removeAll(collection)
+//        list = list0.toList()
         list.removeAll(collection)
         return this
     }
@@ -745,6 +759,9 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      */
     @NoOverride
     override fun sort(comparator: Comparator<E>): AbstractWaqtiList<E> {
+//        val list0 = ArrayList(list)
+//        list0.sortWith(comparator)
+//        list = list0.toList()
         list.sortWith(comparator)
         return this
     }
@@ -763,6 +780,9 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      */
     @NoOverride
     override fun growTo(size: Int): AbstractWaqtiList<E> {
+//        val list0 = ArrayList(list)
+//        list0.ensureCapacity(size)
+//        list = list0.toList()
         list.ensureCapacity(size)
         return this
     }

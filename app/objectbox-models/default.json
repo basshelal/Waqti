@@ -193,17 +193,28 @@
           "name": "isAutoRemovingKilled"
         }
       ],
-      "relations": [
+      "relations": []
+    },
+    {
+      "id": "13:9065599662120120134",
+      "lastPropertyId": "3:8724328199340543279",
+      "name": "TestTaskList",
+      "properties": [
         {
-          "id": "1:6347487514119236147",
-          "name": "tasks"
+          "id": "1:4611776873821675876",
+          "name": "id"
+        },
+        {
+          "id": "3:8724328199340543279",
+          "name": "list"
         }
-      ]
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "12:4292655057614788197",
+  "lastEntityId": "13:9065599662120120134",
   "lastIndexId": "0:0",
-  "lastRelationId": "1:6347487514119236147",
+  "lastRelationId": "3:8985201363338834308",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
   "modelVersionParserMinimum": 4,
@@ -242,8 +253,13 @@
     4986851251708955139,
     1281846739885089027,
     1437445340731273311,
-    4379230671249839484
+    4379230671249839484,
+    4603706049672705558
   ],
-  "retiredRelationUids": [],
+  "retiredRelationUids": [
+    6347487514119236147,
+    7292405226433464990,
+    8985201363338834308
+  ],
   "version": 1
 }

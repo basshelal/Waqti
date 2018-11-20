@@ -3,7 +3,6 @@ package uk.whitecrescent.waqti.model.collections
 import android.annotation.SuppressLint
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
-import io.objectbox.relation.ToMany
 import io.reactivex.Observable
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.task.ObserverException
@@ -15,10 +14,11 @@ import uk.whitecrescent.waqti.model.task.TaskState
 @Entity
 open class TaskList(tasks: Collection<Task> = emptyList()) : AbstractWaqtiList<Task>(), Cacheable {
 
+    override var list: ArrayList<Task>
+        get() = ArrayList()
+        set(value) {}
     @Id
     override var id: Long = 0L
-
-    lateinit var tasks: ToMany<Task>
 
     init {
         this.growTo(tasks.size)

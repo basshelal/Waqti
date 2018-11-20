@@ -51,13 +51,6 @@ class Task(title: String = "") : Listable, Cacheable {
     @Id
     override var id = 0L
 
-    init {
-        if (notDefault()) {
-            update()
-            checkNotDead()
-        }
-    }
-
     /**
      * The Task State is the state in which the task is in at this point in time.
      * By default this is initialized to EXISTING.
@@ -330,6 +323,13 @@ class Task(title: String = "") : Listable, Cacheable {
     @Convert(converter = LongArrayListPropertyConverter::class, dbType = String::class)
     var subTasks: LongArrayListProperty = DEFAULT_SUB_TASKS_PROPERTY
         private set
+
+    init {
+        if (notDefault()) {
+            update()
+            checkNotDead()
+        }
+    }
 
     //endregion Task Properties
 
