@@ -1,29 +1,28 @@
 package uk.whitecrescent.waqti.model.collections
 
 import android.annotation.SuppressLint
+import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.reactivex.Observable
 import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.persistence.Database
+import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.ObserverException
 import uk.whitecrescent.waqti.model.task.TIME_CHECKING_PERIOD
 import uk.whitecrescent.waqti.model.task.TIME_CHECKING_UNIT
 import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.TaskState
+import java.util.concurrent.ConcurrentHashMap
 
 @Entity
 open class TaskList(tasks: Collection<Task> = emptyList()) : AbstractWaqtiList<Task>(), Cacheable {
 
-    override var list: ArrayList<Task>
-        get() = ArrayList()
-        set(value) {}
+    @Convert(converter = IDArrayListConverter::class, dbType = String::class)
+    override var idList = ArrayList<ID>()
+
     @Id
     override var id: Long = 0L
-
-    init {
-        this.growTo(tasks.size)
-        this.addAll(tasks)
-    }
 
     var isAutoRemovingKilled = false
         set(value) {
@@ -31,12 +30,26 @@ open class TaskList(tasks: Collection<Task> = emptyList()) : AbstractWaqtiList<T
             autoRemoveKilled()
         }
 
+    init {
+        this.growTo(tasks.size)
+        this.addAll(tasks)
+    }
+
+    override fun getAll(): ConcurrentHashMap<ID, Task> {
+        return ConcurrentHashMap(
+                Database.tasks.all
+                        .filter { it.id in idList }
+                        .map { Pair(it.id, it) }
+                        .toMap()
+        )
+    }
+
     override fun update() {
 
     }
 
     override fun notDefault(): Boolean {
-        return this.list == emptyList<Task>()
+        return this.idList == emptyList<Task>()
     }
 
     fun add(collection: Collection<Tuple>): TaskList {

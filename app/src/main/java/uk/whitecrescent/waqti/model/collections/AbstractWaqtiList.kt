@@ -1,13 +1,15 @@
 package uk.whitecrescent.waqti.model.collections
 
 import io.objectbox.annotation.BaseEntity
+import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.ids
+import uk.whitecrescent.waqti.model.task.ID
+import uk.whitecrescent.waqti.model.toArrayList
+import java.util.concurrent.ConcurrentHashMap
 
 // Document this and check to see if this is thread safe or not
-// TODO: 09-Nov-18 Persisting collections is a HUGE problem, may need a big re-write for Collections
-// but consider using ObjectBox Relations like @ToMany etc
-// TODO: 16-Nov-18 This is just a bunch of functions, better to have this(or some TaskList) be nearly empty and add extenstions but maybe not
 @BaseEntity
-abstract class AbstractWaqtiList<E> : WaqtiList<E> {
+abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E> {
 
     //region Properties
 
@@ -19,7 +21,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      *
      * @see java.util.ArrayList
      */
-    protected abstract var list: ArrayList<E>
+    protected abstract var idList: ArrayList<ID>
 
     /**
      * The integer value representing the size of this list.
@@ -34,7 +36,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      */
     @NoOverride
     override val size: Int
-        get() = list.size
+        get() = idList.size
 
     /**
      * The integer value representing the next index in this list, this is the index after the last, the one where
@@ -57,9 +59,11 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      */
     @NoOverride
     val nextIndex: Int
-        get() = list.lastIndex + 1
+        get() = idList.lastIndex + 1
 
     //endregion Properties
+
+    protected abstract fun getAll(): ConcurrentHashMap<ID, E>
 
     //region Operators
 
@@ -78,7 +82,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      */
     @NoOverride
     @Throws(IndexOutOfBoundsException::class)
-    override operator fun get(index: Int) = list[index]
+    override operator fun get(index: Int) = safeGet(idList[index])
 
     /**
      * Gets the first instance of an element that is equal to the element passed in (note that this will depend on
@@ -92,11 +96,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
     @NoOverride
     @Throws(ElementNotFoundException::class)
     override operator fun get(element: E): E {
-        val found = list.find { it == element }
-        if (found == null) {
-            throw ElementNotFoundException("$element")
-        } else
-            return found
+        return safeGet(element.id)
     }
 
     /**
@@ -112,7 +112,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      * @return true if this list contains an element equal to the passed in element and false otherwise
      */
     @NoOverride
-    override operator fun contains(element: E) = list.contains(element)
+    override operator fun contains(element: E) = idList.contains(element.id)
 
     override fun set(index: Int, element: E) = addAt(index, element)
 
@@ -156,10 +156,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
         if (!inRange(index)) {
             throw  IndexOutOfBoundsException("Cannot add $element at index $index, limits are 0 to $nextIndex")
         } else {
-//            val list0 = ArrayList(list)
-//            list0.add(index, element)
-//            list = list0.toList()
-            list.add(index, element)
+            idList.add(index, element.id)
             return this
         }
     }
@@ -213,10 +210,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
         if (!inRange(index)) {
             throw  IndexOutOfBoundsException("Cannot add $collection at index $index, limits are 0 to $nextIndex")
         } else {
-//            val list0 = ArrayList(list)
-//            list0.addAll(index, collection)
-//            list = list0.toList()
-            list.addAll(index, collection)
+            idList.addAll(index, collection.ids)
             return this
         }
     }
@@ -294,8 +288,8 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
         val arrayList = ArrayList<Int>(collection.size)
         for (toUpdate in collection) {
             for (element in this) {
-                if (element == toUpdate) {
-                    arrayList.add(indexOf(element))
+                if (element.id == toUpdate.id) {
+                    arrayList.add(idList.indexOf(element.id))
                 }
             }
         }
@@ -360,7 +354,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
 //            val list0 = ArrayList(list)
 //            list0.removeAt(index)
 //            list = list0.toList()
-            list.removeAt(index)
+            idList.removeAt(index)
             return this
         }
     }
@@ -387,10 +381,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      * @return this list after removing all the elements
      */
     override fun removeAll(collection: Collection<E>): AbstractWaqtiList<E> {
-//        val list0 = ArrayList(list)
-//        list0.removeAll(collection)
-//        list = list0.toList()
-        list.removeAll(collection)
+        idList.removeAll(collection.ids)
         return this
     }
 
@@ -463,8 +454,8 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
         val result = ArrayList<E>(collection.size)
         for (fromElement in collection) {
             for (thisElement in this) {
-                if (fromElement == thisElement) {
-                    result.add(thisElement)
+                if (fromElement.id == thisElement.id) {
+                    result.add(safeGet(thisElement.id))
                 }
             }
         }
@@ -480,7 +471,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      * @return this list as a read only kotlin [List]
      */
     @NoOverride
-    override fun toList() = list.toList()
+    override fun toList() = getAll().values.toList()
 
     /**
      * Checks whether this list contains *all* of the passed in elements, returns true if every element passed in
@@ -506,7 +497,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
 
      */
     @NoOverride
-    override fun containsAll(elements: Collection<E>) = list.containsAll(elements)
+    override fun containsAll(elements: Collection<E>) = idList.containsAll(elements.ids)
 
     /**
      * Checks whether this list is empty, returns true if this list contains no elements and false otherwise.
@@ -519,7 +510,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      * @return true if this list is empty and false if it is not
      */
     @NoOverride
-    override fun isEmpty() = list.isEmpty()
+    override fun isEmpty() = idList.isEmpty()
 
     /**
      * Returns the index of the first instance of an element equal to the passed in element, if no such instance is
@@ -534,9 +525,9 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
     @NoOverride
     @Throws(ElementNotFoundException::class)
     override fun indexOf(element: E): Int {
-        if (list.indexOf(element) == -1) {
+        if (idList.indexOf(element.id) == -1) {
             throw ElementNotFoundException("$element")
-        } else return list.indexOf(element)
+        } else return idList.indexOf(element.id)
     }
 
     /**
@@ -551,9 +542,9 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      */
     @NoOverride
     override fun lastIndexOf(element: E): Int {
-        if (list.lastIndexOf(element) == -1) {
+        if (idList.lastIndexOf(element.id) == -1) {
             throw ElementNotFoundException("$element")
-        } else return list.lastIndexOf(element)
+        } else return idList.lastIndexOf(element.id)
     }
 
     /**
@@ -593,8 +584,8 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
             !inRange(fromIndex, toIndex) -> {
                 throw  IndexOutOfBoundsException("Cannot SubList $fromIndex to $toIndex, limits are 0 and $nextIndex")
             }
-            fromIndex > toIndex -> list.subList(toIndex + 1, fromIndex + 1)
-            fromIndex < toIndex -> list.subList(fromIndex, toIndex)
+            fromIndex > toIndex -> getAll().values.toArrayList.subList(toIndex + 1, fromIndex + 1)
+            fromIndex < toIndex -> getAll().values.toArrayList.subList(fromIndex, toIndex)
             else -> emptyList()
         }
     }
@@ -759,10 +750,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      */
     @NoOverride
     override fun sort(comparator: Comparator<E>): AbstractWaqtiList<E> {
-//        val list0 = ArrayList(list)
-//        list0.sortWith(comparator)
-//        list = list0.toList()
-        list.sortWith(comparator)
+        getAll().values.sortedWith(comparator)
         return this
     }
 
@@ -783,7 +771,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
 //        val list0 = ArrayList(list)
 //        list0.ensureCapacity(size)
 //        list = list0.toList()
-        list.ensureCapacity(size)
+        idList.ensureCapacity(size)
         return this
     }
 
@@ -795,7 +783,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      * @return the iterator of this list
      */
     @NoOverride
-    override fun iterator() = list.iterator()
+    override fun iterator() = getAll().values.iterator()
 
     /**
      * Returns a list iterator over the elements in this list (in proper
@@ -806,7 +794,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
      * @return a list iterator over the elements in this list in orders
      */
     @NoOverride
-    override fun listIterator() = list.listIterator()
+    override fun listIterator() = getAll().values.toArrayList.listIterator()
 
     /**
      * Returns a list iterator over the elements in this list (in proper
@@ -824,7 +812,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
         if (index < 0 || index > size) {
             throw IndexOutOfBoundsException("Cannot return List Iterator with index $index, limits are 0 to $size")
         }
-        return list.listIterator(index)
+        return getAll().values.toArrayList.listIterator(index)
     }
 
     /**
@@ -842,6 +830,10 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
             }
         }
         return true
+    }
+
+    protected fun safeGet(id: ID): E {
+        return getAll()[id] ?: throw  ElementNotFoundException("$id")
     }
 
     //endregion List Utils
@@ -862,8 +854,8 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
          * @throws IndexOutOfBoundsException if the `toIndex` is out of bounds
          */
         @Throws(IndexOutOfBoundsException::class)
-        fun <E> moveElements(listFrom: AbstractWaqtiList<E>, listTo: AbstractWaqtiList<E>,
-                             elements: Collection<E>, toIndex: Int = listTo.nextIndex) {
+        fun <E : Cacheable> moveElements(listFrom: AbstractWaqtiList<E>, listTo: AbstractWaqtiList<E>,
+                                         elements: Collection<E>, toIndex: Int = listTo.nextIndex) {
             val found = listFrom.getAll(elements)
             when {
                 !listTo.inRange(toIndex) -> {
@@ -888,8 +880,8 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
          * @throws IndexOutOfBoundsException if the `toIndex` is out of bounds
          */
         @Throws(IndexOutOfBoundsException::class)
-        fun <E> copyElements(listFrom: AbstractWaqtiList<E>, listTo: AbstractWaqtiList<E>,
-                             elements: Collection<E>, toIndex: Int = listTo.nextIndex) {
+        fun <E : Cacheable> copyElements(listFrom: AbstractWaqtiList<E>, listTo: AbstractWaqtiList<E>,
+                                         elements: Collection<E>, toIndex: Int = listTo.nextIndex) {
             val found = listFrom.getAll(elements)
             when {
                 !listTo.inRange(toIndex) -> {
@@ -901,9 +893,9 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
             }
         }
 
-        fun <E> swapElements(listLeft: AbstractWaqtiList<E>, listRight: AbstractWaqtiList<E>,
-                             elementsLeft: Collection<E>, elementsRight: Collection<E>,
-                             indexIntoLeft: Int = listLeft.nextIndex, indexIntoRight: Int = listRight.nextIndex) {
+        fun <E : Cacheable> swapElements(listLeft: AbstractWaqtiList<E>, listRight: AbstractWaqtiList<E>,
+                                         elementsLeft: Collection<E>, elementsRight: Collection<E>,
+                                         indexIntoLeft: Int = listLeft.nextIndex, indexIntoRight: Int = listRight.nextIndex) {
 
             val foundLeft = listLeft.getAll(elementsLeft)
             val foundRight = listRight.getAll(elementsRight)
@@ -931,22 +923,22 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
             }
         }
 
-        fun <E> join(intoList: AbstractWaqtiList<E>, thisList: AbstractWaqtiList<E>) =
+        fun <E : Cacheable> join(intoList: AbstractWaqtiList<E>, thisList: AbstractWaqtiList<E>) =
                 ArrayList<E>(intoList + thisList).toList()
 
-        fun <E> intersection(thisList: AbstractWaqtiList<E>, thatList: AbstractWaqtiList<E>) =
+        fun <E : Cacheable> intersection(thisList: AbstractWaqtiList<E>, thatList: AbstractWaqtiList<E>) =
                 ArrayList<E>(thisList + thatList).filter { it in thisList && it in thatList }.toList()
 
-        fun <E> intersectionDistinct(thisList: AbstractWaqtiList<E>, thatList: AbstractWaqtiList<E>) =
+        fun <E : Cacheable> intersectionDistinct(thisList: AbstractWaqtiList<E>, thatList: AbstractWaqtiList<E>) =
                 ArrayList<E>(thisList + thatList).filter { it in thisList && it in thatList }.distinct().toList()
 
-        fun <E> difference(inThis: AbstractWaqtiList<E>, notInThis: AbstractWaqtiList<E>) =
+        fun <E : Cacheable> difference(inThis: AbstractWaqtiList<E>, notInThis: AbstractWaqtiList<E>) =
                 ArrayList<E>(inThis + notInThis).filter { it in inThis && it !in notInThis }.toList()
 
-        fun <E> differenceDistinct(inThis: AbstractWaqtiList<E>, notInThis: AbstractWaqtiList<E>) =
+        fun <E : Cacheable> differenceDistinct(inThis: AbstractWaqtiList<E>, notInThis: AbstractWaqtiList<E>) =
                 ArrayList<E>(inThis + notInThis).filter { it in inThis && it !in notInThis }.distinct().toList()
 
-        fun <E> union(vararg lists: AbstractWaqtiList<E>): List<E> {
+        fun <E : Cacheable> union(vararg lists: AbstractWaqtiList<E>): List<E> {
             val result = ArrayList<E>(lists.size)
             for (list in lists) {
                 for (element in list) {
@@ -956,7 +948,7 @@ abstract class AbstractWaqtiList<E> : WaqtiList<E> {
             return result.toList()
         }
 
-        fun <E> unionDistinct(vararg lists: AbstractWaqtiList<E>): List<E> {
+        fun <E : Cacheable> unionDistinct(vararg lists: AbstractWaqtiList<E>): List<E> {
             val result = ArrayList<E>(lists.size)
             for (list in lists) {
                 for (element in list) {

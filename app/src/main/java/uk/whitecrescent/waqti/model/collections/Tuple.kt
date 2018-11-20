@@ -2,20 +2,24 @@ package uk.whitecrescent.waqti.model.collections
 
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Listable
+import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
+import java.util.concurrent.ConcurrentHashMap
 
 // Name should change to something like Ordering or Series or Sequence
 class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>(), Listable {
 
-    override var list: ArrayList<Task>
-        get() = ArrayList()
-        set(value) {}
+    override var idList = ArrayList<ID>()
 
     constructor(vararg tasks: Task) : this(tasks.toList())
 
     init {
         this.growTo(tasks.size)
         this.addAll(tasks.toList())
+    }
+
+    override fun getAll(): ConcurrentHashMap<ID, Task> {
+        return ConcurrentHashMap()
     }
 
     //region Add
@@ -194,7 +198,7 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>(), Listable {
                 throw IndexOutOfBoundsException("Cannot constrain at $index, limits are 0 to $nextIndex")
             }
             this.size > 1 -> {
-                list[index].setBeforeConstraintValue(list[index - 1])
+                this[index].setBeforeConstraintValue(idList[index - 1])
             }
         }
         return this
@@ -218,7 +222,7 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>(), Listable {
                 throw IndexOutOfBoundsException("Cannot constrain at $index, limits are 0 to $nextIndex")
             }
             this.size > 1 -> {
-                list[index].setBeforePropertyValue(list[index - 1])
+                this[index].setBeforePropertyValue(idList[index - 1])
             }
         }
         return this
@@ -251,7 +255,7 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>(), Listable {
                 throw IndexOutOfBoundsException("Cannot kill task at $index, limits are 0 to $nextIndex")
             }
             else -> {
-                list[index].kill()
+                this[index].kill()
             }
         }
         return this
