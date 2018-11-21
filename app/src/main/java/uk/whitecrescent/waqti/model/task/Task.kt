@@ -10,7 +10,6 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Duration
-import uk.whitecrescent.waqti.model.Listable
 import uk.whitecrescent.waqti.model.Time
 import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.now
@@ -20,9 +19,9 @@ import uk.whitecrescent.waqti.model.tasks
 // TODO: 18-Jun-18 When done, make sure everything is tested and doc'd
 // TODO: 16-Nov-18 Update doc
 @Entity
-class Task(title: String = "") : Listable, Cacheable {
+class Task(name: String = "") : Cacheable {
 
-    var title = title
+    var name = name
         set(value) {
             field = value
             update()
@@ -109,7 +108,7 @@ class Task(title: String = "") : Listable, Cacheable {
      *
      * A Task's Equality Bundle is determined by the following:
      *
-     * * [title]
+     * * [name]
      * * [state]
      * * [isFailable]
      * * [isKillable]
@@ -131,7 +130,7 @@ class Task(title: String = "") : Listable, Cacheable {
      */
     private fun equalityBundle(): HashMap<String, Any> {
         val bundle = HashMap<String, Any>(8)
-        bundle["title"] = this.title
+        bundle["name"] = this.name
         bundle["state"] = this.state
         bundle["isFailable"] = this.isFailable
         bundle["isKillable"] = this.isKillable
@@ -231,7 +230,7 @@ class Task(title: String = "") : Listable, Cacheable {
 
     /**
      * A textual description of this Task, useful for if the Task is complex or requires further information that the
-     * title cannot provide.
+     * name cannot provide.
      *
      * Description can not be a Constraint.
      *
@@ -421,6 +420,11 @@ class Task(title: String = "") : Listable, Cacheable {
     //endregion Task Properties Functions
 
     //region Property setters for chaining
+
+    fun changeName(newName: String): Task {
+        this.name = newName
+        return this
+    }
 
     //region Time
 
@@ -1275,16 +1279,16 @@ class Task(title: String = "") : Listable, Cacheable {
 
     fun fail() {
         if (!isFailable) {
-            throw TaskStateException("Fail unsuccessful, ${this.title} is not Failable", this.state)
+            throw TaskStateException("Fail unsuccessful, ${this.name} is not Failable", this.state)
         }
         if (state == TaskState.FAILED) {
-            throw TaskStateException("Fail unsuccessful, ${this.title} is already Failed!", this.state)
+            throw TaskStateException("Fail unsuccessful, ${this.name} is already Failed!", this.state)
         }
         if (state == TaskState.SLEEPING) {
-            throw TaskStateException("Fail unsuccessful, ${this.title} is Sleeping!", this.state)
+            throw TaskStateException("Fail unsuccessful, ${this.name} is Sleeping!", this.state)
         }
         if (state == TaskState.KILLED) {
-            throw TaskStateException("Fail unsuccessful, ${this.title} is Killed!", this.state)
+            throw TaskStateException("Fail unsuccessful, ${this.name} is Killed!", this.state)
         } else if (canFail()) {
             state = TaskState.FAILED
             age++
@@ -1298,10 +1302,10 @@ class Task(title: String = "") : Listable, Cacheable {
 
     fun sleep() {
         if (state == TaskState.SLEEPING) {
-            throw TaskStateException("Sleep unsuccessful, ${this.title} is already Sleeping!", this.state)
+            throw TaskStateException("Sleep unsuccessful, ${this.name} is already Sleeping!", this.state)
         }
         if (state == TaskState.KILLED) {
-            throw TaskStateException("Sleep unsuccessful, ${this.title} is Killed!", this.state)
+            throw TaskStateException("Sleep unsuccessful, ${this.name} is Killed!", this.state)
         } else if (canSleep()) {
             state = TaskState.SLEEPING
             update()
@@ -1314,20 +1318,20 @@ class Task(title: String = "") : Listable, Cacheable {
 
     fun kill() {
         if (!isKillable) {
-            throw TaskStateException("Kill unsuccessful, ${this.title} is not Killable", this.state)
+            throw TaskStateException("Kill unsuccessful, ${this.name} is not Killable", this.state)
         }
         if (state == TaskState.KILLED) {
-            throw TaskStateException("Kill unsuccessful, ${this.title} is already Killed!", this.state)
+            throw TaskStateException("Kill unsuccessful, ${this.name} is already Killed!", this.state)
         }
         if (state == TaskState.FAILED) {
-            throw TaskStateException("Kill unsuccessful, ${this.title} is Failed", this.state)
+            throw TaskStateException("Kill unsuccessful, ${this.name} is Failed", this.state)
         }
         if (state == TaskState.SLEEPING) {
-            throw TaskStateException("Kill unsuccessful, ${this.title} is Sleeping", this.state)
+            throw TaskStateException("Kill unsuccessful, ${this.name} is Sleeping", this.state)
         }
         if (getAllUnmetAndShowingConstraints().isNotEmpty()) {
             throw TaskStateException(
-                    "Kill unsuccessful, ${this.title} has unmet Constraints ${this.getAllUnmetAndShowingConstraints()}",
+                    "Kill unsuccessful, ${this.name} has unmet Constraints ${this.getAllUnmetAndShowingConstraints()}",
                     this.state)
         } else if (canKill()) {
             state = TaskState.KILLED
@@ -1868,7 +1872,7 @@ class Task(title: String = "") : Listable, Cacheable {
     //region Overriden
 
     override fun notDefault(): Boolean {
-        return title != "" || id != 0L
+        return name != "" || id != 0L
     }
 
     /**
@@ -1908,7 +1912,7 @@ class Task(title: String = "") : Listable, Cacheable {
      * @return the String representation of this Task
      */
     override fun toString(): String {
-        val result = StringBuilder("$title\n")
+        val result = StringBuilder("$name\n")
         result.append("ID: $id isKillable: $isKillable isFailable: $isFailable state: $state\n")
 
         if (getAllShowingProperties().isNotEmpty()) {

@@ -26,7 +26,7 @@ open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
     @Id
     override var id: Long = 0L
 
-    var name: String = name
+    open var name: String = name
         set(value) {
             field = value
             update()

@@ -1,19 +1,18 @@
 # TODO (Short)
 
-* Finish the task package classes 
+* Add features not yet implemented in the back end
 
-* Test ALL Task functionality
+* Test and Document all Task Subsystem
 
-* Finish documentation of all Task subsystem
+* Test and Document all Collections Subsystem
 
-* Persistence for Collections
+* Start with simple functional Android UI using DragListView which will be improved later
 
 # TODO (Long)
 
 * Write/Update Markdown Documentation 
 
 * Write stories tests to test as many possible scenarios, here we try to write tests to break the thing
-
 
 # Notes
 

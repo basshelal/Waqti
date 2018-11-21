@@ -97,10 +97,10 @@
 //        tuple.addAt(1, task)
 //
 //        assertEquals(4, tuple.size)
-//        assertEquals("Task0", tuple[0].title)
-//        assertEquals("Task", tuple[1].title)
-//        assertEquals("Task1", tuple[2].title)
-//        assertEquals("Task2", tuple[3].title)
+//        assertEquals("Task0", tuple[0].name)
+//        assertEquals("Task", tuple[1].name)
+//        assertEquals("Task1", tuple[2].name)
+//        assertEquals("Task2", tuple[3].name)
 //
 //        assertFalse(tuple[0].before.isVisible)
 //        assertTrue(tuple[1].before.isVisible)
@@ -112,8 +112,8 @@
 //        assertEquals(tuple[1].id, tuple[2].before.value)
 //        assertEquals(tuple[2].id, tuple[3].before.value)
 //
-////        assertEquals("Task0", tuple[1].before.value.task().title)
-////        assertEquals("Task", tuple[2].before.value.task().title)
+////        assertEquals("Task0", tuple[1].before.value.task().name)
+////        assertEquals("Task", tuple[2].before.value.task().name)
 //
 //        assertThrows(IndexOutOfBoundsException::class.java, { tuple.addAt(7, Task()) })
 //    }
@@ -190,13 +190,13 @@
 //                        Task(),
 //                        Task("Another Task")
 //                ),
-//                { it.title.isNotBlank() }
+//                { it.name.isNotBlank() }
 //        )
 //
 //        assertEquals(5, tuple.size)
 //        testOrdered(tuple)
 //
-//        tuple.forEach { assertTrue(it.title.isNotBlank()) }
+//        tuple.forEach { assertTrue(it.name.isNotBlank()) }
 //    }
 //
 //    @DisplayName("Tuple Remove First")
@@ -293,7 +293,7 @@
 //        tuple.move(1, 3)
 //        val titles = listOf("TestTask 0", "TestTask 2", "TestTask 3", "TestTask 1", "TestTask 4",
 //                "TestTask 5")
-//        titles.forEachIndexed { index, string -> assertTrue(string == tuple[index].title) }
+//        titles.forEachIndexed { index, string -> assertTrue(string == tuple[index].name) }
 //        testOrdered(tuple)
 //    }
 //

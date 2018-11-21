@@ -27,12 +27,12 @@ class OtherTask : BaseTaskTest() {
     @Test
     fun testTaskTitle() {
         val task = Task()
-        assertEquals("", task.title)
+        assertEquals("", task.name)
 
         val task1 = Task("My Task")
-        assertEquals("My Task", task1.title)
-        task1.title = "My Task Updated"
-        assertEquals("My Task Updated", task1.title)
+        assertEquals("My Task", task1.name)
+        task1.name = "My Task Updated"
+        assertEquals("My Task Updated", task1.name)
     }
 
     @DisplayName("Task HashCode Equal")
@@ -41,7 +41,7 @@ class OtherTask : BaseTaskTest() {
         val task = Task("My Task")
         val task1 = Task("My Task")
         assertEquals(task1.hashCode(), task.hashCode())
-        task1.title = "My Task "
+        task1.name = "My Task "
         assertNotEquals(task1.hashCode(), task.hashCode())
     }
 
@@ -357,7 +357,7 @@ class OtherTask : BaseTaskTest() {
     @Test
     fun testTaskToString() {
         val task = Task("My Task")
-        assertEquals("${task.title}\nID: ${task.id} " +
+        assertEquals("${task.name}\nID: ${task.id} " +
                 "isKillable: ${task.isKillable} " +
                 "isFailable: ${task.isFailable} " +
                 "state: ${task.state}\n", task.toString())

@@ -485,10 +485,10 @@ fun testTaskAddSubTasks() {
         val level3SubTasks = level2SubTasks.first().subTasks.value.tasks
         val level4SubTasks = level3SubTasks.first().subTasks.value.tasks
 
-        assertEquals("Level1", rootSubTasks.first().title)
-        assertEquals("Level2", level1SubTasks.first().title)
-        assertEquals("Level3", level2SubTasks.first().title)
-        assertEquals("Level4", level3SubTasks.first().title)
+        assertEquals("Level1", rootSubTasks.first().name)
+        assertEquals("Level2", level1SubTasks.first().name)
+        assertEquals("Level3", level2SubTasks.first().name)
+        assertEquals("Level4", level3SubTasks.first().name)
         assertEquals(0, level4SubTasks.size)
 
         level4.kill()

@@ -9,8 +9,9 @@ import java.util.concurrent.ConcurrentHashMap
 
 // Document this and check to see if this is thread safe or not
 // TODO: 21-Nov-18 Consider making this Cacheable so that we can call the update when we need to
+// TODO: 21-Nov-18 Put update() where it needs to be!
 @BaseEntity
-abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E> {
+abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
 
     //region Properties
 

@@ -41,7 +41,7 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
     }
 
     override fun notDefault(): Boolean {
-        return this.name != "" || this.id != 0L
+        return this.name != "" || this.id != 0L || this.idList.isNotEmpty()
     }
 
     override fun update() {

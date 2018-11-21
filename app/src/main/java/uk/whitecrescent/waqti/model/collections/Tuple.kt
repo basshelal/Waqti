@@ -1,13 +1,12 @@
 package uk.whitecrescent.waqti.model.collections
 
 import uk.whitecrescent.waqti.model.Duration
-import uk.whitecrescent.waqti.model.Listable
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 import java.util.concurrent.ConcurrentHashMap
 
 // Name should change to something like Ordering or Series or Sequence
-class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>(), Listable {
+class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
 
     override var idList = ArrayList<ID>()
 
@@ -20,6 +19,17 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>(), Listable {
 
     override fun getAll(): ConcurrentHashMap<ID, Task> {
         return ConcurrentHashMap()
+    }
+
+    override fun notDefault(): Boolean {
+        return false
+    }
+
+    override val id: ID
+        get() = 0
+
+    override fun update() {
+
     }
 
     //region Add

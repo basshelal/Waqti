@@ -1,7 +1,6 @@
 package uk.whitecrescent.waqti.model.persistence
 
 import uk.whitecrescent.waqti.model.Committable
-import uk.whitecrescent.waqti.model.TestEntity
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.task.Label
@@ -52,13 +51,12 @@ object Caches {
     val labels: Cache<Label> = Cache(Database.labels)
     val priorities: Cache<Priority> = Cache(Database.priorities)
     val timeUnits: Cache<TimeUnit> = Cache(Database.timeUnits)
-    val testEntities: Cache<TestEntity> = Cache(Database.testEntities)
     // TODO: 09-Nov-18 Get rid of TestEntities altogether when everything works
     val taskLists: Cache<TaskList> = Cache(Database.taskLists)
     val boards: Cache<Board> = Cache(Database.boards)
 
     val allCaches = listOf(
-            tasks, templates, labels, priorities, timeUnits, testEntities, taskLists, boards
+            tasks, templates, labels, priorities, timeUnits, taskLists, boards
     )
 
     fun clearAllCaches(): Committable {

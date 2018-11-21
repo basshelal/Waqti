@@ -6,7 +6,6 @@ import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.MyObjectBox
-import uk.whitecrescent.waqti.model.TestEntity
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.task.Label
@@ -38,8 +37,6 @@ object Database {
         private set
     lateinit var timeUnits: Box<TimeUnit>
         private set
-    lateinit var testEntities: Box<TestEntity>
-        private set
 
     // Collections
 
@@ -65,11 +62,10 @@ object Database {
         labels = store.boxFor()
         priorities = store.boxFor()
         timeUnits = store.boxFor()
-        testEntities = store.boxFor()
         taskLists = store.boxFor()
         boards = store.boxFor()
         allDBs = listOf(
-                tasks, templates, labels, priorities, timeUnits, testEntities, taskLists, boards
+                tasks, templates, labels, priorities, timeUnits, taskLists, boards
         )
     }
 
