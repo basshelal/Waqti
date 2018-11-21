@@ -150,12 +150,11 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
 
     private val isInconsistent: Boolean
         get() {
-            if (map.size != db.size) {
-                if (map.values.sortedBy { it.id } != db.all.sortedBy { it.id }) {
-                    return true
-                }
-            }
-            return false
+            if (map.size != db.size || map.values.sortedBy { it.id } != db.all.sortedBy { it.id }) {
+                // TODO: 21-Nov-18 could we just do if they are equal without first sorting them??
+                // would be faster af!
+                return true
+            } else return false
         }
 
     // not slow for 10_000!

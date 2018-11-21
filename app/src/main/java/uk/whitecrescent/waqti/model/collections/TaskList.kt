@@ -6,6 +6,7 @@ import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.reactivex.Observable
 import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.ObserverException
@@ -16,13 +17,20 @@ import uk.whitecrescent.waqti.model.task.TaskState
 import java.util.concurrent.ConcurrentHashMap
 
 @Entity
-open class TaskList(tasks: Collection<Task> = emptyList()) : AbstractWaqtiList<Task>(), Cacheable {
+open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
+    : AbstractWaqtiList<Task>(), Cacheable {
 
     @Convert(converter = IDArrayListConverter::class, dbType = String::class)
     override var idList = ArrayList<ID>()
 
     @Id
     override var id: Long = 0L
+
+    var name: String = name
+        set(value) {
+            field = value
+            update()
+        }
 
     var isAutoRemovingKilled = false
         set(value) {
@@ -33,23 +41,24 @@ open class TaskList(tasks: Collection<Task> = emptyList()) : AbstractWaqtiList<T
     init {
         this.growTo(tasks.size)
         this.addAll(tasks)
+        this.update()
     }
 
     override fun getAll(): ConcurrentHashMap<ID, Task> {
         return ConcurrentHashMap(
                 Database.tasks.all
                         .filter { it.id in idList }
-                        .map { Pair(it.id, it) }
+                        .map { it.id to it }
                         .toMap()
         )
     }
 
     override fun update() {
-
+        Caches.taskLists.put(this)
     }
 
     override fun notDefault(): Boolean {
-        return this.idList == emptyList<Task>()
+        return this.name != "" || this.id != 0L || this.idList.isNotEmpty()
     }
 
     fun add(collection: Collection<Tuple>): TaskList {
@@ -76,8 +85,20 @@ open class TaskList(tasks: Collection<Task> = emptyList()) : AbstractWaqtiList<T
         return this
     }
 
+    fun sortByOptional(): TaskList {
+        this.sort(Comparator { t1, t2 -> t1.optional.value.compareTo(t2.optional.value) })
+        return this
+    }
+
     fun sortByDeadline(): TaskList {
         this.sort(Comparator { t1, t2 -> t1.deadline.value.compareTo(t2.deadline.value) })
+        return this
+    }
+
+    fun sortByBefore(): TaskList {
+        // TODO: 21-Nov-18 Figure this out
+        // this will make sure that no Tasks are out of order, meaning it is impossible to have a
+        // Task that comes before A come after A in this list
         return this
     }
 

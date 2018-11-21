@@ -7,6 +7,8 @@ import io.objectbox.kotlin.boxFor
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.MyObjectBox
 import uk.whitecrescent.waqti.model.TestEntity
+import uk.whitecrescent.waqti.model.collections.Board
+import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
@@ -16,10 +18,16 @@ import java.io.File
 
 // A build function must be invoked before using anything else here! consider it the constructor
 // or init of this object
+// For doing anything Persistence related it is best to do it with its respective Cache!
 object Database {
 
     lateinit var store: BoxStore
         private set
+    lateinit var allDBs: List<Box<*>>
+        private set
+
+    // Tasks
+
     lateinit var tasks: Box<Task>
         private set
     lateinit var templates: Box<Template>
@@ -32,7 +40,12 @@ object Database {
         private set
     lateinit var testEntities: Box<TestEntity>
         private set
-    lateinit var allDBs: List<Box<*>>
+
+    // Collections
+
+    lateinit var taskLists: Box<TaskList>
+        private set
+    lateinit var boards: Box<Board>
         private set
 
 
@@ -53,18 +66,12 @@ object Database {
         priorities = store.boxFor()
         timeUnits = store.boxFor()
         testEntities = store.boxFor()
+        taskLists = store.boxFor()
+        boards = store.boxFor()
         allDBs = listOf(
-                tasks, templates, labels, priorities, timeUnits, testEntities
+                tasks, templates, labels, priorities, timeUnits, testEntities, taskLists, boards
         )
     }
-
-    inline fun <reified T> put(vararg elements: T) {
-        store.boxFor<T>().put(*elements)
-    }
-
-//    inline fun <reified T> get(element: T): T? {
-//        return store.boxFor<T>().all.firstOrNull { it == element }
-//    }
 
     fun clearAllDBs(): Committable {
         return object : Committable {

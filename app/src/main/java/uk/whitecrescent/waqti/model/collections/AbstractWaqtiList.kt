@@ -8,6 +8,7 @@ import uk.whitecrescent.waqti.model.toArrayList
 import java.util.concurrent.ConcurrentHashMap
 
 // Document this and check to see if this is thread safe or not
+// TODO: 21-Nov-18 Consider making this Cacheable so that we can call the update when we need to
 @BaseEntity
 abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E> {
 
@@ -750,7 +751,8 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E> {
      */
     @NoOverride
     override fun sort(comparator: Comparator<E>): AbstractWaqtiList<E> {
-        getAll().values.sortedWith(comparator)
+        val ordered = getAll().values.sortedWith(comparator).ids
+        this.idList.matchOrder(ordered)
         return this
     }
 

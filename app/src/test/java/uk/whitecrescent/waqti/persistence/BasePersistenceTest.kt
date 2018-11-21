@@ -38,7 +38,7 @@ open class BasePersistenceTest {
         Caches.clearAllCaches().commit()
 
         Database.allDBs.forEach { assertTrue(it.size == 0) }
-        Caches.allCachesList.forEach { assertTrue(it.isEmpty()) }
+        Caches.allCaches.forEach { assertTrue(it.isEmpty()) }
     }
 
     @AfterEach
@@ -46,6 +46,6 @@ open class BasePersistenceTest {
         Database.clearAllDBs().commit()
         Caches.clearAllCaches().commit()
         Database.allDBs.forEach { assertTrue(it.count().toInt() == 0) }
-        Caches.allCachesList.forEach { assertTrue(it.isEmpty()) }
+        Caches.allCaches.forEach { assertTrue(it.isEmpty()) }
     }
 }

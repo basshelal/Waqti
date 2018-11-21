@@ -2,6 +2,8 @@ package uk.whitecrescent.waqti.model.persistence
 
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.TestEntity
+import uk.whitecrescent.waqti.model.collections.Board
+import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
@@ -52,37 +54,17 @@ object Caches {
     val timeUnits: Cache<TimeUnit> = Cache(Database.timeUnits)
     val testEntities: Cache<TestEntity> = Cache(Database.testEntities)
     // TODO: 09-Nov-18 Get rid of TestEntities altogether when everything works
+    val taskLists: Cache<TaskList> = Cache(Database.taskLists)
+    val boards: Cache<Board> = Cache(Database.boards)
 
-    private val allTaskCaches = mutableListOf(
-            tasks,
-            templates,
-            labels,
-            priorities,
-            timeUnits
+    val allCaches = listOf(
+            tasks, templates, labels, priorities, timeUnits, testEntities, taskLists, boards
     )
-
-    val allTaskCachesList = allTaskCaches.toList()
-
-    private val allCaches = mutableListOf(
-            *allTaskCaches.toTypedArray()
-    )
-
-    val allCachesList = allCaches.toList()
-
-    fun clearAllTaskCaches(): Committable {
-        return object : Committable {
-            override fun commit() {
-                allTaskCaches.forEach { it.clear() }
-                testEntities.clear()
-            }
-        }
-    }
 
     fun clearAllCaches(): Committable {
         return object : Committable {
             override fun commit() {
                 allCaches.forEach { it.clear() }
-                testEntities.clear()
             }
         }
     }

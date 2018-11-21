@@ -38,7 +38,7 @@ open class BaseTaskTest {
         Caches.clearAllCaches().commit()
 
         Database.allDBs.forEach { assertTrue(it.isEmpty()) }
-        Caches.allCachesList.forEach { assertTrue(it.isEmpty()) }
+        Caches.allCaches.forEach { assertTrue(it.isEmpty()) }
     }
 
     @AfterEach
@@ -47,7 +47,7 @@ open class BaseTaskTest {
         Caches.clearAllCaches().commit()
 
         Database.allDBs.forEach { assertTrue(it.isEmpty()) }
-        Caches.allCachesList.forEach { assertTrue(it.isEmpty()) }
+        Caches.allCaches.forEach { assertTrue(it.isEmpty()) }
     }
 
 }

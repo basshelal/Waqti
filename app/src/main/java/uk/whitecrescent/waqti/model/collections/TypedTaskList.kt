@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.model.collections
 
-import uk.whitecrescent.waqti.model.task.Task
+import io.objectbox.annotation.Entity
 
-abstract class TypedTaskList(tasks: Collection<Task>) : TaskList(tasks) {
+@Entity
+open class TypedTaskList(name: String = "") : TaskList(name) {
 }
