@@ -4,6 +4,8 @@ import android.annotation.SuppressLint
 import io.objectbox.Box
 import io.reactivex.Observable
 import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.Committable
+import uk.whitecrescent.waqti.model.collections.QueriesDataBase
 import uk.whitecrescent.waqti.model.forEach
 import uk.whitecrescent.waqti.model.size
 import uk.whitecrescent.waqti.model.task.ID
@@ -94,7 +96,14 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
     fun removeIf(predicate: () -> Boolean) =
             map.forEach { if (predicate.invoke()) remove(it.value) }
 
-    fun clear() = map.clear()
+    fun clear(): Committable {
+        return object : Committable {
+            override fun commit() {
+                db.removeAll()
+                map.clear()
+            }
+        }
+    }
 
     fun query() = map.values.toList()
 
@@ -119,43 +128,38 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
         return map.toString()
     }
 
-    @Throws(CacheElementNotFoundException::class)
+    @Throws(ElementNotFoundException::class)
     protected fun safeGet(id: ID): E {
         val mapFound = map[id]
-        //val dbFound = db.get(id)
-
-        if (mapFound == null) throw  CacheElementNotFoundException(id)
-        return mapFound
 
         // below queries the DB, we want to reduce this as much as possible
         // we do this by making sure every update made to the db will also be done to the cache
         // we may also let the cache update itself every once in a while to keep the values
         // correct in the cache
 
-//        return when {
-//            mapFound == null -> {
-//                if (dbFound == null) throw CacheElementNotFoundException(id)
-//                else {
-//                    map[dbFound.id] = dbFound
-//                    return dbFound
-//                }
-//            }
-//            mapFound != dbFound -> {
-//                map[dbFound.id] = dbFound
-//                dbFound
-//            }
-//            else -> mapFound
-//        }
+        return when {
+            mapFound == null -> {
+                val dbFound = db[id]
+                if (dbFound == null) throw ElementNotFoundException(id)
+                else {
+                    map[dbFound.id] = dbFound
+                    dbFound
+                }
+            }
+            // TODO: 22-Nov-18 this unnecessarily queries the DB! Change it if possible
+            @QueriesDataBase
+            mapFound != db[id] -> {
+                val dbFound = db[id]
+                map[dbFound.id] = dbFound
+                dbFound
+            }
+            else -> mapFound
+        }
     }
 
+    @QueriesDataBase
     private val isInconsistent: Boolean
-        get() {
-            if (map.size != db.size || map.values.sortedBy { it.id } != db.all.sortedBy { it.id }) {
-                // TODO: 21-Nov-18 could we just do if they are equal without first sorting them??
-                // would be faster af!
-                return true
-            } else return false
-        }
+        get() = map.size != db.size || map.values.sortedBy { it.id } != db.all.sortedBy { it.id }
 
     // not slow for 10_000!
     // only executes something if the map and db are different for whatever reason

@@ -1,147 +1,134 @@
-package uk.whitecrescent.waqti.model.task
-
-import uk.whitecrescent.waqti.model.Duration
-import uk.whitecrescent.waqti.model.Time
-
-
-private const val timeIndex = 0
-private const val durationIndex = 1
-private const val priorityIndex = 2
-private const val labelsIndex = 3
-private const val optionalIndex = 4
-private const val descriptionIndex = 5
-private const val checklistIndex = 6
-private const val targetIndex = 7
-private const val deadlineIndex = 8
-private const val beforeIndex = 9
-private const val subTasksIndex = 10
-
-@Suppress("UNCHECKED_CAST")
-class PropertyBundle(val task: Task) {
-
-    private val properties = arrayOf(*ALL_PROPERTIES)
-
-    var time: Property<Time>
-        set(value) {
-            properties[timeIndex] = value
-        }
-        get() = properties[timeIndex] as Property<Time>
-
-    var duration: Property<Duration>
-        set(value) {
-            properties[durationIndex] = value
-        }
-        get() = properties[durationIndex] as Property<Duration>
-
-    var priority: Property<Priority>
-        set(value) {
-            properties[priorityIndex] = value
-        }
-        get() = properties[priorityIndex] as Property<Priority>
-
-    var labels: Property<ArrayList<Label>>
-        set(value) {
-            properties[labelsIndex] = value
-        }
-        get() = properties[labelsIndex] as Property<ArrayList<Label>>
-
-    var optional: Property<Optional>
-        set(value) {
-            properties[optionalIndex] = value
-        }
-        get() = properties[optionalIndex] as Property<Optional>
-
-    var description: Property<Description>
-        set(value) {
-            properties[descriptionIndex] = value
-        }
-        get() = properties[descriptionIndex] as Property<Description>
-
-    var checklist: Property<Checklist>
-        set(value) {
-            properties[checklistIndex] = value
-        }
-        get() = properties[checklistIndex] as Property<Checklist>
-
-    var target: Property<Target>
-        set(value) {
-            properties[targetIndex] = value
-        }
-        get() = properties[targetIndex] as Property<Target>
-
-    var deadline: Property<Time>
-        set(value) {
-            properties[deadlineIndex] = value
-        }
-        get() = properties[deadlineIndex] as Property<Time>
-
-    var before: Property<ID>
-        set(value) {
-            properties[beforeIndex] = value
-        }
-        get() = properties[beforeIndex] as Property<ID>
-
-    var subTasks: Property<ArrayList<ID>>
-        set(value) {
-            properties[subTasksIndex] = value
-        }
-        get() = properties[subTasksIndex] as Property<ArrayList<ID>>
-
-    init {
-        time = task.time
-        duration = task.duration
-        priority = task.priority
-        labels = task.labels
-        optional = task.optional
-        description = task.description
-        checklist = task.checklist
-        target = task.target
-        deadline = task.deadline
-        before = task.before
-        subTasks = task.subTasks
-        assert(properties.size == 11) // TODO: 19-May-18 remember to remove this
-    }
-
-    companion object {
-        fun bundlesAreSubset(superBundle: PropertyBundle, subBundle: PropertyBundle): Boolean {
-            val list = (0..10).map { true }.toMutableList()
-            assert(list.size == 11) // TODO: 22-May-18 remember to remove this
-
-            if (superBundle.time != DEFAULT_TIME_PROPERTY) {
-                list[timeIndex] = subBundle.time == superBundle.time
-            }
-            if (superBundle.duration != DEFAULT_DURATION_PROPERTY) {
-                list[durationIndex] = subBundle.duration == superBundle.duration
-            }
-            if (superBundle.priority != DEFAULT_PRIORITY_PROPERTY) {
-                list[priorityIndex] = subBundle.priority == superBundle.priority
-            }
-            if (superBundle.labels != DEFAULT_LABELS_PROPERTY) {
-                list[labelsIndex] = subBundle.labels == superBundle.labels
-            }
-            if (superBundle.optional != DEFAULT_OPTIONAL_PROPERTY) {
-                list[optionalIndex] = subBundle.optional == superBundle.optional
-            }
-            if (superBundle.description != DEFAULT_DESCRIPTION_PROPERTY) {
-                list[descriptionIndex] = subBundle.description == superBundle.description
-            }
-            if (superBundle.checklist != DEFAULT_CHECKLIST_PROPERTY) {
-                list[checklistIndex] = subBundle.checklist == superBundle.checklist
-            }
-            if (superBundle.deadline != DEFAULT_DEADLINE_PROPERTY) {
-                list[deadlineIndex] = subBundle.deadline == superBundle.deadline
-            }
-            if (superBundle.target != DEFAULT_TARGET_PROPERTY) {
-                list[targetIndex] = subBundle.target == superBundle.target
-            }
-            if (superBundle.before != DEFAULT_BEFORE_PROPERTY) {
-                list[beforeIndex] = subBundle.before == superBundle.before
-            }
-            if (superBundle.subTasks != DEFAULT_SUB_TASKS_PROPERTY) {
-                list[subTasksIndex] = subBundle.subTasks == superBundle.subTasks
-            }
-            return list.all { it == true }
-        }
-    }
-
-}
+//package uk.whitecrescent.waqti.model.task
+//
+//import io.objectbox.annotation.Convert
+//import io.objectbox.annotation.Entity
+//import uk.whitecrescent.waqti.model.hash
+//
+//private const val timeIndex = 0
+//private const val durationIndex = 1
+//private const val priorityIndex = 2
+//private const val labelsIndex = 3
+//private const val optionalIndex = 4
+//private const val descriptionIndex = 5
+//private const val checklistIndex = 6
+//private const val targetIndex = 7
+//private const val deadlineIndex = 8
+//private const val beforeIndex = 9
+//private const val subTasksIndex = 10
+//
+//@Entity
+////@Suppress("UNCHECKED_CAST")
+//class PropertyBundle(@Transient val task: Task) {
+//
+//    @Convert(converter = TimePropertyConverter::class, dbType = String::class)
+//    var time: TimeProperty = task.time
+//
+//    @Convert(converter = DurationPropertyConverter::class, dbType = String::class)
+//    var duration: DurationProperty = task.duration
+//
+//    @Convert(converter = PriorityPropertyConverter::class, dbType = String::class)
+//    var priority: PriorityProperty = task.priority
+//
+//    @Convert(converter = LabelArrayListPropertyConverter::class, dbType = String::class)
+//    var labels: LabelArrayListProperty = task.labels
+//
+//    @Convert(converter = BooleanPropertyConverter::class, dbType = String::class)
+//    var optional: BooleanProperty = task.optional
+//
+//    @Convert(converter = StringPropertyConverter::class, dbType = String::class)
+//    var description: StringProperty = task.description
+//
+//    @Convert(converter = ChecklistPropertyConverter::class, dbType = String::class)
+//    var checklist: ChecklistProperty = task.checklist
+//
+//    @Convert(converter = StringPropertyConverter::class, dbType = String::class)
+//    var target: StringProperty = task.target
+//
+//    @Convert(converter = TimePropertyConverter::class, dbType = String::class)
+//    var deadline: TimeProperty = task.deadline
+//
+//    @Convert(converter = LongPropertyConverter::class, dbType = String::class)
+//    var before: LongProperty = task.before
+//
+//    @Convert(converter = LongArrayListPropertyConverter::class, dbType = String::class)
+//    var subTasks: LongArrayListProperty = task.subTasks
+//
+//    override fun hashCode(): Int {
+//        return hash(
+//                time, duration, priority, labels, optional, description, checklist, target,
+//                deadline, before, subTasks
+//        )
+//    }
+//
+//    override fun equals(other: Any?): Boolean {
+//        return other is PropertyBundle &&
+//                other.time == this.time &&
+//                other.duration == this.duration &&
+//                other.priority == this.priority &&
+//                other.labels == this.labels &&
+//                other.optional == this.optional &&
+//                other.description == this.description &&
+//                other.checklist == this.checklist &&
+//                other.target == this.target &&
+//                other.deadline == this.deadline &&
+//                other.before == this.before &&
+//                other.subTasks == this.subTasks
+//
+//    }
+//
+//    override fun toString(): String {
+//        return "Time: $time" +
+//                " Duration: $duration" +
+//                " Priority: $priority" +
+//                " Labels: $labels" +
+//                " Optional: $optional" +
+//                " Description: $description" +
+//                " Checklist: $checklist" +
+//                " Target: $target" +
+//                " Deadline: $deadline" +
+//                " Before: $before" +
+//                " SubTasks: $subTasks"
+//    }
+//
+//    companion object {
+//        fun bundlesAreSubset(superBundle: PropertyBundle, subBundle: PropertyBundle): Boolean {
+//            val list = (0..10).map { true }.toMutableList()
+//            assert(list.size == 11)
+//
+//            if (superBundle.time != DEFAULT_TIME_PROPERTY) {
+//                list[timeIndex] = subBundle.time == superBundle.time
+//            }
+//            if (superBundle.duration != DEFAULT_DURATION_PROPERTY) {
+//                list[durationIndex] = subBundle.duration == superBundle.duration
+//            }
+//            if (superBundle.priority != DEFAULT_PRIORITY_PROPERTY) {
+//                list[priorityIndex] = subBundle.priority == superBundle.priority
+//            }
+//            if (superBundle.labels != DEFAULT_LABELS_PROPERTY) {
+//                list[labelsIndex] = subBundle.labels == superBundle.labels
+//            }
+//            if (superBundle.optional != DEFAULT_OPTIONAL_PROPERTY) {
+//                list[optionalIndex] = subBundle.optional == superBundle.optional
+//            }
+//            if (superBundle.description != DEFAULT_DESCRIPTION_PROPERTY) {
+//                list[descriptionIndex] = subBundle.description == superBundle.description
+//            }
+//            if (superBundle.checklist != DEFAULT_CHECKLIST_PROPERTY) {
+//                list[checklistIndex] = subBundle.checklist == superBundle.checklist
+//            }
+//            if (superBundle.deadline != DEFAULT_DEADLINE_PROPERTY) {
+//                list[deadlineIndex] = subBundle.deadline == superBundle.deadline
+//            }
+//            if (superBundle.target != DEFAULT_TARGET_PROPERTY) {
+//                list[targetIndex] = subBundle.target == superBundle.target
+//            }
+//            if (superBundle.before != DEFAULT_BEFORE_PROPERTY) {
+//                list[beforeIndex] = subBundle.before == superBundle.before
+//            }
+//            if (superBundle.subTasks != DEFAULT_SUB_TASKS_PROPERTY) {
+//                list[subTasksIndex] = subBundle.subTasks == superBundle.subTasks
+//            }
+//            return list.all { it == true }
+//        }
+//    }
+//}

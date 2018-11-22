@@ -356,7 +356,7 @@ class Task(name: String = "") : Cacheable {
      * See the Properties.md docs for more.
      * @return the list of all the Properties of a Task.
      */
-    private fun getAllProperties() = listOf(
+    fun getAllProperties() = listOf(
             time,
             duration,
             priority,
@@ -1932,13 +1932,13 @@ class Task(name: String = "") : Cacheable {
 
     //region Template Task
 
-    fun toTemplate() = Template(this)
+    fun toTemplate() = Template(this.name, this)
 
     companion object {
-        fun fromTemplate(template: Template) = Template.fromTemplate(template)
+        fun fromTemplate(template: Template, name: String) = Template.fromTemplate(template, name)
 
         fun taskBundlesAreSubset(superTask: Task, subTask: Task) =
-                PropertyBundle.bundlesAreSubset(PropertyBundle(superTask), PropertyBundle(subTask))
+                Template.templatesAreSubset(superTask.toTemplate(), subTask.toTemplate())
     }
 
     //endregion Template Task

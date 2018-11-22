@@ -25,13 +25,9 @@ class TaskCache : BasePersistenceTest() {
         assertEquals(100, Caches.tasks.size)
         assertEquals(100, Database.tasks.size)
 
-        Caches.tasks.clear()
+        Caches.tasks.clear().commit()
         assertEquals(0, Caches.tasks.size)
-        assertEquals(100, Database.tasks.size)
-
-        Caches.tasks.update()
-        assertEquals(100, Caches.tasks.size)
-        assertEquals(100, Database.tasks.count())
+        assertEquals(0, Database.tasks.size)
     }
 
     @DisplayName("Cache Unique IDs")
@@ -92,13 +88,6 @@ class TaskCache : BasePersistenceTest() {
         getTasks(100)
         assertEquals(100, cache.size)
         assertEquals(100, Database.tasks.count())
-
-        cache.clear()
-        assertEquals(0, cache.size)
-        assertTrue(cache.isEmpty())
-
-        assertEquals(100, Database.tasks.count())
-        assertTrue(Database.tasks.all.isNotEmpty())
     }
 
     @DisplayName("Cache Put and Update Element Auto")
@@ -145,20 +134,12 @@ class TaskCache : BasePersistenceTest() {
         assertEquals(100, cache.size)
         assertEquals(100, Database.tasks.count())
 
-        cache.clear()
+        cache.clear().commit()
         assertEquals(0, cache.size)
         assertTrue(cache.isEmpty())
-
-        assertEquals(100, Database.tasks.count())
-        assertTrue(Database.tasks.all.isNotEmpty())
-
-        cache.update()
-
-        assertEquals(100, cache.size)
-        assertEquals(100, Database.tasks.count())
-
-        assertEquals(Database.tasks.all.sortedBy { it.id }, cache.query().sortedBy { it.id })
     }
+
+    // TODO: 21-Nov-18 How do we do Cache Concurrency? Do we even need it??
 
     @Disabled
     @DisplayName("Async Check")
@@ -169,7 +150,7 @@ class TaskCache : BasePersistenceTest() {
         assertEquals(100, cache.size)
         assertEquals(100, Database.tasks.count())
 
-        cache.clear()
+        cache.clear().commit()
         assertEquals(0, cache.size)
         assertTrue(cache.isEmpty())
 

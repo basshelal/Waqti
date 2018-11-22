@@ -10,15 +10,15 @@ import uk.whitecrescent.waqti.model.task.ID
  *
  *      try {
  *          Caches.tasks[x]
- *      } catch(exception: CacheElementNotFoundException) {
+ *      } catch(exception: ElementNotFoundException) {
  *          if(exception.elementID == x.id()) //something
  *      }
  *
  * Which creates safety with specificity, just be sure to catch the exception
- * CENFE (CacheElementNotFoundException)
+ * CENFE (ElementNotFoundException)
  *
  */
-class CacheElementNotFoundException(elementID: ID = 0, element: Any = "") :
+class ElementNotFoundException(elementID: ID = 0, element: Any = "") :
         NoSuchElementException(
                 "Element $element of ID $elementID not found in this Cache"
         )

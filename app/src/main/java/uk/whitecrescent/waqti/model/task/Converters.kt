@@ -137,14 +137,3 @@ class DurationConverter : PropertyConverter<Duration, String> {
             gson.fromJson(databaseValue, Duration::class.java)
 
 }
-
-class PropertyBundleConverter : PropertyConverter<PropertyBundle, String> {
-
-    override fun convertToDatabaseValue(entityProperty: PropertyBundle?): String {
-        return gson.toJson(entityProperty)
-    }
-
-    override fun convertToEntityProperty(databaseValue: String?): PropertyBundle {
-        return gson.fromJson(databaseValue, PropertyBundle::class.java)
-    }
-}

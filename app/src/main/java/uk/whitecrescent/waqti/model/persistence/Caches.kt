@@ -51,7 +51,7 @@ object Caches {
     val labels: Cache<Label> = Cache(Database.labels)
     val priorities: Cache<Priority> = Cache(Database.priorities)
     val timeUnits: Cache<TimeUnit> = Cache(Database.timeUnits)
-    // TODO: 09-Nov-18 Get rid of TestEntities altogether when everything works
+
     val taskLists: Cache<TaskList> = Cache(Database.taskLists)
     val boards: Cache<Board> = Cache(Database.boards)
 
@@ -62,7 +62,7 @@ object Caches {
     fun clearAllCaches(): Committable {
         return object : Committable {
             override fun commit() {
-                allCaches.forEach { it.clear() }
+                allCaches.forEach { it.clear().commit() }
             }
         }
     }

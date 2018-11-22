@@ -20,7 +20,7 @@ class CacheLabel : BasePersistenceTest() {
         assertEquals(100, Caches.labels.size)
         assertEquals(100, Database.labels.size)
 
-        Caches.labels.clear()
+        Caches.labels.clear().commit()
         assertEquals(0, Caches.labels.size)
         assertEquals(100, Database.labels.size)
     }
@@ -32,7 +32,7 @@ class CacheLabel : BasePersistenceTest() {
         assertEquals(100, Caches.labels.size)
         assertEquals(100, Database.labels.size)
 
-        Caches.labels.clear()
+        Caches.labels.clear().commit()
         assertEquals(0, Caches.labels.size)
         assertEquals(100, Database.labels.size)
 

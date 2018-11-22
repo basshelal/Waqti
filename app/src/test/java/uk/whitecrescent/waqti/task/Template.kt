@@ -24,8 +24,8 @@ import uk.whitecrescent.waqti.model.task.DEFAULT_TIME_PROPERTY
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.OPTIONAL
 import uk.whitecrescent.waqti.model.task.Priority
-import uk.whitecrescent.waqti.model.task.PropertyBundle
 import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.model.task.Template
 import uk.whitecrescent.waqti.model.time
 import uk.whitecrescent.waqti.model.toArrayList
 
@@ -46,7 +46,9 @@ class Template : BaseTaskTest() {
 
         Caches.templates.put(template)
 
-        val taskFromTemplate = Task.fromTemplate(Caches.templates[template])
+        println(Caches.templates[template])
+
+        val taskFromTemplate = Task.fromTemplate(Caches.templates[template], "")
 
         assertNotEquals(task.name, taskFromTemplate.name)
         assertNotEquals(task.id, taskFromTemplate.id)
@@ -75,7 +77,7 @@ class Template : BaseTaskTest() {
                 .setTargetConstraintValue("My Target")
                 .setDeadlineConstraintValue(time(2018, 6, 6, 6, 6))
 
-        val taskFromTemplate = Task.fromTemplate(task.toTemplate())
+        val taskFromTemplate = Task.fromTemplate(task.toTemplate(), "")
 
         assertNotEquals(task.name, taskFromTemplate.name)
         assertNotEquals(task.id, taskFromTemplate.id)
@@ -114,7 +116,7 @@ class Template : BaseTaskTest() {
                         arrayListOf(Task("SubTask1"), Task("SubTask2")).ids.toArrayList)
 
 
-        val taskFromTemplate = Task.fromTemplate(task.toTemplate())
+        val taskFromTemplate = Task.fromTemplate(task.toTemplate(), "")
 
         assertNotEquals(task.name, taskFromTemplate.name)
         assertNotEquals(task.id, taskFromTemplate.id)
@@ -138,7 +140,7 @@ class Template : BaseTaskTest() {
     fun testTaskSendToTemplateEmpty() {
         val task = Task("My Task")
 
-        val taskFromTemplate = Task.fromTemplate(task.toTemplate())
+        val taskFromTemplate = Task.fromTemplate(task.toTemplate(), "")
 
         assertNotEquals(task.name, taskFromTemplate.name)
         assertNotEquals(task.id, taskFromTemplate.id)
@@ -182,12 +184,12 @@ class Template : BaseTaskTest() {
 
 
         assertTrue(Task.taskBundlesAreSubset(anonTask, realTask))
-        assertTrue(PropertyBundle.bundlesAreSubset(PropertyBundle(anonTask), PropertyBundle(realTask)))
+        assertTrue(Template.templatesAreSubset(anonTask.toTemplate(), realTask.toTemplate()))
 
-        val fromTemplate = Task.fromTemplate(anonTask.toTemplate())
+        val fromTemplate = Task.fromTemplate(anonTask.toTemplate(), "")
 
         assertTrue(Task.taskBundlesAreSubset(anonTask, fromTemplate))
-        assertTrue(PropertyBundle.bundlesAreSubset(PropertyBundle(anonTask), PropertyBundle(fromTemplate)))
+        assertTrue(Template.templatesAreSubset(anonTask.toTemplate(), fromTemplate.toTemplate()))
     }
 
 }
