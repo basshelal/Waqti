@@ -1,13 +1,16 @@
 package uk.whitecrescent.waqti.model.persistence
 
+import org.cache2k.Cache2kBuilder
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.collections.TaskList
+import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.Template
 import uk.whitecrescent.waqti.model.task.TimeUnit
+
 
 /*
  * The intent of this class is to contain all the objects we need in memory, literally a cache, what it has to do is
@@ -66,5 +69,10 @@ object Caches {
             }
         }
     }
+
+    val testTaskCache = object : Cache2kBuilder<ID, Task>() {}
+            .name("Task")
+            .loader { Database.tasks[it] }
+            .buildForLongKey()
 
 }

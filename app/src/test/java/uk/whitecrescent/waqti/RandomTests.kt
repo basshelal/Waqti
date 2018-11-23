@@ -68,5 +68,13 @@ class RandomTests : BasePersistenceTest() {
 
     }
 
+    @DisplayName("Test")
+    @Test
+    fun test1() {
+        val tasks = getTasks(100)
+        Caches.tasks.clearMap()
+
+        println(Caches.testTaskCache[15] == Database.tasks[15])
+    }
 
 }

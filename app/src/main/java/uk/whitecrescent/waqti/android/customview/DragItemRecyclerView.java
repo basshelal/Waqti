@@ -267,7 +267,7 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
     }
 
     private void updateDragPositionAndScroll() {
-        View view = findChildView(mDragItem.getX(), mDragItem.getY());
+        View view = findChildView(mDragItem.getPosX(), mDragItem.getPosY());
         int newPos = getChildLayoutPosition(view);
         if (newPos == NO_POSITION || view == null) {
             return;
@@ -281,10 +281,11 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
             int viewHeight = view.getMeasuredHeight() + params.topMargin + params.bottomMargin;
             int viewCenterY = view.getTop() - params.topMargin + viewHeight / 2;
             boolean dragDown = mDragItemPosition < getChildLayoutPosition(view);
-            boolean movedPassedCenterY = dragDown ? mDragItem.getY() > viewCenterY : mDragItem.getY() < viewCenterY;
+            boolean movedPassedCenterY = dragDown ? mDragItem.getPosY() > viewCenterY : mDragItem
+                    .getPosY() < viewCenterY;
 
             // If new height is bigger then current and not passed centerY then reset back to current position
-            if (viewHeight > mDragItem.getDragItemView().getMeasuredHeight() && !movedPassedCenterY) {
+            if (viewHeight > mDragItem.getDragView().getMeasuredHeight() && !movedPassedCenterY) {
                 newPos = mDragItemPosition;
             }
         }
@@ -339,17 +340,17 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
 
         // Start auto scroll if at the edge
         if (layoutManager.getOrientation() == LinearLayoutManager.VERTICAL) {
-            if (mDragItem.getY() > getHeight() - view.getHeight() / 2 && !lastItemReached) {
+            if (mDragItem.getPosY() > getHeight() - view.getHeight() / 2 && !lastItemReached) {
                 mAutoScroller.startAutoScroll(AutoScroller.ScrollDirection.UP);
-            } else if (mDragItem.getY() < view.getHeight() / 2 && !firstItemReached) {
+            } else if (mDragItem.getPosY() < view.getHeight() / 2 && !firstItemReached) {
                 mAutoScroller.startAutoScroll(AutoScroller.ScrollDirection.DOWN);
             } else {
                 mAutoScroller.stopAutoScroll();
             }
         } else {
-            if (mDragItem.getX() > getWidth() - view.getWidth() / 2 && !lastItemReached) {
+            if (mDragItem.getPosX() > getWidth() - view.getWidth() / 2 && !lastItemReached) {
                 mAutoScroller.startAutoScroll(AutoScroller.ScrollDirection.LEFT);
-            } else if (mDragItem.getX() < view.getWidth() / 2 && !firstItemReached) {
+            } else if (mDragItem.getPosX() < view.getWidth() / 2 && !firstItemReached) {
                 mAutoScroller.startAutoScroll(AutoScroller.ScrollDirection.RIGHT);
             } else {
                 mAutoScroller.stopAutoScroll();
@@ -379,7 +380,7 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
         mAdapter.setDragItemId(mDragItemId);
         mAdapter.notifyDataSetChanged();
         if (mListener != null) {
-            mListener.onDragStarted(mDragItemPosition, mDragItem.getX(), mDragItem.getY());
+            mListener.onDragStarted(mDragItemPosition, mDragItem.getPosX(), mDragItem.getPosY());
         }
 
         invalidate();
@@ -393,7 +394,7 @@ public class DragItemRecyclerView extends RecyclerView implements AutoScroller.A
 
         mDragState = DragState.DRAGGING;
         mDragItemPosition = mAdapter.getPositionForItemId(mDragItemId);
-        mDragItem.setPosition(x, y);
+        mDragItem.setPosition(new kotlin.Pair(x, y));
 
         if (!mAutoScroller.isAutoScrolling()) {
             updateDragPositionAndScroll();

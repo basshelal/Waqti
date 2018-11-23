@@ -1,5 +1,7 @@
 # TODO (Short)
 
+* Implement all Caches using new Caching library
+
 * Get a basic UI going as a way to test current features
 
 * Add features not yet implemented in the back end

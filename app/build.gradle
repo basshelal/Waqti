@@ -54,4 +54,8 @@ dependencies {
 
     implementation 'com.google.code.gson:gson:2.8.5'
 
+    implementation 'org.cache2k:cache2k-core:1.2.0.Final'
+
+    implementation 'org.cache2k:cache2k-base-bom:1.2.0.Final'
+
 }
