@@ -253,14 +253,14 @@ class SubTasks : BaseTaskTest() {
     @DisplayName("SubTasks Constraint on many Tasks")
     @Test
     fun testTaskSetSubTasksConstraintOnManyTasks() {
-        val subTasks = arrayListOf(
+        val subTasks = listOf(
                 Task("SubTask1"),
                 Task("SubTask2"),
                 Task("SubTask3")
         )
         val subTasksIDs = subTasks.ids
 
-        val tasks = getTasks(1000)
+        val tasks = getTasks(10)
         tasks.forEach { it.setSubTasksConstraintValue(subTasksIDs.toArrayList) }
 
         assertThrows(TaskStateException::class.java) { tasks.forEach { it.kill() } }
@@ -269,7 +269,7 @@ class SubTasks : BaseTaskTest() {
         Caches.tasks[subTasksIDs[1]].kill()
         Caches.tasks[subTasksIDs[2]].kill()
 
-        sleep(2.seconds)
+        sleep(3.seconds)
 
         tasks.forEach { it.kill() }
 
@@ -430,30 +430,30 @@ class SubTasks : BaseTaskTest() {
 
     }
 
-    /*        @DisplayName("Add SubTasks")
-@Test
-fun testTaskAddSubTasks() {
-    val subTasks = listOf(
-            Task("SubTask1"),
-            Task("SubTask2"),
-            Task("SubTask3")
-    )
+    @DisplayName("Add SubTasks")
+    @Test
+    fun testTaskAddSubTasks() {
+        val subTasks = listOf(
+                Task("SubTask1"),
+                Task("SubTask2"),
+                Task("SubTask3")
+        )
 
-    assertTrue { subTasks[0] != subTasks[1] && subTasks[1] != subTasks[2] }
+        assertTrue { subTasks[0] != subTasks[1] && subTasks[1] != subTasks[2] }
 
-    val task = testTask
+        val task = testTask
 
-    task.addSubTasks(subTasks)
+        task.addSubTasks(subTasks)
 
-    assertFalse(task.subTasks is Constraint)
-    assertEquals(subTasks.ids, task.subTasks.value)
-    assertTrue(task.subTasks.isVisible)
+        assertFalse(task.subTasks.isConstrained)
+        assertEquals(subTasks.ids, task.subTasks.value)
+        assertTrue(task.subTasks.isVisible)
 
-    task.hideSubTasks()
-    assertEquals(DEFAULT_SUB_TASKS_PROPERTY, task.subTasks)
-}*/
+        task.hideSubTasks()
+        assertEquals(DEFAULT_SUB_TASKS_PROPERTY, task.subTasks)
+    }
 
-    /*    @DisplayName("SubTasks depth")
+    @DisplayName("SubTasks depth")
     @Test
     fun testTaskSubTasksDepth() {
         val root = Task("Root")
@@ -548,6 +548,6 @@ fun testTaskAddSubTasks() {
         root.setSubTasksConstraintValue(arrayListOf(level1A.id, level1B.id))
 
         assertEquals(4, root.getSubTasksLevelsDepth())
-    }*/
+    }
 
 }

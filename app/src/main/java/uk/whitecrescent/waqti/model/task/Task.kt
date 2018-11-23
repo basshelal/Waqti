@@ -70,6 +70,10 @@ class Task(name: String = "") : Cacheable {
      * @see Constraint
      */
     var isFailable = DEFAULT_FAILABLE
+        set(value) {
+            field = value
+            update()
+        }
 
     /**
      * Boolean value representing whether it is possible for this Task to be killed at any arbitrary point in time.
@@ -78,6 +82,10 @@ class Task(name: String = "") : Cacheable {
      * @see TaskState
      */
     var isKillable = DEFAULT_KILLABLE
+        set(value) {
+            field = value
+            update()
+        }
 
     // A Task ages when it is failed
     var age = 0
@@ -1672,7 +1680,7 @@ class Task(name: String = "") : Cacheable {
 
         val disposable = Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
                 .takeWhile { !done }
-                .doOnSubscribe { deadline.isMet = true }
+                //.doOnSubscribe { deadline.isMet = true }
                 .doOnComplete { update() }
                 .subscribeOn(DEADLINE_CONSTRAINT_THREAD)
                 .subscribe(
@@ -1937,7 +1945,7 @@ class Task(name: String = "") : Cacheable {
     companion object {
         fun fromTemplate(template: Template, name: String) = Template.fromTemplate(template, name)
 
-        fun taskBundlesAreSubset(superTask: Task, subTask: Task) =
+        fun taskTemplatesAreSubset(superTask: Task, subTask: Task) =
                 Template.templatesAreSubset(superTask.toTemplate(), subTask.toTemplate())
     }
 

@@ -3,11 +3,13 @@ package uk.whitecrescent.waqti.task
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.whitecrescent.waqti.model.at
+import uk.whitecrescent.waqti.model.hours
 import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.minutes
+import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.Checklist
 import uk.whitecrescent.waqti.model.task.DEFAULT_BEFORE_PROPERTY
@@ -26,10 +28,9 @@ import uk.whitecrescent.waqti.model.task.OPTIONAL
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.Template
-import uk.whitecrescent.waqti.model.time
 import uk.whitecrescent.waqti.model.toArrayList
+import uk.whitecrescent.waqti.model.tomorrow
 
-@Disabled
 @DisplayName("Template Task Tests")
 class Template : BaseTaskTest() {
 
@@ -37,24 +38,22 @@ class Template : BaseTaskTest() {
     @Test
     fun testTaskSendToTemplateObject() {
         val task = Task("My Task")
-                .setTimePropertyValue(time(2018, 5, 5, 5, 5))
+                .setTimePropertyValue(now + 6.hours)
                 .setTargetConstraintValue("My Target")
-                .setDeadlineConstraintValue(time(2018, 6, 6, 6, 6))
+                .setDeadlineConstraintValue(tomorrow at 11)
 
 
         val template = task.toTemplate()
 
         Caches.templates.put(template)
 
-        println(Caches.templates[template])
-
-        val taskFromTemplate = Task.fromTemplate(Caches.templates[template], "")
+        val taskFromTemplate = Task.fromTemplate(Caches.templates[template], "From Template")
 
         assertNotEquals(task.name, taskFromTemplate.name)
         assertNotEquals(task.id, taskFromTemplate.id)
         assertNotEquals(task, taskFromTemplate)
 
-        assertEquals("New Task", taskFromTemplate.name)
+        assertEquals("From Template", taskFromTemplate.name)
         assertEquals(task.time, taskFromTemplate.time)
         assertEquals(task.target, taskFromTemplate.target)
         assertEquals(task.deadline, taskFromTemplate.deadline)
@@ -73,17 +72,17 @@ class Template : BaseTaskTest() {
     @Test
     fun testTaskSendToTemplateTask() {
         val task = Task("My Task")
-                .setTimePropertyValue(time(2018, 5, 5, 5, 5))
+                .setTimePropertyValue(now + 6.hours)
                 .setTargetConstraintValue("My Target")
-                .setDeadlineConstraintValue(time(2018, 6, 6, 6, 6))
+                .setDeadlineConstraintValue(tomorrow at 11)
 
-        val taskFromTemplate = Task.fromTemplate(task.toTemplate(), "")
+        val taskFromTemplate = Task.fromTemplate(task.toTemplate(), "From Template")
 
         assertNotEquals(task.name, taskFromTemplate.name)
         assertNotEquals(task.id, taskFromTemplate.id)
         assertNotEquals(task, taskFromTemplate)
 
-        assertEquals("New Task", taskFromTemplate.name)
+        assertEquals("From Template", taskFromTemplate.name)
         assertEquals(task.time, taskFromTemplate.time)
         assertEquals(task.target, taskFromTemplate.target)
         assertEquals(task.deadline, taskFromTemplate.deadline)
@@ -102,21 +101,21 @@ class Template : BaseTaskTest() {
     @Test
     fun testTaskSendToTemplateFull() {
         val task = Task("My Task")
-                .setTimePropertyValue(time(2018, 5, 5, 5, 5))
+                .setTimePropertyValue(now + 6.hours)
                 .setDurationPropertyValue(30.minutes)
                 .setPriorityValue(Priority("Priority", 5))
                 .setLabelsValue(Label("Label1"), Label("Label2"))
                 .setOptionalValue(OPTIONAL)
                 .setDescriptionValue("Description")
                 .setChecklistPropertyValue(Checklist("ZERO", "ONE", "TWO"))
-                .setDeadlinePropertyValue(time(2018, 6, 6, 6, 6))
+                .setDeadlinePropertyValue(tomorrow at 11)
                 .setTargetConstraintValue("My Target")
                 .setBeforePropertyValue(Task("Before"))
                 .setSubTasksPropertyValue(
                         arrayListOf(Task("SubTask1"), Task("SubTask2")).ids.toArrayList)
 
 
-        val taskFromTemplate = Task.fromTemplate(task.toTemplate(), "")
+        val taskFromTemplate = Task.fromTemplate(task.toTemplate(), "From Template")
 
         assertNotEquals(task.name, taskFromTemplate.name)
         assertNotEquals(task.id, taskFromTemplate.id)
@@ -140,7 +139,7 @@ class Template : BaseTaskTest() {
     fun testTaskSendToTemplateEmpty() {
         val task = Task("My Task")
 
-        val taskFromTemplate = Task.fromTemplate(task.toTemplate(), "")
+        val taskFromTemplate = Task.fromTemplate(task.toTemplate(), "From Template")
 
         assertNotEquals(task.name, taskFromTemplate.name)
         assertNotEquals(task.id, taskFromTemplate.id)
@@ -162,33 +161,36 @@ class Template : BaseTaskTest() {
     @DisplayName("Bundles Are Subset")
     @Test
     fun testTaskBundlesAreSubset() {
+        val time = now + 6.hours
+        val deadline = tomorrow at 11
+        val labels = listOf(Label("Label1"), Label("Label2")).toTypedArray()
+
         val anonTask = Task()
-                .setTimePropertyValue(time(2018, 5, 5, 5, 5))
+                .setTimePropertyValue(time)
                 .setDurationPropertyValue(30.minutes)
-                .setLabelsValue(Label("Label1"), Label("Label2"))
-                .setDeadlinePropertyValue(time(2018, 6, 6, 6, 6))
+                .setLabelsValue(*labels)
+                .setDeadlinePropertyValue(deadline)
 
         val realTask = Task("My Task")
-                .setTimePropertyValue(time(2018, 5, 5, 5, 5))
+                .setTimePropertyValue(time)
                 .setDurationPropertyValue(30.minutes)
                 .setPriorityValue(Priority("Priority", 5))
-                .setLabelsValue(Label("Label1"), Label("Label2"))
+                .setLabelsValue(*labels)
                 .setOptionalValue(OPTIONAL)
                 .setDescriptionValue("Description")
                 .setChecklistPropertyValue(Checklist("ZERO", "ONE", "TWO"))
-                .setDeadlinePropertyValue(time(2018, 6, 6, 6, 6))
+                .setDeadlinePropertyValue(deadline)
                 .setTargetConstraintValue("My Target")
                 .setBeforePropertyValue(Task("Before"))
                 .setSubTasksPropertyValue(
                         arrayListOf(Task("SubTask1"), Task("SubTask2")).ids.toArrayList)
 
-
-        assertTrue(Task.taskBundlesAreSubset(anonTask, realTask))
+        assertTrue(Task.taskTemplatesAreSubset(anonTask, realTask))
         assertTrue(Template.templatesAreSubset(anonTask.toTemplate(), realTask.toTemplate()))
 
         val fromTemplate = Task.fromTemplate(anonTask.toTemplate(), "")
 
-        assertTrue(Task.taskBundlesAreSubset(anonTask, fromTemplate))
+        assertTrue(Task.taskTemplatesAreSubset(anonTask, fromTemplate))
         assertTrue(Template.templatesAreSubset(anonTask.toTemplate(), fromTemplate.toTemplate()))
     }
 

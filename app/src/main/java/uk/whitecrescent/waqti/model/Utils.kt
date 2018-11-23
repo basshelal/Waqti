@@ -56,7 +56,7 @@ inline val Collection<Tuple>.tasks: Array<Task>
         return result.toTypedArray()
     }
 
-fun <T> Observable<T>.doAsync(func: () -> Any) {
+fun async(func: () -> Any) {
     Observable.fromCallable(func)
             .subscribeOn(Schedulers.newThread())
             .subscribe()

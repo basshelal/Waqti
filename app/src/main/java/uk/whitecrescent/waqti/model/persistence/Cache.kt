@@ -148,14 +148,21 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
             }
             // TODO: 22-Nov-18 this unnecessarily queries the DB! Change it if possible
             @QueriesDataBase
-            mapFound != db[id] -> {
-                val dbFound = db[id]
-                map[dbFound.id] = dbFound
-                dbFound
+            map.size != db.size -> {
+                update()
+                safeGet(id)
             }
+
+//            mapFound != db[id] -> {
+//                val dbFound = db[id]
+//                map[dbFound.id] = dbFound
+//                dbFound
+//            }
             else -> mapFound
         }
     }
+
+    fun clearMap() = this.map.clear()
 
     @QueriesDataBase
     private val isInconsistent: Boolean

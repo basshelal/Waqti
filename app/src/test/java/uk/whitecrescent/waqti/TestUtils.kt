@@ -14,8 +14,7 @@ val testTask: Task
     }
 
 fun testTask(name: String): Task {
-    val task = Task(name)
-    return task
+    return Task(name)
 }
 
 fun getTasks(amount: Int): List<Task> {
