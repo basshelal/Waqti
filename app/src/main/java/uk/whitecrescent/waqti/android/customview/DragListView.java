@@ -81,7 +81,7 @@ public class DragListView extends FrameLayout {
         mRecyclerView = createRecyclerView();
         mRecyclerView.setDragItem(mDragItem);
         addView(mRecyclerView);
-        addView(mDragItem.getDragItemView());
+        addView(mDragItem.getDragView());
     }
 
     @Override
@@ -257,11 +257,11 @@ public class DragListView extends FrameLayout {
             newDragItem = new DragItem(getContext());
         }
 
-        newDragItem.setCanDragHorizontally(mDragItem.canDragHorizontally());
+        newDragItem.setCanDragHorizontally(mDragItem.getCanDragHorizontally());
         newDragItem.setSnapToTouch(mDragItem.isSnapToTouch());
         mDragItem = newDragItem;
         mRecyclerView.setDragItem(mDragItem);
-        addView(mDragItem.getDragItemView());
+        addView(mDragItem.getDragView());
     }
 
     public boolean isDragging() {
