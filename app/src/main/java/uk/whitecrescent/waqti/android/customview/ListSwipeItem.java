@@ -13,7 +13,9 @@ import android.widget.RelativeLayout;
 
 import uk.whitecrescent.waqti.R;
 
-
+/*
+ * Not needed for BoardView stuff
+ */
 public class ListSwipeItem extends RelativeLayout {
 
     private enum SwipeState {

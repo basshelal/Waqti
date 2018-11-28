@@ -6,7 +6,9 @@ import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.annotation.Transient
 import io.reactivex.Observable
+import io.reactivex.Observer
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Duration
@@ -60,7 +62,10 @@ class Task(name: String = "") : Cacheable {
      */
     @Convert(converter = TaskStateConverter::class, dbType = String::class)
     var state = DEFAULT_TASK_STATE
-        private set
+        private set(value) {
+            field = value
+            update()
+        }
 
     /**
      * Boolean value representing whether it is possible for this Task to be failed at any arbitrary point in time.
@@ -331,10 +336,21 @@ class Task(name: String = "") : Cacheable {
     var subTasks: LongArrayListProperty = DEFAULT_SUB_TASKS_PROPERTY
         private set
 
+    @Transient
+    private val checking = mutableMapOf(
+            "Time" to false,
+            "Duration" to false,
+            "Checklist" to false,
+            "Deadline" to false,
+            "Before" to false,
+            "SubTasks" to false
+    )
+
     init {
         if (notDefault()) {
             update()
             checkNotDead()
+//            backgroundObserver()
         }
     }
 
@@ -470,6 +486,7 @@ class Task(name: String = "") : Cacheable {
                 this.time.isMet = MET
             }
             timeConstraintTimeChecking()
+            checking["Time"] = true
         }
         update()
         return this
@@ -525,6 +542,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (durationProperty.isConstrained) {
             makeFailableIfConstraint(durationProperty)
+            checking["Duration"] = true
         }
         update()
         return this
@@ -829,6 +847,7 @@ class Task(name: String = "") : Cacheable {
         if (checklistProperty.isConstrained) {
             makeFailableIfConstraint(checklistProperty)
             checklistConstraintChecking()
+            checking["Checklist"] = true
         }
         update()
         return this
@@ -892,6 +911,7 @@ class Task(name: String = "") : Cacheable {
         if (deadlineProperty.isConstrained) {
             makeFailableIfConstraint(deadlineProperty)
             deadlineConstraintChecking()
+            checking["Deadline"] = true
         }
         update()
         return this
@@ -1013,6 +1033,7 @@ class Task(name: String = "") : Cacheable {
         if (beforeProperty.isConstrained) {
             makeFailableIfConstraint(beforeProperty)
             beforeConstraintChecking()
+            checking["Before"] = true
         }
         update()
         return this
@@ -1097,6 +1118,7 @@ class Task(name: String = "") : Cacheable {
         if (subTasksProperty.isConstrained) {
             makeFailableIfConstraint(subTasksProperty)
             subTasksConstraintChecking()
+            checking["SubTasks"] = true
         }
         update()
         return this
@@ -1392,6 +1414,165 @@ class Task(name: String = "") : Cacheable {
     //endregion Timers
 
     //region Observers
+
+    // TODO: 28-Nov-18 Consider compiling all these observers into a single observer
+    @SuppressLint("CheckResult")
+    private fun backgroundObserver() {
+        var doneVar = false
+        Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
+                .takeWhile { !doneVar }
+                .subscribeOn(Schedulers.computation())
+                .subscribe(
+                        object : Observer<Long> {
+
+                            override fun onNext(it: Long) {
+                                if (this@Task !in Caches.tasks) {
+                                    doneVar = true
+                                }
+                                if (checking["Time"]!!) checkTime()
+                                if (checking["Duration"]!!) checkDuration()
+                                if (checking["Checklist"]!!) checkChecklist()
+                                if (checking["Deadline"]!!) checkDeadline()
+                                if (checking["Before"]!!) checkBefore()
+                                if (checking["SubTasks"]!!) checkSubTasks()
+                            }
+
+                            override fun onError(e: Throwable) {
+                                e.printStackTrace()
+                            }
+
+                            override fun onComplete() {
+                                debug("Observing ENDED for $name $id")
+                            }
+
+                            override fun onSubscribe(d: Disposable) {
+                                debug("Observing STARTED for $name $id")
+                            }
+                        }
+                )
+    }
+
+    private fun done(string: String) {
+        if (string !in checking.keys)
+            throw IllegalArgumentException("$string doesn't exist in checking")
+        checking[string] = false
+        update()
+    }
+
+    private fun checkTime() {
+        when {
+            !this.time.isConstrained -> {
+                makeNonFailableIfNoConstraints()
+                if (this.state == TaskState.SLEEPING) this.state = TaskState.EXISTING
+                done("Time")
+            }
+            now.isAfter(this.time.value) -> {
+                if (this.state == TaskState.SLEEPING) this.state = TaskState.EXISTING
+                if (this.time.isConstrained && !this.time.isMet) {
+                    this.time.isMet = MET
+                }
+                done("Time")
+            }
+        }
+    }
+
+    private fun checkDuration() {
+        when {
+            !this.duration.isConstrained -> {
+                makeNonFailableIfNoConstraints()
+                done("Duration")
+            }
+            this.timer.stopped -> {
+                done("Duration")
+            }
+            timer.duration >= this.duration.value -> {
+                if (this.duration.isConstrained && !this.duration.isMet) {
+                    this.duration.isMet = MET
+                }
+                done("Duration")
+            }
+        }
+    }
+
+    private fun checkChecklist() {
+        when {
+            !this.checklist.isConstrained -> {
+                makeNonFailableIfNoConstraints()
+                done("Checklist")
+            }
+            this.checklist.value.getAllUncheckedItems().isEmpty() -> {
+                if (this.checklist.isConstrained && this.checklist.isMet != MET) {
+                    this.checklist.isMet = MET
+                }
+                done("Checklist")
+            }
+        }
+    }
+
+    private fun checkDeadline() {
+        val deadlineWithGrace = this.deadline.value + GRACE_PERIOD
+        when {
+            !this.deadline.isConstrained -> {
+                makeNonFailableIfNoConstraints()
+                done("Deadline")
+            }
+            now.isAfter(deadlineWithGrace) -> {
+                if (canFail()) {
+                    this.fail()
+                    deadline.isMet = false
+                }
+                done("Deadline")
+            }
+        }
+    }
+
+    private fun checkBefore() {
+        val beforeTask = Caches.tasks.get(this.before.value)
+        when {
+            !Caches.tasks.contains(beforeTask) -> {
+                throw ObserverException("Before Constraint checking failed!" +
+                        " Before is null in database")
+            }
+            !this.before.isConstrained -> {
+                makeNonFailableIfNoConstraints()
+                done("Before")
+            }
+            beforeTask.state == TaskState.KILLED -> {
+                this.before.isMet = true
+                done("Before")
+            }
+            beforeTask.state == TaskState.FAILED -> {
+                this.before.isMet = false
+                if (canFail()) fail()
+                done("Before")
+            }
+
+        }
+    }
+
+    private fun checkSubTasks() {
+        when {
+            !Caches.tasks.containsAll(this.subTasks.value.tasks) -> {
+                throw ObserverException("SubTasks Constraint checking failed!" +
+                        " Some SubTask is null in database")
+            }
+            !this.subTasks.isConstrained -> {
+                makeNonFailableIfNoConstraints()
+                done("SubTasks")
+            }
+            this.subTasks.value.tasks.any { it.state == TaskState.FAILED } -> {
+                subTasks.isMet = false
+                if (canFail()) fail()
+                done("SubTasks")
+            }
+            this.subTasks.value.tasks
+                    .all { it.state == TaskState.KILLED } -> {
+                subTasks.isMet = true
+                done("SubTasks")
+            }
+
+        }
+    }
 
     /*
      * Pick one implementation to avoid memory leaks, either we have an in memory database, in which case we check if

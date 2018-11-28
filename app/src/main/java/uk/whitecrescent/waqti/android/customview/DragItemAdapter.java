@@ -50,9 +50,9 @@ public abstract class DragItemAdapter<T, VH extends DragItemAdapter.ViewHolder> 
         return RecyclerView.NO_POSITION;
     }
 
-    public Object removeItem(int pos) {
+    public T removeItem(int pos) {
         if (mItemList != null && mItemList.size() > pos && pos >= 0) {
-            Object item = mItemList.remove(pos);
+            T item = mItemList.remove(pos);
             notifyItemRemoved(pos);
             return item;
         }

@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.model.persistence
 
 import org.cache2k.Cache2kBuilder
+import org.cache2k.LongCache
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.collections.TaskList
@@ -70,7 +71,7 @@ object Caches {
         }
     }
 
-    val testTaskCache = object : Cache2kBuilder<ID, Task>() {}
+    val testTaskCache: LongCache<Task> = object : Cache2kBuilder<ID, Task>() {}
             .name("Task")
             .loader { Database.tasks[it] }
             .buildForLongKey()

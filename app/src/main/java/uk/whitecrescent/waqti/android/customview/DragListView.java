@@ -12,6 +12,9 @@ import android.widget.FrameLayout;
 
 import uk.whitecrescent.waqti.R;
 
+/*
+ * Not needed for BoardView stuff
+ */
 public class DragListView extends FrameLayout {
 
     public interface DragListListener {

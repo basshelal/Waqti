@@ -9,6 +9,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
+/*
+ * Not needed for BoardView stuff
+ */
 public class ListSwipeHelper extends RecyclerView.OnScrollListener implements RecyclerView.OnItemTouchListener {
 
     public static abstract class OnSwipeListenerAdapter implements ListSwipeHelper.OnSwipeListener {

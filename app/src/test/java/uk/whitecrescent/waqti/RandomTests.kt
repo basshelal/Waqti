@@ -74,7 +74,17 @@ class RandomTests : BasePersistenceTest() {
         val tasks = getTasks(100)
         Caches.tasks.clearMap()
 
-        println(Caches.testTaskCache[15] == Database.tasks[15])
+        assertTrue(Caches.tasks.isEmpty())
+        assertTrue(Database.tasks.size == 100)
+
+        Caches.testTaskCache.putAll(Database.tasks.all.map { it.id to it }.toMap())
+
+        assertTrue(Caches.testTaskCache.keys().count() == 100)
+        Caches.testTaskCache.asMap().values.forEach { assertTrue(it == Database.tasks[it.id]) }
+        assertEquals(Caches.testTaskCache.keys().sorted().toList(), Database.tasks.all.map {
+            it
+                    .id
+        }.sorted().toList())
     }
 
 }

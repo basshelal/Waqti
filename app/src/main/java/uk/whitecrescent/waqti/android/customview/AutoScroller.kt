@@ -3,17 +3,21 @@ package uk.whitecrescent.waqti.android.customview
 import android.content.Context
 import android.os.Handler
 
-class AutoScroller(context: Context, val listener: AutoScrollListener) {
+/*
+ * This is just a Self Scrolling Entity, no views here just fancy Math that does the self
+ * scrolling based on parameters and different types and directions of scrolling
+ */
+class AutoScroller(context: Context, private val listener: AutoScrollListener) {
 
-    private val SCROLL_SPEED_DP = 8
-    private val AUTO_SCROLL_UPDATE_DELAY = 12L
-    private val COLUMN_SCROLL_UPDATE_DELAY = 1000
+    private val scrollSpeedDP = 8
+    private val autoScrollUpdateDelay = 12L
+    private val columnScrollUpdateDelay = 1000L
 
     private val handler = Handler()
     var isAutoScrolling = false
         private set
 
-    private val scrollSpeed = (context.resources.displayMetrics.density * SCROLL_SPEED_DP).toInt()
+    private val scrollSpeed = (context.resources.displayMetrics.density * scrollSpeedDP).toInt()
     private var lastScrollTime = 0L
     var autoScrollMode = AutoScrollMode.POSITION
 
@@ -36,39 +40,39 @@ class AutoScroller(context: Context, val listener: AutoScrollListener) {
         isAutoScrolling = false
     }
 
-    fun startAutoScrollPositionBy(dx: Int, dy: Int) {
+    private fun startAutoScrollPositionBy(dx: Int, dy: Int) {
         if (!isAutoScrolling) {
             isAutoScrolling = true
             autoScrollPositionBy(dx, dy)
         }
     }
 
-    fun autoScrollPositionBy(dx: Int, dy: Int) {
+    private fun autoScrollPositionBy(dx: Int, dy: Int) {
         if (isAutoScrolling) {
             listener.onAutoScrollPositionBy(dx, dy)
             handler.postDelayed({
                 autoScrollPositionBy(dx, dy)
-            }, AUTO_SCROLL_UPDATE_DELAY)
+            }, autoScrollUpdateDelay)
         }
     }
 
-    fun startAutoScrollColumnBy(columns: Int) {
+    private fun startAutoScrollColumnBy(columns: Int) {
         if (!isAutoScrolling) {
             isAutoScrolling = true
             autoScrollColumnBy(columns)
         }
     }
 
-    fun autoScrollColumnBy(columns: Int) {
+    private fun autoScrollColumnBy(columns: Int) {
         if (isAutoScrolling) {
-            if (System.currentTimeMillis() - lastScrollTime > COLUMN_SCROLL_UPDATE_DELAY) {
+            if (System.currentTimeMillis() - lastScrollTime > columnScrollUpdateDelay) {
                 listener.onAutoScrollColumnBy(columns)
                 lastScrollTime = System.currentTimeMillis()
             } else listener.onAutoScrollColumnBy(0)
 
             handler.postDelayed({
                 autoScrollColumnBy(columns)
-            }, AUTO_SCROLL_UPDATE_DELAY)
+            }, autoScrollUpdateDelay)
         }
     }
 

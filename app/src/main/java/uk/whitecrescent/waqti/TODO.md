@@ -2,15 +2,15 @@
 
 * Implement all Caches using new Caching library
 
-* Get a basic UI going as a way to test current features
+* Re-write BoardView for our purposes
 
-* Add features not yet implemented in the back end
+* Get a basic UI going as a way to test current features
 
 * Test and Document all Task Subsystem
 
 * Test and Document all Collections Subsystem
 
-* Start with simple functional Android UI using DragListView which will be improved later
+* Add features not yet implemented in the back end
 
 # TODO (Long)
 
