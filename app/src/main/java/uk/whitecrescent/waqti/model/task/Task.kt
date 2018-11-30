@@ -13,9 +13,11 @@ import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Time
+import uk.whitecrescent.waqti.model.contains
 import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.persistence.Caches
+import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.tasks
 
 // TODO: 18-Jun-18 When done, make sure everything is tested and doc'd
@@ -1294,7 +1296,9 @@ class Task(name: String = "") : Cacheable {
 
     // TODO: 05-Nov-18 needs to be put in way more places maybe?
     override fun update() {
-        Caches.tasks.put(this)
+        //Caches.tasks.put(this)
+        Database.tasks.put(this)
+        Caches.testTaskCache.put(this.id, this)
     }
 
     fun canKill() = isKillable &&
@@ -1427,7 +1431,7 @@ class Task(name: String = "") : Cacheable {
                         object : Observer<Long> {
 
                             override fun onNext(it: Long) {
-                                if (this@Task !in Caches.tasks) {
+                                if (this@Task !in Caches.testTaskCache) {
                                     doneVar = true
                                 }
                                 if (checking["Time"]!!) checkTime()
@@ -1443,7 +1447,7 @@ class Task(name: String = "") : Cacheable {
                             }
 
                             override fun onComplete() {
-                                debug("Observing ENDED for $name $id")
+                                debug("Observing ENDED for $name $id because $doneVar")
                             }
 
                             override fun onSubscribe(d: Disposable) {

@@ -71,6 +71,9 @@ object Caches {
     }
 
     val testTaskCache = object : Cache2kBuilder<ID, Task>() {}
+            .entryCapacity(1000L)
+            .permitNullValues(false)
+            .eternal(true)
             .loader { Database.tasks[it] }
             .build()
 
