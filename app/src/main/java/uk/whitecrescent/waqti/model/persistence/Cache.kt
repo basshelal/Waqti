@@ -11,6 +11,7 @@ import uk.whitecrescent.waqti.model.size
 import uk.whitecrescent.waqti.model.task.ID
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
+import kotlin.collections.set
 
 // TODO: 28-Jul-18 Test and doc
 
@@ -84,7 +85,7 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
 
     fun idOf(element: E): ID {
         return this[element].id
-        // above will throw exception since it calls safeGet()
+        // above could throw exception since it calls safeGet()
     }
 
     fun idsOf(elements: Collection<E>) =
@@ -94,7 +95,7 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
             this.remove(ids.map { this.get(it) })
 
     fun removeIf(predicate: () -> Boolean) =
-            map.forEach { if (predicate.invoke()) remove(it.value) }
+            this.forEach { if (predicate.invoke()) remove(it) }
 
     fun clear(): Committable {
         return object : Committable {
@@ -170,6 +171,7 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
 
     // not slow for 10_000!
     // only executes something if the map and db are different for whatever reason
+    @QueriesDataBase
     fun update() {
         if (isInconsistent) {
             map.clear()

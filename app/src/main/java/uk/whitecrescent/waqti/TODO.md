@@ -1,5 +1,7 @@
 # TODO (Short)
 
+* Make Task use 1 Observable instead of 7
+
 * Implement all Caches using new Caching library
 
 * Re-write BoardView for our purposes

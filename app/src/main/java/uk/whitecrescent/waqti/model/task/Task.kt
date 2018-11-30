@@ -349,8 +349,8 @@ class Task(name: String = "") : Cacheable {
     init {
         if (notDefault()) {
             update()
-            checkNotDead()
-//            backgroundObserver()
+//            checkNotDead()
+            backgroundObserver()
         }
     }
 
@@ -485,7 +485,7 @@ class Task(name: String = "") : Cacheable {
             if (this.time.value.isBefore(now)) {
                 this.time.isMet = MET
             }
-            timeConstraintTimeChecking()
+//            timeConstraintTimeChecking()
             checking["Time"] = true
         }
         update()
@@ -542,7 +542,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (durationProperty.isConstrained) {
             makeFailableIfConstraint(durationProperty)
-            checking["Duration"] = true
+            //checking["Duration"] = true
         }
         update()
         return this
@@ -846,7 +846,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (checklistProperty.isConstrained) {
             makeFailableIfConstraint(checklistProperty)
-            checklistConstraintChecking()
+//            checklistConstraintChecking()
             checking["Checklist"] = true
         }
         update()
@@ -910,7 +910,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (deadlineProperty.isConstrained) {
             makeFailableIfConstraint(deadlineProperty)
-            deadlineConstraintChecking()
+//            deadlineConstraintChecking()
             checking["Deadline"] = true
         }
         update()
@@ -1032,7 +1032,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (beforeProperty.isConstrained) {
             makeFailableIfConstraint(beforeProperty)
-            beforeConstraintChecking()
+//            beforeConstraintChecking()
             checking["Before"] = true
         }
         update()
@@ -1117,7 +1117,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (subTasksProperty.isConstrained) {
             makeFailableIfConstraint(subTasksProperty)
-            subTasksConstraintChecking()
+//            subTasksConstraintChecking()
             checking["SubTasks"] = true
         }
         update()
@@ -1366,7 +1366,7 @@ class Task(name: String = "") : Cacheable {
         } else if (canKill()) {
             state = TaskState.KILLED
             killedTime = now
-            endObservers() // TODO: 02-May-18 It's safe to do this since the lifecycle can no longer change, properties still can tho
+//            endObservers() // TODO: 02-May-18 It's safe to do this since the lifecycle can no longer change, properties still can tho
             update()
         } else {
             throw TaskStateException(
@@ -1387,7 +1387,8 @@ class Task(name: String = "") : Cacheable {
         } else {
             timer.start()
             if (duration.isConstrained) {
-                durationConstraintTimerChecking()
+//                durationConstraintTimerChecking()
+                checking["Duration"] = true
             }
         }
         return this
@@ -1583,8 +1584,7 @@ class Task(name: String = "") : Cacheable {
      * expense because we can use the in memory database to access tasks very quickly, thus making the in memory
      * database a sort of buffer between the persistent database and the live runtime
      */
-    @SuppressLint("CheckResult")
-    private fun checkNotDead() {
+/*    private fun checkNotDead() {
         var done = false
         Observable.interval(100L, java.util.concurrent.TimeUnit.MILLISECONDS)
                 // TODO: 18-Jun-18 problems here too, also check a suitable interval
@@ -1604,11 +1604,11 @@ class Task(name: String = "") : Cacheable {
                             debug("$id DEAD ")
                         }
                 )
-    }
+    }*/
 
     // Can't restart them (not that I know of). dangerous!
     // Lifecycle will not happen automatically if there are no observers checking, even when it should
-    private fun endObservers() {
+/*    private fun endObservers() {
         val message = when {
             activeObservers.isEmpty() -> "none"
             else -> activeObservers.toString()
@@ -1619,7 +1619,7 @@ class Task(name: String = "") : Cacheable {
         activeObservers.clear()
 
         debug("$id has ended its observers: $message0")
-    }
+    }*/
 
     /**
      * Checks the time on the `stateCheckingThread` to match it with this Task's time Constraint value.
@@ -1648,7 +1648,7 @@ class Task(name: String = "") : Cacheable {
      * @see Task.setTimeProperty
      * @throws ObserverException if the Observer's `onError` is called for any reasons
      */
-    private fun timeConstraintTimeChecking() {
+/*    private fun timeConstraintTimeChecking() {
         val originalValue = this.time.value
         var done = false
 
@@ -1691,7 +1691,7 @@ class Task(name: String = "") : Cacheable {
         composite.add(disposable)
         activeObservers.add("Time")
         update()
-    }
+    }*/
 
     /**
      * Checks the time that this Task's duration will end on the `stateCheckingThread` to match it with this Task's
@@ -1720,7 +1720,7 @@ class Task(name: String = "") : Cacheable {
      * @see Task.setTimeProperty
      * @throws ObserverException if the Observer's `onError` is called for any reasons
      */
-    private fun durationConstraintTimerChecking() {
+/*    private fun durationConstraintTimerChecking() {
         val originalValue = this.duration.value
         var done = false
 
@@ -1761,7 +1761,7 @@ class Task(name: String = "") : Cacheable {
         composite.add(disposable)
         activeObservers.add("Duration")
         update()
-    }
+    }*/
 
     /**
      * Checks this Task's checklist Property value (the actual checklist) on the `stateCheckingThread` to see if all
@@ -1787,7 +1787,7 @@ class Task(name: String = "") : Cacheable {
      * @see Task.setChecklistProperty
      * @throws ObserverException if the Observer's `onError` is called for any reasons
      */
-    private fun checklistConstraintChecking() {
+/*    private fun checklistConstraintChecking() {
         val originalValue = this.checklist.value
         var done = false
 
@@ -1825,7 +1825,7 @@ class Task(name: String = "") : Cacheable {
         composite.add(disposable)
         activeObservers.add("Checklist")
         update()
-    }
+    }*/
 
     /**
      * Checks the time on the `stateCheckingThread` to match it with this Task's deadline Constraint value plus the
@@ -1854,7 +1854,7 @@ class Task(name: String = "") : Cacheable {
      * @see Task.setDeadlineProperty
      * @throws ObserverException if the Observer's `onError` is called for any reasons
      */
-    private fun deadlineConstraintChecking() {
+/*    private fun deadlineConstraintChecking() {
         var done = false
         val originalValue = this.deadline.value
         val deadlineWithGrace = this.deadline.value.plus(GRACE_PERIOD)
@@ -1895,7 +1895,7 @@ class Task(name: String = "") : Cacheable {
         composite.add(disposable)
         activeObservers.add("Deadline")
         update()
-    }
+    }*/
 
     /**
      * Checks the state of the Task before this one on the `otherTaskCheckingThread`. If it is failed then this Task
@@ -1926,7 +1926,7 @@ class Task(name: String = "") : Cacheable {
      * @throws ObserverException if the Observer's `onError` is called for any reasons or if the before Task cannot
      * be found in the database
      */
-    private fun beforeConstraintChecking() {
+/*    private fun beforeConstraintChecking() {
         var done = false
         val originalValue = this.before.value
         val beforeTask = Caches.tasks.get(this.before.value)
@@ -1973,7 +1973,7 @@ class Task(name: String = "") : Cacheable {
         composite.add(disposable)
         activeObservers.add("Before")
         update()
-    }
+    }*/
 
     /**
      * Checks the state of the sub-Tasks of this Task on the `otherTaskCheckingThread`.
@@ -2002,7 +2002,7 @@ class Task(name: String = "") : Cacheable {
      * @see Task.setSubTasksProperty
      * @throws ObserverException if the Observer's `onError` is called for any reasons
      */
-    private fun subTasksConstraintChecking() {
+/*    private fun subTasksConstraintChecking() {
         val originalValue = this.subTasks.value
         var done = false
 
@@ -2054,7 +2054,7 @@ class Task(name: String = "") : Cacheable {
         composite.add(disposable)
         activeObservers.add("SubTasks")
         update()
-    }
+    }*/
 
     //endregion Observers
 
@@ -2121,7 +2121,7 @@ class Task(name: String = "") : Cacheable {
 
     //region Template Task
 
-    fun toTemplate() = Template(this.name, this)
+    fun toTemplate(name: String = this.name) = Template(name, this)
 
     companion object {
         fun fromTemplate(template: Template, name: String) = Template.fromTemplate(template, name)

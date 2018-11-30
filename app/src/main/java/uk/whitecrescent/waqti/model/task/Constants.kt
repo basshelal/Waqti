@@ -94,7 +94,7 @@ val BEFORE_CONSTRAINT_THREAD = Schedulers.newThread()
 val SUB_TASKS_CONSTRAINT_THREAD = Schedulers.newThread()
 
 // Used for how often will Observers check stuff on the background threads
-const val TIME_CHECKING_PERIOD = 100L
+const val TIME_CHECKING_PERIOD = 1000L
 val TIME_CHECKING_UNIT = TimeUnit.MILLISECONDS
 
 //endregion Concurrency

@@ -6,6 +6,7 @@ import android.util.Log
 import io.objectbox.Box
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
+import org.cache2k.Cache
 import uk.whitecrescent.waqti.model.collections.Tuple
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.GRACE_PERIOD
@@ -62,6 +63,8 @@ fun async(func: () -> Any) {
             .subscribe()
 }
 
+// Persistence Extensions
+
 val <T> Box<T>.size: Int
     get() = this.count().toInt()
 
@@ -69,3 +72,32 @@ fun <T> Box<T>.isEmpty() = this.count() == 0L
 
 fun <T> Box<T>.forEach(action: (T) -> Unit) =
         this.all.forEach(action)
+
+val <K, V> Cache<K, V>.size: Int
+    get() = this.keys().count()
+
+val <K, V> Cache<K, V>.values: List<V>
+    get() = this.entries().map { it.value }
+
+operator fun <K, V> Cache<K, V>.set(key: K, value: V) =
+        this.put(key, value)
+
+fun <V : Cacheable> Cache<ID, V>.putAll(collection: Collection<V>) {
+    this.putAll(collection.map { it.id to it }.toMap())
+}
+
+fun <V : Cacheable> Cache<ID, V>.removeAll(collection: Collection<V>) {
+    this.removeAll(collection.map { it.id })
+}
+
+fun <K, V> Cache<K, V>.isEmpty() = this.size == 0
+
+operator fun <V : Cacheable> Cache<ID, V>.contains(element: V) =
+        this.containsKey(element.id)
+
+val <V : Cacheable> Cache<ID, V>.map: Map<ID, V>
+    get() = this.entries().map { it.key to it.value }.toMap()
+
+inline infix fun <A, B> List<A>.to(other: List<B>): Map<A, B> {
+    return this.mapIndexed { index, a -> a to other[index] }.toMap()
+}
