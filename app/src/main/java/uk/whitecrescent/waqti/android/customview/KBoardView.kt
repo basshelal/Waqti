@@ -626,8 +626,8 @@ class KBoardView
         }
     }
 
-    private fun <T, VH : KDragItemAdapter.ViewHolder> insertColumn(adapter: KDragItemAdapter<T, VH>, index: Int, header: View?,
-                                                                   hasFixedItemSize: Boolean): KDragItemRecyclerView {
+    fun <T, VH : KDragItemAdapter.ViewHolder> insertColumn(adapter: KDragItemAdapter<T, VH>, index: Int, header: View?,
+                                                           hasFixedItemSize: Boolean): KDragItemRecyclerView {
         if (index > getColumnCount()) {
             throw IllegalArgumentException("Index is out of bounds")
         }
