@@ -21,7 +21,7 @@ abstract class KDragItemAdapter<T, VH : KDragItemAdapter.ViewHolder> : RecyclerV
     var dragStartCallback: DragStartCallback? = null
     var dragItemId = RecyclerView.NO_ID
     var dropTargetId = RecyclerView.NO_ID
-    abstract var itemList: MutableList<T>
+    abstract val itemList: MutableList<T>
 
     init {
         this.setHasStableIds(true)
@@ -100,7 +100,7 @@ abstract class KDragItemAdapter<T, VH : KDragItemAdapter.ViewHolder> : RecyclerV
         return if (itemList == null) 0 else itemList!!.size
     }
 
-    //endregion Collections Functions
+    //endregion Collections Functions*/
 
     //region Classes and Interfaces
 
@@ -112,6 +112,14 @@ abstract class KDragItemAdapter<T, VH : KDragItemAdapter.ViewHolder> : RecyclerV
 
     /*
      * Very very strange stuff going on here, need to revise and fix!
+     *
+     *
+     * I understand better now 02-Dec-18 B.Helal
+     *
+     * itemView is just the actual view of course
+     * handleResID is the ID of the view that will respond to a drag
+     * dragOnLongPress is true if you want to drag when long pressing, if not then a click will
+     * start dragging
      *
      * */
     abstract class ViewHolder(itemView: View, handleResID: Int, dragOnLongPress: Boolean)

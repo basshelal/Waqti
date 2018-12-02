@@ -2,6 +2,8 @@
 
 * Make Task use 1 Observable instead of 7
 
+* Cache2k doesn't work on Android because of javax.naming not being on Android
+
 * Implement all Caches using new Caching library 
     ( for this we must put into the DB and get from Cache, deletes are on the DB,
     problem with checking Observables or checkNotDead() )

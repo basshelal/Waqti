@@ -1,23 +1,20 @@
 package uk.whitecrescent.waqti.android.views
 
-import android.app.Activity
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.checkWritePermission
-import uk.whitecrescent.waqti.model.collections.TaskList
-import uk.whitecrescent.waqti.model.isEmpty
-import uk.whitecrescent.waqti.model.persistence.Caches
+import uk.whitecrescent.waqti.android.customview.KBoardView
+import uk.whitecrescent.waqti.android.customview.KDragItemAdapter
 import uk.whitecrescent.waqti.model.persistence.Database
-import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.model.toArrayList
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,13 +22,49 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        Database.clearAllDBs().commit()
+
         checkWritePermission()
 
-        setUpBoard(board_recyclerView, this)
+        boardView.snapToColumnWhenScrolling = true
+        boardView.snapToColumnWhenDragging = true
+        boardView.setSnapDragItemToTouch(true)
+        boardView.snapToColumnInLandscape = false
+        boardView.snapPosition = (KBoardView.ColumnSnapPosition.CENTER)
+
+        class ViewHolderX(view: View) : KDragItemAdapter.ViewHolder(view, view.id, false)
+
+        class Adapter : KDragItemAdapter<String, ViewHolderX>() {
+
+            override val itemList: MutableList<String> =
+                    (1..100).map { Task("Task number $it").toString() }.toArrayList
+
+            override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolderX {
+                return ViewHolderX(LayoutInflater.from(parent.context).inflate(R.layout.task_card, parent, false))
+            }
+
+            override fun onBindViewHolder(holder: ViewHolderX, position: Int) {
+                super.onBindViewHolder(holder, position)
+                (holder.itemView as TextView).text = itemList[position]
+            }
+
+            override fun getUniqueItemId(position: Int): Long {
+                return position.toLong()
+            }
+        }
+
+        boardView.addColumn(Adapter(), null, null, false)
+        boardView.addColumn(Adapter(), null, null, false)
+        boardView.addColumn(Adapter(), null, null, false)
+        boardView.addColumn(Adapter(), null, null, false)
+        boardView.addColumn(Adapter(), null, null, false)
+
+        //setUpBoard(board_recyclerView, this)
 
     }
 }
 
+/*
 class ListViewHolder(val view: View) : RecyclerView.ViewHolder(view)
 
 class BoardAdapter : RecyclerView.Adapter<ListViewHolder>() {
@@ -88,4 +121,4 @@ fun seedDB() {
 fun clearDB() {
     Caches.clearAllCaches().commit()
     Database.clearAllDBs().commit()
-}
+}*/

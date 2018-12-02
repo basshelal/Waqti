@@ -23,7 +23,9 @@ import android.widget.LinearLayout
 import android.widget.Scroller
 import uk.whitecrescent.waqti.R
 
-class KBoardView(context: Context, attributeSet: AttributeSet? = null, defStyle: Int = 0) :
+
+class KBoardView
+@JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, defStyle: Int = 0) :
         HorizontalScrollView(context, attributeSet, defStyle), KAutoScroller.AutoScrollListener {
 
     val scrollAnimationDuration = 325
@@ -609,7 +611,9 @@ class KBoardView(context: Context, attributeSet: AttributeSet? = null, defStyle:
         return recyclerView
     }
 
-    fun addColumn(adapter: KDragItemAdapter<Any, KDragItemAdapter.ViewHolder>, header: View?, columnDragView: View?, hasFixedItemSize: Boolean): KDragItemRecyclerView {
+    fun <T, VH : KDragItemAdapter.ViewHolder>
+            addColumn(adapter: KDragItemAdapter<T, VH>, header: View?,
+                      columnDragView: View?, hasFixedItemSize: Boolean): KDragItemRecyclerView {
         val recyclerView = insertColumn(adapter, getColumnCount(), header, hasFixedItemSize)
         setupColumnDragListener(columnDragView, recyclerView)
         return recyclerView
@@ -622,8 +626,8 @@ class KBoardView(context: Context, attributeSet: AttributeSet? = null, defStyle:
         }
     }
 
-    private fun insertColumn(adapter: KDragItemAdapter<Any, KDragItemAdapter.ViewHolder>, index: Int, header: View?,
-                             hasFixedItemSize: Boolean): KDragItemRecyclerView {
+    private fun <T, VH : KDragItemAdapter.ViewHolder> insertColumn(adapter: KDragItemAdapter<T, VH>, index: Int, header: View?,
+                                                                   hasFixedItemSize: Boolean): KDragItemRecyclerView {
         if (index > getColumnCount()) {
             throw IllegalArgumentException("Index is out of bounds")
         }
@@ -683,7 +687,7 @@ class KBoardView(context: Context, attributeSet: AttributeSet? = null, defStyle:
             }
         }
 
-        recyclerView.adapter = adapter
+        recyclerView.setAdapter(adapter)
         recyclerView.dragEnabled = this.dragEnabled
         adapter.dragStartCallback = (object : KDragItemAdapter.DragStartCallback {
             override fun startDrag(itemView: View, itemId: Long): Boolean {

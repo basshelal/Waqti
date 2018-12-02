@@ -13,7 +13,6 @@ import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.Time
-import uk.whitecrescent.waqti.model.contains
 import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -1298,7 +1297,7 @@ class Task(name: String = "") : Cacheable {
     override fun update() {
         //Caches.tasks.put(this)
         Database.tasks.put(this)
-        Caches.testTaskCache.put(this.id, this)
+        //Caches.testTaskCache.put(this.id, this)
     }
 
     fun canKill() = isKillable &&
@@ -1431,7 +1430,7 @@ class Task(name: String = "") : Cacheable {
                         object : Observer<Long> {
 
                             override fun onNext(it: Long) {
-                                if (this@Task !in Caches.testTaskCache) {
+                                if (this@Task !in Caches.tasks) {
                                     doneVar = true
                                 }
                                 if (checking["Time"]!!) checkTime()

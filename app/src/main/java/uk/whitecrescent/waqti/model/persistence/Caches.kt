@@ -1,10 +1,8 @@
 package uk.whitecrescent.waqti.model.persistence
 
-import org.cache2k.Cache2kBuilder
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.collections.TaskList
-import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
@@ -70,11 +68,12 @@ object Caches {
         }
     }
 
-    val testTaskCache = object : Cache2kBuilder<ID, Task>() {}
-            .entryCapacity(1000L)
-            .permitNullValues(false)
-            .eternal(true)
-            .loader { Database.tasks[it] }
-            .build()
+//    val testTaskCache = object : Cache2kBuilder<ID, Task>() {}
+//            .enableJmx(false)
+//            .entryCapacity(1000L)
+//            .permitNullValues(false)
+//            .eternal(true)
+//            .loader { Database.tasks[it] }
+//            .build()
 
 }

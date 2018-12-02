@@ -14,7 +14,8 @@ import android.view.View
 import android.view.ViewConfiguration
 import kotlin.math.abs
 
-class KDragItemRecyclerView(context: Context, attributeSet: AttributeSet? = null, defStyle: Int = 0) :
+class KDragItemRecyclerView
+@JvmOverloads constructor(context: Context, attributeSet: AttributeSet? = null, defStyle: Int = 0) :
         RecyclerView(context, attributeSet, defStyle),
         KAutoScroller.AutoScrollListener {
 

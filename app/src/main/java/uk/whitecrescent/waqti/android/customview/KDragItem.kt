@@ -17,7 +17,10 @@ import android.widget.FrameLayout
  */
 class KDragItem(context: Context) {
 
-    val ANIMATION_DURATION = 250
+    //region Properties
+
+    private val animationDuration = 250
+    /* TODO Question: Why do we have 2, dragView and realDragView */
     var dragView: View = View(context)
     var realDragView: View? = null
     var offsetX: Float = 0F
@@ -71,11 +74,13 @@ class KDragItem(context: Context) {
     val isDragging: Boolean
         get() = dragView.visibility == View.VISIBLE
 
+    //endregion Properties
+
     init {
         hide()
     }
 
-    fun startDrag(startFromView: View, touchX: Float, touchY: Float) {
+    fun startDrag(startFromView: View, touchedX: Float, touchedY: Float) {
         show()
         realDragView = startFromView
         onBindDragView(startFromView, dragView)
@@ -91,22 +96,22 @@ class KDragItem(context: Context) {
         if (this.isSnapToTouch) {
             posTouchDx = 0F
             posTouchDy = 0F
-            position = touchX to touchY
-            animationDx = startX - touchX
-            animationDy = startY - touchY
+            position = touchedX to touchedY
+            animationDx = startX - touchedX
+            animationDy = startY - touchedY
 
             val xPropertyHolder = PropertyValuesHolder.ofFloat("AnimationDx", animationDx, 0F)
             val yPropertyHolder = PropertyValuesHolder.ofFloat("AnimationDy", animationDy, 0F)
 
             val animator = ObjectAnimator.ofPropertyValuesHolder(this, xPropertyHolder, yPropertyHolder)
             animator.interpolator = DecelerateInterpolator()
-            animator.duration = ANIMATION_DURATION.toLong()
+            animator.duration = animationDuration.toLong()
             animator.start()
         } else {
-            posTouchDx = startX - touchX
-            posTouchDy = startY - touchY
+            posTouchDx = startX - touchedX
+            posTouchDy = startY - touchedY
 
-            position = touchX to touchY
+            position = touchedX to touchedY
         }
     }
 
@@ -122,18 +127,18 @@ class KDragItem(context: Context) {
         val animator = ObjectAnimator.ofPropertyValuesHolder(this, xPropertyHolder, yPropertyHolder)
 
         animator.interpolator = DecelerateInterpolator()
-        animator.duration = ANIMATION_DURATION.toLong()
+        animator.duration = animationDuration.toLong()
         animator.addListener(listenerAdapter)
         animator.start()
     }
 
-    fun onBindDragView(clickedView: View, dragView: View) {
+    private fun onBindDragView(clickedView: View, dragView: View) {
         val bitmap = Bitmap.createBitmap(clickedView.width, clickedView.height, Bitmap.Config.ARGB_8888)
         clickedView.draw(Canvas(bitmap))
         dragView.background = BitmapDrawable(clickedView.resources, bitmap)
     }
 
-    fun onMeasureDragView(clickedView: View, dragView: View) {
+    private fun onMeasureDragView(clickedView: View, dragView: View) {
         dragView.layoutParams = FrameLayout.LayoutParams(clickedView.measuredWidth, clickedView.measuredHeight)
         dragView.measure(
                 View.MeasureSpec.makeMeasureSpec(clickedView.measuredWidth, View.MeasureSpec.EXACTLY),
@@ -146,7 +151,7 @@ class KDragItem(context: Context) {
         realDragView = null
     }
 
-    fun show() {
+    private fun show() {
         dragView.visibility = View.VISIBLE
     }
 
