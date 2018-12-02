@@ -6,20 +6,47 @@ import android.view.MotionEvent
 import android.view.View
 import java.util.Collections
 
+/*
+ * Notes:
+ * We don't need to have the type T, we can let that up to the implementor to have their own
+ * stuff, just as Android RecyclerView.Adapter allows you to, this means that we can easily
+ * get rid all of the stupid collections modifier functions like remove, add etc
+ *
+ * This class basically doesn't do very much, it's just a fancy RecyclerView.Adapter with
+ * unnecessary collections stuff and some cool callback stuff that can be used
+ *
+ * */
 abstract class KDragItemAdapter<T, VH : KDragItemAdapter.ViewHolder> : RecyclerView.Adapter<VH>() {
 
     var dragStartCallback: DragStartCallback? = null
     var dragItemId = RecyclerView.NO_ID
     var dropTargetId = RecyclerView.NO_ID
-    var itemList: MutableList<T>? = null
-        set(value) {
-            field = value
-            notifyDataSetChanged()
-        }
+    abstract var itemList: MutableList<T>
 
     init {
         this.setHasStableIds(true)
     }
+
+    @CallSuper
+    override fun onBindViewHolder(holder: VH, position: Int) {
+        val itemId = getItemId(position)
+        holder.itemId0 = itemId
+        holder.itemView.visibility = if (dragItemId == itemId) View.INVISIBLE else View.VISIBLE
+        holder.dragStartCallback = this.dragStartCallback
+    }
+
+    override fun onViewRecycled(holder: VH) {
+        super.onViewRecycled(holder)
+        holder.dragStartCallback = null
+    }
+
+    override fun getItemId(position: Int): Long {
+        return getUniqueItemId(position)
+    }
+
+    abstract fun getUniqueItemId(position: Int): Long
+
+    //region Collections Functions
 
     fun getPosition(item: T): Int {
         (0..itemCount).forEach {
@@ -73,24 +100,9 @@ abstract class KDragItemAdapter<T, VH : KDragItemAdapter.ViewHolder> : RecyclerV
         return if (itemList == null) 0 else itemList!!.size
     }
 
-    @CallSuper
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        val itemId = getItemId(position)
-        holder.itemId0 = itemId
-        holder.itemView.visibility = if (dragItemId == itemId) View.INVISIBLE else View.VISIBLE
-        holder.dragStartCallback = dragStartCallback
-    }
+    //endregion Collections Functions
 
-    override fun onViewRecycled(holder: VH) {
-        super.onViewRecycled(holder)
-        holder.dragStartCallback = null
-    }
-
-    override fun getItemId(position: Int): Long {
-        return getUniqueItemId(position)
-    }
-
-    abstract fun getUniqueItemId(position: Int): Long
+    //region Classes and Interfaces
 
     interface DragStartCallback {
 
@@ -98,6 +110,10 @@ abstract class KDragItemAdapter<T, VH : KDragItemAdapter.ViewHolder> : RecyclerV
         fun startDrag(itemView: View, itemId: Long): Boolean
     }
 
+    /*
+     * Very very strange stuff going on here, need to revise and fix!
+     *
+     * */
     abstract class ViewHolder(itemView: View, handleResID: Int, dragOnLongPress: Boolean)
         : RecyclerView.ViewHolder(itemView) {
         var grabView: View = itemView.findViewById(handleResID)
@@ -153,5 +169,7 @@ abstract class KDragItemAdapter<T, VH : KDragItemAdapter.ViewHolder> : RecyclerV
             return false
         }
     }
+
+    //endregion Classes and Interfaces
 
 }

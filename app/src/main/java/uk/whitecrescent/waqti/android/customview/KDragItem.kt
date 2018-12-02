@@ -15,7 +15,7 @@ import android.widget.FrameLayout
  * Not 100% sure what this thing does, I believe it's just a wrapper for a draggable View
  *
  */
-class DragItem(context: Context) {
+class KDragItem(context: Context) {
 
     val ANIMATION_DURATION = 250
     var dragView: View = View(context)

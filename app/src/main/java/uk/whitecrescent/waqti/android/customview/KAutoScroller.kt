@@ -7,7 +7,7 @@ import android.os.Handler
  * This is just a Self Scrolling Entity, no views here just fancy Math that does the self
  * scrolling based on parameters and different types and directions of scrolling
  */
-class AutoScroller(context: Context, private val listener: AutoScrollListener) {
+class KAutoScroller(context: Context, private val listener: AutoScrollListener) {
 
     private val scrollSpeedDP = 8
     private val autoScrollUpdateDelay = 12L
