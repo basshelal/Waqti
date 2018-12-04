@@ -16,7 +16,6 @@ import uk.whitecrescent.waqti.model.Time
 import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.persistence.Caches
-import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.tasks
 
 // TODO: 18-Jun-18 When done, make sure everything is tested and doc'd
@@ -1295,9 +1294,7 @@ class Task(name: String = "") : Cacheable {
 
     // TODO: 05-Nov-18 needs to be put in way more places maybe?
     override fun update() {
-        //Caches.tasks.put(this)
-        Database.tasks.put(this)
-        //Caches.testTaskCache.put(this.id, this)
+        Caches.tasks.put(this)
     }
 
     fun canKill() = isKillable &&

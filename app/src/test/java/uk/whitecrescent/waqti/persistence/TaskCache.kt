@@ -1,17 +1,14 @@
 package uk.whitecrescent.waqti.persistence
 
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
 import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.persistence.Database
-import uk.whitecrescent.waqti.model.size
+import uk.whitecrescent.waqti.model.persistence.size
 import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.Task
 
@@ -25,7 +22,7 @@ class TaskCache : BasePersistenceTest() {
         assertEquals(100, Caches.tasks.size)
         assertEquals(100, Database.tasks.size)
 
-        Caches.tasks.clear().commit()
+        Caches.tasks.clearAll().commit()
         assertEquals(0, Caches.tasks.size)
         assertEquals(0, Database.tasks.size)
     }
@@ -33,11 +30,10 @@ class TaskCache : BasePersistenceTest() {
     @DisplayName("Cache Unique IDs")
     @Test
     fun testCacheNewID() {
-        (1..100).forEach {
-            val cacheable = Task(name = "Test $it")
-            assertTrue(cacheable in Caches.tasks)
-            assertTrue(cacheable.id in Caches.tasks.ids)
-            assertTrue(Caches.tasks.count { it.id == cacheable.id } == 1)
+        getTasks(100).forEach {
+            assertTrue(it in Caches.tasks)
+            assertTrue(it.id in Caches.tasks.ids)
+            assertTrue(Caches.tasks.distinct().size == 100)
         }
         assertTrue(Caches.tasks.size == 100)
     }
@@ -95,18 +91,18 @@ class TaskCache : BasePersistenceTest() {
     fun testCachePutAuto() {
         val cache = Caches.tasks
         val new = Task(name = "New")
-        assertEquals(new, cache.query().first())
+        assertEquals(new, cache.valueList().first())
         assertEquals(new, Database.tasks[new.id])
 
-        assertEquals("New", cache.query().first().name)
+        assertEquals("New", cache.valueList().first().name)
         assertEquals("New", Database.tasks[new.id].name)
 
         new.name = "Updated"
 
-        assertEquals(new, cache.query().first())
+        assertEquals(new, cache.valueList().first())
         assertEquals(new, Database.tasks[new.id])
 
-        assertEquals("Updated", cache.query().first().name)
+        assertEquals("Updated", cache.valueList().first().name)
         assertEquals("Updated", Database.tasks[new.id].name)
     }
 
@@ -118,7 +114,7 @@ class TaskCache : BasePersistenceTest() {
         assertEquals(100, cache.size)
         assertEquals(100, Database.tasks.count())
 
-        val randomElement = cache.query()[69]
+        val randomElement = cache.valueList()[69]
 
         cache[randomElement.id].name = "Updated!"
         assertEquals(randomElement.name, "Updated!")
@@ -132,55 +128,26 @@ class TaskCache : BasePersistenceTest() {
         val cache = Caches.tasks
         getTasks(100)
         assertEquals(100, cache.size)
-        assertEquals(100, Database.tasks.count())
+        assertEquals(100, Database.tasks.size)
 
-        cache.clear().commit()
+        cache.clearAll().commit()
         assertEquals(0, cache.size)
         assertTrue(cache.isEmpty())
     }
 
-    // TODO: 21-Nov-18 How do we do Cache Concurrency? Do we even need it??
-
-    @Disabled
-    @DisplayName("Async Check")
+    @DisplayName("Cache Trim")
     @Test
-    fun testAsyncCheck() {
+    fun testCacheTrim() {
         val cache = Caches.tasks
-        getTasks(100)
-        assertEquals(100, cache.size)
-        assertEquals(100, Database.tasks.count())
+        getTasks(1500)
 
-        cache.clear().commit()
-        assertEquals(0, cache.size)
-        assertTrue(cache.isEmpty())
+        assertEquals(1500, cache.size)
+        assertEquals(1500, Database.tasks.size)
 
-        assertEquals(100, Database.tasks.count())
-        assertTrue(Database.tasks.all.isNotEmpty())
-
-        cache.startAsyncCheck(1L)
+        cache.trim()
+        assertEquals(1000, cache.size)
+        assertEquals(1500, Database.tasks.size)
 
         sleep(2)
-
-        assertEquals(100, cache.size)
-        assertEquals(100, Database.tasks.count())
-
-        assertEquals(Database.tasks.all.sortedBy { it.id }, cache.query().sortedBy { it.id })
-        cache.stopAsyncCheck()
-    }
-
-    @Disabled
-    @DisplayName("Concurrent")
-    @Test
-    fun testConcurrent() {
-        val cache = Caches.tasks
-        Observable.fromCallable { getTasks(1000) }.subscribeOn(Schedulers.newThread())
-                .subscribe()
-        Observable.fromCallable { getTasks(1000) }.subscribeOn(Schedulers.newThread())
-                .subscribe()
-
-        sleep(4) // how do we have blocking reading? Concurrent Read is important!
-
-        assertEquals(2000, cache.size)
-        assertEquals(2000, Database.tasks.count())
     }
 }

@@ -5,37 +5,82 @@ import io.objectbox.Box
 import io.reactivex.Observable
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Committable
-import uk.whitecrescent.waqti.model.collections.QueriesDataBase
-import uk.whitecrescent.waqti.model.forEach
-import uk.whitecrescent.waqti.model.size
 import uk.whitecrescent.waqti.model.task.ID
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
-import kotlin.collections.set
 
 // TODO: 28-Jul-18 Test and doc
 
-// TODO: 08-Nov-18 Is this thread safe?
-// no guarantee for order!
-open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
+// TODO: 04-Dec-18 Make this thread safe!
+open class Cache<E : Cacheable>(
+        private val db: Box<E>,
+        var sizeLimit: Int = 1000) : Collection<E> {
 
-    private val map = ConcurrentHashMap<ID, E>()
+    private val map = LinkedHashMap<ID, E>(100, 0.75F, true)
     private var isChecking = false
 
     override val size: Int
         get() = map.size
 
+    @QueriesDataBase
+    private val isInconsistent: Boolean
+        get() = !map.all { it.key in db.ids }
+
+    //region Core Modification
+
+    @Throws(ElementNotFoundException::class)
+    private fun safeGet(id: ID): E {
+        val mapFound = map[id]
+
+        // below queries the DB, we want to reduce this as much as possible
+        // we do this by making sure every update made to the db will also be done to the cache
+        // we may also let the cache update itself every once in a while to keep the values
+        // correct in the cache
+
+        return when {
+            @QueriesDataBase
+            mapFound == null -> {
+                val dbFound = db[id]
+                if (dbFound == null) throw ElementNotFoundException(id)
+                else {
+                    safeAdd(dbFound)
+                    dbFound
+                }
+            }
+            @QueriesDataBase
+            map.size != db.size -> {
+                clean()
+                safeGet(id)
+            }
+            else -> mapFound
+        }
+    }
+
+    private fun safeAdd(element: E) {
+        map[element.id] = element
+    }
+
     fun put(element: E) {
         val id = db.put(element)
         assert(element.id == id)
-        map[id] = element
+        safeAdd(element)
     }
 
     fun put(elements: Collection<E>) {
         db.put(elements)
-        elements.forEach { assert(it.id != 0L) }
-        elements.forEach { map[it.id] = it }
+        elements.forEach {
+            assert(it.id != 0L)
+            safeAdd(it)
+        }
     }
+
+    fun remove(id: ID) {
+        db.remove(id)
+        map.remove(id)
+    }
+
+    //endregion Core Modification
+
+    //region Operators
 
     operator fun get(element: E) =
             this.safeGet(element.id)
@@ -45,20 +90,6 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
 
     operator fun get(elements: Collection<E>) =
             elements.map { this[it] }
-
-    fun remove(id: ID) {
-        db.remove(id)
-        map.remove(id)
-    }
-
-    fun remove(element: E) {
-        this.remove(element.id)
-    }
-
-    fun remove(elements: Collection<E>) {
-        db.remove(elements)
-        elements.forEach { map.remove(it.id) }
-    }
 
     operator fun plus(element: E): Cache<E> {
         this.put(element)
@@ -80,13 +111,21 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
         return this
     }
 
-    fun getByIDs(ids: Collection<ID>) =
-            ids.map { this[it] }
+    //endregion Operators
 
-    fun idOf(element: E): ID {
-        return this[element].id
-        // above could throw exception since it calls safeGet()
+    //region Delegated
+
+    fun remove(element: E) = this.remove(element.id)
+
+    fun remove(elements: Collection<E>) {
+        db.remove(elements)
+        elements.forEach { map.remove(it.id) }
     }
+
+    fun getByIDs(ids: Collection<ID>) = ids.map { this[it] }
+
+    //could throw exception since it calls safeGet()
+    fun idOf(element: E) = this[element].id
 
     fun idsOf(elements: Collection<E>) =
             elements.map { idOf(it) }
@@ -97,101 +136,108 @@ open class Cache<E : Cacheable>(private val db: Box<E>) : Collection<E> {
     fun removeIf(predicate: () -> Boolean) =
             this.forEach { if (predicate.invoke()) remove(it) }
 
-    fun clear(): Committable {
+    fun idList() = map.keys.toList()
+
+    fun valueList() = map.values.toList()
+
+    override fun isEmpty() = map.isEmpty()
+
+    override operator fun iterator() = valueList().iterator()
+
+    override operator fun contains(element: E) = element.id in map
+
+    override fun containsAll(elements: Collection<E>) = elements.all { this.contains(it) }
+
+    //endregion Delegated
+
+    //region Dangerous Bulk Removes
+
+    fun clearMap() = this.map.clear()
+
+    fun clearDB() = object : Committable {
+        override fun commit() {
+            db.removeAll()
+        }
+    }
+
+    fun clearAll(): Committable {
         return object : Committable {
             override fun commit() {
-                db.removeAll()
-                map.clear()
+                clearDB().commit()
+                clearMap()
             }
         }
     }
 
-    fun query() = map.values.toList()
+    fun close() {
+        stopAsyncCheck()
+        clearMap()
+    }
 
-    fun toImmutableMap() = map.toMap()
+    //endregion Dangerous Bulk Removes
 
-    override fun isEmpty() = map.isEmpty()
+    //region Concurrent
 
-    override operator fun iterator() = map.values.iterator()
+    @QueriesDataBase
+    fun clean() {
+        if (isInconsistent) {
+            // removes those in map not in DB but doesn't add anything new to fill up
+            map.keys.toList()
+                    .filter { it !in db.ids }
+                    .forEach { map.remove(it) }
+            assert(!isInconsistent)
+        }
+    }
 
-    override operator fun contains(element: E) = element in map
+    fun trim() {
+        if (size > sizeLimit) {
+            map.keys.toList()
+                    //.reversed()
+                    .filterIndexed { index, _ -> index < (size - sizeLimit) }
+                    .forEach { map.remove(it) }
+            assert(map.size == sizeLimit)
+        }
+    }
 
-    override fun containsAll(elements: Collection<E>) = elements.all { this.contains(it) }
+    @SuppressLint("CheckResult")
+    fun startAsyncCheck(checkPeriod: Long = CACHE_CHECKING_PERIOD,
+                        checkUnit: TimeUnit = CACHE_CHECKING_UNIT): Cache<E> {
+        isChecking = true
+        Observable.interval(checkPeriod, checkUnit)
+                .takeWhile { isChecking }
+                .subscribe(
+                        {
+                            clean()
+                            trim()
+                        },
+                        {
+                            // TODO: 04-Dec-18 do this
+                        }
+
+                )
+        return this
+    }
+
+    fun stopAsyncCheck(): Cache<E> {
+        isChecking = false
+        return this
+    }
+
+    //endregion Concurrent
+
+    //region Overriden from kotlin.Any
 
     override fun hashCode() = map.hashCode()
 
     override fun equals(other: Any?) =
             other is Cache<*> &&
                     other.hashCode() == this.hashCode() &&
-                    other.toImmutableMap() == this.toImmutableMap()
+                    other.idList() == this.idList()
 
     override fun toString(): String {
         return map.toString()
     }
 
-    @Throws(ElementNotFoundException::class)
-    protected fun safeGet(id: ID): E {
-        val mapFound = map[id]
-
-        // below queries the DB, we want to reduce this as much as possible
-        // we do this by making sure every update made to the db will also be done to the cache
-        // we may also let the cache update itself every once in a while to keep the values
-        // correct in the cache
-
-        return when {
-            mapFound == null -> {
-                val dbFound = db[id]
-                if (dbFound == null) throw ElementNotFoundException(id)
-                else {
-                    map[dbFound.id] = dbFound
-                    dbFound
-                }
-            }
-            // TODO: 22-Nov-18 this unnecessarily queries the DB! Change it if possible
-            @QueriesDataBase
-            map.size != db.size -> {
-                update()
-                safeGet(id)
-            }
-
-//            mapFound != db[id] -> {
-//                val dbFound = db[id]
-//                map[dbFound.id] = dbFound
-//                dbFound
-//            }
-            else -> mapFound
-        }
-    }
-
-    fun clearMap() = this.map.clear()
-
-    @QueriesDataBase
-    private val isInconsistent: Boolean
-        get() = map.size != db.size || map.values.sortedBy { it.id } != db.all.sortedBy { it.id }
-
-    // not slow for 10_000!
-    // only executes something if the map and db are different for whatever reason
-    @QueriesDataBase
-    fun update() {
-        if (isInconsistent) {
-            map.clear()
-            db.forEach { map[it.id] = it }
-        }
-    }
-
-    // if designed right, we will never need this implementation!
-    @SuppressLint("CheckResult")
-    fun startAsyncCheck(checkSeconds: Long = 30L) {
-        isChecking = true
-        Observable.interval(checkSeconds, TimeUnit.SECONDS)
-                .takeWhile { isChecking }
-                .subscribe {
-                    update()
-                }
-    }
-
-    fun stopAsyncCheck() {
-        isChecking = false
-    }
+    //endregion Overriden from kotlin.Any
 
 }

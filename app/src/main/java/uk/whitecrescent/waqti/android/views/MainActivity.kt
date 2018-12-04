@@ -11,9 +11,6 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.checkWritePermission
 import uk.whitecrescent.waqti.android.customview.KBoardView
 import uk.whitecrescent.waqti.android.customview.KDragItemAdapter
-import uk.whitecrescent.waqti.model.persistence.Database
-import uk.whitecrescent.waqti.model.task.Task
-import uk.whitecrescent.waqti.model.toArrayList
 
 
 class MainActivity : AppCompatActivity() {
@@ -21,8 +18,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
-        Database.clearAllDBs().commit()
 
         checkWritePermission()
 
@@ -37,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         class Adapter : KDragItemAdapter<String, ViewHolderX>() {
 
             override val itemList: MutableList<String> =
-                    (1..100).map { Task("Task number $it").toString() }.toArrayList
+                    mutableListOf(*Array(100, { "Text number $it" }))
 
             override fun onCreateViewHolder(parent: ViewGroup, position: Int): ViewHolderX {
                 return ViewHolderX(LayoutInflater.from(parent.context).inflate(R.layout.task_card, parent, false))
@@ -58,8 +53,6 @@ class MainActivity : AppCompatActivity() {
         boardView.addColumn(Adapter(), null, null, false)
         boardView.addColumn(Adapter(), null, null, false)
         boardView.addColumn(Adapter(), null, null, false)
-
-        //setUpBoard(board_recyclerView, this)
 
     }
 }

@@ -3,27 +3,23 @@
 package uk.whitecrescent.waqti
 
 import uk.whitecrescent.waqti.model.Duration
+import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Task
 
 fun testTask() = testTask
 
 val testTask: Task
-    get() {
-        val task = Task("TestTask")
-        return task
-    }
+    get() = Task("TestTask")
 
 fun testTask(name: String): Task {
     return Task(name)
 }
 
-fun getTasks(amount: Int): List<Task> {
-    return (0 until amount).map {
-        testTask("TestTask $it")
-    }
-}
+inline fun getTasks(amount: Int) = Array(amount, { testTask("TestTask # ${it + 1}") }).toList()
 
-inline fun after(duration: Duration, func: () -> Any) {
+inline fun getLabels(amount: Int) = Array(amount, { Label("Label # ${it + 1}") }).toList()
+
+fun after(duration: Duration, func: () -> Any) {
     Thread.sleep(duration.toMillis())
     func.invoke()
 }

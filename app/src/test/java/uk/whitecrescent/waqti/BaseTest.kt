@@ -5,9 +5,9 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
-import uk.whitecrescent.waqti.model.isEmpty
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.persistence.Database
+import uk.whitecrescent.waqti.model.persistence.isEmpty
 import java.io.File
 
 abstract class BaseTest {

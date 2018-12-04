@@ -63,17 +63,9 @@ object Caches {
     fun clearAllCaches(): Committable {
         return object : Committable {
             override fun commit() {
-                allCaches.forEach { it.clear().commit() }
+                allCaches.forEach { it.clearAll().commit() }
             }
         }
     }
-
-//    val testTaskCache = object : Cache2kBuilder<ID, Task>() {}
-//            .enableJmx(false)
-//            .entryCapacity(1000L)
-//            .permitNullValues(false)
-//            .eternal(true)
-//            .loader { Database.tasks[it] }
-//            .build()
 
 }
