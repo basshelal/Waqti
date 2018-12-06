@@ -5,7 +5,6 @@ import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.toArrayList
-import java.util.concurrent.ConcurrentHashMap
 
 // Document this and check to see if this is thread safe or not
 // TODO: 21-Nov-18 Consider making this Cacheable so that we can call the update when we need to
@@ -65,7 +64,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
 
     //endregion Properties
 
-    protected abstract fun getAll(): ConcurrentHashMap<ID, E>
+    abstract fun getAll(): LinkedHashMap<ID, E>
 
     //region Operators
 

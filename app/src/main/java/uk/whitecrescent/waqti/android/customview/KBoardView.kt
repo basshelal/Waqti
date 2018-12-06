@@ -6,11 +6,6 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Parcel
 import android.os.Parcelable
-import android.support.v4.view.ViewCompat
-import android.support.v7.widget.DefaultItemAnimator
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.RecyclerView.NO_POSITION
 import android.util.AttributeSet
 import android.view.GestureDetector
 import android.view.LayoutInflater
@@ -21,6 +16,11 @@ import android.widget.FrameLayout
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import android.widget.Scroller
+import androidx.core.view.ViewCompat
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import uk.whitecrescent.waqti.R
 
 

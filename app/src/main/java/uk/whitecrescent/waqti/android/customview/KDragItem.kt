@@ -12,16 +12,32 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.FrameLayout
 
 /*
- * Not 100% sure what this thing does, I believe it's just a wrapper for a draggable View
+ * This is just a wrapper for a Draggable View, see the documentation below but basically we have
+ * 2 views, one is the actual view and the other is the view that is being dragged right now
  *
+ *
+ * Why not have this contain 1 View instead of 2? I think I know why!
+ *
+ * Because when we are dragging we want an empty placeholder available to show where we currently
+ * will drop the item that we are dragging! So I think we MUST have 2 Views
  */
 class KDragItem(context: Context) {
 
     //region Properties
 
     private val animationDuration = 250
-    /* TODO Question: Why do we have 2, dragView and realDragView */
+
+    /**
+     * A view that is dragged around that acts like it's the one that is actually there but it's
+     * not, what's happening is we have this guy pretending to be the realDragView, this guy
+     * becomes irrelevant when the drag is ended but is essential for that
+     */
     var dragView: View = View(context)
+    /**
+     * The actual view that wants to be dragged, it doesn't actually get dragged though, instead
+     * we just use dragView and make that guy look like it's this, this guy doesn't actually get
+     * dragged
+     */
     var realDragView: View? = null
     var offsetX: Float = 0F
     var offsetY: Float = 0F

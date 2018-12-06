@@ -7,7 +7,6 @@ import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.task.ID
-import java.util.concurrent.ConcurrentHashMap
 
 @Entity
 class Board(name: String = "", lists: Collection<TaskList> = emptyList())
@@ -31,8 +30,8 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
         update()
     }
 
-    override fun getAll(): ConcurrentHashMap<ID, TaskList> {
-        return ConcurrentHashMap(
+    override fun getAll(): LinkedHashMap<ID, TaskList> {
+        return LinkedHashMap(
                 Database.taskLists.all
                         .filter { it.id in idList }
                         .map { it.id to it }

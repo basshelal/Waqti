@@ -1,9 +1,9 @@
 package uk.whitecrescent.waqti.android.customview
 
-import android.support.annotation.CallSuper
-import android.support.v7.widget.RecyclerView
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.CallSuper
+import androidx.recyclerview.widget.RecyclerView
 import java.util.Collections
 
 /*
@@ -64,9 +64,9 @@ abstract class KDragItemAdapter<T, VH : KDragItemAdapter.ViewHolder> : RecyclerV
         return null
     }
 
-    fun addItem(pos: Int, item: T) {
+    fun addItem(pos: Int, item: Any) {
         if (itemList != null && itemList!!.size >= pos) {
-            itemList!!.add(pos, item)
+            itemList!!.add(pos, item as T)
             notifyItemInserted(pos)
         }
     }
@@ -111,10 +111,6 @@ abstract class KDragItemAdapter<T, VH : KDragItemAdapter.ViewHolder> : RecyclerV
     }
 
     /*
-     * Very very strange stuff going on here, need to revise and fix!
-     *
-     *
-     * I understand better now 02-Dec-18 B.Helal
      *
      * itemView is just the actual view of course
      * handleResID is the ID of the view that will respond to a drag

@@ -1,14 +1,8 @@
 # TODO (Short)
 
-* Make Task use 1 Observable instead of 7
-
-* Cache2k doesn't work on Android because of javax.naming not being on Android
-
-* Implement all Caches using new Caching library 
-    ( for this we must put into the DB and get from Cache, deletes are on the DB,
-    problem with checking Observables or checkNotDead() )
-
-* Re-write BoardView for our purposes
+* Re-Re-Write the entire BoardView library using our way of doing things, better than this damn 
+awful mess of a library I can't even understand, to do this we'll need some knowledge of Espresso
+ to test it all properly, for dragging and autoscrolling we'll use the library code
 
 * Get a basic UI going as a way to test current features
 
@@ -64,6 +58,8 @@ the anonymous Task's Properties (like a placeholder)
 -----------------------------------------------------------------------------------------------------------------------
 
 # Done
+
+* ~~Make Task use 1 Observable instead of 7~~
 
 * ~~Start figuring out how to do Persistence with ObjectBox on Task~~
 

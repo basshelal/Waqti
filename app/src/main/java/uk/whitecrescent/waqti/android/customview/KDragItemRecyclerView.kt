@@ -5,13 +5,13 @@ import android.animation.AnimatorListenerAdapter
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.drawable.Drawable
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlin.math.abs
 
 class KDragItemRecyclerView
@@ -23,7 +23,7 @@ class KDragItemRecyclerView
     var dragItemListener: DragItemListener? = null
     var dragItemCallback: DragItemCallback? = null
     var dragState: DragState = DragState.DRAG_ENDED
-    var adapter: KDragItemAdapter<Any, KDragItemAdapter.ViewHolder>? = null
+    var adapter: KDragItemAdapter<*, out KDragItemAdapter.ViewHolder>? = null
     var dragItem: KDragItem? = null
     var dropTargetBackgroundDrawable: Drawable? = null
     var dropTargetForegroundDrawable: Drawable? = null

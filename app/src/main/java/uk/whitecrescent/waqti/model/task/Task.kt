@@ -349,7 +349,6 @@ class Task(name: String = "") : Cacheable {
     init {
         if (notDefault()) {
             update()
-//            checkNotDead()
             backgroundObserver()
         }
     }
@@ -1366,7 +1365,6 @@ class Task(name: String = "") : Cacheable {
         } else if (canKill()) {
             state = TaskState.KILLED
             killedTime = now
-//            endObservers() // TODO: 02-May-18 It's safe to do this since the lifecycle can no longer change, properties still can tho
             update()
         } else {
             throw TaskStateException(
@@ -1419,17 +1417,15 @@ class Task(name: String = "") : Cacheable {
     // TODO: 28-Nov-18 Consider compiling all these observers into a single observer
     @SuppressLint("CheckResult")
     private fun backgroundObserver() {
-        var doneVar = false
+        var done = false
         Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
-                .takeWhile { !doneVar }
+                .takeWhile { !done }
                 .subscribeOn(Schedulers.computation())
                 .subscribe(
                         object : Observer<Long> {
 
                             override fun onNext(it: Long) {
-                                if (this@Task !in Caches.tasks) {
-                                    doneVar = true
-                                }
+                                if (this@Task !in Caches.tasks) done = true
                                 if (checking["Time"]!!) checkTime()
                                 if (checking["Duration"]!!) checkDuration()
                                 if (checking["Checklist"]!!) checkChecklist()
@@ -1443,7 +1439,7 @@ class Task(name: String = "") : Cacheable {
                             }
 
                             override fun onComplete() {
-                                debug("Observing ENDED for $name $id because $doneVar")
+                                debug("Observing ENDED for $name $id because $done")
                             }
 
                             override fun onSubscribe(d: Disposable) {
@@ -1584,27 +1580,6 @@ class Task(name: String = "") : Cacheable {
      * expense because we can use the in memory database to access tasks very quickly, thus making the in memory
      * database a sort of buffer between the persistent database and the live runtime
      */
-/*    private fun checkNotDead() {
-        var done = false
-        Observable.interval(100L, java.util.concurrent.TimeUnit.MILLISECONDS)
-                // TODO: 18-Jun-18 problems here too, also check a suitable interval
-                .takeWhile { !done }
-                .subscribeOn(Schedulers.computation())
-                .subscribe(
-                        {
-                            if (this !in Caches.tasks) {
-                                endObservers()
-                                done = true
-                            }
-                        },
-                        {
-                            throw ObserverException("Checking Not Dead Failed!")
-                        },
-                        {
-                            debug("$id DEAD ")
-                        }
-                )
-    }*/
 
     // Can't restart them (not that I know of). dangerous!
     // Lifecycle will not happen automatically if there are no observers checking, even when it should
@@ -1619,441 +1594,6 @@ class Task(name: String = "") : Cacheable {
         activeObservers.clear()
 
         debug("$id has ended its observers: $message0")
-    }*/
-
-    /**
-     * Checks the time on the `stateCheckingThread` to match it with this Task's time Constraint value.
-     *
-     * When the time is past this Task's time Constraint value the state will change to EXISTING and the time
-     * Constraint will be met if it wasn't already and the checking ends.
-     *
-     * If this Task's time is no longer a Constraint (time is un-constrained) then the changes
-     * [setTimeProperty] will be undone, namely:
-     *
-     * * This Task's state will become EXISTING
-     * * This Task will become non-failable if there are no Constraints
-     * * The time checking will end
-     *
-     * If the time Constraint is re-set, set to a new value, then this Observer ends and a new one begins checking the
-     * new value.
-     *
-     * The Observer performs this check every [TIME_CHECKING_PERIOD] [TIME_CHECKING_UNIT], see Constants for these
-     * values as they may change for performance reasons.
-     *
-     * This function is only called when `time` is set as a Constraint and the time value is in the future.
-     *
-     * This has been tested to be computationally cheap when running for 1000 tasks concurrently since the checking
-     * is done once every so often, which itself is cheap.
-     *
-     * @see Task.setTimeProperty
-     * @throws ObserverException if the Observer's `onError` is called for any reasons
-     */
-/*    private fun timeConstraintTimeChecking() {
-        val originalValue = this.time.value
-        var done = false
-
-        val disposable = Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
-                .takeWhile { !done }
-                .subscribeOn(TIME_CONSTRAINT_THREAD)
-                .subscribe(
-                        {
-                            when {
-                                !this.time.isConstrained -> {
-                                    makeNonFailableIfNoConstraints()
-                                    if (this.state == TaskState.SLEEPING) this.state = TaskState.EXISTING
-                                    done = true
-                                }
-                                this.time.value != originalValue -> {
-                                    done = true
-                                }
-                                now.isAfter(this.time.value) -> {
-                                    if (this.state == TaskState.SLEEPING) this.state = TaskState.EXISTING
-                                    if (this.time.isConstrained && !this.time.isMet) {
-                                        this.time.isMet = MET
-                                    }
-                                    done = true
-                                }
-                            }
-                        },
-                        {
-                            throw ObserverException("Time Constraint time checking failed!")
-                        },
-                        {
-                            activeObservers.remove("Time")
-                            debug("$id time observer completed")
-                            update()
-                        },
-                        {
-                            debug("$id time observer subscribed")
-                        }
-                )
-        // TODO: 05-Aug-18 test keeping and removing it from the composite, and do it on others
-        composite.add(disposable)
-        activeObservers.add("Time")
-        update()
-    }*/
-
-    /**
-     * Checks the time that this Task's duration will end on the `stateCheckingThread` to match it with this Task's
-     * duration Constraint value
-     *
-     * When the time is past this Task's duration Constraint value the duration Constraint will be met if it wasn't
-     * already and the checking ends.
-     *
-     * If this Task's duration is no longer a Constraint (duration is un-constrained) then the changes
-     * [setDurationProperty] will be undone, namely:
-     *
-     * * This Task will become non-failable if there are no Constraints
-     * * The duration checking will end
-     *
-     * If the duration Constraint is re-set, set to a new value, then this Observer ends and a new one begins checking
-     * the new value.
-     *
-     * The Observer performs this check every [TIME_CHECKING_PERIOD] [TIME_CHECKING_UNIT], see Constants for these
-     * values as they may change for performance reasons.
-     *
-     * This function is only called when `duration` is set as a Constraint.
-     *
-     * This has been tested to be computationally cheap when running for 1000 tasks concurrently since the checking
-     * is done once every so often, which itself is cheap.
-     *
-     * @see Task.setTimeProperty
-     * @throws ObserverException if the Observer's `onError` is called for any reasons
-     */
-/*    private fun durationConstraintTimerChecking() {
-        val originalValue = this.duration.value
-        var done = false
-
-        val disposable = Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
-                .takeWhile { !done }
-                .doOnComplete { update() }
-                .subscribeOn(DURATION_CONSTRAINT_THREAD)
-                .subscribe(
-                        {
-                            when {
-                                !this.duration.isConstrained -> {
-                                    makeNonFailableIfNoConstraints()
-                                    done = true
-                                }
-                                this.duration.value != originalValue -> {
-                                    done = true
-                                }
-                                this.timer.stopped -> {
-                                    done = true
-                                }
-                                timer.duration >= this.duration.value -> {
-                                    if (this.duration.isConstrained && !this.duration.isMet) {
-                                        this.duration.isMet = MET
-                                    }
-                                    done = true
-                                }
-                            }
-                        },
-                        {
-                            throw ObserverException("Duration Constraint timer checking failed!")
-                        },
-                        {
-                            activeObservers.remove("Duration")
-                            debug("$id duration observer completed")
-                            update()
-                        }
-                )
-        composite.add(disposable)
-        activeObservers.add("Duration")
-        update()
-    }*/
-
-    /**
-     * Checks this Task's checklist Property value (the actual checklist) on the `stateCheckingThread` to see if all
-     * its list items are checked or not.
-     *
-     * When the checklist has no unchecked items this Task's checklist Constraint will be met if it wasn't already
-     * and the checking ends.
-     *
-     * If this Task's checklist is no longer a Constraint (checklist is un-constrained) then the changes
-     * [setChecklistProperty] will be undone, namely:
-     *
-     * * This Task will become non-failable if there are no Constraints
-     * * The checklist checking will end
-     *
-     * If the checklist Constraint is re-set, set to a new value, then this Observer ends and a new one begins checking
-     * the new value.
-     *
-     * The Observer performs this check every [TIME_CHECKING_PERIOD] [TIME_CHECKING_UNIT], see Constants for these
-     * values as they may change for performance reasons.
-     *
-     * This function is only called when `checklist` is set as a Constraint.
-     *
-     * @see Task.setChecklistProperty
-     * @throws ObserverException if the Observer's `onError` is called for any reasons
-     */
-/*    private fun checklistConstraintChecking() {
-        val originalValue = this.checklist.value
-        var done = false
-
-        val disposable = Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
-                .takeWhile { !done }
-                .doOnComplete { update() }
-                .subscribeOn(CHECKLIST_CONSTRAINT_THREAD)
-                .subscribe(
-                        {
-                            when {
-                                !this.checklist.isConstrained -> {
-                                    makeNonFailableIfNoConstraints()
-                                    done = true
-                                }
-                                this.checklist.value != originalValue -> {
-                                    done = true
-                                }
-                                this.checklist.value.getAllUncheckedItems().isEmpty() -> {
-                                    if (this.checklist.isConstrained && this.checklist.isMet != MET) {
-                                        this.checklist.isMet = MET
-                                    }
-                                    done = true
-                                }
-                            }
-                        },
-                        {
-                            throw ObserverException("Checklist Constraint checking failed")
-                        },
-                        {
-                            activeObservers.remove("Checklist")
-                            debug("$id checklist observer completed")
-                            update()
-                        }
-                )
-        composite.add(disposable)
-        activeObservers.add("Checklist")
-        update()
-    }*/
-
-    /**
-     * Checks the time on the `stateCheckingThread` to match it with this Task's deadline Constraint value plus the
-     * grace period [GRACE_PERIOD].
-     *
-     * When the time is past this Task's deadline Constraint value plus the grace period, the state will change to
-     * FAILED and the deadline Constraint will be unmet and the checking ends.
-     *
-     * If this Task's deadline is no longer a Constraint (deadline is un-constrained) then the changes
-     * [setDeadlineProperty] will be undone, namely:
-     *
-     * * This Task will become non-failable if there are no Constraints
-     * * The deadline checking will end
-     *
-     * If the checklist Constraint is re-set, set to a new value, then this Observer ends and a new one begins checking
-     * the new value.
-     *
-     * The Observer performs this check every [TIME_CHECKING_PERIOD] [TIME_CHECKING_UNIT], see Constants for these
-     * values as they may change for performance reasons.
-     *
-     * This function is only called when `deadline` is set as a Constraint.
-     *
-     * This has been tested to be computationally cheap when running for 1000 tasks concurrently since the checking
-     * is done once every so often, which itself is cheap.
-     *
-     * @see Task.setDeadlineProperty
-     * @throws ObserverException if the Observer's `onError` is called for any reasons
-     */
-/*    private fun deadlineConstraintChecking() {
-        var done = false
-        val originalValue = this.deadline.value
-        val deadlineWithGrace = this.deadline.value.plus(GRACE_PERIOD)
-
-        val disposable = Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
-                .takeWhile { !done }
-                //.doOnSubscribe { deadline.isMet = true }
-                .doOnComplete { update() }
-                .subscribeOn(DEADLINE_CONSTRAINT_THREAD)
-                .subscribe(
-                        {
-                            when {
-                                !this.deadline.isConstrained -> {
-                                    makeNonFailableIfNoConstraints()
-                                    done = true
-                                }
-                                this.deadline.value != originalValue -> {
-                                    done = true
-                                }
-                                now.isAfter(deadlineWithGrace) -> {
-                                    if (canFail()) {
-                                        this.fail()
-                                        deadline.isMet = false
-                                    }
-                                    done = true
-                                }
-                            }
-                        },
-                        {
-                            throw ObserverException("Deadline Constraint checking failed!")
-                        },
-                        {
-                            activeObservers.remove("Deadline")
-                            debug("$id deadline observer completed")
-                            update()
-                        }
-                )
-        composite.add(disposable)
-        activeObservers.add("Deadline")
-        update()
-    }*/
-
-    /**
-     * Checks the state of the Task before this one on the `otherTaskCheckingThread`. If it is failed then this Task
-     * will fail if it can, if it is killed then the before Constraint is met.
-     *
-     * If the before Task's state is FAILED then this Task will fail if it can [canFail].
-     *
-     * If the before Task's state is KILLED then this Task's before Constraint will be met.
-     *
-     * If this Task's before is no longer a Constraint (before is un-constrained) then the changes
-     * [setBeforeProperty] will be undone, namely:
-     *
-     * * This Task will become non-failable if there are no Constraints
-     * * The before checking will end
-     *
-     * If the before Constraint is re-set, set to a new value, then this Observer ends and a new one begins checking
-     * the new value.
-     *
-     * The Observer performs this check every [TIME_CHECKING_PERIOD] [TIME_CHECKING_UNIT], see Constants for these
-     * values as they may change for performance reasons.
-     *
-     * This function is only called when `before` is set as a Constraint.
-     *
-     * This has been tested to be computationally cheap when running for 1000 tasks concurrently since the checking
-     * is done once every so often, which itself is cheap.
-     *
-     * @see Task.setBeforeProperty
-     * @throws ObserverException if the Observer's `onError` is called for any reasons or if the before Task cannot
-     * be found in the database
-     */
-/*    private fun beforeConstraintChecking() {
-        var done = false
-        val originalValue = this.before.value
-        val beforeTask = Caches.tasks.get(this.before.value)
-
-        val disposable = Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
-                .takeWhile { !done }
-                .doOnComplete { update() }
-                .subscribeOn(BEFORE_CONSTRAINT_THREAD)
-                .subscribe(
-                        {
-                            when {
-                                !Caches.tasks.contains(beforeTask) -> {
-                                    throw ObserverException("Before Constraint checking failed!" +
-                                            " Before is null in database")
-                                }
-                                !this.before.isConstrained -> {
-                                    makeNonFailableIfNoConstraints()
-                                    done = true
-                                }
-                                this.before.value != originalValue -> {
-                                    done = true
-                                }
-                                beforeTask.state == TaskState.KILLED -> {
-                                    this.before.isMet = true
-                                    done = true
-                                }
-                                beforeTask.state == TaskState.FAILED -> {
-                                    this.before.isMet = false
-                                    if (canFail()) fail()
-                                    done = true
-                                }
-
-                            }
-                        },
-                        {
-                            throw ObserverException("Before Constraint checking failed!")
-                        },
-                        {
-                            activeObservers.remove("Before")
-                            debug("$id before observer completed")
-                            update()
-                        }
-                )
-        composite.add(disposable)
-        activeObservers.add("Before")
-        update()
-    }*/
-
-    /**
-     * Checks the state of the sub-Tasks of this Task on the `otherTaskCheckingThread`.
-     *
-     * If any of the sub-Tasks' states is FAILED then this Task will fail if it can [canFail].
-     *
-     * If all of the sub-Tasks' states is KILLED then this Task's subTasks Constraint will be met.
-     *
-     * If this Task's subTasks is no longer a Constraint (subTasks is un-constrained) then the changes
-     * [setSubTasksProperty] will be undone, namely:
-     *
-     * * This Task will become non-failable if there are no Constraints
-     * * The subTasks checking will end
-     *
-     * If the subTasks Constraint is re-set, set to a new value, then this Observer ends and a new one begins checking
-     * the new value.
-     *
-     * The Observer performs this check every [TIME_CHECKING_PERIOD] [TIME_CHECKING_UNIT], see Constants for these
-     * values as they may change for performance reasons.
-     *
-     * This function is only called when `subTasks` is set as a Constraint.
-     *
-     * This has been tested to be computationally cheap when running for 1000 tasks concurrently since the checking
-     * is done once every so often, which itself is cheap.
-     *
-     * @see Task.setSubTasksProperty
-     * @throws ObserverException if the Observer's `onError` is called for any reasons
-     */
-/*    private fun subTasksConstraintChecking() {
-        val originalValue = this.subTasks.value
-        var done = false
-
-        val disposable = Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
-                .takeWhile { !done }
-                .doOnComplete { update() }
-                .subscribeOn(SUB_TASKS_CONSTRAINT_THREAD)
-                .subscribe(
-                        {
-                            when {
-                                // TODO: 18-Jun-18 problems here when running SubTasks tests together
-                                !Caches.tasks.containsAll(this.subTasks.value.tasks) -> {
-                                    throw ObserverException("SubTasks Constraint checking failed!" +
-                                            " Some SubTask is null in database")
-                                }
-                                !this.subTasks.isConstrained -> {
-                                    makeNonFailableIfNoConstraints()
-                                    done = true
-                                }
-                                //// TODO: 29-Jul-18 What if we add to the subtasks??
-                                // this.subTasks.value != originalValue -> {
-                                // done = true
-                                // }
-                                // SubTasks contains more than 0 failed Tasks
-                                this.subTasks.value.tasks.any { it.state == TaskState.FAILED } -> {
-                                    subTasks.isMet = false
-                                    if (canFail()) fail()
-                                    done = true
-                                }
-                                // All SubTasks are killed
-                                this.subTasks.value.tasks
-                                        .all { it.state == TaskState.KILLED } -> {
-                                    subTasks.isMet = true
-                                    done = true
-                                }
-
-                            }
-                        },
-                        {
-                            throw ObserverException("SubTasks checking failed!")
-                        },
-                        {
-                            activeObservers.remove("SubTasks")
-                            debug("$id SubTasks observer completed")
-                            update()
-                        }
-                )
-
-        composite.add(disposable)
-        activeObservers.add("SubTasks")
-        update()
     }*/
 
     //endregion Observers

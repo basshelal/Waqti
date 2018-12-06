@@ -3,7 +3,6 @@ package uk.whitecrescent.waqti.model.collections
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
-import java.util.concurrent.ConcurrentHashMap
 
 // Name should change to something like Ordering or Series or Sequence
 class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
@@ -17,8 +16,8 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
         this.addAll(tasks.toList())
     }
 
-    override fun getAll(): ConcurrentHashMap<ID, Task> {
-        return ConcurrentHashMap()
+    override fun getAll(): LinkedHashMap<ID, Task> {
+        return LinkedHashMap()
     }
 
     override fun notDefault(): Boolean {

@@ -5,10 +5,10 @@ package uk.whitecrescent.waqti.android
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
-import android.support.design.widget.Snackbar
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.view.View
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.google.android.material.snackbar.Snackbar
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.task.Task
 

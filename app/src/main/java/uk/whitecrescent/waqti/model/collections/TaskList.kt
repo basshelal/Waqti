@@ -14,7 +14,6 @@ import uk.whitecrescent.waqti.model.task.TIME_CHECKING_PERIOD
 import uk.whitecrescent.waqti.model.task.TIME_CHECKING_UNIT
 import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.TaskState
-import java.util.concurrent.ConcurrentHashMap
 
 @Entity
 open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
@@ -44,8 +43,8 @@ open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
         this.update()
     }
 
-    override fun getAll(): ConcurrentHashMap<ID, Task> {
-        return ConcurrentHashMap(
+    override fun getAll(): LinkedHashMap<ID, Task> {
+        return LinkedHashMap(
                 Database.tasks.all
                         .filter { it.id in idList }
                         .map { it.id to it }
