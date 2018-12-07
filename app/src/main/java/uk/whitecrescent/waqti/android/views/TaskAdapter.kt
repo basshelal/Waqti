@@ -2,34 +2,39 @@ package uk.whitecrescent.waqti.android.views
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.customview.KDragItemAdapter
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.Task
 
-class TaskAdapter : KDragItemAdapter<Task, TaskViewHolder>() {
+class TaskAdapter : RecyclerView.Adapter<TaskViewHolder>() {
 
-    override val itemList: MutableList<Task>
-        get() = Caches.tasks.valueList().toMutableList()
+    val itemList: List<Task>
+        get() = Caches.tasks.valueList()
 
     init {
+        this.setHasStableIds(true)
     }
 
-    override fun getUniqueItemId(position: Int): Long {
-        return itemList[position].id
+    override fun getItemCount(): Int {
+        return itemList.size
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
-        val vh = TaskViewHolder(
+        return TaskViewHolder(
                 LayoutInflater.from(parent.context)
                         .inflate(R.layout.task_card, parent, false)
         )
-        return vh
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        super.onBindViewHolder(holder, position)
-        holder.text = itemList[position].name
+        holder.setText(itemList[position])
+        holder.itemView.delete_button.setOnClickListener {
+            val task = itemList[position]
+            Caches.tasks.remove(task.id)
+            notifyDataSetChanged()
+        }
     }
 
 

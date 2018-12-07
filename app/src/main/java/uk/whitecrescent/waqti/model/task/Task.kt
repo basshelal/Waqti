@@ -1416,7 +1416,7 @@ class Task(name: String = "") : Cacheable {
 
     // TODO: 28-Nov-18 Consider compiling all these observers into a single observer
     @SuppressLint("CheckResult")
-    private fun backgroundObserver() {
+    fun backgroundObserver() {
         var done = false
         Observable.interval(TIME_CHECKING_PERIOD, TIME_CHECKING_UNIT)
                 .takeWhile { !done }

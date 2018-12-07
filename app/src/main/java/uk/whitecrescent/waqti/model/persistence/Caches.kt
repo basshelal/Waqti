@@ -60,6 +60,11 @@ object Caches {
             tasks, templates, labels, priorities, timeUnits, taskLists, boards
     )
 
+    fun initialize() {
+        //allCaches.forEach { it.initialize() }
+        tasks.initialize()
+    }
+
     fun clearAllCaches(): Committable {
         return object : Committable {
             override fun commit() {

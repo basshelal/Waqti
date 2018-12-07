@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Waqti</string>
+    <string name="defaultTask">DEFAULT TASK!</string>
+    <string name="createTask">Create Task</string>
 </resources>

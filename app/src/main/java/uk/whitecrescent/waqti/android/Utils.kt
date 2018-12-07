@@ -4,6 +4,7 @@ package uk.whitecrescent.waqti.android
 
 import android.Manifest
 import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.view.View
 import androidx.core.app.ActivityCompat
@@ -15,6 +16,9 @@ import uk.whitecrescent.waqti.model.task.Task
 inline fun Activity.shortSnackbar(view: View, string: CharSequence) =
         Snackbar.make(view, string, Snackbar.LENGTH_SHORT).show()
 
+inline fun Activity.longSnackbar(view: View, string: CharSequence) =
+        Snackbar.make(view, string, Snackbar.LENGTH_LONG).show()
+
 inline fun Activity.checkWritePermission() {
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED) {
@@ -22,6 +26,10 @@ inline fun Activity.checkWritePermission() {
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 1)
 
     }
+}
+
+inline fun <A : Activity> Activity.goToActivity(activity: Class<A>) {
+    this.startActivity(Intent(this, activity))
 }
 
 inline fun addTasks(amount: Int) {

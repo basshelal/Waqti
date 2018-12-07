@@ -1,7 +1,7 @@
 package uk.whitecrescent.waqti.android
 
 import android.app.Application
-import com.jakewharton.threetenabp.AndroidThreeTen
+import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.persistence.Database
 
 class App : Application() {
@@ -10,5 +10,6 @@ class App : Application() {
         super.onCreate()
         AndroidThreeTen.init(this)
         Database.build(this)
+        Caches.initialize()
     }
 }

@@ -3,9 +3,11 @@ package uk.whitecrescent.waqti.model.persistence
 import android.annotation.SuppressLint
 import io.objectbox.Box
 import io.reactivex.Observable
+import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.task.ID
+import uk.whitecrescent.waqti.model.task.Task
 import java.util.concurrent.TimeUnit
 
 // TODO: 28-Jul-18 Test and doc
@@ -24,6 +26,31 @@ open class Cache<E : Cacheable>(
     @QueriesDataBase
     private val isInconsistent: Boolean
         get() = !map.all { it.key in db.ids }
+
+    @SuppressLint("CheckResult")
+    fun initialize() {
+        Observable
+                .fromIterable(db.all)
+                .take(sizeLimit.toLong())
+                .observeOn(Schedulers.io())
+                .subscribe(
+                        {
+                            (it as? Task)?.backgroundObserver()
+                            this.safeAdd(it)
+                        },
+                        {
+
+                        },
+                        {
+                            println("Completed initialization for Cache of ${db.entityInfo.dbName}")
+                            println("Cache of ${db.entityInfo.dbName} is of size ${this.size}")
+                            println("DB of ${db.entityInfo.dbName} is of size ${db.size}")
+                        },
+                        {
+                            println("Started initialization for Cache of ${db.entityInfo.dbName}")
+                        }
+                )
+    }
 
     //region Core Modification
 
