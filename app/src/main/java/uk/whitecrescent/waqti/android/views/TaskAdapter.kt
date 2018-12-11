@@ -21,6 +21,10 @@ class TaskAdapter : RecyclerView.Adapter<TaskViewHolder>() {
         return itemList.size
     }
 
+    override fun getItemId(position: Int): Long {
+        return itemList[position].id
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         return TaskViewHolder(
                 LayoutInflater.from(parent.context)
@@ -29,13 +33,13 @@ class TaskAdapter : RecyclerView.Adapter<TaskViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        holder.setText(itemList[position])
+
+        holder.itemView.task_textView.text = itemList[position].toString()
+
         holder.itemView.delete_button.setOnClickListener {
-            val task = itemList[position]
-            Caches.tasks.remove(task.id)
+            Caches.tasks.remove(itemList[position])
             notifyDataSetChanged()
         }
     }
-
 
 }

@@ -65,6 +65,10 @@ object Caches {
         tasks.initialize()
     }
 
+    fun close() {
+        allCaches.forEach { it.close() }
+    }
+
     fun clearAllCaches(): Committable {
         return object : Committable {
             override fun commit() {

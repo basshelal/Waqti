@@ -1,12 +1,19 @@
 package uk.whitecrescent.waqti.android.views
 
+import android.graphics.Canvas
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.DOWN
+import androidx.recyclerview.widget.ItemTouchHelper.LEFT
+import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
+import androidx.recyclerview.widget.ItemTouchHelper.UP
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.checkWritePermission
-import uk.whitecrescent.waqti.android.goToActivity
+import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -14,6 +21,7 @@ import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.isEmpty
 import uk.whitecrescent.waqti.model.persistence.size
 import uk.whitecrescent.waqti.model.task.Task
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,24 +31,72 @@ class MainActivity : AppCompatActivity() {
 
         checkWritePermission()
 
+        val adapter = TaskAdapter()
+
         recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = TaskAdapter()
+        recyclerView.adapter = adapter
 
         add_button.setOnClickListener {
-            goToActivity(CreateTaskActivity::class.java)
             Caches.tasks.put(Task("New Task @ $now"))
+            adapter.notifyDataSetChanged()
+            recyclerView.smoothScrollToPosition(adapter.itemCount - 1)
         }
+
+        val itemTouchHelper = ItemTouchHelper(SimpleItemTouchHelperCallback())
+        itemTouchHelper.attachToRecyclerView(recyclerView)
 
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        closeCache()
+        Caches.close()
     }
 }
 
-fun closeCache() {
-    Caches.allCaches.forEach { it.close() }
+
+class SimpleItemTouchHelperCallback : ItemTouchHelper.Callback() {
+
+    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+        val dragFlags = UP or DOWN or LEFT or RIGHT
+        return makeMovementFlags(dragFlags, 0)
+    }
+
+    override fun isLongPressDragEnabled() = true
+
+    override fun isItemViewSwipeEnabled() = false
+
+    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                        target: RecyclerView.ViewHolder): Boolean {
+        return true
+    }
+
+    override fun onMoved(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, fromPos: Int,
+                         target: RecyclerView.ViewHolder, toPos: Int, x: Int, y: Int) {
+        super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
+        recyclerView.snackBar("MOVED!")
+    }
+
+    override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+        super.clearView(recyclerView, viewHolder)
+        recyclerView.snackBar("DONE!")
+    }
+
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+
+    override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                             dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
+        super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+
+        if (viewHolder.itemView.x <
+                recyclerView.x - viewHolder.itemView.width / 4) {
+            recyclerView.snackBar("LEFT!")
+        }
+        if (viewHolder.itemView.x + viewHolder.itemView.width >
+                recyclerView.x + recyclerView.width + viewHolder.itemView.width / 4) {
+            recyclerView.snackBar("RIGHT!")
+        }
+    }
+
 }
 
 fun seedDB() {

@@ -28,6 +28,8 @@ inline fun Activity.checkWritePermission() {
     }
 }
 
+inline fun View.snackBar(string: String) = Snackbar.make(this, string, Snackbar.LENGTH_SHORT).show()
+
 inline fun <A : Activity> Activity.goToActivity(activity: Class<A>) {
     this.startActivity(Intent(this, activity))
 }
