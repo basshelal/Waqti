@@ -38,9 +38,11 @@ open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
         }
 
     init {
-        this.growTo(tasks.size)
-        this.addAll(tasks)
-        this.update()
+        if (this.notDefault()) {
+            this.growTo(tasks.size)
+            this.addAll(tasks)
+            this.update()
+        }
     }
 
     override fun getAll(): LinkedHashMap<ID, Task> {

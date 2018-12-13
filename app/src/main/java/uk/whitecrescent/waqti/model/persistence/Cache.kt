@@ -3,9 +3,10 @@ package uk.whitecrescent.waqti.model.persistence
 import android.annotation.SuppressLint
 import io.objectbox.Box
 import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Committable
+import uk.whitecrescent.waqti.model.logE
+import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 import java.util.concurrent.TimeUnit
@@ -29,12 +30,29 @@ open class Cache<E : Cacheable>(
 
     @SuppressLint("CheckResult")
     fun initialize() {
-        Observable
+
+        // TODO: 12-Dec-18 Cannot be async because of deadlock!
+        // some Caches require that other Caches be initialized first
+
+        println("Started initialization for Cache of ${db.entityInfo.dbName}")
+
+        db.all.take(sizeLimit).forEach {
+            logE("${it.id} $now")
+            (it as? Task)?.backgroundObserver()
+            this.safeAdd(it)
+        }
+
+        println("Completed initialization for Cache of ${db.entityInfo.dbName}")
+        println("Cache of ${db.entityInfo.dbName} is of size ${this.size}")
+        println("DB of ${db.entityInfo.dbName} is of size ${db.size}")
+
+        /*Observable
                 .fromIterable(db.all)
                 .take(sizeLimit.toLong())
                 .observeOn(Schedulers.io())
                 .subscribe(
                         {
+                            logE("$now")
                             (it as? Task)?.backgroundObserver()
                             this.safeAdd(it)
                         },
@@ -49,7 +67,7 @@ open class Cache<E : Cacheable>(
                         {
                             println("Started initialization for Cache of ${db.entityInfo.dbName}")
                         }
-                )
+                )*/
     }
 
     //region Core Modification

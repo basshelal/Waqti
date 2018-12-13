@@ -25,11 +25,7 @@ import uk.whitecrescent.waqti.model.persistence.Caches
 class Priority(name: String = "", importanceLevel: Int = 0) : Cacheable {
 
     @Id
-    override var id = 0L //Caches.priorities.newID()
-
-    init {
-        update()
-    }
+    override var id = 0L
 
     companion object {
         fun fromString(string: String): Priority {
@@ -40,7 +36,7 @@ class Priority(name: String = "", importanceLevel: Int = 0) : Cacheable {
     }
 
     override fun notDefault(): Boolean {
-        return false
+        return name != "" || id != 0L
     }
 
     var name = name
@@ -54,6 +50,10 @@ class Priority(name: String = "", importanceLevel: Int = 0) : Cacheable {
             field = value
             update()
         }
+
+    init {
+        if (notDefault()) update()
+    }
 
     override fun update() = Caches.priorities.put(this)
 

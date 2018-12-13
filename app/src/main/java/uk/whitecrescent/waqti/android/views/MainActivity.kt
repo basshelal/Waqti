@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ItemTouchHelper.DOWN
 import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.ItemTouchHelper.UP
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 import uk.whitecrescent.waqti.R
@@ -31,20 +30,13 @@ class MainActivity : AppCompatActivity() {
 
         checkWritePermission()
 
-        val adapter = TaskAdapter()
-
-        recyclerView.layoutManager = LinearLayoutManager(this)
-        recyclerView.adapter = adapter
-
         add_button.setOnClickListener {
-            Caches.tasks.put(Task("New Task @ $now"))
-            adapter.notifyDataSetChanged()
-            recyclerView.smoothScrollToPosition(adapter.itemCount - 1)
+            if (recyclerView.adapter != null) {
+                Caches.tasks.put(Task("New Task @ $now"))
+                recyclerView.adapter?.notifyDataSetChanged()
+                recyclerView.smoothScrollToPosition(recyclerView.adapter?.itemCount!! - 1)
+            }
         }
-
-        val itemTouchHelper = ItemTouchHelper(SimpleItemTouchHelperCallback())
-        itemTouchHelper.attachToRecyclerView(recyclerView)
-
     }
 
     override fun onDestroy() {

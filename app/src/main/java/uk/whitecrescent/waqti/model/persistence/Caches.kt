@@ -61,8 +61,7 @@ object Caches {
     )
 
     fun initialize() {
-        //allCaches.forEach { it.initialize() }
-        tasks.initialize()
+        allCaches.forEach { it.initialize() }
     }
 
     fun close() {
