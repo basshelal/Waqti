@@ -9,12 +9,10 @@ import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.ItemTouchHelper.UP
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.activity_main.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.checkWritePermission
 import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.collections.TaskList
-import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.isEmpty
@@ -30,13 +28,15 @@ class MainActivity : AppCompatActivity() {
 
         checkWritePermission()
 
-        add_button.setOnClickListener {
+        Database.clearAllDBs().commit()
+
+        /*add_button.setOnClickListener {
             if (recyclerView.adapter != null) {
                 Caches.tasks.put(Task("New Task @ $now"))
                 recyclerView.adapter?.notifyDataSetChanged()
                 recyclerView.smoothScrollToPosition(recyclerView.adapter?.itemCount!! - 1)
             }
-        }
+        }*/
     }
 
     override fun onDestroy() {

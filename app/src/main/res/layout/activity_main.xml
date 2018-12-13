@@ -6,15 +6,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <uk.whitecrescent.waqti.android.customview.DragRecyclerView
+    <uk.whitecrescent.waqti.android.customview.BoardView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="vertical"
+        android:scrollbars="horizontal"
         app:layout_constraintTop_toBottomOf="parent"
-        tools:listitem="@layout/task_card" />
+        tools:listitem="@layout/task_list" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,6 +24,6 @@
         app:backgroundTint="@color/colorPrimaryDark"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
