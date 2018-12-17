@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android.views
+package uk.whitecrescent.waqti.android.customview
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -12,7 +12,6 @@ import uk.whitecrescent.waqti.model.task.Task
 class TaskListAdapter(val taskListID: ID = 0) : RecyclerView.Adapter<TaskViewHolder>() {
 
     val itemList: MutableList<Task> = Array(10, { Task("@ $now") }).toMutableList()
-    //get() = Array(30,{Task("@ $now")}).toMutableList() /*Caches.tasks.valueList().toMutableList()*/
 
     init {
         this.setHasStableIds(true)
@@ -39,8 +38,10 @@ class TaskListAdapter(val taskListID: ID = 0) : RecyclerView.Adapter<TaskViewHol
 
         holder.itemView.delete_button.setOnClickListener {
             //Caches.tasks.remove(itemList[holder.adapterPosition])
-            itemList.removeAt(holder.adapterPosition)
-            notifyDataSetChanged()
+            if (holder.adapterPosition != -1) {
+                itemList.removeAt(holder.adapterPosition)
+                notifyDataSetChanged()
+            }
         }
     }
 

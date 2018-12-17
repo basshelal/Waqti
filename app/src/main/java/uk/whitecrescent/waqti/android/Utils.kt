@@ -9,6 +9,7 @@ import android.content.pm.PackageManager
 import android.view.View
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.task.Task
@@ -37,4 +38,16 @@ inline fun <A : Activity> Activity.goToActivity(activity: Class<A>) {
 inline fun addTasks(amount: Int) {
     Database.tasks.put(
             Array(amount, { Task("Auto Generated Task #$it") }).toList())
+}
+
+inline fun RecyclerView.scrollToEnd() {
+    if (this.adapter != null) {
+        this.smoothScrollToPosition(adapter!!.itemCount - 1)
+    }
+}
+
+inline fun RecyclerView.scrollToStart() {
+    if (this.adapter != null) {
+        this.smoothScrollToPosition(0)
+    }
 }

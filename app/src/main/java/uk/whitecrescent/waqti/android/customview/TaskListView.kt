@@ -3,25 +3,28 @@ package uk.whitecrescent.waqti.android.customview
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
+import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import uk.whitecrescent.waqti.android.snackBar
-import uk.whitecrescent.waqti.android.views.TaskListAdapter
 import java.util.Collections
 
 
-class DragRecyclerView
+class TaskListView
 @JvmOverloads constructor(context: Context,
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) :
         RecyclerView(context, attributeSet, defStyle) {
 
+    val listAdapter: TaskListAdapter
+        get() = adapter as TaskListAdapter
+    val itemTouchHelper: ItemTouchHelper
 
     init {
         layoutManager = LinearLayoutManager(getContext(), VERTICAL, false)
         adapter = TaskListAdapter()
-        ItemTouchHelper(object : ItemTouchHelper.Callback() {
+        itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
 
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
                 val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
@@ -34,6 +37,7 @@ class DragRecyclerView
 
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
                                 target: RecyclerView.ViewHolder): Boolean {
+                recyclerView.snackBar("MOVING!")
                 return true
             }
 
@@ -58,8 +62,6 @@ class DragRecyclerView
                     }
                     adapter!!.notifyItemMoved(fromPos, toPos)
 
-                    recyclerView.snackBar("MOVED!")
-
                 }
             }
 
@@ -74,11 +76,29 @@ class DragRecyclerView
 
                 if (viewHolder.itemView.x <
                         recyclerView.x - viewHolder.itemView.width / 4) {
-                    recyclerView.snackBar("LEFT!")
+                    recyclerView.snackBar("Moving ${viewHolder.adapterPosition} left!")
                 }
                 if (viewHolder.itemView.x + viewHolder.itemView.width >
                         recyclerView.x + recyclerView.width + viewHolder.itemView.width / 4) {
-                    recyclerView.snackBar("RIGHT!")
+                    recyclerView.snackBar("Moving ${viewHolder.adapterPosition} right!")
+
+                    /*if (viewHolder.adapterPosition != -1 &&
+                             listAdapter.itemList[viewHolder.adapterPosition] in listAdapter.itemList) {
+
+                         val rightListIndex = p.views.indexOf(this@TaskListView) + 1
+                         val rightList = p.views[rightListIndex]
+                         val task = this@TaskListView.listAdapter.itemList[viewHolder.adapterPosition]
+
+                         if (task in listAdapter.itemList && task !in rightList.listAdapter.itemList) {
+                             p.smoothScrollToPosition(rightListIndex)
+                             rightList.listAdapter.itemList.add(task)
+                             this@TaskListView.listAdapter.itemList.remove(task)
+                             rightList.listAdapter.notifyDataSetChanged()
+                             this@TaskListView.listAdapter.notifyDataSetChanged()
+
+
+                         }
+                     }*/
                 }
             }
 
@@ -88,7 +108,11 @@ class DragRecyclerView
                 // TODO: 13-Dec-18 Improve this later
             }
 
-        }).attachToRecyclerView(this)
+        })
+        itemTouchHelper.attachToRecyclerView(this)
     }
 
 }
+
+class TaskViewHolder(view: View)
+    : RecyclerView.ViewHolder(view)

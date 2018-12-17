@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?><!--This entire thing needs to be created programmatically!!-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/taskList_linearLayout"
@@ -6,13 +6,15 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
+    <TextView
         android:id="@+id/taskListHeader_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="HEADER!" />
+        android:text="HEADER!"
+        android:textAlignment="viewStart"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
-    <uk.whitecrescent.waqti.android.customview.DragRecyclerView
+    <uk.whitecrescent.waqti.android.customview.TaskListView
         android:id="@+id/taskList_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

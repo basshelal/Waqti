@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android.customview
+package uk.whitecrescent.waqti.android.customview.deprecated
 
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator

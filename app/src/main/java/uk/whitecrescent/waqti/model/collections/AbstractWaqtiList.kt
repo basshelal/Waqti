@@ -137,6 +137,8 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
     @NoOverride
     override fun add(element: E) = addAt(nextIndex, element)
 
+    // TODO: 14-Dec-18 Test Swapping and maintaining Order sometime
+
     /**
      * Adds the passed in element at the passed in index, this index must be within the bounds otherwise an
      * [IndexOutOfBoundsException] will be thrown.

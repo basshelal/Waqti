@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android.customview
+package uk.whitecrescent.waqti.android.customview.deprecated
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -334,15 +334,15 @@ class KBoardView
 
             var diffX = 0
             when (snapPosition) {
-                KBoardView.ColumnSnapPosition.LEFT -> {
+                ColumnSnapPosition.LEFT -> {
                     val leftPosX = scrollX
                     diffX = Math.abs(listParent.left - leftPosX)
                 }
-                KBoardView.ColumnSnapPosition.CENTER -> {
+                ColumnSnapPosition.CENTER -> {
                     val middlePosX = scrollX + measuredWidth / 2
                     diffX = Math.abs(listParent.left + columnWidth / 2 - middlePosX)
                 }
-                KBoardView.ColumnSnapPosition.RIGHT -> {
+                ColumnSnapPosition.RIGHT -> {
                     val rightPosX = scrollX + measuredWidth
                     diffX = Math.abs(listParent.right - rightPosX)
                 }
@@ -486,9 +486,9 @@ class KBoardView
         val parent = lists.get(column).getParent() as View
         var newX = 0
         when (snapPosition) {
-            KBoardView.ColumnSnapPosition.LEFT -> newX = parent.left
-            KBoardView.ColumnSnapPosition.CENTER -> newX = parent.left - (measuredWidth - parent.measuredWidth) / 2
-            KBoardView.ColumnSnapPosition.RIGHT -> newX = parent.right - measuredWidth
+            ColumnSnapPosition.LEFT -> newX = parent.left
+            ColumnSnapPosition.CENTER -> newX = parent.left - (measuredWidth - parent.measuredWidth) / 2
+            ColumnSnapPosition.RIGHT -> newX = parent.right - measuredWidth
         }
 
         val maxScroll = rootLayout.getMeasuredWidth() - measuredWidth

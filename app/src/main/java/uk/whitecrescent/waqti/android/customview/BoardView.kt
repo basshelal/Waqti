@@ -3,10 +3,13 @@ package uk.whitecrescent.waqti.android.customview
 import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
+import android.view.View
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import uk.whitecrescent.waqti.android.scrollToEnd
 import uk.whitecrescent.waqti.android.snackBar
+import uk.whitecrescent.waqti.model.collections.TaskList
 import java.util.Collections
 
 class BoardView
@@ -15,9 +18,17 @@ class BoardView
                           defStyle: Int = 0) :
         RecyclerView(context, attributeSet, defStyle) {
 
+    val boardAdapter: BoardAdapter
+        get() = this.adapter as BoardAdapter
+
+    // contains all the LinearLayouts, should this be here or in Adapter?
+    val views = ArrayList<TaskListView>()
+
     init {
-        layoutManager = LinearLayoutManager(getContext(), HORIZONTAL, false)
-        adapter = BoardAdapter()
+        layoutManager = LinearLayoutManager(this.context, HORIZONTAL, false)
+        adapter = BoardAdapter() // TODO: 15-Dec-18 Adapter needs to be provided by caller (Activity/Fragment)
+        assert(this.adapter != null)
+        assert(this.adapter is BoardAdapter)
         ItemTouchHelper(object : ItemTouchHelper.Callback() {
 
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
@@ -31,10 +42,13 @@ class BoardView
 
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
                                 target: RecyclerView.ViewHolder): Boolean {
+                // TODO: 15-Dec-18 check what this does?
                 return true
             }
 
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                /*This will never be called as we do not support swiping*/
+            }
 
             override fun onMoved(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, fromPos: Int,
                                  target: RecyclerView.ViewHolder, toPos: Int, x: Int, y: Int) {
@@ -43,12 +57,12 @@ class BoardView
                 if (adapter != null && adapter is BoardAdapter) {
 
                     if (fromPos < toPos) {
-                        for (i in fromPos until toPos) {
-                            Collections.swap((adapter as BoardAdapter).itemList, i, i + 1)
+                        (fromPos until toPos).forEach {
+                            Collections.swap((adapter as BoardAdapter).itemList, it, it + 1)
                         }
                     } else {
-                        for (i in fromPos downTo toPos + 1) {
-                            Collections.swap((adapter as BoardAdapter).itemList, i, i - 1)
+                        (fromPos downTo toPos + 1).forEach {
+                            Collections.swap((adapter as BoardAdapter).itemList, it, it - 1)
                         }
                     }
                     adapter!!.notifyItemMoved(fromPos, toPos)
@@ -58,6 +72,10 @@ class BoardView
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
                 recyclerView.snackBar("DONE!")
+            }
+
+            override fun onSelectedChanged(viewHolder: ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
             }
 
             override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
@@ -84,8 +102,24 @@ class BoardView
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 // TODO: 13-Dec-18 Here we put AutoScrolling horizontally
             }
+
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
         })
 
     }
 
+    // We need to make EVERYTHING exist in a single class/ file, the best way to emulate the
+    // problem is by trying to add a new Empty List, in Board we may need to have a list of all
+    // the lists (DragRecyclerViews) that way we have access to their adapters as well and so we
+    // can modify them directly easily and completely
+
+    fun addNewEmptyList() {
+        boardAdapter.add(TaskList("NEW BOIIIII"))
+        scrollToEnd()
+    }
+
 }
+
+class BoardViewHolder(view: View) : RecyclerView.ViewHolder(view)

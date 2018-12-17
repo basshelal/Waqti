@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android.customview
+package uk.whitecrescent.waqti.android.customview.deprecated
 
 import android.content.Context
 import android.os.Handler
