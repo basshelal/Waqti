@@ -4,12 +4,16 @@ import android.content.Context
 import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.android.scrollToEnd
 import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.collections.TaskList
+import uk.whitecrescent.waqti.model.task.ID
 import java.util.Collections
 
 class BoardView
@@ -21,8 +25,13 @@ class BoardView
     val boardAdapter: BoardAdapter
         get() = this.adapter as BoardAdapter
 
-    // contains all the LinearLayouts, should this be here or in Adapter?
-    val views = ArrayList<TaskListView>()
+    val taskListIDs = ArrayList<ID>()
+
+    // TODO: 17-Dec-18 Both below don't work, show 6 instead of the actual 10, maybe we can still use it?
+
+    //instead of having references to all Views we could have references to Adapters instead
+    // the problem being that Views get recycled and so are not unique
+    val taskListAdapters = ArrayList<TaskListAdapter>()
 
     init {
         layoutManager = LinearLayoutManager(this.context, HORIZONTAL, false)
@@ -122,4 +131,11 @@ class BoardView
 
 }
 
-class BoardViewHolder(view: View) : RecyclerView.ViewHolder(view)
+class BoardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    val header: TextView
+        get() = itemView.taskListHeader_textView
+    val list: TaskListView
+        get() = itemView.taskList_recyclerView
+    val footer: Button
+        get() = itemView.taskListFooter_textView
+}

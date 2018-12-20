@@ -1,14 +1,11 @@
 package uk.whitecrescent.waqti.android.customview
 
 import android.content.Context
-import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import uk.whitecrescent.waqti.android.snackBar
-import java.util.Collections
+import uk.whitecrescent.waqti.model.task.ID
 
 
 class TaskListView
@@ -19,12 +16,14 @@ class TaskListView
 
     val listAdapter: TaskListAdapter
         get() = adapter as TaskListAdapter
-    val itemTouchHelper: ItemTouchHelper
+    //val itemTouchHelper: ItemTouchHelper
+    val board: BoardView
+        get() = parent.parent as BoardView
 
     init {
         layoutManager = LinearLayoutManager(getContext(), VERTICAL, false)
         adapter = TaskListAdapter()
-        itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
+        /*itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
 
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
                 val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
@@ -82,7 +81,7 @@ class TaskListView
                         recyclerView.x + recyclerView.width + viewHolder.itemView.width / 4) {
                     recyclerView.snackBar("Moving ${viewHolder.adapterPosition} right!")
 
-                    /*if (viewHolder.adapterPosition != -1 &&
+                    if (viewHolder.adapterPosition != -1 &&
                              listAdapter.itemList[viewHolder.adapterPosition] in listAdapter.itemList) {
 
                          val rightListIndex = p.views.indexOf(this@TaskListView) + 1
@@ -98,7 +97,7 @@ class TaskListView
 
 
                          }
-                     }*/
+                     }
                 }
             }
 
@@ -109,10 +108,12 @@ class TaskListView
             }
 
         })
-        itemTouchHelper.attachToRecyclerView(this)
+        itemTouchHelper.attachToRecyclerView(this)*/
     }
 
 }
 
 class TaskViewHolder(view: View)
-    : RecyclerView.ViewHolder(view)
+    : RecyclerView.ViewHolder(view) {
+    var taskID: ID = 0L
+}

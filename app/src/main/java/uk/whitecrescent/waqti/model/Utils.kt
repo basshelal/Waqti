@@ -12,16 +12,16 @@ import java.util.Objects
 
 inline fun sleep(seconds: Int) = Thread.sleep((seconds) * 1000L)
 
-inline fun <T> logD(t: T) {
-    Log.d("DEFAULT", t.toString())
+inline fun logD(string: String) {
+    Log.d("DEFAULT", string)
 }
 
-inline fun <T> logI(t: T) {
-    Log.i("DEFAULT", t.toString())
+inline fun <T> logI(string: String) {
+    Log.i("DEFAULT", string)
 }
 
-inline fun <T> logE(t: T) {
-    Log.e("DEFAULT", t.toString())
+inline fun logE(string: String) {
+    Log.e("DEFAULT", string)
 }
 
 inline fun setGracePeriod(duration: Duration) {
