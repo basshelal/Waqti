@@ -100,6 +100,10 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
         return safeGet(element.id)
     }
 
+    operator fun get(id: ID): E {
+        return safeGet(id)
+    }
+
     /**
      * Checks to see if this list contains an element equal to the passed in element, returns true if this list
      * contains an element equal to the passed in element and false otherwise.
@@ -359,6 +363,16 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
         } else {
             idList.removeAt(index)
             update()
+            return this
+        }
+    }
+
+    fun remove(id: ID): AbstractWaqtiList<E> {
+        try {
+            this.removeAt(indexOf(id))
+        } catch (exception: ElementNotFoundException) {
+
+        } finally {
             return this
         }
     }

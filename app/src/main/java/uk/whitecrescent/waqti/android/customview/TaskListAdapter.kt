@@ -13,9 +13,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.model.logE
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID
+
+// TODO: 21-Dec-18 Needs a lot of optimizing, a lot of things are very slow on a physical device!
+// I suspect it's the taskList since it's accessing the DB all the time but I could be wrong
 
 class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>() {
 
@@ -32,17 +36,10 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
     }
 
     override fun onViewAttachedToWindow(holder: TaskViewHolder) {
-
-        /*if (this.taskListID !in taskListView.boardView.taskListIDs) {
-            taskListView.boardView.taskListIDs.add(this.taskListID)
-            logE("Added ${this.taskListID}")
-            logE("TaskListIDs Size: ${taskListView.boardView.taskListIDs.size}")
-        }
-
         if (this.taskListID !in taskListView.boardView.taskListAdapters.map { it.taskListID }) {
             taskListView.boardView.taskListAdapters.add(this)
             logE("TaskListAdapters Size: ${taskListView.boardView.taskListAdapters.size}")
-        }*/
+        }
     }
 
     override fun getItemCount(): Int {
@@ -64,6 +61,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
         holder.itemView.task_textView.text = taskList[position].toString()
         holder.taskID = taskList[position].id
+        holder.taskListID = this.taskListID
 
         holder.itemView.setOnLongClickListener {
             @Suppress("DEPRECATION")// using the updated requires minSDK >= 24, we are 21
@@ -88,12 +86,10 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
             val draggingState = event.localState as DragEventLocalState
             when (event.action) {
                 ACTION_DRAG_STARTED -> {
-//                    logE("STARTED dragging ${draggingState.taskID}")
                 }
                 // TODO: 21-Dec-18 Optimizations needed, feels slow
                 ACTION_DRAG_ENTERED -> {
-//                    logE("ENTERED over ${holder.taskID} dragging ${draggingState.taskID}")
-                    if (!swapped && holder.adapterPosition != -1) {
+                    if (/*!swapped && */holder.adapterPosition != -1) {
                         when {
 
 
@@ -107,20 +103,49 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                              *
                              */
 
+                            draggingState.taskListID == holder.taskListID -> {
+                                // they are the same
+                                if (draggingState.adapterPosition == holder.adapterPosition) {
+                                    return@setOnDragListener false
+                                }
+                                // they are diff but in same list
+                                else {
+                                    val newDragPos = holder.adapterPosition
+                                    taskList.swap(draggingState.adapterPosition, newDragPos)
+                                    draggingState.adapterPosition = newDragPos
+                                    notifyDataSetChanged()
+                                    swapped = true
+                                    return@setOnDragListener true
+                                }
+                            }
 
+                            // TODO: 21-Dec-18 What about when the list is empty???
 
+                            draggingState.taskListID != holder.taskListID -> {
 
-                            draggingState.adapterPosition != holder.adapterPosition &&
-                                    draggingState.taskID != holder.taskID &&
-                                    draggingState.taskListID == holder.taskListID -> {
-                                val newDragPos = holder.adapterPosition
-                                taskList.swap(draggingState.adapterPosition, holder.adapterPosition)
-                                draggingState.adapterPosition = newDragPos
-                                notifyDataSetChanged()
-                                swapped = true
-                                // by now the adapterPositions and taskList positions are identical
-                                if (draggingState.taskListID == this.taskListID) {
-                                    assert(draggingState.adapterPosition == taskList.indexOf(draggingState.taskID))
+                                val otherAdapter = taskListView.boardView.taskListAdapters
+                                        .find { it.taskListID == draggingState.taskListID }
+                                if (otherAdapter != null) {
+
+                                    val otherTaskList = taskListView.boardView.boardAdapter.board[draggingState.taskListID]
+                                    val task = otherTaskList[draggingState.taskID]
+
+                                    this.taskList.addAt(holder.adapterPosition, task)
+                                    this.notifyDataSetChanged()
+
+                                    otherAdapter.taskList.removeAll(task)
+                                    otherAdapter.notifyDataSetChanged()
+
+                                    draggingState.taskListID = holder.taskListID
+                                }
+
+                                // moved left/right only
+                                if (draggingState.adapterPosition == holder.adapterPosition) {
+
+                                }
+                                // moved left/right and up/down
+                                else {
+
                                 }
                             }
                         }
@@ -131,19 +156,20 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                 }
                 ACTION_DRAG_EXITED -> {
-//                    logE("EXITED from ${holder.taskID}")
                     swapped = false
                 }
                 ACTION_DROP -> {
                     draggingState.updateToMatch(holder)
-                    /*taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)
-                            ?.itemView?.alpha = 1F*/
                     swapped = false
-//                    logE("DROPPED ${draggingState.taskID}")
                 }
                 ACTION_DRAG_ENDED -> {
                     taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)
-                            ?.itemView?.alpha = 1F
+                            ?.itemView?.let {
+                        if (it.alpha < 1F) it.alpha = 1F
+                    }
+                    holder.itemView.let {
+                        if (it.alpha < 1F) it.alpha = 1F
+                    }
                     swapped = false
                 }
             }
@@ -193,4 +219,4 @@ private enum class Possibilities {
 }
 
 private fun containsNull(state: DragEventLocalState) =
-        state.taskID == -1L || state.taskListID == -1L || state.adapterPosition == -1
+        state.taskListID == -1L || state.adapterPosition == -1

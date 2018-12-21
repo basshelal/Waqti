@@ -49,7 +49,7 @@ class BoardAdapter(val boardID: ID = 0) : RecyclerView.Adapter<BoardViewHolder>(
 
         holder.list.adapter = TaskListAdapter(board[position].id)
 
-        holder.header.text = board[position].name
+        holder.header.text = "${board[position].name} id: ${board[position].id}"
         holder.footer.text = "Add Task"
 
         holder.footer.setOnClickListener {
