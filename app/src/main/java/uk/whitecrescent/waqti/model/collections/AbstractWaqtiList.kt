@@ -400,6 +400,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      */
     override fun removeAll(collection: Collection<E>): AbstractWaqtiList<E> {
         idList.removeAll(collection.ids)
+        update()
         return this
     }
 

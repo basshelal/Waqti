@@ -88,8 +88,9 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                 ACTION_DRAG_STARTED -> {
                 }
                 // TODO: 21-Dec-18 Optimizations needed, feels slow
+                // TODO: 21-Dec-18 Autoscrolling is missing
                 ACTION_DRAG_ENTERED -> {
-                    if (/*!swapped && */holder.adapterPosition != -1) {
+                    if (!swapped && holder.adapterPosition != -1) {
                         when {
 
 
@@ -121,6 +122,9 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                             // TODO: 21-Dec-18 What about when the list is empty???
 
+                            // TODO: 21-Dec-18 Optimization, commit changes to DB only at the end
+                            // this requires changes at AbstractWaqtiList
+
                             draggingState.taskListID != holder.taskListID -> {
 
                                 val otherAdapter = taskListView.boardView.taskListAdapters
@@ -129,29 +133,31 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                                     val otherTaskList = taskListView.boardView.boardAdapter.board[draggingState.taskListID]
                                     val task = otherTaskList[draggingState.taskID]
+                                    val newDragPos = holder.adapterPosition
 
-                                    this.taskList.addAt(holder.adapterPosition, task)
+                                    this.taskList.addAt(newDragPos, task)
                                     this.notifyDataSetChanged()
 
                                     otherAdapter.taskList.removeAll(task)
                                     otherAdapter.notifyDataSetChanged()
 
                                     draggingState.taskListID = holder.taskListID
-                                }
+                                    draggingState.adapterPosition = newDragPos
+                                    swapped = true
 
-                                // moved left/right only
-                                if (draggingState.adapterPosition == holder.adapterPosition) {
-
-                                }
-                                // moved left/right and up/down
-                                else {
-
+                                    return@setOnDragListener true
                                 }
                             }
+
+                            // impossible
+                            else -> {
+                                logE("Impossible!")
+                                return@setOnDragListener false
+                            }
+
                         }
                     }
                 }
-                // TODO: 20-Dec-18 We need access to holder's adapter so that we can add the dragging view to it
                 ACTION_DRAG_LOCATION -> {
 
                 }
@@ -204,19 +210,51 @@ private data class DragEventLocalState(
                 this.taskListID != viewHolder.taskListID ||
                 this.adapterPosition != viewHolder.adapterPosition
     }
+
+    fun possibilities(that: TaskViewHolder): Possibilities {
+        return when {
+            // Below are impossible!
+            taskID != that.taskID &&
+                    taskListID == that.taskListID &&
+                    adapterPosition == that.adapterPosition -> Possibilities.I_DIFFERENT_TASKID
+
+            taskID == that.taskID &&
+                    taskListID != that.taskListID &&
+                    adapterPosition == that.adapterPosition -> Possibilities.I_DIFFERENT_LISTID
+
+            taskID == that.taskID &&
+                    taskListID == that.taskListID &&
+                    adapterPosition != that.adapterPosition -> Possibilities.I_DIFFERENT_APOS
+
+            taskID == that.taskID &&
+                    taskListID != that.taskListID &&
+                    adapterPosition != that.adapterPosition -> Possibilities.I_DIFFERENT_LISTID_AND_APOS
+
+            // Below are possible
+            taskID != that.taskID &&
+                    taskListID == that.taskListID &&
+                    adapterPosition == that.adapterPosition -> Possibilities.DIFFERENT_TASKID_AND_LISTID
+
+            taskID != that.taskID &&
+                    taskListID == that.taskListID &&
+                    adapterPosition != that.adapterPosition -> Possibilities.DIFFERENT_TASKID_AND_APOS
+
+            taskID != that.taskID &&
+                    taskListID != that.taskListID &&
+                    adapterPosition != that.adapterPosition -> Possibilities.DIFFERENT_EVERYTHING
+
+            else -> Possibilities.SAME
+        }
+    }
 }
 
 private enum class Possibilities {
-    // TODO: 21-Dec-18 Try doing this whole thing without TaskID
-    DIFF_NOTHING,           // -> They are the same
-    DIFF_TASKID,            // -> Impossible, APOS must be diff
-    DIFF_LISTID,            // -> Impossible, TaskID must be diff
-    DIFF_APOS,              // -> Impossible, TaskID or ListID must be diff
-    DIFF_TASKID_AND_LISTID, // -> Diff List, same position, so we're moving it left/right only
-    DIFF_TASKID_AND_APOS,   // -> Diff Task, same list, so we're moving it up/down only
-    DIFF_LISTID_AND_APOS,   // -> Impossible, TaskID must be diff
-    DIFF_EVERYTHING         // -> Diff List and Task, basically we moved left/right and up/down
+    SAME,                        // -> They are the same
+    I_DIFFERENT_TASKID,            // -> Impossible, APOS must be diff
+    I_DIFFERENT_LISTID,            // -> Impossible, TaskID must be diff
+    I_DIFFERENT_APOS,              // -> Impossible, TaskID or ListID must be diff
+    DIFFERENT_TASKID_AND_LISTID, // -> Diff List, same position, so we're moving it left/right only
+    DIFFERENT_TASKID_AND_APOS,   // -> Diff Task, same list, so we're moving it up/down only
+    I_DIFFERENT_LISTID_AND_APOS,   // -> Impossible, TaskID must be diff
+    DIFFERENT_EVERYTHING         // -> Diff List and Task, basically we moved left/right and up/down
 }
-
-private fun containsNull(state: DragEventLocalState) =
-        state.taskListID == -1L || state.adapterPosition == -1
