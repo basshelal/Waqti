@@ -14,6 +14,8 @@ import uk.whitecrescent.waqti.model.task.Task
 
 class BoardAdapter(val boardID: ID = 0) : RecyclerView.Adapter<BoardViewHolder>() {
 
+    // TODO: 21-Dec-18 Use paging and LiveData from AndroidX
+
     val board = Database.boards[boardID] ?: throw ElementNotFoundException(boardID)
 
     lateinit var boardView: BoardView

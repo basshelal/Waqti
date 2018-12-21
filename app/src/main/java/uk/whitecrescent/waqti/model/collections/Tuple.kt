@@ -1,6 +1,9 @@
 package uk.whitecrescent.waqti.model.collections
 
+import io.objectbox.annotation.Transient
 import uk.whitecrescent.waqti.model.Duration
+import uk.whitecrescent.waqti.model.persistence.Cache
+import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 
@@ -8,6 +11,9 @@ import uk.whitecrescent.waqti.model.task.Task
 class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
 
     override var idList = ArrayList<ID>()
+
+    @Transient
+    override val cache: Cache<Task> = Caches.tasks
 
     constructor(vararg tasks: Task) : this(tasks.toList())
 

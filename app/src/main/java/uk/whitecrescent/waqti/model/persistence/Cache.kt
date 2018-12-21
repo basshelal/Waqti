@@ -5,10 +5,7 @@ import io.objectbox.Box
 import io.reactivex.Observable
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Committable
-import uk.whitecrescent.waqti.model.logE
-import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.task.ID
-import uk.whitecrescent.waqti.model.task.Task
 import java.util.concurrent.TimeUnit
 
 // TODO: 28-Jul-18 Test and doc
@@ -22,6 +19,9 @@ open class Cache<E : Cacheable>(
 
     private val map = LinkedHashMap<ID, E>(100, 0.75F, true)
     private var isChecking = false
+
+    val all: List<E>
+        get() = db.all
 
     override val size: Int
         get() = map.size
@@ -39,8 +39,7 @@ open class Cache<E : Cacheable>(
         println("Started initialization for Cache of ${db.entityInfo.dbName}")
 
         db.all.take(sizeLimit).forEach {
-            logE("${it.id} $now")
-            (it as? Task)?.backgroundObserver()
+            it.initialize()
             this.safeAdd(it)
         }
 

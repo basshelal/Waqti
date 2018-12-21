@@ -23,6 +23,8 @@ import uk.whitecrescent.waqti.model.task.ID
 
 class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>() {
 
+    // TODO: 21-Dec-18 Use paging and LiveData from AndroidX
+
     val taskList = Database.taskLists[taskListID] ?: throw ElementNotFoundException(taskListID)
     lateinit var taskListView: TaskListView
 

@@ -32,7 +32,8 @@ class MainActivity : AppCompatActivity() {
         boardView.adapter = BoardAdapter(Database.boards.all.first().id)
 
         supportActionBar?.title =
-                "Waqti - ${boardView.boardAdapter.board.name} ${boardView.boardAdapter.boardID}"
+                "Waqti - ${boardView.boardAdapter.board.name} ${boardView.boardAdapter.boardID} " +
+                "DEV BUILD"
 
         add_button.setOnClickListener {
             boardView.addNewEmptyList("New List @$now")

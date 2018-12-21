@@ -349,7 +349,7 @@ class Task(name: String = "") : Cacheable {
     init {
         if (notDefault()) {
             update()
-            backgroundObserver()
+            initialize()
         }
     }
 
@@ -1602,6 +1602,10 @@ class Task(name: String = "") : Cacheable {
 
     override fun notDefault(): Boolean {
         return name != "" || id != 0L
+    }
+
+    override fun initialize() {
+        backgroundObserver()
     }
 
     /**

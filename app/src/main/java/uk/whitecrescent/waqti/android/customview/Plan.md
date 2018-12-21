@@ -2,6 +2,10 @@
 
 ## Current Plan
 
+As of 21-Dec-18 we have a very very very very basic working BoardView, it needs optimizations and
+ we still are missing autoscrolling, but it's not too bad, we used option 2 which was the best 
+ option anyway
+
 So it seems using the ItemTouchHelper way works well only for a current RecyclerView but moving 
 across multiple RecyclerViews may prove to be a problem using this method, so we may have to use 
 the old school way of dragging [here](https://developer.android.com/guide/topics/ui/drag-drop).
