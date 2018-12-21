@@ -14,6 +14,12 @@
         android:textAlignment="viewStart"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
 
+    <Button
+        android:id="@+id/taskList_deleteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Delete!" />
+
     <uk.whitecrescent.waqti.android.customview.TaskListView
         android:id="@+id/taskList_recyclerView"
         android:layout_width="match_parent"

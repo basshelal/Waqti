@@ -1,7 +1,6 @@
 package uk.whitecrescent.waqti.android.customview
 
 import android.content.ClipData
-import android.content.ClipDescription
 import android.view.DragEvent.ACTION_DRAG_ENDED
 import android.view.DragEvent.ACTION_DRAG_ENTERED
 import android.view.DragEvent.ACTION_DRAG_EXITED
@@ -14,17 +13,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.logE
-import uk.whitecrescent.waqti.android.snackBar
-import uk.whitecrescent.waqti.model.logE
-import uk.whitecrescent.waqti.model.now
+import uk.whitecrescent.waqti.model.persistence.Database
+import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID
-import uk.whitecrescent.waqti.model.task.Task
-import kotlin.random.Random
 
-class TaskListAdapter(var taskListID: ID = 0) : RecyclerView.Adapter<TaskViewHolder>() {
+class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>() {
 
-    val itemList: MutableList<Task> = Array(10, { Task("@ $now") }).toMutableList()
+    val taskList = Database.taskLists[taskListID] ?: throw ElementNotFoundException(taskListID)
     lateinit var taskListView: TaskListView
 
     init {
@@ -34,24 +29,28 @@ class TaskListAdapter(var taskListID: ID = 0) : RecyclerView.Adapter<TaskViewHol
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         assert(recyclerView is TaskListView)
         taskListView = recyclerView as TaskListView
-        taskListID = Random.nextLong()
     }
 
     override fun onViewAttachedToWindow(holder: TaskViewHolder) {
 
-        if (this.taskListID !in taskListView.board.taskListIDs) {
-            taskListView.board.taskListIDs.add(this.taskListID)
+        /*if (this.taskListID !in taskListView.boardView.taskListIDs) {
+            taskListView.boardView.taskListIDs.add(this.taskListID)
             logE("Added ${this.taskListID}")
-            logE("Size: ${taskListView.board.taskListIDs.size}")
+            logE("TaskListIDs Size: ${taskListView.boardView.taskListIDs.size}")
         }
+
+        if (this.taskListID !in taskListView.boardView.taskListAdapters.map { it.taskListID }) {
+            taskListView.boardView.taskListAdapters.add(this)
+            logE("TaskListAdapters Size: ${taskListView.boardView.taskListAdapters.size}")
+        }*/
     }
 
     override fun getItemCount(): Int {
-        return itemList.size
+        return taskList.size
     }
 
     override fun getItemId(position: Int): Long {
-        return itemList[position].id
+        return taskList[position].id
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
@@ -63,101 +62,89 @@ class TaskListAdapter(var taskListID: ID = 0) : RecyclerView.Adapter<TaskViewHol
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
 
-        holder.itemView.task_textView.text = itemList[position].toString()
-        holder.taskID = itemList[position].id
+        holder.itemView.task_textView.text = taskList[position].toString()
+        holder.taskID = taskList[position].id
 
         holder.itemView.setOnLongClickListener {
             @Suppress("DEPRECATION")// using the updated requires minSDK >= 24, we are 21
             it.startDrag(
                     ClipData(
-                            ClipDescription("TaskID", arrayOf("text/plain")),
-                            ClipData.Item(holder.taskID.toString())
+                            ClipData.newPlainText("", "")
                     ),
                     View.DragShadowBuilder(it),
-                    Triple(holder.taskID, this.taskListID, holder.adapterPosition),
-                    // ^ Doesn't change when we drag around noice!
+                    DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
                     0
             )
+            it.alpha = 0F
             return@setOnLongClickListener true
         }
 
-        /*
-         * Put the current Task (so the one we have requested to Drag) somewhere up with the
-         * startDrag stuff in ClipData since no matter what happens, the DragListener seems to
-         * return the View we are over, whether we request holder.itemView or v (they're the same)
-         * So what we can do is check if this view we are over matches the one we have clicked by
-         * getting the event's ClipData, then we can do the changes to the list structure
-         * accordingly, pseudo-code below:
-         *
-         * event.getClipData.getTask != holder.getTask -> swap; notifyDataSetChanged;
-         *
-         * This means we need to, in the TaskViewHolder, associate it with a Task, probably by ID
-         */
-
         var swapped = false
-        var (dTaskID, dTaskListID, dAdapterPosition) = Triple<ID, ID, Int>(0, 0, 0)
 
         // v is the View we are over with our touch not our bounds which is the same as itemView
         // event is our touch, v is the view we are over with our touch
         // onDragListener is basically like, do this when someone is dragging on top of you
-        holder.itemView.setOnDragListener { v, event ->
-            if (dTaskID == 0L && dTaskListID == 0L && dAdapterPosition == 0) {
-                val it = event.localState as Triple<ID, ID, Int>
-                dTaskID = it.first
-                dTaskListID = it.second
-                dAdapterPosition = it.third
-            }
+        holder.itemView.setOnDragListener { view, event ->
+            val draggingState = event.localState as DragEventLocalState
             when (event.action) {
                 ACTION_DRAG_STARTED -> {
-                    logE("ACTION_DRAG_STARTED")
+//                    logE("STARTED dragging ${draggingState.taskID}")
                 }
+                // TODO: 21-Dec-18 Optimizations needed, feels slow
                 ACTION_DRAG_ENTERED -> {
-                    logE("ACTION_DRAG_ENTERED")
-                    if (!swapped) {
-                        if (dTaskID == holder.taskID && dTaskListID == this.taskListID) {
-                            //v.snackBar("Same Task")
-                        }
-                        if (dTaskID != holder.taskID && dTaskListID == this.taskListID) {
-                            //v.snackBar("In same list but not same Task!")
-                            swapped = true
-                        }
-                        if (dTaskID != holder.taskID && dTaskListID != this.taskListID) {
-                            val list = taskListView.board.taskListIDs
-                            //below fails at 6th list because of stupid recycling!
-                            if (list.indexOf(this.taskListID) > list.indexOf(dTaskListID)) {
-                                v.snackBar("Dragging right!")
-                                taskListView.board.smoothScrollBy(700, 0)
-                                dTaskListID = this.taskListID
+//                    logE("ENTERED over ${holder.taskID} dragging ${draggingState.taskID}")
+                    if (!swapped && holder.adapterPosition != -1) {
+                        when {
+
+
+                            /*
+                             * ALL Possible Scenarios:
+                             *
+                             * Dragging item over itself (same everything)
+                             * Dragging item over another in the same list (same taskListID)
+                             * Dragging an item over another in different list with same Adapter Pos (same Adapter Pos)
+                             * Dragging an item over another in different list with diff Adapter Pos (same nothing)
+                             *
+                             */
+
+
+
+
+                            draggingState.adapterPosition != holder.adapterPosition &&
+                                    draggingState.taskID != holder.taskID &&
+                                    draggingState.taskListID == holder.taskListID -> {
+                                val newDragPos = holder.adapterPosition
+                                taskList.swap(draggingState.adapterPosition, holder.adapterPosition)
+                                draggingState.adapterPosition = newDragPos
+                                notifyDataSetChanged()
                                 swapped = true
-                            } else {
-                                v.snackBar("Dragging left!")
-                                taskListView.board.smoothScrollBy(-700, 0)
-                                dTaskListID = this.taskListID
-                                swapped = true
+                                // by now the adapterPositions and taskList positions are identical
+                                if (draggingState.taskListID == this.taskListID) {
+                                    assert(draggingState.adapterPosition == taskList.indexOf(draggingState.taskID))
+                                }
                             }
                         }
                     }
                 }
+                // TODO: 20-Dec-18 We need access to holder's adapter so that we can add the dragging view to it
                 ACTION_DRAG_LOCATION -> {
-                    "D -> ${event.x}, ${event.y}".logE()
-                    if (holder.layoutPosition > dAdapterPosition + 2) {
-                        taskListView.smoothScrollBy(0, 100)
-                        v.snackBar("We need to scroll down!")
-                    }
-                    if (holder.layoutPosition < dAdapterPosition - 2) {
-                        taskListView.smoothScrollBy(0, -100)
-                        v.snackBar("We need to scroll up!")
-                    }
+
                 }
                 ACTION_DRAG_EXITED -> {
-                    logE("ACTION_DRAG_EXITED")
+//                    logE("EXITED from ${holder.taskID}")
                     swapped = false
                 }
                 ACTION_DROP -> {
-                    logE("ACTION_DROP")
+                    draggingState.updateToMatch(holder)
+                    /*taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)
+                            ?.itemView?.alpha = 1F*/
+                    swapped = false
+//                    logE("DROPPED ${draggingState.taskID}")
                 }
                 ACTION_DRAG_ENDED -> {
-                    logE("ACTION_DRAG_ENDED")
+                    taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)
+                            ?.itemView?.alpha = 1F
+                    swapped = false
                 }
             }
             return@setOnDragListener true
@@ -165,9 +152,8 @@ class TaskListAdapter(var taskListID: ID = 0) : RecyclerView.Adapter<TaskViewHol
 
 
         holder.itemView.delete_button.setOnClickListener {
-            //Caches.tasks.remove(itemList[holder.adapterPosition])
             if (holder.adapterPosition != -1) {
-                itemList.removeAt(holder.adapterPosition)
+                taskList.removeAt(holder.adapterPosition)
                 notifyDataSetChanged()
             }
         }
@@ -175,4 +161,36 @@ class TaskListAdapter(var taskListID: ID = 0) : RecyclerView.Adapter<TaskViewHol
 
 }
 
-private data class DragEventLocalState(val viewHolder: TaskViewHolder)
+private data class DragEventLocalState(
+        var taskID: ID,
+        var taskListID: ID,
+        var adapterPosition: Int) {
+
+    fun updateToMatch(viewHolder: TaskViewHolder) {
+        this.taskID = viewHolder.taskID
+        this.taskListID = viewHolder.taskListID
+        this.adapterPosition = viewHolder.adapterPosition
+    }
+
+
+    infix fun doesNotMatch(viewHolder: TaskViewHolder): Boolean {
+        return this.taskID != viewHolder.taskID ||
+                this.taskListID != viewHolder.taskListID ||
+                this.adapterPosition != viewHolder.adapterPosition
+    }
+}
+
+private enum class Possibilities {
+    // TODO: 21-Dec-18 Try doing this whole thing without TaskID
+    DIFF_NOTHING,           // -> They are the same
+    DIFF_TASKID,            // -> Impossible, APOS must be diff
+    DIFF_LISTID,            // -> Impossible, TaskID must be diff
+    DIFF_APOS,              // -> Impossible, TaskID or ListID must be diff
+    DIFF_TASKID_AND_LISTID, // -> Diff List, same position, so we're moving it left/right only
+    DIFF_TASKID_AND_APOS,   // -> Diff Task, same list, so we're moving it up/down only
+    DIFF_LISTID_AND_APOS,   // -> Impossible, TaskID must be diff
+    DIFF_EVERYTHING         // -> Diff List and Task, basically we moved left/right and up/down
+}
+
+private fun containsNull(state: DragEventLocalState) =
+        state.taskID == -1L || state.taskListID == -1L || state.adapterPosition == -1

@@ -25,9 +25,11 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
         }
 
     init {
-        this.growTo(lists.size)
-        this.addAll(lists)
-        update()
+        if (this.notDefault()) {
+            this.growTo(lists.size)
+            this.addAll(lists)
+            update()
+        }
     }
 
     override fun getAll(): LinkedHashMap<ID, TaskList> {
@@ -37,6 +39,14 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
                         .map { it.id to it }
                         .toMap()
         )
+    }
+
+    override fun removeAt(index: Int): AbstractWaqtiList<TaskList> {
+        val listToRemove = this[index]
+        val tasksToRemove = Caches.tasks.get(listToRemove.toList())
+        Caches.taskLists.remove(listToRemove)
+        Caches.tasks.remove(tasksToRemove)
+        return super.removeAt(index)
     }
 
     override fun notDefault(): Boolean {

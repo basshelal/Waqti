@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit
 // TODO: 28-Jul-18 Test and doc
 
 // TODO: 04-Dec-18 Make this thread safe!
+
+// TODO: 20-Dec-18 Revise the practicality of this, why not use a list of IDs instead???
 open class Cache<E : Cacheable>(
         private val db: Box<E>,
         var sizeLimit: Int = 1000) : Collection<E> {

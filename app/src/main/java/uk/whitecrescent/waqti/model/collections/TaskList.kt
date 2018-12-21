@@ -62,6 +62,12 @@ open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
         return this.name != "" || this.id != 0L || this.idList.isNotEmpty()
     }
 
+    override fun removeAt(index: Int): AbstractWaqtiList<Task> {
+        val toRemove = this[index]
+        Caches.tasks.remove(toRemove)
+        return super.removeAt(index)
+    }
+
     fun add(collection: Collection<Tuple>): TaskList {
         collection.forEach { this.addAll(it.toList()) }
         return this

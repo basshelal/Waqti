@@ -17,12 +17,11 @@ class TaskListView
     val listAdapter: TaskListAdapter
         get() = adapter as TaskListAdapter
     //val itemTouchHelper: ItemTouchHelper
-    val board: BoardView
+    val boardView: BoardView
         get() = parent.parent as BoardView
 
     init {
         layoutManager = LinearLayoutManager(getContext(), VERTICAL, false)
-        adapter = TaskListAdapter()
         /*itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
 
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
@@ -115,5 +114,10 @@ class TaskListView
 
 class TaskViewHolder(view: View)
     : RecyclerView.ViewHolder(view) {
+
+    //the ID of the Task that this ViewHolder contains
     var taskID: ID = 0L
+
+    //the ID of the TaskList that this ViewHolder's Task is in
+    var taskListID: ID = 0L
 }

@@ -13,8 +13,6 @@ import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.android.scrollToEnd
 import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.collections.TaskList
-import uk.whitecrescent.waqti.model.task.ID
-import java.util.Collections
 
 class BoardView
 @JvmOverloads constructor(context: Context,
@@ -25,17 +23,14 @@ class BoardView
     val boardAdapter: BoardAdapter
         get() = this.adapter as BoardAdapter
 
-    val taskListIDs = ArrayList<ID>()
-
-    // TODO: 17-Dec-18 Both below don't work, show 6 instead of the actual 10, maybe we can still use it?
-
-    //instead of having references to all Views we could have references to Adapters instead
-    // the problem being that Views get recycled and so are not unique
     val taskListAdapters = ArrayList<TaskListAdapter>()
 
     init {
         layoutManager = LinearLayoutManager(this.context, HORIZONTAL, false)
-        adapter = BoardAdapter() // TODO: 15-Dec-18 Adapter needs to be provided by caller (Activity/Fragment)
+    }
+
+    override fun setAdapter(_adapter: Adapter<*>?) {
+        super.setAdapter(_adapter)
         assert(this.adapter != null)
         assert(this.adapter is BoardAdapter)
         ItemTouchHelper(object : ItemTouchHelper.Callback() {
@@ -63,7 +58,7 @@ class BoardView
                                  target: RecyclerView.ViewHolder, toPos: Int, x: Int, y: Int) {
                 super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
 
-                if (adapter != null && adapter is BoardAdapter) {
+                /*if (adapter != null && adapter is BoardAdapter) {
 
                     if (fromPos < toPos) {
                         (fromPos until toPos).forEach {
@@ -75,7 +70,7 @@ class BoardView
                         }
                     }
                     adapter!!.notifyItemMoved(fromPos, toPos)
-                }
+                }*/
             }
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
@@ -116,7 +111,6 @@ class BoardView
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })
-
     }
 
     // We need to make EVERYTHING exist in a single class/ file, the best way to emulate the
@@ -124,8 +118,8 @@ class BoardView
     // the lists (DragRecyclerViews) that way we have access to their adapters as well and so we
     // can modify them directly easily and completely
 
-    fun addNewEmptyList() {
-        boardAdapter.add(TaskList("NEW BOIIIII"))
+    fun addNewEmptyList(name: String) {
+        boardAdapter.add(TaskList(name))
         scrollToEnd()
     }
 

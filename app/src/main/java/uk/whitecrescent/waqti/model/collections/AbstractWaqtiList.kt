@@ -160,6 +160,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
             throw  IndexOutOfBoundsException("Cannot add $element at index $index, limits are 0 to $nextIndex")
         } else {
             idList.add(index, element.id)
+            update()
             return this
         }
     }
@@ -267,8 +268,10 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
         if (!inRange(oldIndex)) {
             throw  IndexOutOfBoundsException("Cannot update to $newElement at index $oldIndex, limits are 0 to $nextIndex")
         } else {
-            this.removeAt(oldIndex)
-            this.addAt(oldIndex, newElement)
+//            this.removeAt(oldIndex)
+//            this.addAt(oldIndex, newElement)
+            idList[oldIndex] = newElement.id
+            update()
             return this
         }
     }
@@ -354,10 +357,8 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
         if (!inRange(index)) {
             throw  IndexOutOfBoundsException("Cannot remove at index $index, limits are 0 to $nextIndex")
         } else {
-//            val list0 = ArrayList(list)
-//            list0.removeAt(index)
-//            list = list0.toList()
             idList.removeAt(index)
+            update()
             return this
         }
     }
@@ -531,6 +532,13 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
         if (idList.indexOf(element.id) == -1) {
             throw ElementNotFoundException("$element")
         } else return idList.indexOf(element.id)
+    }
+
+    // TODO: 20-Dec-18 This guy
+    fun indexOf(id: ID): Int {
+        if (idList.indexOf(id) == -1) {
+            throw ElementNotFoundException("$id")
+        } else return idList.indexOf(id)
     }
 
     /**
