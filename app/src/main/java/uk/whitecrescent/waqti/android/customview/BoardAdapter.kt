@@ -58,12 +58,15 @@ class BoardAdapter(val boardID: ID = 0) : RecyclerView.Adapter<BoardViewHolder>(
             val adapter = holder.list.listAdapter
             adapter.taskList.add(Task("New Task @ $now"))
             adapter.notifyDataSetChanged()
+            adapter.taskList.update()
+            board.update()
             holder.list.smoothScrollToPosition(adapter.itemCount - 1)
         }
 
         holder.itemView.taskList_deleteButton.setOnClickListener {
             if (holder.adapterPosition != -1) {
                 board.removeAt(holder.adapterPosition)
+                board.update()
                 notifyDataSetChanged()
             }
         }

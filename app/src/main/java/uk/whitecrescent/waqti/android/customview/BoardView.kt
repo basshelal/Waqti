@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.android.scrollToEnd
-import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.collections.TaskList
 
 class BoardView
@@ -34,6 +33,8 @@ class BoardView
         assert(this.adapter != null)
         assert(this.adapter is BoardAdapter)
         ItemTouchHelper(object : ItemTouchHelper.Callback() {
+            // TODO: 24-Dec-18 remember to make the dragging only doable from the header, currently its from anywhere
+            // so a very fast scroll or a hold on an empty list will trigger a drag
 
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
                 val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
@@ -75,7 +76,6 @@ class BoardView
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
-                recyclerView.snackBar("DONE!")
             }
 
             override fun onSelectedChanged(viewHolder: ViewHolder?, actionState: Int) {

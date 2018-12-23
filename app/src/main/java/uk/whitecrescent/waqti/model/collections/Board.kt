@@ -5,6 +5,7 @@ import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.annotation.Transient
 import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.logE
 import uk.whitecrescent.waqti.model.persistence.Cache
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
@@ -39,11 +40,12 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
 
     override fun removeAt(index: Int): AbstractWaqtiList<TaskList> {
         val listToRemove = this[index]
-        val tasksToRemove = Caches.tasks.get(listToRemove.toList())
+        logE("${listToRemove.idsList()}")
         listToRemove.clear()
+        listToRemove.update()
+        logE("${listToRemove.idsList()}")
         Caches.taskLists.remove(listToRemove)
-        Caches.tasks.remove(tasksToRemove)
-        return super.removeAt(index)
+        return this
     }
 
     override fun initialize() {

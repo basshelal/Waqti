@@ -70,6 +70,10 @@ class Template(name: String = "", task: Task = Task("")) : Cacheable {
         update()
     }
 
+    override fun initialize() {
+
+    }
+
     override fun notDefault(): Boolean {
         return this.name != "" || this.id != 0L
     }

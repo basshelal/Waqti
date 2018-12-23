@@ -35,10 +35,6 @@ class Priority(name: String = "", importanceLevel: Int = 0) : Cacheable {
         }
     }
 
-    override fun notDefault(): Boolean {
-        return name != "" || id != 0L
-    }
-
     var name = name
         set(value) {
             field = value
@@ -52,7 +48,15 @@ class Priority(name: String = "", importanceLevel: Int = 0) : Cacheable {
         }
 
     init {
-        if (notDefault()) update()
+        if (this.notDefault()) this.update()
+    }
+
+    override fun initialize() {
+
+    }
+
+    override fun notDefault(): Boolean {
+        return name != "" || id != 0L
     }
 
     override fun update() = Caches.priorities.put(this)

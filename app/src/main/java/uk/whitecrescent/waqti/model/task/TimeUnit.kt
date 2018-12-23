@@ -14,10 +14,6 @@ class TimeUnit(name: String = "", duration: Duration = Duration.ZERO) : Cacheabl
     @Id
     override var id = 0L
 
-    init {
-        update()
-    }
-
     // TODO: 19-Jun-18 more tests to check for the mutability and other things
 
     var name = name
@@ -33,16 +29,16 @@ class TimeUnit(name: String = "", duration: Duration = Duration.ZERO) : Cacheabl
             update()
         }
 
-    override fun notDefault(): Boolean {
-        return name != "" || duration != Duration.ZERO
+    init {
+        if (this.notDefault()) this.update()
     }
 
-    companion object {
+    override fun initialize() {
 
-        fun toJavaDuration(timeUnit: TimeUnit, count: Int): Duration {
-            return timeUnit.duration.multipliedBy(count.toLong())
-        }
+    }
 
+    override fun notDefault(): Boolean {
+        return name != "" || duration != Duration.ZERO
     }
 
     override fun update() = Caches.timeUnits.put(this)
@@ -59,4 +55,12 @@ class TimeUnit(name: String = "", duration: Duration = Duration.ZERO) : Cacheabl
                     other.duration == this.duration
 
     override fun toString() = "$name $duration"
+
+    companion object {
+
+        fun toJavaDuration(timeUnit: TimeUnit, count: Int): Duration {
+            return timeUnit.duration.multipliedBy(count.toLong())
+        }
+
+    }
 }

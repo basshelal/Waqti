@@ -89,7 +89,6 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
             when (event.action) {
                 ACTION_DRAG_STARTED -> {
                 }
-                // TODO: 21-Dec-18 Optimizations needed, feels slow
                 // TODO: 21-Dec-18 Autoscrolling is missing
                 ACTION_DRAG_ENTERED -> {
                     if (!swapped && holder.adapterPosition != -1) {
@@ -116,8 +115,8 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                     val newDragPos = holder.adapterPosition
                                     taskList.swap(draggingState.adapterPosition, newDragPos)
                                     draggingState.adapterPosition = newDragPos
-                                    notifyDataSetChanged()
                                     taskList.update()
+                                    notifyDataSetChanged()
                                     swapped = true
                                     return@setOnDragListener true
                                 }
@@ -125,27 +124,34 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                             // TODO: 21-Dec-18 What about when the list is empty???
 
-                            // TODO: 21-Dec-18 Optimization, commit changes to DB only at the end
-                            // this requires changes at AbstractWaqtiList
-
                             draggingState.taskListID != holder.taskListID -> {
 
                                 val otherAdapter = taskListView.boardView.taskListAdapters
                                         .find { it.taskListID == draggingState.taskListID }
                                 if (otherAdapter != null) {
 
+                                    // TODO: 24-Dec-18 Quite some bugs when we drop rigt/left and up/down
+                                    // specifically that when we delete a list that contains a
+                                    // task that has been dragged into it by means of right/left
+                                    // and up/down an exception happens
+                                    // 1,2,3 in list 1 and 4,5,6 in list 2
+                                    // drag 4 to list 1 and then up and down, delete list 1 and
+                                    // then it says ElementNotFoundException on 5!! I believe
+                                    // because it's using something to do with adapter position
+                                    // and 4 was at adapter position 0 and now 5 is look into this
+
                                     // TODO: 23-Dec-18 Why otherTaskList? couldn't we use the otherAdapter.taskList?
-                                    val otherTaskList = taskListView.boardView.boardAdapter.board[draggingState.taskListID]
+                                    val otherTaskList = otherAdapter.taskList
                                     val task = otherTaskList[draggingState.taskID]
                                     val newDragPos = holder.adapterPosition
 
                                     this.taskList.addAt(newDragPos, task)
-                                    this.notifyDataSetChanged()
                                     this.taskList.update()
+                                    this.notifyDataSetChanged()
 
                                     otherAdapter.taskList.remove(task)
-                                    otherAdapter.notifyDataSetChanged()
                                     otherAdapter.taskList.update()
+                                    otherAdapter.notifyDataSetChanged()
 
                                     draggingState.taskListID = holder.taskListID
                                     draggingState.adapterPosition = newDragPos
@@ -192,6 +198,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         holder.itemView.delete_button.setOnClickListener {
             if (holder.adapterPosition != -1) {
                 taskList.removeAt(holder.adapterPosition)
+                taskList.update()
                 notifyDataSetChanged()
             }
         }

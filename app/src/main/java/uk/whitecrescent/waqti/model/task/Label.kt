@@ -26,6 +26,10 @@ class Label(name: String = "") : Cacheable {
         }
     }
 
+    override fun initialize() {
+
+    }
+
     override fun notDefault(): Boolean {
         // if all these are false then this has been constructed using default constructor
         return this.name != "" || this.id != 0L
