@@ -8,7 +8,6 @@ import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.toArrayList
 
 // Document this and check to see if this is thread safe or not
-// TODO: 21-Nov-18 Consider making this Cacheable so that we can call the update when we need to
 @BaseEntity
 abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
 
@@ -98,15 +97,11 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      */
     @NoOverride
     @Throws(ElementNotFoundException::class)
-    override operator fun get(element: E): E {
-        return safeGet(element.id)
-    }
+    override operator fun get(element: E) = safeGet(element.id)
 
     @NoOverride
     @Throws(ElementNotFoundException::class)
-    operator fun get(id: ID): E {
-        return safeGet(id)
-    }
+    operator fun get(id: ID) = safeGet(id)
 
     /**
      * Checks to see if this list contains an element equal to the passed in element, returns true if this list
@@ -123,13 +118,13 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
     @NoOverride
     override operator fun contains(element: E) = idList.contains(element.id)
 
-    override fun set(index: Int, element: E) = addAt(index, element)
+    override fun set(index: Int, element: E) = updateAt(index, element)
 
     override fun set(oldElement: E, newElement: E) = updateAt(indexOf(oldElement), newElement)
 
     override fun plus(element: E) = add(element)
 
-    override fun minus(element: E) = removeFirst(element)
+    override fun minus(element: E) = remove(element)
 
     //endregion Operators
 
@@ -173,16 +168,6 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
     }
 
     /**
-     * Adds all the passed in elements to this list.
-     *
-     * @see java.util.ArrayList.addAll
-     * @param elements the elements to be added to this list, can be empty
-     * @return this list after adding all the elements
-     */
-    @NoOverride
-    override fun addAll(vararg elements: E) = addAll(elements.toList())
-
-    /**
      * Adds all the elements of the passed [Collection] to this list.
      *
      * @see java.util.ArrayList.addAll
@@ -191,20 +176,6 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      */
     @NoOverride
     override fun addAll(collection: Collection<E>) = addAllAt(nextIndex, collection)
-
-    /**
-     * Adds all the passed in elements to this list at the passed in index in similar fashion to [addAt] making
-     * elements already at and after the index shift right.
-     *
-     * @see java.util.ArrayList.addAll
-     * @param index the index at which to add the elements
-     * @param elements the elements to add to this list at the passed in index, can be empty
-     * @return this list after adding the elements at the index
-     * @throws IndexOutOfBoundsException if the passed in index is out of bounds
-     */
-    @NoOverride
-    @Throws(IndexOutOfBoundsException::class)
-    override fun addAllAt(index: Int, vararg elements: E) = addAllAt(index, elements.toList())
 
     /**
      * Adds all the passed in collection's elements to this list at the passed in index in similar fashion to [addAt]
@@ -237,10 +208,9 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      * @return this list after adding the elements filtered from the collection
      */
     @NoOverride
-    override fun addIf(collection: Collection<E>, predicate: (E) -> Boolean): AbstractWaqtiList<E> {
-        this.addAll(collection.filter(predicate))
-        return this
-    }
+    // TODO: 23-Dec-18 This is a little niche
+    override fun addIf(collection: Collection<E>, predicate: (E) -> Boolean) =
+            addAll(collection.filter(predicate))
 
     //endregion Add
 
@@ -305,6 +275,8 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
         }
         arrayList.forEach { this.updateAt(it, new) }
 
+        // TODO: 23-Dec-18 This looks ugly!
+
         return this
     }
 
@@ -329,6 +301,11 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
 
     //region Remove
 
+    override fun remove(element: E): AbstractWaqtiList<E> {
+        idList.remove(element.id)
+        return this
+    }
+
     /**
      * Removes the first instance of an element equal to the passed in element, if none are found the list is unchanged.
      *
@@ -339,15 +316,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      * @return this list after removing the first instance of an element equal to the passed in element
      */
     @NoOverride
-    override fun removeFirst(element: E): AbstractWaqtiList<E> {
-        try {
-            this.removeAt(indexOf(element))
-        } catch (exception: ElementNotFoundException) {
-
-        } finally {
-            return this
-        }
-    }
+    override fun removeFirst(element: E) = remove(element)
 
     /**
      * Removes the element at the passed in index, if the index is out of bounds throws an [IndexOutOfBoundsException].
@@ -377,18 +346,6 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
     }
 
     /**
-     * Removes all instances equal to any of the passed in elements, if no elements are passed in the list will be
-     * unchanged, if there are no instances equal to a passed in element then no action will be taken for them, see
-     * [java.util.ArrayList.removeAll]
-     *
-     * @see java.util.ArrayList.removeAll
-     * @param elements the elements that all instances that are equal to any of them will be removed
-     * @return this list after removing all the elements
-     */
-    @NoOverride
-    override fun removeAll(vararg elements: E) = removeAll(elements.toList())
-
-    /**
      * Removes all instances equal to any of the passed in collection's elements, if the collection is empty are
      * passed the list will be unchanged, if there are no instances equal to a passed in element then no action will
      * be taken for them, see [java.util.ArrayList.removeAll]
@@ -411,7 +368,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      * @return this list after removing the elements that satisfy the predicate
      */
     @NoOverride
-    override fun removeIf(predicate: (E) -> Boolean) = this.removeAll(this.filter(predicate))
+    override fun removeIf(predicate: (E) -> Boolean) = removeAll(this.filter(predicate))
 
     /**
      * Clears this list, removing all elements in it making it empty.
@@ -419,7 +376,10 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      * @return this list after being cleared
      */
     @NoOverride
-    override fun clear() = this.removeAll(this.toList())
+    override fun clear(): AbstractWaqtiList<E> {
+        idList.clear()
+        return this
+    }
 
     /**
      * Removes the elements from the passed in `fromIndex` inclusive to the passed in `toIndex` exclusive, if both
@@ -434,25 +394,11 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      */
     @NoOverride
     @Throws(IndexOutOfBoundsException::class)
-    override fun removeRange(fromIndex: Int, toIndex: Int) = this.removeAll(this.subList(fromIndex, toIndex))
+    override fun removeRange(fromIndex: Int, toIndex: Int) = removeAll(this.subList(fromIndex, toIndex))
 
     //endregion Remove
 
     //region Query
-
-    /**
-     * Gets all the elements in this list that are equal to any of the elements passed in, if none are passed in
-     * nothing is returned, if elements are passed in that this list does not contain instances that are equal to
-     * them then no action is taken for them and they will not appear in the returned list. The returned list can
-     * contain duplicates.
-     *
-     * This operation does not modify this list, it only queries this list.
-     *
-     * @param elements the elements to check that this list contains elements that are equal to any of them
-     * @return the list of elements that this list contains that are from the passed in elements
-     */
-    @NoOverride
-    override fun getAll(vararg elements: E) = getAll(elements.toList())
 
     /**
      * Gets all the elements in this list that are equal to any of the elements of the collection passed in, if the
@@ -476,6 +422,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
                 }
             }
         }
+        // TODO: 23-Dec-18 this looks ugly
         return result.toList()
     }
 
@@ -490,17 +437,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
     @NoOverride
     override fun toList() = cache.all.toList()
 
-    /**
-     * Checks whether this list contains *all* of the passed in elements, returns true if every element passed in
-     * contains at least an instance equal to it and false otherwise, if no elements are passed in will always return
-     * true.
-     *
-     * @see java.util.ArrayList.containsAll
-     * @param elements the elements to check that they are contained in this list
-     * @return true if the elements passed in have at least a single instance that is equal to them and false otherwise
-     */
-    @NoOverride
-    override fun containsAll(vararg elements: E) = this.containsAll(elements.toList())
+    fun idsList() = idList.toList()
 
     /**
      * Checks whether this list contains *all* of the passed in collection's elements, returns true if every element
@@ -541,17 +478,11 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      */
     @NoOverride
     @Throws(ElementNotFoundException::class)
-    override fun indexOf(element: E): Int {
-        if (idList.indexOf(element.id) == -1) {
-            throw ElementNotFoundException("$element")
-        } else return idList.indexOf(element.id)
-    }
+    override fun indexOf(element: E) = indexOf(element.id)
 
-    // TODO: 20-Dec-18 This guy
     fun indexOf(id: ID): Int {
-        if (idList.indexOf(id) == -1) {
-            throw ElementNotFoundException("$id")
-        } else return idList.indexOf(id)
+        return if (idList.indexOf(id) == -1) throw ElementNotFoundException("$id")
+        else idList.indexOf(id)
     }
 
     /**
@@ -566,9 +497,8 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      */
     @NoOverride
     override fun lastIndexOf(element: E): Int {
-        if (idList.lastIndexOf(element.id) == -1) {
-            throw ElementNotFoundException("$element")
-        } else return idList.lastIndexOf(element.id)
+        return if (idList.lastIndexOf(element.id) == -1) throw ElementNotFoundException("$element")
+        else idList.lastIndexOf(element.id)
     }
 
     /**
@@ -608,8 +538,8 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
             !inRange(fromIndex, toIndex) -> {
                 throw  IndexOutOfBoundsException("Cannot SubList $fromIndex to $toIndex, limits are 0 and $nextIndex")
             }
-            fromIndex > toIndex -> getAll().toArrayList.subList(toIndex + 1, fromIndex + 1)
-            fromIndex < toIndex -> getAll().toArrayList.subList(fromIndex, toIndex)
+            fromIndex > toIndex -> this.toList().toArrayList.subList(toIndex + 1, fromIndex + 1)
+            fromIndex < toIndex -> this.toList().toArrayList.subList(fromIndex, toIndex)
             else -> emptyList()
         }
     }
@@ -728,23 +658,11 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
     override fun swap(`this`: E, that: E) = swap(indexOf(`this`), indexOf(that))
 
     /**
-     * Moves all instances in this list that are equal to any of the passed in elements to the passed in index, if
-     * none are found this list is unchanged.
-     *
-     * @param toIndex the index to move all the elements to
-     * @param elements the elements to find instances in this list that are equal to any to be moved to the index
-     * @return this list after moving all elements
-     * @throws IndexOutOfBoundsException if the index passed in is out of bounds
-     */
-    @NoOverride
-    override fun moveAllTo(toIndex: Int, vararg elements: E) = moveAllTo(elements.toList(), toIndex)
-
-    /**
      * Moves all instances in this list that are equal to any of the passed in collection's elements to the passed in
      * index, if none are found this list is unchanged.
      *
-     * @param collection the collection od elements to find instances in this list that are equal to any to be moved to
-     * the index
+     * @param collection the collection of elements to find instances in this list that are equal
+     * to any to be moved to the index
      * @param toIndex the index to move all the elements to
      * @return this list after moving all elements
      * @throws IndexOutOfBoundsException if the index passed in is out of bounds
@@ -774,7 +692,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      */
     @NoOverride
     override fun sort(comparator: Comparator<E>): AbstractWaqtiList<E> {
-        val ordered = getAll().sortedWith(comparator).ids
+        val ordered = this.toList().sortedWith(comparator).ids
         this.idList.matchOrder(ordered)
         return this
     }
@@ -793,9 +711,6 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      */
     @NoOverride
     override fun growTo(size: Int): AbstractWaqtiList<E> {
-//        val list0 = ArrayList(list)
-//        list0.ensureCapacity(size)
-//        list = list0.toList()
         idList.ensureCapacity(size)
         return this
     }
@@ -808,7 +723,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      * @return the iterator of this list
      */
     @NoOverride
-    override fun iterator() = getAll().iterator()
+    override fun iterator() = this.toList().iterator()
 
     /**
      * Returns a list iterator over the elements in this list (in proper
@@ -819,7 +734,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      * @return a list iterator over the elements in this list in orders
      */
     @NoOverride
-    override fun listIterator() = getAll().toArrayList.listIterator()
+    override fun listIterator() = this.toList().toArrayList.listIterator()
 
     /**
      * Returns a list iterator over the elements in this list (in proper
@@ -834,10 +749,9 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
     @NoOverride
     @Throws(IndexOutOfBoundsException::class)
     override fun listIterator(index: Int): ListIterator<E> {
-        if (index < 0 || index > size) {
+        return if (index < 0 || index > size)
             throw IndexOutOfBoundsException("Cannot return List Iterator with index $index, limits are 0 to $size")
-        }
-        return getAll().toArrayList.listIterator(index)
+        else this.toList().toArrayList.listIterator(index)
     }
 
     /**
@@ -848,14 +762,8 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      * @return true if all the indexes are in range of this list and false if any one of them is not
      */
     @NoOverride
-    protected fun inRange(vararg indexes: Int): Boolean {
-        for (index in indexes) {
-            if (index < 0 || index > nextIndex) {
-                return false
-            }
-        }
-        return true
-    }
+    protected fun inRange(vararg indexes: Int) =
+            indexes.any { !(it < 0 || it > nextIndex) }
 
     protected fun safeGet(id: ID): E {
         return cache[id]
@@ -889,6 +797,25 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
                 found.isNotEmpty() && listFrom !== listTo -> {
                     listFrom.removeAll(found)
                     listTo.addAllAt(toIndex, found)
+                    listFrom.update()
+                    listTo.update()
+                }
+            }
+        }
+
+        @Throws(IndexOutOfBoundsException::class, ElementNotFoundException::class)
+        fun <E : Cacheable> moveElement(listFrom: AbstractWaqtiList<E>, listTo: AbstractWaqtiList<E>,
+                                        element: E, toIndex: Int = listTo.nextIndex) {
+            val found = listFrom[element]
+            when {
+                !listTo.inRange(toIndex) -> {
+                    throw IndexOutOfBoundsException("Cannot move to $toIndex, limits are 0 and ${listTo.nextIndex}")
+                }
+                listFrom !== listTo -> {
+                    listFrom.remove(found)
+                    listTo.addAt(toIndex, found)
+                    listFrom.update()
+                    listTo.update()
                 }
             }
         }
@@ -914,6 +841,22 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
                 }
                 found.isNotEmpty() && listFrom !== listTo -> {
                     listTo.addAllAt(toIndex, found)
+                    listTo.update()
+                }
+            }
+        }
+
+        @Throws(IndexOutOfBoundsException::class, ElementNotFoundException::class)
+        fun <E : Cacheable> copyElement(listFrom: AbstractWaqtiList<E>, listTo: AbstractWaqtiList<E>,
+                                        element: E, toIndex: Int = listTo.nextIndex) {
+            val found = listFrom[element]
+            when {
+                !listTo.inRange(toIndex) -> {
+                    throw IndexOutOfBoundsException("Cannot move to $toIndex, limits are 0 and ${listTo.nextIndex}")
+                }
+                listFrom !== listTo -> {
+                    listTo.addAt(toIndex, found)
+                    listTo.update()
                 }
             }
         }
@@ -931,56 +874,22 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
                         throw IndexOutOfBoundsException("Cannot swap $indexIntoLeft  and $indexIntoRight," +
                                 " limits are ${listLeft.nextIndex} and ${listRight.nextIndex} respectively")
                     }
-
-                    foundLeft.isNotEmpty() && foundRight.isNotEmpty() -> {
-                        listLeft.addAllAt(indexIntoLeft, foundRight)
-                        listRight.addAllAt(indexIntoRight, foundLeft)
-                        listLeft.removeAll(foundLeft)
-                        listRight.removeAll(foundRight)
-                    }
                     foundLeft.isEmpty() && foundRight.isNotEmpty() -> {
                         moveElements(listRight, listLeft, foundRight, indexIntoLeft)
                     }
                     foundLeft.isNotEmpty() && foundRight.isEmpty() -> {
                         moveElements(listLeft, listRight, foundLeft, indexIntoRight)
                     }
+                    foundLeft.isNotEmpty() && foundRight.isNotEmpty() -> {
+                        listLeft.addAllAt(indexIntoLeft, foundRight)
+                        listRight.addAllAt(indexIntoRight, foundLeft)
+                        listLeft.removeAll(foundLeft)
+                        listRight.removeAll(foundRight)
+                        listLeft.update()
+                        listRight.update()
+                    }
                 }
             }
-        }
-
-        fun <E : Cacheable> join(intoList: AbstractWaqtiList<E>, thisList: AbstractWaqtiList<E>) =
-                ArrayList<E>(intoList + thisList).toList()
-
-        fun <E : Cacheable> intersection(thisList: AbstractWaqtiList<E>, thatList: AbstractWaqtiList<E>) =
-                ArrayList<E>(thisList + thatList).filter { it in thisList && it in thatList }.toList()
-
-        fun <E : Cacheable> intersectionDistinct(thisList: AbstractWaqtiList<E>, thatList: AbstractWaqtiList<E>) =
-                ArrayList<E>(thisList + thatList).filter { it in thisList && it in thatList }.distinct().toList()
-
-        fun <E : Cacheable> difference(inThis: AbstractWaqtiList<E>, notInThis: AbstractWaqtiList<E>) =
-                ArrayList<E>(inThis + notInThis).filter { it in inThis && it !in notInThis }.toList()
-
-        fun <E : Cacheable> differenceDistinct(inThis: AbstractWaqtiList<E>, notInThis: AbstractWaqtiList<E>) =
-                ArrayList<E>(inThis + notInThis).filter { it in inThis && it !in notInThis }.distinct().toList()
-
-        fun <E : Cacheable> union(vararg lists: AbstractWaqtiList<E>): List<E> {
-            val result = ArrayList<E>(lists.size)
-            for (list in lists) {
-                for (element in list) {
-                    result.add(element)
-                }
-            }
-            return result.toList()
-        }
-
-        fun <E : Cacheable> unionDistinct(vararg lists: AbstractWaqtiList<E>): List<E> {
-            val result = ArrayList<E>(lists.size)
-            for (list in lists) {
-                for (element in list) {
-                    if (element !in result) result.add(element)
-                }
-            }
-            return result.toList()
         }
     }
 
@@ -994,7 +903,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      * @see java.util.ArrayList.hashCode
      * @return the hash code of this list
      */
-    override fun hashCode() = this.toList().hashCode()
+    override fun hashCode() = this.idsList().hashCode()
 
     /**
      * Checks to see whether the passed in Any is equal to this list or not, the other must be a [WaqtiCollection]
@@ -1005,7 +914,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      * and false otherwise
      */
     override fun equals(other: Any?) =
-            other is WaqtiCollection<*> && this.toList() == other.toList()
+            other is AbstractWaqtiList<*> && this.idsList() == other.idsList()
 
     /**
      * Returns a String representation of this list, this just uses the backing list's toString
@@ -1013,7 +922,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      * @see java.util.ArrayList.toString
      * @return the String representation of this list
      */
-    override fun toString() = this.toList().toString()
+    override fun toString() = this.idsList().toString()
 
     //endregion Overriden from kotlin.Any
 }

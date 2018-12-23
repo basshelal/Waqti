@@ -15,8 +15,3 @@ package uk.whitecrescent.waqti.model.collections
 @MustBeDocumented
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY, AnnotationTarget.CLASS, AnnotationTarget.CONSTRUCTOR)
 annotation class NoOverride
-
-@Retention(AnnotationRetention.SOURCE)
-@MustBeDocumented
-@Target(AnnotationTarget.FUNCTION)
-annotation class SimpleOverride

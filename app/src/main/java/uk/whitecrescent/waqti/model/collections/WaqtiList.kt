@@ -12,8 +12,6 @@ interface WaqtiList<E> : WaqtiCollection<E> {
 
     fun updateAt(oldIndex: Int, newElement: E): WaqtiList<E>
 
-    fun addAllAt(index: Int, vararg elements: E): WaqtiList<E>
-
     fun addAllAt(index: Int, collection: Collection<E>): WaqtiList<E>
 
     fun removeAt(index: Int): WaqtiList<E>
@@ -27,8 +25,6 @@ interface WaqtiList<E> : WaqtiCollection<E> {
     fun swap(thisIndex: Int, thatIndex: Int): WaqtiList<E>
 
     fun swap(`this`: E, that: E): WaqtiList<E>
-
-    fun moveAllTo(toIndex: Int, vararg elements: E): WaqtiList<E>
 
     fun moveAllTo(collection: Collection<E>, toIndex: Int): WaqtiList<E>
 

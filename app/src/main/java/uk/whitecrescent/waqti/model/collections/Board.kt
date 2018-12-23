@@ -40,7 +40,7 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
     override fun removeAt(index: Int): AbstractWaqtiList<TaskList> {
         val listToRemove = this[index]
         val tasksToRemove = Caches.tasks.get(listToRemove.toList())
-        listToRemove.removeAll()
+        listToRemove.clear()
         Caches.taskLists.remove(listToRemove)
         Caches.tasks.remove(tasksToRemove)
         return super.removeAt(index)

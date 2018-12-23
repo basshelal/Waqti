@@ -8,6 +8,7 @@ import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 
 // Name should change to something like Ordering or Series or Sequence
+// TODO: 23-Dec-18 Don't forget to deal with this, either implement it, or more likely, leave it for later
 class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
 
     override var idList = ArrayList<ID>()
@@ -22,8 +23,8 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
         this.addAll(tasks.toList())
     }
 
-    override fun getAll(): LinkedHashMap<ID, Task> {
-        return LinkedHashMap()
+    override fun initialize() {
+
     }
 
     override fun notDefault(): Boolean {
@@ -82,20 +83,10 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
 //        }
 //    }
 
-    //Simple Override changes return type to be more specific
-    @SimpleOverride
     override fun add(element: Task) = super.add(element) as Tuple
 
-    @SimpleOverride
-    override fun addAll(vararg elements: Task) = super.addAll(*elements) as Tuple
-
-    @SimpleOverride
     override fun addAll(collection: Collection<Task>) = super.addAll(collection) as Tuple
 
-    @SimpleOverride
-    override fun addAllAt(index: Int, vararg elements: Task) = super.addAllAt(index, *elements) as Tuple
-
-    @SimpleOverride
     override fun addIf(collection: Collection<Task>, predicate: (Task) -> Boolean) =
             super.addIf(collection, predicate) as Tuple
 
@@ -103,16 +94,12 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
 
     //region Update
 
-    @SimpleOverride
     override fun updateAt(oldIndex: Int, newElement: Task) = super.updateAt(oldIndex, newElement) as Tuple
 
-    @SimpleOverride
     override fun updateAllTo(collection: Collection<Task>, new: Task) = super.updateAllTo(collection, new) as Tuple
 
-    @SimpleOverride
     override fun update(old: Task, new: Task) = super.update(old, new) as Tuple
 
-    @SimpleOverride
     override fun updateIf(predicate: (Task) -> Boolean, new: Task) = super.updateIf(predicate, new) as Tuple
 
     //endregion Update
@@ -154,19 +141,12 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
 //        return this
 //    }
 
-    @SimpleOverride
     override fun removeFirst(element: Task) = super.removeFirst(element) as Tuple
 
-    @SimpleOverride
-    override fun removeAll(vararg elements: Task) = super.removeAll(*elements) as Tuple
-
-    @SimpleOverride
     override fun removeIf(predicate: (Task) -> Boolean) = super.removeIf(predicate) as Tuple
 
-    @SimpleOverride
     override fun clear() = super.clear() as Tuple
 
-    @SimpleOverride
     override fun removeRange(fromIndex: Int, toIndex: Int) = super.removeRange(fromIndex, toIndex) as Tuple
 
     //endregion Remove
@@ -180,29 +160,20 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
         return this
     }
 
-    @SimpleOverride
     override fun swap(thisIndex: Int, thatIndex: Int) = super.swap(thisIndex, thatIndex) as Tuple
 
-    @SimpleOverride
     override fun moveAllTo(collection: Collection<Task>, toIndex: Int) = super.moveAllTo(collection, toIndex) as Tuple
 
-    @SimpleOverride
     override fun move(from: Task, to: Task) = super.move(from, to) as Tuple
 
-    @SimpleOverride
     override fun swap(`this`: Task, that: Task) = super.swap(`this`, that) as Tuple
 
-    @SimpleOverride
-    override fun moveAllTo(toIndex: Int, vararg elements: Task) = super.moveAllTo(toIndex, *elements) as Tuple
-
-    @SimpleOverride
     override fun sort(comparator: Comparator<Task>) = super.sort(comparator) as Tuple
 
     //endregion Manipulate
 
     //region List Utils
 
-    @SimpleOverride
     override fun growTo(size: Int) = super.growTo(size) as Tuple
 
     //endregion

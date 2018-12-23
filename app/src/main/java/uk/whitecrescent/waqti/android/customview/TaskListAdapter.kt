@@ -117,6 +117,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                     taskList.swap(draggingState.adapterPosition, newDragPos)
                                     draggingState.adapterPosition = newDragPos
                                     notifyDataSetChanged()
+                                    taskList.update()
                                     swapped = true
                                     return@setOnDragListener true
                                 }
@@ -133,15 +134,18 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                         .find { it.taskListID == draggingState.taskListID }
                                 if (otherAdapter != null) {
 
+                                    // TODO: 23-Dec-18 Why otherTaskList? couldn't we use the otherAdapter.taskList?
                                     val otherTaskList = taskListView.boardView.boardAdapter.board[draggingState.taskListID]
                                     val task = otherTaskList[draggingState.taskID]
                                     val newDragPos = holder.adapterPosition
 
                                     this.taskList.addAt(newDragPos, task)
                                     this.notifyDataSetChanged()
+                                    this.taskList.update()
 
-                                    otherAdapter.taskList.removeAll(task)
+                                    otherAdapter.taskList.remove(task)
                                     otherAdapter.notifyDataSetChanged()
+                                    otherAdapter.taskList.update()
 
                                     draggingState.taskListID = holder.taskListID
                                     draggingState.adapterPosition = newDragPos
