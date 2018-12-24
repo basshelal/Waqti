@@ -86,7 +86,7 @@ open class Cache<E : Cacheable>(
             @QueriesDataBase
             mapFound == null -> {
                 val dbFound = db[id]
-                if (dbFound == null) throw ElementNotFoundException(id)
+                if (dbFound == null) throw ElementNotFoundException(id, cache = db.entityInfo.dbName)
                 else {
                     safeAdd(dbFound)
                     dbFound

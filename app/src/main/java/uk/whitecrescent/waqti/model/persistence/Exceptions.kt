@@ -18,7 +18,7 @@ import uk.whitecrescent.waqti.model.task.ID
  * CENFE (ElementNotFoundException)
  *
  */
-class ElementNotFoundException(elementID: ID = 0, element: Any = "") :
+class ElementNotFoundException(elementID: ID = 0, element: Any = "", cache: Any = "") :
         NoSuchElementException(
-                "Element $element of ID $elementID not found in this Cache"
+                "Element $element of ID $elementID not found in this Cache $cache"
         )

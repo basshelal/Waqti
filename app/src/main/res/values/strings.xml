@@ -16,4 +16,6 @@
         death, but not himself.</string>
     <string name="defaultDeadline">Default Deadline</string>
     <string name="createTask">Create Task</string>
+    <string name="addTask">Add Task</string>
+    <string name="taskNameHint">Task Name</string>
 </resources>

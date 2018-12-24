@@ -13,16 +13,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.model.Bug
+import uk.whitecrescent.waqti.model.FutureIdea
+import uk.whitecrescent.waqti.model.MissingFeature
+import uk.whitecrescent.waqti.model.NeedsReOrganizing
+import uk.whitecrescent.waqti.model.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.model.logE
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID
 
-// TODO: 21-Dec-18 Needs a lot of optimizing, a lot of things are very slow on a physical device!
-// I suspect it's the taskList since it's accessing the DB all the time but I could be wrong
-
 class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>() {
 
+    @FutureIdea
     // TODO: 21-Dec-18 Use paging and LiveData from AndroidX
 
     val taskList = Database.taskLists[taskListID] ?: throw ElementNotFoundException(taskListID)
@@ -79,16 +82,18 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
             return@setOnLongClickListener true
         }
 
-        var swapped = false
+        var swapped = false // maybe put this inside the dragListener
 
         // v is the View we are over with our touch not our bounds which is the same as itemView
         // event is our touch, v is the view we are over with our touch
         // onDragListener is basically like, do this when someone is dragging on top of you
+        @NeedsReOrganizing // Too messy here
         holder.itemView.setOnDragListener { view, event ->
             val draggingState = event.localState as DragEventLocalState
             when (event.action) {
                 ACTION_DRAG_STARTED -> {
                 }
+                @MissingFeature
                 // TODO: 21-Dec-18 Autoscrolling is missing
                 ACTION_DRAG_ENTERED -> {
                     if (!swapped && holder.adapterPosition != -1) {
@@ -112,16 +117,18 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                 }
                                 // they are diff but in same list
                                 else {
+                                    logE("UP/DOWN!")
                                     val newDragPos = holder.adapterPosition
-                                    taskList.swap(draggingState.adapterPosition, newDragPos)
+                                    taskList.swap(draggingState.adapterPosition, newDragPos).update()
                                     draggingState.adapterPosition = newDragPos
-                                    taskList.update()
                                     notifyDataSetChanged()
                                     swapped = true
+                                    logE("this -> ${this.taskList}")
                                     return@setOnDragListener true
                                 }
                             }
 
+                            @MissingFeature
                             // TODO: 21-Dec-18 What about when the list is empty???
 
                             draggingState.taskListID != holder.taskListID -> {
@@ -130,6 +137,9 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                         .find { it.taskListID == draggingState.taskListID }
                                 if (otherAdapter != null) {
 
+                                    logE("LEFT/RIGHT!")
+
+                                    @Bug
                                     // TODO: 24-Dec-18 Quite some bugs when we drop rigt/left and up/down
                                     // specifically that when we delete a list that contains a
                                     // task that has been dragged into it by means of right/left
@@ -139,23 +149,30 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                     // then it says ElementNotFoundException on 5!! I believe
                                     // because it's using something to do with adapter position
                                     // and 4 was at adapter position 0 and now 5 is look into this
+                                    @Bug
+                                    // TODO: 24-Dec-18 Another bug, when we keep switching left and right
+                                    // it continues to add that task to the other list, making
+                                    // that other list have multiple copies of the same task
 
-                                    // TODO: 23-Dec-18 Why otherTaskList? couldn't we use the otherAdapter.taskList?
                                     val otherTaskList = otherAdapter.taskList
                                     val task = otherTaskList[draggingState.taskID]
                                     val newDragPos = holder.adapterPosition
 
-                                    this.taskList.addAt(newDragPos, task)
-                                    this.taskList.update()
+                                    AbstractWaqtiList.moveElement(
+                                            listFrom = otherTaskList, listTo = this.taskList,
+                                            element = task, toIndex = newDragPos
+                                    )
+
                                     this.notifyDataSetChanged()
 
-                                    otherAdapter.taskList.remove(task)
-                                    otherAdapter.taskList.update()
                                     otherAdapter.notifyDataSetChanged()
 
                                     draggingState.taskListID = holder.taskListID
                                     draggingState.adapterPosition = newDragPos
                                     swapped = true
+
+                                    logE("this -> ${this.taskList}")
+                                    logE("other -> $otherTaskList")
 
                                     return@setOnDragListener true
                                 }
@@ -197,8 +214,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
         holder.itemView.delete_button.setOnClickListener {
             if (holder.adapterPosition != -1) {
-                taskList.removeAt(holder.adapterPosition)
-                taskList.update()
+                taskList.removeAt(holder.adapterPosition).update()
                 notifyDataSetChanged()
             }
         }

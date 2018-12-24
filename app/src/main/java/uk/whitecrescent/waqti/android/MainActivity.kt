@@ -1,12 +1,10 @@
-package uk.whitecrescent.waqti.android.views
+package uk.whitecrescent.waqti.android
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.checkWritePermission
 import uk.whitecrescent.waqti.android.customview.BoardAdapter
-import uk.whitecrescent.waqti.android.logE
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.now
@@ -15,7 +13,6 @@ import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.isEmpty
 import uk.whitecrescent.waqti.model.persistence.size
 import uk.whitecrescent.waqti.model.task.Task
-
 
 class MainActivity : AppCompatActivity() {
 

@@ -65,8 +65,7 @@ class BoardAdapter(val boardID: ID = 0) : RecyclerView.Adapter<BoardViewHolder>(
 
         holder.itemView.taskList_deleteButton.setOnClickListener {
             if (holder.adapterPosition != -1) {
-                board.removeAt(holder.adapterPosition)
-                board.update()
+                board.removeAt(holder.adapterPosition).update()
                 notifyDataSetChanged()
             }
         }

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <EditText
+        android:id="@+id/taskName_editText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:hint="@string/taskNameHint"
+        android:inputType="textAutoCorrect|textMultiLine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <!--
+        <EditText
+            android:id="@+id/editText3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Time"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editText"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/editText4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Duration"
+            app:layout_constraintTop_toBottomOf="@+id/editText3"
+            tools:layout_editor_absoluteX="0dp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/editText5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Priority"
+            app:layout_constraintTop_toBottomOf="@+id/editText4"
+            tools:layout_editor_absoluteX="0dp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/editText6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Labels"
+            app:layout_constraintTop_toBottomOf="@+id/editText5"
+            tools:layout_editor_absoluteX="0dp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/editText7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Optional"
+            app:layout_constraintTop_toBottomOf="@+id/editText6"
+            tools:layout_editor_absoluteX="0dp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/editText8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Description"
+            app:layout_constraintTop_toBottomOf="@+id/editText7"
+            tools:layout_editor_absoluteX="0dp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/editText9"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Target"
+            app:layout_constraintTop_toBottomOf="@+id/editText10"
+            tools:layout_editor_absoluteX="0dp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/editText2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Checklist"
+            app:layout_constraintTop_toBottomOf="@+id/editText8"
+            tools:layout_editor_absoluteX="0dp"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/editText10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Deadline"
+            app:layout_constraintTop_toBottomOf="@+id/editText2"
+            tools:layout_editor_absoluteX="0dp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/editText11"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="Before"
+            app:layout_constraintTop_toBottomOf="@+id/editText9"
+            tools:layout_editor_absoluteX="0dp"
+            android:visibility="gone"/>
+
+        <EditText
+            android:id="@+id/editText12"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textPersonName"
+            android:text="SubTasks"
+            app:layout_constraintTop_toBottomOf="@+id/editText11"
+            tools:layout_editor_absoluteX="0dp"
+            android:visibility="gone"/>
+        -->
+
+    <Button
+        android:id="@+id/send_button"
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/addTask"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
