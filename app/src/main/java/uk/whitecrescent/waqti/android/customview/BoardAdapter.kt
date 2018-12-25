@@ -57,6 +57,17 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         holder.footer.text = "Add Task"
 
         holder.footer.setOnClickListener {
+
+            /*(it.context as MainActivity).supportFragmentManager.beginTransaction().apply {
+                val fragment = CreateTaskFragment.newInstance()
+                val bundle = Bundle()
+                bundle.putLong("boardID", this@BoardAdapter.boardID)
+                bundle.putLong("listID", holder.list.listAdapter.taskListID)
+                fragment.arguments = bundle
+                replace(R.id.blank_constraintLayout, fragment, "Create Task")
+                commit()
+            }*/
+
             val adapter = holder.list.listAdapter
             adapter.taskList.add(Task("New Task @ $now"))
             adapter.notifyDataSetChanged()
@@ -76,7 +87,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                     boardView.taskListAdapters.remove(toRemove)
                 }
                 board.removeAt(holder.adapterPosition).update()
-                notifyDataSetChanged()
+                this.notifyDataSetChanged()
                 logE("TaskListAdapters Size: ${boardView.taskListAdapters.size}")
             }
         }

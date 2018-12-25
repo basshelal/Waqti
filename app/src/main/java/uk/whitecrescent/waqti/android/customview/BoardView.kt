@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.android.scrollToEnd
@@ -111,6 +112,26 @@ class BoardView
                 super.onScrollStateChanged(recyclerView, newState)
             }
         })
+
+        PagerSnapHelper().attachToRecyclerView(this)
+    }
+
+    override fun onScrolled(dx: Int, dy: Int) {
+        super.onScrolled(dx, dy)
+        /*logE("dx: $dx, dy: $dy")
+        var scrolledByMe = false
+        if (dx > 0 && !scrolledByMe) {
+            scrolledByMe = true
+            val scrollBy = resources.getDimensionPixelOffset(R.dimen.taskListWidth)
+            smoothScrollBy(scrollBy, 0)
+            scrolledByMe = false
+        }
+        if (dx < 0 && !scrolledByMe) {
+            scrolledByMe = true
+            val scrollBy = resources.getDimensionPixelOffset(R.dimen.taskListWidth) * -1
+            smoothScrollBy(scrollBy, 0)
+            scrolledByMe = false
+        }*/
     }
 
     // We need to make EVERYTHING exist in a single class/ file, the best way to emulate the

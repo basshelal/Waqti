@@ -10,9 +10,11 @@ import android.view.DragEvent.ACTION_DROP
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.Bug
 import uk.whitecrescent.waqti.model.FutureIdea
 import uk.whitecrescent.waqti.model.MissingFeature
@@ -22,6 +24,7 @@ import uk.whitecrescent.waqti.model.logE
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID
+import kotlin.math.roundToInt
 
 class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>() {
 
@@ -30,6 +33,8 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
     val taskList = Database.taskLists[taskListID] ?: throw ElementNotFoundException(taskListID)
     lateinit var taskListView: TaskListView
+    val linearLayoutManager: LinearLayoutManager
+        get() = taskListView.layoutManager as LinearLayoutManager
 
     init {
         this.setHasStableIds(true)
@@ -123,6 +128,39 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                     draggingState.adapterPosition = newDragPos
                                     notifyDataSetChanged()
                                     swapped = true
+
+                                    // Scroll down
+                                    if (draggingState.adapterPosition >=
+                                            linearLayoutManager.findLastVisibleItemPosition()) {
+                                        if (draggingState.adapterPosition != itemCount - 1 ||
+                                                linearLayoutManager.findLastCompletelyVisibleItemPosition() != itemCount - 1) {
+                                            taskListView.postDelayed(
+                                                    {
+                                                        holder.itemView.snackBar("Need to scroll down")
+                                                        val scrollBy = (view.height * 1.25).roundToInt()
+                                                        taskListView.smoothScrollBy(0, scrollBy)
+                                                    },
+                                                    600L
+                                            )
+                                        }
+                                    }
+
+                                    // Scroll up
+                                    if (draggingState.adapterPosition <=
+                                            linearLayoutManager.findFirstVisibleItemPosition()) {
+                                        if (draggingState.adapterPosition != 0 ||
+                                                linearLayoutManager.findFirstCompletelyVisibleItemPosition() != 0) {
+                                            taskListView.postDelayed(
+                                                    {
+                                                        holder.itemView.snackBar("Need to scroll up")
+                                                        val scrollBy = (view.height * -1.25).roundToInt()
+                                                        taskListView.smoothScrollBy(0, scrollBy)
+                                                    },
+                                                    600L
+                                            )
+                                        }
+                                    }
+
                                     logE("this -> ${this.taskList}")
                                     return@setOnDragListener true
                                 }
@@ -140,21 +178,10 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                     logE("LEFT/RIGHT!")
 
                                     @Bug
-                                    // TODO: 24-Dec-18 Quite some bugs when we drop rigt/left and up/down
-                                    // specifically that when we delete a list that contains a
-                                    // task that has been dragged into it by means of right/left
-                                    // and up/down an exception happens
-                                    // 1,2,3 in list 1 and 4,5,6 in list 2
-                                    // drag 4 to list 1 and then up and down, delete list 1 and
-                                    // then it says ElementNotFoundException on 5!! I believe
-                                    // because it's using something to do with adapter position
-                                    // and 4 was at adapter position 0 and now 5 is look into this
-
-                                    @Bug
                                     // TODO: 24-Dec-18 Another bug, when we keep switching left and right
                                     // it continues to add that task to the other list, making
                                     // that other list have multiple copies of the same task,
-                                    // this looks like its been fixed, but need to confirm
+                                    // TODO:This looks like its been fixed, but need to confirm
                                     // properly as I've still seen instances of duplicate Tasks!
 
                                     val otherTaskList = otherAdapter.taskList
@@ -166,14 +193,34 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                             element = task, toIndex = newDragPos
                                     )
 
-                                    this.notifyDataSetChanged()
-
-                                    otherAdapter.notifyDataSetChanged()
-
                                     draggingState.taskListID = holder.taskListID
                                     draggingState.adapterPosition = newDragPos
+
+                                    this.notifyDataSetChanged()
+                                    otherAdapter.notifyDataSetChanged()
+
                                     swapped = true
 
+                                    taskListView.boardView.apply {
+
+                                        postDelayed(
+                                                {
+                                                    // TODO: 26-Dec-18 Alpha is a problem
+                                                    /*val vh = this@TaskListAdapter.taskListView
+                                                            .findViewHolderForAdapterPosition(
+                                                                    draggingState.adapterPosition)
+                                                    logE("TRYING")
+                                                    if (draggingState matches vh as TaskViewHolder) {
+                                                        vh.itemView.alpha = 0F
+                                                    } else logE("Couldn't do it")*/
+
+                                                    val pos = taskListAdapters.indexOf(this@TaskListAdapter)
+                                                    if (pos != -1) smoothScrollToPosition(pos)
+
+                                                },
+                                                500L
+                                        )
+                                    }
                                     logE("this -> ${this.taskList}")
                                     logE("other -> $otherTaskList")
 
@@ -241,6 +288,12 @@ private data class DragEventLocalState(
         return this.taskID != viewHolder.taskID ||
                 this.taskListID != viewHolder.taskListID ||
                 this.adapterPosition != viewHolder.adapterPosition
+    }
+
+    infix fun matches(viewHolder: TaskViewHolder): Boolean {
+        return this.taskID == viewHolder.taskID &&
+                this.taskListID == viewHolder.taskListID &&
+                this.adapterPosition == viewHolder.adapterPosition
     }
 
     fun possibilities(that: TaskViewHolder): Possibilities {

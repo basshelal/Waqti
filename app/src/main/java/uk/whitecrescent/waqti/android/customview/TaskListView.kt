@@ -22,6 +22,8 @@ class TaskListView
 
     init {
         layoutManager = LinearLayoutManager(getContext(), VERTICAL, false)
+        //LinearSnapHelper().attachToRecyclerView(this)
+
         /*itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
 
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
