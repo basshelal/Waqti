@@ -18,4 +18,5 @@
     <string name="createTask">Create Task</string>
     <string name="addTask">Add Task</string>
     <string name="taskNameHint">Task Name</string>
+    <string name="boardNameHint">Board Name</string>
 </resources>

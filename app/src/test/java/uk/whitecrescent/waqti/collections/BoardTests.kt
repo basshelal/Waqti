@@ -1,31 +1,22 @@
 package uk.whitecrescent.waqti.collections
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.model.collections.Board
-import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.size
+import uk.whitecrescent.waqti.testBoardFullOfFullLists
 
 class BoardTests : BaseCollectionsTest() {
 
-    val testBoard: Board
-        get() = Board("Board")
-
-    @DisplayName("Test")
+    @DisplayName("Board RemoveAt")
     @Test
-    fun test2() {
-        val board = testBoard
-        board.addAll(Array(10, { TaskList("$it") }).toList()).update()
-        assertTrue(board.size == 10)
-        assertEquals(10, Database.taskLists[board.id].size)
-        assertEquals(10, Database.tasks.size)
+    fun testBoardRemoveAt() {
+        val board = testBoardFullOfFullLists
+        board.removeAt(0).update()
 
-        board.clear().update()
-        assertTrue(board.size == 0)
-        assertEquals(0, Database.taskLists[board.id].size)
-        assertEquals(0, Database.tasks.size)
+        assertEquals(9, board.size)
+        assertEquals(9, Database.taskLists.size)
+        assertEquals(90, Database.tasks.size)
     }
 }

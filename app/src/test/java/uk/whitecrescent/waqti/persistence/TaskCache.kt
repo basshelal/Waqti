@@ -53,7 +53,7 @@ class TaskCache : BasePersistenceTest() {
         assertTrue(cache.size == 1)
         assertTrue(Database.tasks.count().toInt() == 1)
 
-        cacheable.name = "Second"
+        cacheable.changeName("Second")
 
         assertTrue(cacheable in cache)
         assertTrue(cacheable in Database.tasks.all)
@@ -64,7 +64,7 @@ class TaskCache : BasePersistenceTest() {
         assertTrue(cache.size == 1)
         assertTrue(Database.tasks.count().toInt() == 1)
 
-        cacheable.name = "Third"
+        cacheable.changeName("Third")
 
         assertTrue(cacheable in cache)
         assertTrue(cacheable in Database.tasks.all)
@@ -97,7 +97,7 @@ class TaskCache : BasePersistenceTest() {
         assertEquals("New", cache.valueList().first().name)
         assertEquals("New", Database.tasks[new.id].name)
 
-        new.name = "Updated"
+        new.changeName("Updated")
 
         assertEquals(new, cache.valueList().first())
         assertEquals(new, Database.tasks[new.id])
@@ -116,7 +116,7 @@ class TaskCache : BasePersistenceTest() {
 
         val randomElement = cache.valueList()[69]
 
-        cache[randomElement.id].name = "Updated!"
+        cache[randomElement.id].changeName("Updated!")
         assertEquals(randomElement.name, "Updated!")
         assertTrue(Database.tasks[randomElement.id].name == "Updated!")
 

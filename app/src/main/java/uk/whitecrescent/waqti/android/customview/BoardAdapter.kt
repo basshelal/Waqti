@@ -6,13 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.model.collections.TaskList
+import uk.whitecrescent.waqti.model.logE
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 
-class BoardAdapter(val boardID: ID = 0) : RecyclerView.Adapter<BoardViewHolder>() {
+class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     // TODO: 21-Dec-18 Use paging and LiveData from AndroidX
 
@@ -22,6 +23,7 @@ class BoardAdapter(val boardID: ID = 0) : RecyclerView.Adapter<BoardViewHolder>(
 
     init {
         this.setHasStableIds(true)
+        logE("$board")
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -65,14 +67,23 @@ class BoardAdapter(val boardID: ID = 0) : RecyclerView.Adapter<BoardViewHolder>(
 
         holder.itemView.taskList_deleteButton.setOnClickListener {
             if (holder.adapterPosition != -1) {
+                // TODO: 25-Dec-18 There has to be a better way to do the bottom!
+                if (holder.list.listAdapter.taskListID in
+                        boardView.taskListAdapters.map { it.taskListID }) {
+                    val toRemove = boardView.taskListAdapters.find {
+                        it.taskListID == holder.list.listAdapter.taskListID
+                    }
+                    boardView.taskListAdapters.remove(toRemove)
+                }
                 board.removeAt(holder.adapterPosition).update()
                 notifyDataSetChanged()
+                logE("TaskListAdapters Size: ${boardView.taskListAdapters.size}")
             }
         }
     }
 
     fun add(taskList: TaskList) {
-        board.add(taskList)
+        board.add(taskList).update()
         notifyDataSetChanged()
     }
 }

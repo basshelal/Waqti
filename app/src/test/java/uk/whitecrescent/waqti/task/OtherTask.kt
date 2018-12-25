@@ -31,7 +31,7 @@ class OtherTask : BaseTaskTest() {
 
         val task1 = Task("My Task")
         assertEquals("My Task", task1.name)
-        task1.name = "My Task Updated"
+        task1.changeName("My Task Updated")
         assertEquals("My Task Updated", task1.name)
     }
 
@@ -41,7 +41,7 @@ class OtherTask : BaseTaskTest() {
         val task = Task("My Task")
         val task1 = Task("My Task")
         assertEquals(task1.hashCode(), task.hashCode())
-        task1.name = "My Task "
+        task1.changeName("My Task ")
         assertNotEquals(task1.hashCode(), task.hashCode())
     }
 

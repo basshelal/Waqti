@@ -122,7 +122,7 @@ class Checklist : BaseTaskTest() {
     @DisplayName("Checklist Default Values")
     @Test
     fun testTaskChecklistDefaultValues() {
-        val task = testTask()
+        val task = testTask
         assertFalse(task.checklist.isConstrained)
         assertEquals(DEFAULT_CHECKLIST, task.checklist.value)
         assertFalse(task.checklist.isVisible)
@@ -131,7 +131,7 @@ class Checklist : BaseTaskTest() {
     @DisplayName("Set Checklist Property using setChecklistProperty")
     @Test
     fun testTaskSetChecklistProperty() {
-        val task = testTask()
+        val task = testTask
                 .setChecklistProperty(
                         Property(SHOWING, Checklist("Zero", "One", "Two"), NOT_CONSTRAINED, UNMET)
                 )
@@ -148,7 +148,7 @@ class Checklist : BaseTaskTest() {
     @DisplayName("Set Checklist Property using setChecklistPropertyValue")
     @Test
     fun testTaskSetChecklistPropertyValue() {
-        val task = testTask()
+        val task = testTask
                 .setChecklistPropertyValue(
                         Checklist("Zero", "One", "Two")
                 )
@@ -164,7 +164,7 @@ class Checklist : BaseTaskTest() {
     @DisplayName("Set Checklist Constraint using setChecklistProperty")
     @Test
     fun testTaskSetChecklistPropertyWithConstraint() {
-        val task = testTask()
+        val task = testTask
                 .setChecklistProperty(
                         Property(SHOWING, Checklist("Zero", "One", "Two"), CONSTRAINED, UNMET)
                 )
@@ -178,7 +178,7 @@ class Checklist : BaseTaskTest() {
     @DisplayName("Set Checklist Constraint using setChecklistConstraintValue")
     @Test
     fun testTaskSetChecklistConstraintValue() {
-        val task = testTask()
+        val task = testTask
                 .setChecklistConstraintValue(Checklist("Zero", "One", "Two"))
 
         assertTrue(task.checklist.isConstrained)
@@ -190,7 +190,7 @@ class Checklist : BaseTaskTest() {
     @DisplayName("Set Checklist Property failable")
     @Test
     fun testTaskSetDurationPropertyFailable() {
-        val task = testTask()
+        val task = testTask
                 .setChecklistPropertyValue(Checklist("Zero", "One", "Two"))
 
         assertFalse(task.isFailable)
@@ -202,7 +202,7 @@ class Checklist : BaseTaskTest() {
     @DisplayName("Set Checklist Constraint failable and killing when all get checked")
     @Test
     fun testTaskSetChecklistConstraintFailableChecked() {
-        val task = testTask()
+        val task = testTask
                 .setChecklistProperty(Property(SHOWING, Checklist("Zero", "One", "Two"), CONSTRAINED, UNMET))
 
         assertTrue(task.isFailable)
@@ -227,7 +227,7 @@ class Checklist : BaseTaskTest() {
     @DisplayName("Set Checklist Constraint failable and killing when empty later")
     @Test
     fun testTaskSetChecklistConstraintFailableEmptyLater() {
-        val task = testTask()
+        val task = testTask
                 .setChecklistProperty(Property(SHOWING, Checklist("Zero", "One", "Two"), CONSTRAINED, UNMET))
 
         assertTrue(task.isFailable)
@@ -250,7 +250,7 @@ class Checklist : BaseTaskTest() {
     @DisplayName("Set Checklist Constraint failable and killing when empty early")
     @Test
     fun testTaskSetChecklistConstraintFailableEmptyEarly() {
-        val task = testTask()
+        val task = testTask
                 .setChecklistProperty(Property(SHOWING, Checklist(), CONSTRAINED, UNMET))
 
         assertTrue(task.isFailable)
@@ -270,7 +270,7 @@ class Checklist : BaseTaskTest() {
     @DisplayName("Checklist Un-constraining")
     @Test
     fun testTaskChecklistUnConstraining() {
-        val task = testTask()
+        val task = testTask
                 .setChecklistConstraintValue(Checklist("Zero"))
 
         sleep(1)
@@ -288,7 +288,7 @@ class Checklist : BaseTaskTest() {
     @DisplayName("Checklist Constraint Re-Set")
     @Test
     fun testTaskChecklistConstraintReSet() {
-        val task = testTask()
+        val task = testTask
                 .setChecklistConstraintValue(Checklist("First"))
 
         sleep(1)
@@ -311,7 +311,7 @@ class Checklist : BaseTaskTest() {
     fun testChecklistHiding() {
         val checklist = Checklist("ZERO", "ONE")
 
-        val task = testTask()
+        val task = testTask
                 .setChecklistPropertyValue(checklist)
         assertEquals(checklist, task.checklist.value)
 

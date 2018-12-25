@@ -21,7 +21,7 @@ class Optional : BaseTaskTest() {
     @DisplayName("Optional Default Values")
     @Test
     fun testTaskOptionalDefaultValues() {
-        val task = testTask()
+        val task = testTask
         assertFalse(task.optional.isConstrained)
         assertEquals(DEFAULT_OPTIONAL, task.optional.value)
         assertFalse(task.optional.isVisible)
@@ -30,7 +30,7 @@ class Optional : BaseTaskTest() {
     @DisplayName("Set Optional Property using setOptionalProperty")
     @Test
     fun testTaskSetOptionalProperty() {
-        val task = testTask()
+        val task = testTask
                 .setOptionalProperty(Property(SHOWING, OPTIONAL, NOT_CONSTRAINED, UNMET))
 
         assertFalse(task.optional.isConstrained)
@@ -45,7 +45,7 @@ class Optional : BaseTaskTest() {
     @DisplayName("Set Optional Property using setOptionalValue")
     @Test
     fun testTaskSetOptionalValue() {
-        val task = testTask()
+        val task = testTask
                 .setOptionalValue(OPTIONAL)
 
         assertFalse(task.optional.isConstrained)
@@ -59,7 +59,7 @@ class Optional : BaseTaskTest() {
     @DisplayName("Set Optional Constraint")
     @Test
     fun testTaskSetOptionalConstraint() {
-        val task = testTask()
+        val task = testTask
                 .setOptionalProperty(Property(SHOWING, OPTIONAL, CONSTRAINED, UNMET))
 
         assertFalse(task.optional.isConstrained)

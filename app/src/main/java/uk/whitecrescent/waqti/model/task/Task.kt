@@ -13,6 +13,7 @@ import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Duration
 import uk.whitecrescent.waqti.model.MissingFeature
+import uk.whitecrescent.waqti.model.NonFinal
 import uk.whitecrescent.waqti.model.Time
 import uk.whitecrescent.waqti.model.UpdateDocumentation
 import uk.whitecrescent.waqti.model.UpdateTests
@@ -26,15 +27,13 @@ import uk.whitecrescent.waqti.model.tasks
 
 @UpdateTests // tests are old, update them
 @UpdateDocumentation // documentation is very old, update it
+@NonFinal
 
 @Entity
 class Task(name: String = "") : Cacheable {
 
     var name = name
-        set(value) {
-            field = value
-            update()
-        }
+        private set
 
     //region Debug
 
@@ -1448,17 +1447,18 @@ class Task(name: String = "") : Cacheable {
                             }
 
                             override fun onComplete() {
-                                debug("Observing ENDED for $name $id because $done")
+                                debug("Observing ENDED for Task: $name $id because " +
+                                        if (done) "not in cache" else "IMPOSSIBLE!")
                             }
 
                             override fun onSubscribe(d: Disposable) {
-                                debug("Observing STARTED for $name $id")
+                                debug("Observing STARTED for Task: $name $id")
                             }
                         }
                 )
     }
 
-    private fun done(string: String) {
+    private fun checkingDone(string: String) {
         if (string !in checking.keys)
             throw IllegalArgumentException("$string doesn't exist in checking")
         checking[string] = false
@@ -1470,14 +1470,14 @@ class Task(name: String = "") : Cacheable {
             !this.time.isConstrained -> {
                 makeNonFailableIfNoConstraints()
                 if (this.state == TaskState.SLEEPING) this.state = TaskState.EXISTING
-                done("Time")
+                checkingDone("Time")
             }
             now.isAfter(this.time.value) -> {
                 if (this.state == TaskState.SLEEPING) this.state = TaskState.EXISTING
                 if (this.time.isConstrained && !this.time.isMet) {
                     this.time.isMet = MET
                 }
-                done("Time")
+                checkingDone("Time")
             }
         }
     }
@@ -1486,16 +1486,16 @@ class Task(name: String = "") : Cacheable {
         when {
             !this.duration.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                done("Duration")
+                checkingDone("Duration")
             }
             this.timer.stopped -> {
-                done("Duration")
+                checkingDone("Duration")
             }
             timer.duration >= this.duration.value -> {
                 if (this.duration.isConstrained && !this.duration.isMet) {
                     this.duration.isMet = MET
                 }
-                done("Duration")
+                checkingDone("Duration")
             }
         }
     }
@@ -1504,13 +1504,13 @@ class Task(name: String = "") : Cacheable {
         when {
             !this.checklist.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                done("Checklist")
+                checkingDone("Checklist")
             }
             this.checklist.value.getAllUncheckedItems().isEmpty() -> {
                 if (this.checklist.isConstrained && this.checklist.isMet != MET) {
                     this.checklist.isMet = MET
                 }
-                done("Checklist")
+                checkingDone("Checklist")
             }
         }
     }
@@ -1520,14 +1520,14 @@ class Task(name: String = "") : Cacheable {
         when {
             !this.deadline.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                done("Deadline")
+                checkingDone("Deadline")
             }
             now.isAfter(deadlineWithGrace) -> {
                 if (canFail()) {
                     this.fail()
                     deadline.isMet = false
                 }
-                done("Deadline")
+                checkingDone("Deadline")
             }
         }
     }
@@ -1541,16 +1541,16 @@ class Task(name: String = "") : Cacheable {
             }
             !this.before.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                done("Before")
+                checkingDone("Before")
             }
             beforeTask.state == TaskState.KILLED -> {
                 this.before.isMet = true
-                done("Before")
+                checkingDone("Before")
             }
             beforeTask.state == TaskState.FAILED -> {
                 this.before.isMet = false
                 if (canFail()) fail()
-                done("Before")
+                checkingDone("Before")
             }
 
         }
@@ -1564,17 +1564,17 @@ class Task(name: String = "") : Cacheable {
             }
             !this.subTasks.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                done("SubTasks")
+                checkingDone("SubTasks")
             }
             this.subTasks.value.tasks.any { it.state == TaskState.FAILED } -> {
                 subTasks.isMet = false
                 if (canFail()) fail()
-                done("SubTasks")
+                checkingDone("SubTasks")
             }
             this.subTasks.value.tasks
                     .all { it.state == TaskState.KILLED } -> {
                 subTasks.isMet = true
-                done("SubTasks")
+                checkingDone("SubTasks")
             }
 
         }

@@ -22,7 +22,7 @@ class Target : BaseTaskTest() {
     @DisplayName("Target Default Values")
     @Test
     fun testTaskTargetDefaultValues() {
-        val task = testTask()
+        val task = testTask
         assertFalse(task.target.isConstrained)
         assertEquals(DEFAULT_TARGET, task.target.value)
         assertFalse(task.target.isVisible)
@@ -31,7 +31,7 @@ class Target : BaseTaskTest() {
     @DisplayName("Set Target Property using setTargetProperty")
     @Test
     fun testTaskSetTargetProperty() {
-        val task = testTask()
+        val task = testTask
                 .setTargetProperty(
                         Property(SHOWING, "Test Target", NOT_CONSTRAINED, UNMET)
                 )
@@ -48,7 +48,7 @@ class Target : BaseTaskTest() {
     @DisplayName("Set Target Property using setTargetPropertyValue")
     @Test
     fun testTaskSetTargetPropertyValue() {
-        val task = testTask()
+        val task = testTask
                 .setTargetPropertyValue(
                         "Test Target"
                 )
@@ -64,7 +64,7 @@ class Target : BaseTaskTest() {
     @DisplayName("Set Target Constraint using setTargetProperty")
     @Test
     fun testTaskSetTargetPropertyWithConstraint() {
-        val task = testTask()
+        val task = testTask
                 .setTargetProperty(
                         Property(SHOWING, "Test Target", CONSTRAINED, UNMET)
                 )
@@ -90,7 +90,7 @@ class Target : BaseTaskTest() {
     @DisplayName("Set Target Property failable")
     @Test
     fun testTaskSetTargetPropertyFailable() {
-        val task = testTask()
+        val task = testTask
                 .setTargetPropertyValue("Test Target")
 
         assertFalse(task.isFailable)
@@ -102,7 +102,7 @@ class Target : BaseTaskTest() {
     @DisplayName("Set Target Constraint failable")
     @Test
     fun testTaskSetTargetConstraintFailable() {
-        val task = testTask()
+        val task = testTask
                 .setTargetProperty(Property(SHOWING, "Test Target", CONSTRAINED, UNMET))
 
 
@@ -118,7 +118,7 @@ class Target : BaseTaskTest() {
     fun testTargetHiding() {
         val target = "Target"
 
-        val task = testTask()
+        val task = testTask
                 .setTargetPropertyValue(target)
         assertEquals(target, task.target.value)
 

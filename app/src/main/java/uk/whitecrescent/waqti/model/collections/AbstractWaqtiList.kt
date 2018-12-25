@@ -435,7 +435,7 @@ abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {
      * @return this list as a read only kotlin [List]
      */
     @NoOverride
-    override fun toList() = cache.all.toList()
+    override fun toList() = idList.map { this.safeGet(it) } // TODO: 25-Dec-18 Maybe Optimize!
 
     fun idsList() = idList.toList()
 

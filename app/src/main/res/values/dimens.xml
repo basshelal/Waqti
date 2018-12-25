@@ -7,4 +7,6 @@
     <dimen name="nav_header_height">176dp</dimen>
     <dimen name="taskPropertiesMargins">6dp</dimen>
     <dimen name="taskListWidth">300dp</dimen>
+    <dimen name="boardsGridButtonWidth">100dp</dimen>
+    <dimen name="boardsGridButtonHeight">100dp</dimen>
 </resources>

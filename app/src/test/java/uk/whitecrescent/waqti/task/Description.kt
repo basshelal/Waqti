@@ -20,7 +20,7 @@ class Description : BaseTaskTest() {
     @DisplayName("Description Default Values")
     @Test
     fun testTaskDescriptionDefaultValues() {
-        val task = testTask()
+        val task = testTask
         assertFalse(task.description.isConstrained)
         assertEquals(DEFAULT_DESCRIPTION, task.description.value)
         assertFalse(task.description.isVisible)
@@ -29,7 +29,7 @@ class Description : BaseTaskTest() {
     @DisplayName("Set Description Property using setDescriptionProperty")
     @Test
     fun testTaskSetDescriptionProperty() {
-        val task = testTask()
+        val task = testTask
                 .setDescriptionProperty(Property(SHOWING, "Test Description", NOT_CONSTRAINED, UNMET))
 
         assertFalse(task.description.isConstrained)
@@ -44,7 +44,7 @@ class Description : BaseTaskTest() {
     @DisplayName("Set Description Property using setDescriptionValue")
     @Test
     fun testTaskSetDescriptionValue() {
-        val task = testTask()
+        val task = testTask
                 .setDescriptionValue("Test Description")
 
         assertFalse(task.description.isConstrained)
@@ -58,7 +58,7 @@ class Description : BaseTaskTest() {
     @DisplayName("Set Description Constraint")
     @Test
     fun testTaskSetDescriptionConstraint() {
-        val task = testTask()
+        val task = testTask
                 .setDescriptionProperty(Property(SHOWING, "Test Description", CONSTRAINED, UNMET))
 
         assertFalse(task.description.isConstrained)

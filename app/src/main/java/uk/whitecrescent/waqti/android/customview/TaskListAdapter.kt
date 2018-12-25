@@ -149,10 +149,13 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                     // then it says ElementNotFoundException on 5!! I believe
                                     // because it's using something to do with adapter position
                                     // and 4 was at adapter position 0 and now 5 is look into this
+
                                     @Bug
                                     // TODO: 24-Dec-18 Another bug, when we keep switching left and right
                                     // it continues to add that task to the other list, making
-                                    // that other list have multiple copies of the same task
+                                    // that other list have multiple copies of the same task,
+                                    // this looks like its been fixed, but need to confirm
+                                    // properly as I've still seen instances of duplicate Tasks!
 
                                     val otherTaskList = otherAdapter.taskList
                                     val task = otherTaskList[draggingState.taskID]

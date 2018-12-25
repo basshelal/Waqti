@@ -1,50 +1,79 @@
 package uk.whitecrescent.waqti.collections
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Database
+import uk.whitecrescent.waqti.model.persistence.isEmpty
 import uk.whitecrescent.waqti.model.persistence.size
-import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.testTask
+import uk.whitecrescent.waqti.testTaskListEmpty
+import uk.whitecrescent.waqti.testTaskListFull
 
 class TaskListTests : BaseCollectionsTest() {
 
-    val testList: TaskList
-        get() = TaskList("TaskList")
-
-    @DisplayName("Test")
+    @DisplayName("TaskList Initialized")
     @Test
-    fun test() {
-        val list = testList
-        list.add(Task("Hello"))
-        assertTrue(list.size == 1)
+    fun testTaskListInitialized() {
+        val list = testTaskListEmpty
+        assertTrue(list.isEmpty())
+        assertTrue(list in Database.taskLists.all)
     }
 
-    @DisplayName("Test")
+    @DisplayName("TaskList Add element")
     @Test
-    fun test1() {
-        val list = testList
-        list.addAll(getTasks(10)).update()
-        assertTrue(list.size == 10)
-        assertEquals(10, Database.taskLists[list.id].size)
-        assertEquals(10, Database.tasks.size)
+    fun testTaskListAddElement() {
+        val list = testTaskListEmpty
+        list.add(testTask)
+        assertEquals(1, list.size)
+
+        assertFalse(Database.taskLists.isEmpty())
+        assertFalse(Database.tasks.isEmpty())
+        assertTrue(Database.taskLists[list.id].isEmpty())
+
+        list.update()
+
+        assertEquals(1, Database.taskLists[list.id].size)
     }
 
-    @DisplayName("Test")
+    @DisplayName("TaskList Add elements")
     @Test
-    fun test2() {
-        val list = testList
-        list.addAll(getTasks(10)).update()
-        assertTrue(list.size == 10)
-        assertEquals(10, Database.taskLists[list.id].size)
+    fun testTaskListAddElements() {
+        val list = testTaskListEmpty
+        list.addAll(getTasks(10))
+        assertEquals(10, list.size)
+
+        assertFalse(Database.taskLists.isEmpty())
+        assertFalse(Database.tasks.isEmpty())
+
+        assertEquals(1, Database.taskLists.size)
         assertEquals(10, Database.tasks.size)
 
-        list.clear().update()
-        assertTrue(list.size == 0)
-        assertEquals(0, Database.taskLists[list.id].size)
-        assertEquals(0, Database.tasks.size)
+        assertTrue(Database.taskLists[list.id].isEmpty())
+
+        list.update()
+
+        assertEquals(10, Database.taskLists[list.id].size)
+
+        // TODO: 25-Dec-18 Abrupt Cache closing makes our Tasks not even know when to stop observing
+        // I think, this is only really a problem in Testing and does not affect any production code
+        // a solution would be to have every Cacheable include a finalize() method as well, bit
+        // overkill though
+    }
+
+    @DisplayName("TaskList RemoveAt")
+    @Test
+    fun testTaskListRemoveAt() {
+        val list = testTaskListFull
+        list.removeAt(0).update()
+
+
+        assertEquals(9, list.size)
+        assertEquals(1, Database.taskLists.size)
+        assertEquals(9, Database.tasks.size)
+
     }
 }

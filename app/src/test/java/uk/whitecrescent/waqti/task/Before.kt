@@ -57,7 +57,7 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskSetBeforeValueID() {
         val beforeTask = Task("Before Task")
-        val task = testTask()
+        val task = testTask
                 .setBeforePropertyValue(
                         beforeTask.id
                 )
@@ -75,7 +75,7 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskSetBeforeValueTask() {
         val beforeTask = Task("Before Task")
-        val task = testTask()
+        val task = testTask
                 .setBeforePropertyValue(
                         beforeTask
                 )
@@ -93,7 +93,7 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskSetBeforePropertyWithConstraint() {
         val beforeTask = Task("Before Task")
-        val task = testTask()
+        val task = testTask
                 .setBeforeProperty(
                         Property(SHOWING, beforeTask.id, CONSTRAINED, UNMET)
                 )
@@ -109,7 +109,7 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskSetBeforeConstraintValueID() {
         val beforeTask = Task("Before Task")
-        val task = testTask()
+        val task = testTask
                 .setBeforeConstraintValue(beforeTask.id)
 
         assertTrue(task.before.isConstrained)
@@ -123,7 +123,7 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskSetBeforeConstraintValueTask() {
         val beforeTask = Task("Before Task")
-        val task = testTask()
+        val task = testTask
                 .setBeforeConstraintValue(beforeTask)
 
         assertTrue(task.before.isConstrained)
@@ -137,7 +137,7 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskSetBeforePropertyFailable() {
         val beforeTask = Task("Before Task")
-        val task = testTask()
+        val task = testTask
                 .setBeforePropertyValue(beforeTask)
 
         assertFalse(task.isFailable)
@@ -150,7 +150,7 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskKillWithBeforeProperty() {
         val beforeTask = Task("Before Task")
-        val task = testTask()
+        val task = testTask
                 .setBeforePropertyValue(beforeTask)
 
         task.kill()
@@ -184,7 +184,7 @@ class Before : BaseTaskTest() {
     fun testTaskFailBeforeConstraint() {
         val beforeTask = Task("Before Task")
         beforeTask.isFailable = true
-        val task = testTask()
+        val task = testTask
                 .setBeforeConstraintValue(beforeTask)
 
         assertThrows(TaskStateException::class.java, { task.kill() })
@@ -222,7 +222,7 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskBeforeUnConstraining() {
         val beforeTask = Task("Before Task")
-        val task = testTask()
+        val task = testTask
                 .setBeforeConstraintValue(beforeTask)
 
         sleep(1)
@@ -241,7 +241,7 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskBeforeConstraintReSet() {
         val beforeTask = Task("Before Task")
-        val task = testTask()
+        val task = testTask
                 .setBeforeConstraintValue(beforeTask)
 
         sleep(1)
@@ -266,7 +266,7 @@ class Before : BaseTaskTest() {
     fun testBeforeHiding() {
         val before = Task("Before")
 
-        val task = testTask()
+        val task = testTask
                 .setBeforePropertyValue(before)
         assertEquals(before.id, task.before.value)
 

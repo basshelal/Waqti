@@ -293,7 +293,7 @@ class SubTasks : BaseTaskTest() {
         assertThrows(TaskStateException::class.java, { subTask2.kill() })
         assertThrows(TaskStateException::class.java, { subTask3.kill() })
 
-        val task = testTask()
+        val task = testTask
                 .setSubTasksConstraintValue(
                         arrayListOf(
                                 subTask0,

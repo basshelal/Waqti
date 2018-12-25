@@ -44,7 +44,7 @@ class TaskDatabase : BasePersistenceTest() {
 
         assertEquals("Initial Name", Database.tasks[task.id].name)
 
-        task.name = "New Name"
+        task.changeName("New Name")
         Database.tasks.put(task)
 
         assertEquals("New Name", Database.tasks[task.id].name)
@@ -59,7 +59,7 @@ class TaskDatabase : BasePersistenceTest() {
         val tasks = getTasks(100)
         Database.tasks.put(tasks)
 
-        tasks.forEach { it.name = "New Name" }
+        tasks.forEach { it.changeName("New Name") }
         Database.tasks.put(tasks)
 
         Database.tasks.forEach { assertEquals("New Name", it.name) }

@@ -5,24 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <uk.whitecrescent.waqti.android.customview.BoardView
-        android:id="@+id/boardView"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/boardsGrid_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scrollbars="horizontal"
-        app:layout_constraintTop_toBottomOf="parent"
-        tools:listitem="@layout/task_list" />
+        android:scrollbars="vertical"
+        tools:listitem="@layout/board_card">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/add_button"
+        android:id="@+id/addBoard_Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="16dp"
         android:src="@android:drawable/ic_menu_add"
-        app:backgroundTint="@color/secondaryDarkColor"
+        app:backgroundTint="@color/secondaryColor"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

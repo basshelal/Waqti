@@ -31,7 +31,7 @@ class Lifecycle : BaseTaskTest() {
     @DisplayName("EXISTING to SLEEPING")
     @Test
     fun testTaskExistingToSleeping() {
-        val task = testTask()
+        val task = testTask
 
         assertEquals(TaskState.EXISTING, task.state)
 
@@ -43,7 +43,7 @@ class Lifecycle : BaseTaskTest() {
     @DisplayName("SLEEPING to EXISTING")
     @Test
     fun testTaskSleepingToExisting() {
-        val task = testTask()
+        val task = testTask
                 .setTimeConstraintValue(Time.from(now.plusSeconds(1)))
 
         assertEquals(TaskState.SLEEPING, task.state)
@@ -62,7 +62,7 @@ class Lifecycle : BaseTaskTest() {
     @DisplayName("EXISTING to FAILED")
     @Test
     fun testTaskExistingToFailed() {
-        val task = testTask()
+        val task = testTask
         task.isFailable = true
 
         assertEquals(TaskState.EXISTING, task.state)
@@ -75,7 +75,7 @@ class Lifecycle : BaseTaskTest() {
     @DisplayName("FAILED to SLEEPING")
     @Test
     fun testTaskFailedToSleeping() {
-        val task = testTask()
+        val task = testTask
         task.isFailable = true
 
         assertEquals(TaskState.EXISTING, task.state)
@@ -92,7 +92,7 @@ class Lifecycle : BaseTaskTest() {
     @DisplayName("EXISTING to KILLED")
     @Test
     fun testTaskExistingToKilled() {
-        val task = testTask()
+        val task = testTask
 
         assertEquals(TaskState.EXISTING, task.state)
 
@@ -104,16 +104,16 @@ class Lifecycle : BaseTaskTest() {
     @DisplayName("EXISTING")
     @Test
     fun testTaskExisting() {
-        var task = testTask()
+        var task = testTask
         assertEquals(TaskState.EXISTING, task.state)
 
         task.isFailable = true
         task.fail()
 
-        task = testTask()
+        task = testTask
         task.sleep()
 
-        task = testTask()
+        task = testTask
         task.kill()
 
     }
@@ -121,7 +121,7 @@ class Lifecycle : BaseTaskTest() {
     @DisplayName("SLEEPING")
     @Test
     fun testTaskSleeping() {
-        val task = testTask()
+        val task = testTask
         task.sleep()
         assertEquals(TaskState.SLEEPING, task.state)
 
@@ -144,7 +144,7 @@ class Lifecycle : BaseTaskTest() {
     @DisplayName("FAILED")
     @Test
     fun testTaskFailed() {
-        val task = testTask()
+        val task = testTask
         task.isFailable = false
         assertThrows(TaskStateException::class.java, { task.fail() })
 
@@ -173,7 +173,7 @@ class Lifecycle : BaseTaskTest() {
     @DisplayName("KILLED")
     @Test
     fun testTaskKilled() {
-        val task = testTask()
+        val task = testTask
         task.isKillable = false
         assertThrows(TaskStateException::class.java, { task.kill() })
 
