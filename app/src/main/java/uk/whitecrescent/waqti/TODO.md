@@ -1,9 +1,5 @@
 # TODO (Short)
 
-* Re-write entire Collections Subsystem to fit our new needs
-
-* BoardView optimizations
-
 * Test and Document all Task Subsystem
 
 * Test and Document all Collections Subsystem
@@ -53,9 +49,27 @@ the anonymous Task's Properties (like a placeholder)
 
 * Free time decider using Recurring Tasks
 
+# Old TODO.md
+
+* Create a diagram syntax for Task cards, so a uniform way to describe Tasks in a way like cards
+
+* Consider renaming delegate to push or delay
+
+* Add Events and Reminders
+
+* Add habit tracking system supporting different kinds of habits, habits to start or habits to end etc
+
+* Recurring Tasks!!!
+
+* Do Task Aging
+
 -----------------------------------------------------------------------------------------------------------------------
 
 # Done
+
+* ~~Re-write entire Collections Subsystem to fit our new needs~~
+
+* ~~BoardView optimizations~~
 
 * ~~Get a basic UI going as a way to test current features~~
 

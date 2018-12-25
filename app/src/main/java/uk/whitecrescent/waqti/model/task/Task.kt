@@ -12,7 +12,10 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Duration
+import uk.whitecrescent.waqti.model.MissingFeature
 import uk.whitecrescent.waqti.model.Time
+import uk.whitecrescent.waqti.model.UpdateDocumentation
+import uk.whitecrescent.waqti.model.UpdateTests
 import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -20,6 +23,10 @@ import uk.whitecrescent.waqti.model.tasks
 
 // TODO: 18-Jun-18 When done, make sure everything is tested and doc'd
 // TODO: 16-Nov-18 Update doc
+
+@UpdateTests // tests are old, update them
+@UpdateDocumentation // documentation is very old, update it
+
 @Entity
 class Task(name: String = "") : Cacheable {
 
@@ -92,10 +99,12 @@ class Task(name: String = "") : Cacheable {
             update()
         }
 
+    @MissingFeature // we haven't properly used this, should we keep it?
     // A Task ages when it is failed
     var age = 0
         private set
 
+    @MissingFeature // we haven't properly used this, should we keep it?
     // The times a task has been failed
     @Convert(converter = TimeArrayListConverter::class, dbType = String::class)
     val failedTimes = TimeArrayList()
@@ -446,6 +455,7 @@ class Task(name: String = "") : Cacheable {
 
     fun changeName(newName: String): Task {
         this.name = newName
+        update()
         return this
     }
 
@@ -1414,7 +1424,6 @@ class Task(name: String = "") : Cacheable {
 
     //region Observers
 
-    // TODO: 28-Nov-18 Consider compiling all these observers into a single observer
     @SuppressLint("CheckResult")
     fun backgroundObserver() {
         var done = false

@@ -1,30 +1,14 @@
-//package uk.whitecrescent.waqti.collections
-//
-//import org.junit.jupiter.api.Assertions.assertEquals
-//import org.junit.jupiter.api.Assertions.assertFalse
-//import org.junit.jupiter.api.Assertions.assertNotEquals
-//import org.junit.jupiter.api.Assertions.assertThrows
-//import org.junit.jupiter.api.Assertions.assertTrue
-//import org.junit.jupiter.api.DisplayName
-//import org.junit.jupiter.api.Test
-//import org.junit.jupiter.api.assertAll
-//import uk.whitecrescent.waqti.model.collections.AbstractWaqtiList
-//import uk.whitecrescent.waqti.model.collections.ElementNotFoundException
-//
+package uk.whitecrescent.waqti.collections
+
+// TODO: 25-Dec-18 Test this later using Mockito, we need a mocked AbstractWaqtiList and thus also a mocked Cacheable
+
 //@DisplayName("Abstract Waqti List Tests")
-//class AbstractWaqtiListTests {
-//
-//    // Dummy class for testing AbstractWaqtiList
-//    private class AbstractWaqtiListDummy : AbstractWaqtiList<String>() {
-//        override var idList: ArrayList<String>
-//            get() = ArrayList()
-//            set(value) {}
-//    }
+//class AbstractWaqtiListTests : BasePersistenceTest() {
 //
 //    @DisplayName("Empty List")
 //    @Test
 //    fun testEmptyList() {
-//        val list = AbstractWaqtiListDummy()
+//        val list = AbstractWaqtiListDummy("ASS")
 //        assertTrue(list.isEmpty())
 //        assertTrue(list.size == 0)
 //        assertTrue(list.nextIndex == 0)

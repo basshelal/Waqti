@@ -36,6 +36,11 @@ class MainActivity : AppCompatActivity() {
             boardView.addNewEmptyList("New List @$now")
         }
 
+
+        /*supportFragmentManager.beginTransaction().apply {
+            add(R.id.constraint_layout, CreateTaskFragment.newInstance(), "Create Task")
+            commit()
+        }*/
     }
 
     override fun onDestroy() {
