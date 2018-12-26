@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.board_card.view.*
 import uk.whitecrescent.waqti.R
@@ -44,10 +45,10 @@ class BoardsGridAdapter : RecyclerView.Adapter<BoardGridViewHolder>() {
                 val bundle = Bundle()
                 bundle.putLong("boardID", itemList[position].id)
                 fragment.arguments = bundle
-                replace(R.id.blank_constraintLayout, fragment, "Board")
-                addToBackStack("")
-                commit()
-            }
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                replace(R.id.blank_constraintLayout, fragment, "BoardFragment")
+                addToBackStack("BoardFragment")
+            }.commit()
         }
     }
 

@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.viewmodels.CreateBoardViewModel
 
-class CreateBoardFragment : Fragment() {
+class CreateBoardFragment : WaqtiFragment() {
 
     companion object {
         fun newInstance() = CreateBoardFragment()

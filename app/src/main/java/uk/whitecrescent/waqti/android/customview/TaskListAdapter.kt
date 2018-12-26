@@ -20,7 +20,6 @@ import uk.whitecrescent.waqti.model.FutureIdea
 import uk.whitecrescent.waqti.model.MissingFeature
 import uk.whitecrescent.waqti.model.NeedsReOrganizing
 import uk.whitecrescent.waqti.model.collections.AbstractWaqtiList
-import uk.whitecrescent.waqti.model.logE
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID
@@ -48,7 +47,6 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
     override fun onViewAttachedToWindow(holder: TaskViewHolder) {
         if (this.taskListID !in taskListView.boardView.taskListAdapters.map { it.taskListID }) {
             taskListView.boardView.taskListAdapters.add(this)
-            logE("TaskListAdapters Size: ${taskListView.boardView.taskListAdapters.size}")
         }
     }
 
@@ -69,7 +67,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
 
-        holder.itemView.task_textView.text = taskList[position].toString()
+        holder.itemView.task_textView.text = "${taskList[position].name} id: ${taskList[position].id}"
         holder.taskID = taskList[position].id
         holder.taskListID = this.taskListID
 
@@ -122,7 +120,6 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                 }
                                 // they are diff but in same list
                                 else {
-                                    logE("UP/DOWN!")
                                     val newDragPos = holder.adapterPosition
                                     taskList.swap(draggingState.adapterPosition, newDragPos).update()
                                     draggingState.adapterPosition = newDragPos
@@ -161,7 +158,6 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                         }
                                     }
 
-                                    logE("this -> ${this.taskList}")
                                     return@setOnDragListener true
                                 }
                             }
@@ -174,8 +170,6 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                 val otherAdapter = taskListView.boardView.taskListAdapters
                                         .find { it.taskListID == draggingState.taskListID }
                                 if (otherAdapter != null) {
-
-                                    logE("LEFT/RIGHT!")
 
                                     @Bug
                                     // TODO: 24-Dec-18 Another bug, when we keep switching left and right
@@ -221,8 +215,6 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                                 500L
                                         )
                                     }
-                                    logE("this -> ${this.taskList}")
-                                    logE("other -> $otherTaskList")
 
                                     return@setOnDragListener true
                                 }
@@ -230,7 +222,6 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                             // impossible
                             else -> {
-                                logE("Impossible!")
                                 return@setOnDragListener false
                             }
 

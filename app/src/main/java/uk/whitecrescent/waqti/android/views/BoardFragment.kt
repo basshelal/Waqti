@@ -4,16 +4,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.MainActivity
 import uk.whitecrescent.waqti.android.customview.BoardAdapter
 import uk.whitecrescent.waqti.android.viewmodels.BoardViewModel
 import uk.whitecrescent.waqti.model.now
 
-class BoardFragment : Fragment() {
+class BoardFragment : WaqtiFragment() {
 
     companion object {
         fun newInstance() = BoardFragment()
@@ -38,7 +36,7 @@ class BoardFragment : Fragment() {
 
         boardView.adapter = BoardAdapter(boardID)
 
-        (activity as? MainActivity)?.supportActionBar?.title =
+        mainActivity.supportActionBar?.title =
                 "Waqti - ${boardView.boardAdapter.board.name} ${boardView.boardAdapter.boardID} " +
                 "DEV BUILD"
 

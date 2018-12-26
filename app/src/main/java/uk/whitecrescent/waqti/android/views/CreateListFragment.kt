@@ -4,12 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.viewmodels.CreateListViewModel
 
-class CreateListFragment : Fragment() {
+class CreateListFragment : WaqtiFragment() {
 
     companion object {
         fun newInstance() = CreateListFragment()

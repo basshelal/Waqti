@@ -4,9 +4,11 @@ package uk.whitecrescent.waqti.android
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +32,11 @@ inline fun Activity.checkWritePermission() {
 }
 
 inline fun View.snackBar(string: String) = Snackbar.make(this, string, Snackbar.LENGTH_SHORT).show()
+
+inline fun View.hideSoftKeyboard() {
+    (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+            .hideSoftInputFromWindow(this.windowToken, 0)
+}
 
 inline fun <A : Activity> Activity.goToActivity(activity: Class<A>) {
     this.startActivity(Intent(this, activity))

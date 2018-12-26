@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.android.scrollToEnd
 import uk.whitecrescent.waqti.model.collections.TaskList
+import uk.whitecrescent.waqti.model.task.Task
 
 class BoardView
 @JvmOverloads constructor(context: Context,
@@ -142,6 +143,10 @@ class BoardView
     fun addNewEmptyList(name: String) {
         boardAdapter.add(TaskList(name))
         scrollToEnd()
+    }
+
+    fun addTask(index: Int, task: Task) {
+
     }
 
 }

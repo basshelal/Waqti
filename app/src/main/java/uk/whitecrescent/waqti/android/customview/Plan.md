@@ -2,6 +2,9 @@
 
 ## Current Plan
 
+As of 26-Dec-18 we are probably done, the BoardView works quite well, not perfect but good 
+enough, we will probably delete this file sometime in the near future
+
 As of 21-Dec-18 we have a very very very very basic working BoardView, it needs optimizations and
  we still are missing autoscrolling, but it's not too bad, we used option 2 which was the best 
  option anyway

@@ -1,17 +1,19 @@
 package uk.whitecrescent.waqti.android.customview
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
+import uk.whitecrescent.waqti.android.MainActivity
+import uk.whitecrescent.waqti.android.views.CreateTaskFragment
 import uk.whitecrescent.waqti.model.collections.TaskList
-import uk.whitecrescent.waqti.model.logE
-import uk.whitecrescent.waqti.model.now
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID
-import uk.whitecrescent.waqti.model.task.Task
 
 class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
@@ -23,7 +25,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     init {
         this.setHasStableIds(true)
-        logE("$board")
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -58,22 +59,16 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
         holder.footer.setOnClickListener {
 
-            /*(it.context as MainActivity).supportFragmentManager.beginTransaction().apply {
+            (it.context as MainActivity).supportFragmentManager.beginTransaction().apply {
                 val fragment = CreateTaskFragment.newInstance()
                 val bundle = Bundle()
                 bundle.putLong("boardID", this@BoardAdapter.boardID)
                 bundle.putLong("listID", holder.list.listAdapter.taskListID)
                 fragment.arguments = bundle
-                replace(R.id.blank_constraintLayout, fragment, "Create Task")
-                commit()
-            }*/
-
-            val adapter = holder.list.listAdapter
-            adapter.taskList.add(Task("New Task @ $now"))
-            adapter.notifyDataSetChanged()
-            adapter.taskList.update()
-            board.update()
-            holder.list.smoothScrollToPosition(adapter.itemCount - 1)
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                replace(R.id.blank_constraintLayout, fragment, CREATE_TASK_FRAGMENT)
+                addToBackStack("")
+            }.commit()
         }
 
         holder.itemView.taskList_deleteButton.setOnClickListener {
@@ -88,7 +83,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 }
                 board.removeAt(holder.adapterPosition).update()
                 this.notifyDataSetChanged()
-                logE("TaskListAdapters Size: ${boardView.taskListAdapters.size}")
             }
         }
     }

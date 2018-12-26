@@ -1,17 +1,19 @@
 package uk.whitecrescent.waqti.android.views
 
+import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.MainActivity
+import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.android.viewmodels.CreateTaskViewModel
+import uk.whitecrescent.waqti.model.persistence.Caches
+import uk.whitecrescent.waqti.model.task.Task
 
-class CreateTaskFragment : Fragment() {
+class CreateTaskFragment : WaqtiFragment() {
 
     companion object {
         fun newInstance() = CreateTaskFragment()
@@ -38,18 +40,20 @@ class CreateTaskFragment : Fragment() {
 
         send_button.setOnClickListener {
             val text = taskName_editText.text
-            if (text != null) {
-                (it.context as MainActivity).supportFragmentManager.beginTransaction().apply {
-                    val fragment = BoardFragment.newInstance()
-                    val bundle = Bundle()
-                    bundle.putLong("boardID", boardID)
-                    fragment.arguments = bundle
-                    replace(R.id.blank_constraintLayout, fragment, "Board")
-                    remove(this@CreateTaskFragment)
-                    commit()
-                }
+            if (text == null || text.isEmpty() || text.isBlank()) {
+                taskName_editText.setHintTextColor(Color.RED)
+                taskName_editText.hint = "Task Name cannot be empty!"
+            } else {
+                val task = createTaskFromEditText()
+                Caches.boards[boardID][listID].add(task).update()
+                taskName_editText.hideSoftKeyboard()
+                mainActivity.supportFragmentManager.popBackStack()
             }
         }
+    }
+
+    fun createTaskFromEditText(): Task {
+        return Task(taskName_editText.text.toString())
     }
 
 }
