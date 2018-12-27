@@ -1,6 +1,8 @@
 # Waqti Android (Work in Progress)
 
-README last updated on Fri-16-Nov-'18
+README last updated on Thur-27-Dec-18
+
+![Waqti Demo Thur-27-Dec-18](WaqtiDemo-27-Dec-18.gif)
 
 ## Overview
 
@@ -18,12 +20,15 @@ This is the Android implementation. Waqti was intended to
 be a platform independent system (hence the other repo named 
 [Waqti](https://github.com/basshelal/Waqti)) however many issues arose as
 a result of this and so platform dependence was required, particularly in terms of persistence. 
-Despite that, there is not significant change/rewrite needed to implement on  another platform, 
-at least in terms of models. 
+Despite that, there is no significant change/rewrite needed to implement on  another platform, 
+at least in terms of models, so in theory the entire back-end can be transferred over to a new 
+platform such as JavaFX while only changing the front-end and possibly the database (ObjectBox, 
+our database, is available on Desktop and Server Applications as well as Android).
 
-Currently only the back-end has been partially implemented, meaning the models and the database. 
-Very little in terms of Views and ViewModels has been written yet, this is planned to be done 
-when the back-end is written and tested perfectly.
+Currently the back-end (Models and Database) are almost completely finished and some basic 
+front-end is usable as well. Waqti uses a Single-Activity design so all Android UI controllers 
+are Fragments within the same Activity, thus they can share resources among each other, 
+particularly the Activity's ViewModel.
 
 This project is written entirely in Kotlin and makes use of multiple libraries including but not 
 limited to:
