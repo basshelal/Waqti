@@ -44,6 +44,20 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
         return super.removeAt(index) as Board
     }
 
+    override fun move(fromIndex: Int, toIndex: Int): AbstractWaqtiList<TaskList> {
+        when {
+            !inRange(toIndex, fromIndex) -> {
+                throw  IndexOutOfBoundsException("Cannot move $fromIndex  to $toIndex, limits are 0 and $nextIndex")
+            }
+            else -> {
+                val found = this[fromIndex]
+                super.removeAt(fromIndex)
+                super.addAt(toIndex, found)
+                return this
+            }
+        }
+    }
+
     override fun initialize() {
 
     }

@@ -8,8 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
+import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.MainActivity
-import uk.whitecrescent.waqti.android.views.CreateTaskFragment
+import uk.whitecrescent.waqti.android.fragments.CreateTaskFragment
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
@@ -59,13 +60,16 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
         holder.footer.setOnClickListener {
 
+            // TODO: 28-Dec-18 Make the bundle stuff here just use the MainActivity ViewModel since that is
+            // essentially global
+            @GoToFragment()
             (it.context as MainActivity).supportFragmentManager.beginTransaction().apply {
                 val fragment = CreateTaskFragment.newInstance()
                 val bundle = Bundle()
                 bundle.putLong("boardID", this@BoardAdapter.boardID)
                 bundle.putLong("listID", holder.list.listAdapter.taskListID)
                 fragment.arguments = bundle
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 replace(R.id.blank_constraintLayout, fragment, CREATE_TASK_FRAGMENT)
                 addToBackStack("")
             }.commit()

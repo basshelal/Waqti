@@ -1,7 +1,6 @@
 package uk.whitecrescent.waqti.android.customview
 
 import android.content.Context
-import android.graphics.Canvas
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Button
@@ -11,9 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
-import uk.whitecrescent.waqti.android.scrollToEnd
-import uk.whitecrescent.waqti.model.collections.TaskList
-import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.model.Bug
+import uk.whitecrescent.waqti.model.ForLater
 
 class BoardView
 @JvmOverloads constructor(context: Context,
@@ -24,6 +22,8 @@ class BoardView
     val boardAdapter: BoardAdapter
         get() = this.adapter as BoardAdapter
 
+    @Bug
+    // TODO: 28-Dec-18 This guy causes a lot of problems, possibly fix but maybe change how it's done
     val taskListAdapters = ArrayList<TaskListAdapter>()
 
     init {
@@ -61,92 +61,27 @@ class BoardView
                                  target: RecyclerView.ViewHolder, toPos: Int, x: Int, y: Int) {
                 super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
 
-                /*if (adapter != null && adapter is BoardAdapter) {
-
-                    if (fromPos < toPos) {
-                        (fromPos until toPos).forEach {
-                            Collections.swap((adapter as BoardAdapter).itemList, it, it + 1)
-                        }
-                    } else {
-                        (fromPos downTo toPos + 1).forEach {
-                            Collections.swap((adapter as BoardAdapter).itemList, it, it - 1)
-                        }
-                    }
-                    adapter!!.notifyItemMoved(fromPos, toPos)
-                }*/
-            }
-
-            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
-                super.clearView(recyclerView, viewHolder)
-            }
-
-            override fun onSelectedChanged(viewHolder: ViewHolder?, actionState: Int) {
-                super.onSelectedChanged(viewHolder, actionState)
-            }
-
-            override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-                                     dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-
-                if (viewHolder.itemView.x <
-                        recyclerView.x - viewHolder.itemView.width / 4) {
-                }
-                if (viewHolder.itemView.x + viewHolder.itemView.width >
-                        recyclerView.x + recyclerView.width + viewHolder.itemView.width / 4) {
+                boardAdapter.apply {
+                    board.move(fromPos, toPos).update()
+                    @Bug
+                    @ForLater
+                    // TODO: 28-Dec-18 Apply changes to the taskListAdapters order as well
+                    val taskListAdapter = taskListAdapters[fromPos]
+                    taskListAdapters.removeAt(fromPos)
+                    taskListAdapters.add(toPos, taskListAdapter)
+                    notifyItemMoved(fromPos, toPos)
                 }
             }
 
             override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int, viewSizeOutOfBounds: Int, totalSize: Int, msSinceStartScroll: Long): Int {
                 return super.interpolateOutOfBoundsScroll(
-                        recyclerView, viewSize, viewSizeOutOfBounds, totalSize, msSinceStartScroll)
+                        recyclerView, viewSize, viewSizeOutOfBounds, totalSize, 1500)
                 // TODO: 13-Dec-18 Override this to make better when we drag outside the bounds
             }
 
         }).attachToRecyclerView(this)
 
-        addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                // TODO: 13-Dec-18 Here we put AutoScrolling horizontally
-            }
-
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-            }
-        })
-
         PagerSnapHelper().attachToRecyclerView(this)
-    }
-
-    override fun onScrolled(dx: Int, dy: Int) {
-        super.onScrolled(dx, dy)
-        /*logE("dx: $dx, dy: $dy")
-        var scrolledByMe = false
-        if (dx > 0 && !scrolledByMe) {
-            scrolledByMe = true
-            val scrollBy = resources.getDimensionPixelOffset(R.dimen.taskListWidth)
-            smoothScrollBy(scrollBy, 0)
-            scrolledByMe = false
-        }
-        if (dx < 0 && !scrolledByMe) {
-            scrolledByMe = true
-            val scrollBy = resources.getDimensionPixelOffset(R.dimen.taskListWidth) * -1
-            smoothScrollBy(scrollBy, 0)
-            scrolledByMe = false
-        }*/
-    }
-
-    // We need to make EVERYTHING exist in a single class/ file, the best way to emulate the
-    // problem is by trying to add a new Empty List, in Board we may need to have a list of all
-    // the lists (DragRecyclerViews) that way we have access to their adapters as well and so we
-    // can modify them directly easily and completely
-
-    fun addNewEmptyList(name: String) {
-        boardAdapter.add(TaskList(name))
-        scrollToEnd()
-    }
-
-    fun addTask(index: Int, task: Task) {
-
     }
 
 }

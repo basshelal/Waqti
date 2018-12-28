@@ -16,6 +16,13 @@ import com.google.android.material.snackbar.Snackbar
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.task.Task
 
+/**
+ * Just a utility to show us where there are Fragment changes happening
+ */
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.EXPRESSION)
+annotation class GoToFragment
+
 inline fun Activity.shortSnackbar(view: View, string: CharSequence) =
         Snackbar.make(view, string, Snackbar.LENGTH_SHORT).show()
 
@@ -36,6 +43,11 @@ inline fun View.snackBar(string: String) = Snackbar.make(this, string, Snackbar.
 inline fun View.hideSoftKeyboard() {
     (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
             .hideSoftInputFromWindow(this.windowToken, 0)
+}
+
+inline fun View.showSoftKeyboard() {
+    (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+            .showSoftInput(this, 0)
 }
 
 inline fun <A : Activity> Activity.goToActivity(activity: Class<A>) {

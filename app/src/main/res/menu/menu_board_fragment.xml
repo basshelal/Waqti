@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/renameBoard_menuItem"
+        android:title="@string/renameBoard" />
+    <item
+        android:id="@+id/deleteBoard_menuItem"
+        android:title="@string/deleteBoard" />
+
+</menu>

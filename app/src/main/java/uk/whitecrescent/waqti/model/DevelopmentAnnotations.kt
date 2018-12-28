@@ -219,6 +219,31 @@ annotation class FutureIdea
 annotation class MissingFeature
 
 /**
+ * A non-bug, basically it's something that's not technically a bug but it's still annoying, an
+ * inconvenience
+ */
+@Repeatable
+@Retention(AnnotationRetention.SOURCE)
+@Target(
+        AnnotationTarget.CLASS,
+        AnnotationTarget.ANNOTATION_CLASS,
+        AnnotationTarget.TYPE_PARAMETER,
+        AnnotationTarget.PROPERTY,
+        AnnotationTarget.FIELD,
+        AnnotationTarget.LOCAL_VARIABLE,
+        AnnotationTarget.VALUE_PARAMETER,
+        AnnotationTarget.CONSTRUCTOR,
+        AnnotationTarget.FUNCTION,
+        AnnotationTarget.PROPERTY_GETTER,
+        AnnotationTarget.PROPERTY_SETTER,
+        AnnotationTarget.TYPE,
+        AnnotationTarget.EXPRESSION,
+        AnnotationTarget.FILE,
+        AnnotationTarget.TYPEALIAS
+)
+annotation class Inconvenience
+
+/**
  * Bug, preferable if you write how to replicate the bug
  */
 @Repeatable

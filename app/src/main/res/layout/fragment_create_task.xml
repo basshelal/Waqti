@@ -4,6 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <Button
+        android:id="@+id/dev_addTask_button"
+        android:backgroundTint="@color/developmentViewColor"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="Add Dev Task"
+        app:layout_constraintBottom_toBottomOf="@+id/addTask_button"
+        app:layout_constraintStart_toStartOf="parent" />
+
     <EditText
         android:id="@+id/taskName_editText"
         android:layout_width="match_parent"
@@ -141,9 +151,9 @@
         -->
 
     <Button
-        android:id="@+id/send_button"
-        android:layout_width="100dp"
-        android:layout_height="50dp"
+        android:id="@+id/addTask_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:text="@string/addTask"
