@@ -35,10 +35,10 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/baseline_more_vert_black_18dp_2x" />
+            app:srcCompat="@drawable/ic_action_name" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <uk.whitecrescent.waqti.android.customview.TaskListView
+    <uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListView
         android:id="@+id/taskList_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"

@@ -1,9 +1,9 @@
 package uk.whitecrescent.waqti.model.collections
 
 import io.reactivex.Observable
-import uk.whitecrescent.waqti.model.Duration
-import uk.whitecrescent.waqti.model.Time
-import uk.whitecrescent.waqti.model.now
+import uk.whitecrescent.waqti.Duration
+import uk.whitecrescent.waqti.Time
+import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.model.task.ObserverException
 import uk.whitecrescent.waqti.model.task.TIME_CHECKING_PERIOD
 import uk.whitecrescent.waqti.model.task.TIME_CHECKING_UNIT

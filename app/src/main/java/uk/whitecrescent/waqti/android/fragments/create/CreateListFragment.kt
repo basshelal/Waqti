@@ -10,7 +10,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
-import uk.whitecrescent.waqti.android.showSoftKeyboard
+import uk.whitecrescent.waqti.android.openKeyboard
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
@@ -31,6 +31,8 @@ class CreateListFragment : WaqtiCreateFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        mainActivity.supportActionBar?.title = "New List"
+
         boardID = viewModel.boardID
 
         focusListNameTextView()
@@ -40,10 +42,7 @@ class CreateListFragment : WaqtiCreateFragment() {
     }
 
     private fun focusListNameTextView() {
-        listName_editText.apply {
-            requestFocus()
-            showSoftKeyboard()
-        }
+        listName_editText.openKeyboard()
     }
 
     private fun setUpButtonOnClick() {

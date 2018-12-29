@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android.customview
+package uk.whitecrescent.waqti.android.customview.recyclerviews
 
 import android.content.Context
 import android.util.AttributeSet
@@ -14,11 +14,12 @@ import kotlinx.android.synthetic.main.board_card.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.BOARD_FRAGMENT
 import uk.whitecrescent.waqti.android.GoToFragment
-import uk.whitecrescent.waqti.android.fragments.view.BoardFragment
+import uk.whitecrescent.waqti.android.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.android.mainActivity
-import uk.whitecrescent.waqti.model.ForLater
+import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.persistence.Caches
+import uk.whitecrescent.waqti.model.task.ID
 
 class BoardListView
 @JvmOverloads constructor(context: Context,
@@ -65,6 +66,7 @@ class BoardListView
 
 class BoardListAdapter : RecyclerView.Adapter<BoardListViewHolder>() {
 
+    @ForLater
     // TODO: 25-Dec-18 Below is bad! Will be slow!!
     // TODO: 25-Dec-18 The thing holding all the boards needs to also be an AbstractWaqtiList
     val itemList: List<Board>
@@ -96,10 +98,21 @@ class BoardListAdapter : RecyclerView.Adapter<BoardListViewHolder>() {
                 it.mainActivity.viewModel.boardID = itemList[position].id
 
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                replace(R.id.fragmentContainer, BoardFragment.newInstance(), BOARD_FRAGMENT)
-                addToBackStack("BoardFragment")
+                replace(R.id.fragmentContainer, ViewBoardFragment.newInstance(), BOARD_FRAGMENT)
+                addToBackStack("ViewBoardFragment")
             }.commit()
         }
+    }
+
+    fun moveBoards(fromPosition: Int, toPosition: Int) {
+        @ForLater {}
+        // In the Caches move the order of the Boards
+    }
+
+    fun deleteBoard(boardID: ID) {
+        @ForLater {}
+        // Delete everything in that board
+        // Delete the board itself
     }
 
 }

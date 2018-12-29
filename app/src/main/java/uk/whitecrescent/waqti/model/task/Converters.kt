@@ -2,8 +2,8 @@ package uk.whitecrescent.waqti.model.task
 
 import com.google.gson.Gson
 import io.objectbox.converter.PropertyConverter
-import uk.whitecrescent.waqti.model.Duration
-import uk.whitecrescent.waqti.model.Time
+import uk.whitecrescent.waqti.Duration
+import uk.whitecrescent.waqti.Time
 
 private val gson = Gson()
 

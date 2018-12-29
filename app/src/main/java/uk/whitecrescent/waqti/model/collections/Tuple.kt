@@ -1,7 +1,7 @@
 package uk.whitecrescent.waqti.model.collections
 
 import io.objectbox.annotation.Transient
-import uk.whitecrescent.waqti.model.Duration
+import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.model.persistence.Cache
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID

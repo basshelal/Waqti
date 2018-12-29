@@ -2,6 +2,7 @@
 
 package uk.whitecrescent.waqti.model
 
+import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.model.collections.Tuple
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.GRACE_PERIOD

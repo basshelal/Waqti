@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
 import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.persistence.Caches
-import uk.whitecrescent.waqti.model.seconds
+import uk.whitecrescent.waqti.seconds
 import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_SUB_TASKS

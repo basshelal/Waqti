@@ -11,14 +11,14 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.model.Cacheable
-import uk.whitecrescent.waqti.model.Duration
-import uk.whitecrescent.waqti.model.MissingFeature
-import uk.whitecrescent.waqti.model.NonFinal
-import uk.whitecrescent.waqti.model.Time
-import uk.whitecrescent.waqti.model.UpdateDocumentation
-import uk.whitecrescent.waqti.model.UpdateTests
+import uk.whitecrescent.waqti.Duration
+import uk.whitecrescent.waqti.MissingFeature
+import uk.whitecrescent.waqti.NonFinal
+import uk.whitecrescent.waqti.Time
+import uk.whitecrescent.waqti.UpdateDocumentation
+import uk.whitecrescent.waqti.UpdateTests
 import uk.whitecrescent.waqti.model.ids
-import uk.whitecrescent.waqti.model.now
+import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.tasks
 

@@ -57,6 +57,11 @@ inline fun View.showSoftKeyboard() {
             .showSoftInput(this, 0)
 }
 
+inline fun View.openKeyboard() {
+    requestFocus()
+    showSoftKeyboard()
+}
+
 inline fun <A : Activity> Activity.goToActivity(activity: Class<A>) {
     this.startActivity(Intent(this, activity))
 }

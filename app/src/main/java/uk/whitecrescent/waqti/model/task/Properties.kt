@@ -1,8 +1,8 @@
 package uk.whitecrescent.waqti.model.task
 
 import com.google.gson.annotations.SerializedName
-import uk.whitecrescent.waqti.model.Duration
-import uk.whitecrescent.waqti.model.Time
+import uk.whitecrescent.waqti.Duration
+import uk.whitecrescent.waqti.Time
 
 class TimeProperty(
         @SerializedName("timeIsVisible")

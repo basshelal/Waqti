@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package uk.whitecrescent.waqti.model
+package uk.whitecrescent.waqti
 
 import org.threeten.bp.ZoneOffset
 

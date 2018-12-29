@@ -10,7 +10,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
-import uk.whitecrescent.waqti.android.showSoftKeyboard
+import uk.whitecrescent.waqti.android.openKeyboard
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
@@ -32,7 +32,7 @@ class CreateTaskFragment : WaqtiCreateFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mainActivity.supportActionBar?.title = "Create Task"
+        mainActivity.supportActionBar?.title = "New Task"
 
         boardID = viewModel.boardID
         listID = viewModel.listID
@@ -43,10 +43,7 @@ class CreateTaskFragment : WaqtiCreateFragment() {
     }
 
     private fun focusTaskNameTextView() {
-        taskName_editText.apply {
-            requestFocus()
-            showSoftKeyboard()
-        }
+        taskName_editText.openKeyboard()
     }
 
     private fun setUpSendButtonOnClick() {

@@ -9,10 +9,13 @@
     <string name="taskNameHint">Task Name</string>
     <string name="boardNameHint">Board Name</string>
     <string name="listNameHint">List Name</string>
+    <string name="renameTask">Rename Task</string>
     <string name="renameBoard">Rename Board</string>
     <string name="deleteBoard">Delete Board</string>
     <string name="deleteTask">Delete Task</string>
     <string name="deleteList">Delete List</string>
     <string name="renameList">Rename List</string>
     <string name="defaultList">Default List</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 </resources>

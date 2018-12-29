@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android.customview
+package uk.whitecrescent.waqti.android.customview.recyclerviews
 
 import android.content.Context
 import android.util.AttributeSet
@@ -22,7 +22,7 @@ import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.android.mainActivity
 import uk.whitecrescent.waqti.android.snackBar
-import uk.whitecrescent.waqti.model.FutureIdea
+import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID

@@ -8,12 +8,12 @@
 //import org.junit.jupiter.api.Test
 //import org.junit.jupiter.api.assertAll
 //import uk.whitecrescent.waqti.getTasks
-//import uk.whitecrescent.waqti.model.ChronoUnit
-//import uk.whitecrescent.waqti.model.Date
+//import uk.whitecrescent.waqti.ChronoUnit
+//import uk.whitecrescent.waqti.Date
 //import uk.whitecrescent.waqti.model.collections.Tuple
 //import uk.whitecrescent.waqti.model.task.DEFAULT_BEFORE_PROPERTY
 //import uk.whitecrescent.waqti.model.task.Task
-//import uk.whitecrescent.waqti.model.today
+//import uk.whitecrescent.waqti.getToday
 //import uk.whitecrescent.waqti.testTask
 //
 //@DisplayName("Tuple Tests")

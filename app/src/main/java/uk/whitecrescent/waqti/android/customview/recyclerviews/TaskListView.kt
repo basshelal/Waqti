@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android.customview
+package uk.whitecrescent.waqti.android.customview.recyclerviews
 
 import android.content.ClipData
 import android.content.Context
@@ -15,14 +15,14 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_card.view.*
+import uk.whitecrescent.waqti.Bug
+import uk.whitecrescent.waqti.Inconvenience
+import uk.whitecrescent.waqti.MissingFeature
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.android.mainActivity
-import uk.whitecrescent.waqti.model.Bug
-import uk.whitecrescent.waqti.model.Inconvenience
-import uk.whitecrescent.waqti.model.MissingFeature
 import uk.whitecrescent.waqti.model.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
@@ -117,6 +117,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
             it.mainActivity.supportFragmentManager.beginTransaction().apply {
 
                 it.mainActivity.viewModel.taskID = holder.taskID
+                it.mainActivity.viewModel.listID = taskListID
 
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")
@@ -169,7 +170,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
         holder.itemView.delete_button.setOnClickListener {
             PopupMenu(it.context, it).apply {
-                inflate(R.menu.menu_task_card)
+                inflate(R.menu.menu_task)
                 setOnMenuItemClickListener {
                     return@setOnMenuItemClickListener when (it.itemId) {
                         R.id.deleteTask_menuItem -> {

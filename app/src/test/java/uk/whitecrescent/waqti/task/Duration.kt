@@ -8,12 +8,12 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.model.at
-import uk.whitecrescent.waqti.model.days
-import uk.whitecrescent.waqti.model.hours
-import uk.whitecrescent.waqti.model.minutes
-import uk.whitecrescent.waqti.model.seconds
-import uk.whitecrescent.waqti.model.secs
+import uk.whitecrescent.waqti.at
+import uk.whitecrescent.waqti.days
+import uk.whitecrescent.waqti.hours
+import uk.whitecrescent.waqti.minutes
+import uk.whitecrescent.waqti.seconds
+import uk.whitecrescent.waqti.secs
 import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_DURATION
 import uk.whitecrescent.waqti.model.task.DEFAULT_DURATION_PROPERTY
@@ -26,7 +26,7 @@ import uk.whitecrescent.waqti.model.task.TaskState
 import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.model.task.TimeUnit
 import uk.whitecrescent.waqti.model.task.UNMET
-import uk.whitecrescent.waqti.model.tomorrow
+import uk.whitecrescent.waqti.tomorrow
 import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTask
 

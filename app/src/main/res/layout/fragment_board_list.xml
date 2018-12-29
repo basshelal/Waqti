@@ -5,14 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <uk.whitecrescent.waqti.android.customview.BoardListView
+    <uk.whitecrescent.waqti.android.customview.recyclerviews.BoardListView
         android:id="@+id/boardsList_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
         tools:listitem="@layout/board_card">
 
-    </uk.whitecrescent.waqti.android.customview.BoardListView>
+    </uk.whitecrescent.waqti.android.customview.recyclerviews.BoardListView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addBoard_Button"

@@ -1,7 +1,7 @@
 package uk.whitecrescent.waqti.model.persistence
 
 import uk.whitecrescent.waqti.model.Committable
-import uk.whitecrescent.waqti.model.NeedsOptimization
+import uk.whitecrescent.waqti.NeedsOptimization
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.task.Label

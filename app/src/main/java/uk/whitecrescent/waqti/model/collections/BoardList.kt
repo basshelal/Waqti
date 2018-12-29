@@ -1,34 +1,18 @@
 package uk.whitecrescent.waqti.model.collections
 
-import uk.whitecrescent.waqti.model.ForLater
 import uk.whitecrescent.waqti.model.persistence.Cache
-import uk.whitecrescent.waqti.model.task.ID
+import uk.whitecrescent.waqti.model.persistence.Caches
 
-@ForLater
-// A generic list of Boards, we'll use this to contain all Boards in BoardListFragment and the Grid's adapter
-class BoardList : AbstractWaqtiList<Board>() {
+// Just a container of all the Boards, not a collection because we don't want to persist it, it's
+// just a wrapper for Caches.boards
 
-    override var idList: ArrayList<ID>
-        get() = TODO("not implemented")
-        set(value) {}
+// TODO: 29-Dec-18 I think the only way this can truly work is if it's an AbstractWaqtiList
+// there can only exist one BoardList ever but this helps us to have the dragging and moving
+// functionality
+object BoardList {
 
-    override val cache: Cache<Board>
-        get() = TODO("not implemented")
-
-    override val id: ID
-        get() = TODO("not implemented")
-
-    override fun notDefault(): Boolean {
-        TODO("not implemented")
-    }
-
-    override fun update() {
-        TODO("not implemented")
-    }
-
-    override fun initialize() {
-        TODO("not implemented")
-    }
+    val cache: Cache<Board>
+        get() = Caches.boards
 
 
 }

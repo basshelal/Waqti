@@ -2,6 +2,9 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/renameTask_menuItem"
+        android:title="@string/renameTask" />
+    <item
         android:id="@+id/deleteTask_menuItem"
         android:title="@string/deleteTask" />
 </menu>

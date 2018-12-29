@@ -5,11 +5,11 @@
 //import org.junit.jupiter.api.Assertions.assertTrue
 //import org.junit.jupiter.api.DisplayName
 //import org.junit.jupiter.api.Test
-//import uk.whitecrescent.waqti.model.Duration
-//import uk.whitecrescent.waqti.model.at
-//import uk.whitecrescent.waqti.model.minutes
-//import uk.whitecrescent.waqti.model.now
-//import uk.whitecrescent.waqti.model.seconds
+//import uk.whitecrescent.waqti.Duration
+//import uk.whitecrescent.waqti.at
+//import uk.whitecrescent.waqti.getMinutes
+//import uk.whitecrescent.waqti.getNow
+//import uk.whitecrescent.waqti.getSeconds
 //import uk.whitecrescent.waqti.model.sleep
 //import uk.whitecrescent.waqti.model.task.Checklist
 //import uk.whitecrescent.waqti.model.task.Label
@@ -20,8 +20,8 @@
 //import uk.whitecrescent.waqti.model.task.TaskState
 //import uk.whitecrescent.waqti.model.task.TaskStateException
 //import uk.whitecrescent.waqti.model.tasks
-//import uk.whitecrescent.waqti.model.today
-//import uk.whitecrescent.waqti.model.tomorrow
+//import uk.whitecrescent.waqti.getToday
+//import uk.whitecrescent.waqti.getTomorrow
 //
 //// TODO: 27-Mar-18 Finish this too
 //@DisplayName("Task Stories")

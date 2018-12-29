@@ -1,8 +1,8 @@
 package uk.whitecrescent.waqti.model.task
 
 import io.reactivex.schedulers.Schedulers
-import uk.whitecrescent.waqti.model.Duration
-import uk.whitecrescent.waqti.model.Time
+import uk.whitecrescent.waqti.Duration
+import uk.whitecrescent.waqti.Time
 import java.util.concurrent.TimeUnit
 
 var DEBUG = true

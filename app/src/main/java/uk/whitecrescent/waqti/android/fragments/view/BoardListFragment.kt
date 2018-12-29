@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_board_list.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.customview.BoardListAdapter
+import uk.whitecrescent.waqti.android.customview.recyclerviews.BoardListAdapter
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.android.scrollToEnd
 import uk.whitecrescent.waqti.model.collections.Board
@@ -26,7 +26,7 @@ class BoardListFragment : WaqtiViewFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mainActivity.supportActionBar?.title = "Waqti - All Boards"
+        mainActivity.supportActionBar?.title = "Boards"
 
         viewModel.boardPosition = false to 0
 
