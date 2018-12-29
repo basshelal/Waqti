@@ -3,8 +3,17 @@
 package uk.whitecrescent.waqti.android
 
 import android.graphics.Color
+import android.util.Log
 import android.view.View
 import com.google.android.material.snackbar.Snackbar
+
+inline fun logE(any: Any?) {
+    Log.e("DEFAULT", any.toString())
+}
+
+inline fun logE(tag: String, any: Any?) {
+    Log.e(tag, any.toString())
+}
 
 inline fun View.red(predicate: () -> Boolean) {
     if (predicate()) this.setBackgroundColor(Color.RED)

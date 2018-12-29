@@ -12,4 +12,6 @@
     <string name="renameBoard">Rename Board</string>
     <string name="deleteBoard">Delete Board</string>
     <string name="deleteTask">Delete Task</string>
+    <string name="deleteList">Delete List</string>
+    <string name="renameList">Rename List</string>
 </resources>

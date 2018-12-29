@@ -48,7 +48,7 @@ class BoardFragment : WaqtiFragment() {
             it.mainActivity.supportFragmentManager.beginTransaction().apply {
 
                 it.mainActivity.viewModel.boardID = boardID
-                it.mainActivity.viewModel.boardPosition = boardView.boardAdapter.itemCount - 1
+                it.mainActivity.viewModel.boardPosition = false to boardView.boardAdapter.itemCount - 1
 
                 replace(R.id.fragmentContainer, CreateListFragment.newInstance(), CREATE_LIST_FRAGMENT)
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -58,7 +58,11 @@ class BoardFragment : WaqtiFragment() {
 
         if (boardView.boardAdapter.itemCount > 0) {
             boardView.postDelayed(
-                    { boardView.smoothScrollToPosition(viewModel.boardPosition) },
+                    {
+                        viewModel.boardPosition.apply {
+                            if (first) boardView.smoothScrollToPosition(second)
+                        }
+                    },
                     100L
             )
         }

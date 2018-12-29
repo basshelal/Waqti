@@ -1,24 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?><!--This entire thing needs to be created programmatically!!-->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/taskList_linearLayout"
     android:layout_width="@dimen/taskListWidth"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/taskListHeader_textView"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="HEADER!"
-        android:textAlignment="viewStart"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" />
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp">
 
-    <Button
-        android:id="@+id/taskList_deleteButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Delete!" />
+        <TextView
+            android:id="@+id/taskListHeader_textView"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="HEADER!"
+            android:textAlignment="viewStart"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/overflow_imageView"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/overflow_imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/baseline_more_vert_black_18dp_2x" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <uk.whitecrescent.waqti.android.customview.TaskListView
         android:id="@+id/taskList_recyclerView"
@@ -33,6 +48,5 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="FOOTER!" />
-
 
 </LinearLayout>

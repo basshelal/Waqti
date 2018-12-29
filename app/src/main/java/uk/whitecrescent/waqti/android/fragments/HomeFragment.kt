@@ -34,7 +34,7 @@ class HomeFragment : WaqtiFragment() {
 
         mainActivity.supportActionBar?.title = "Waqti - All Boards"
 
-        viewModel.boardPosition = 0
+        viewModel.boardPosition = false to 0
 
         boardsGrid_recyclerView.layoutManager = GridLayoutManager(context, 3)
         boardsGrid_recyclerView.adapter = BoardsGridAdapter()

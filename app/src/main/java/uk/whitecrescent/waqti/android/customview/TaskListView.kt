@@ -178,21 +178,21 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
 
         holder.itemView.delete_button.setOnClickListener {
-            val popupMenu = PopupMenu(it.context, it)
-            popupMenu.inflate(R.menu.menu_task_card)
-            popupMenu.setOnMenuItemClickListener {
-                return@setOnMenuItemClickListener when (it.itemId) {
-                    R.id.deleteTask_menuItem -> {
-                        if (holder.adapterPosition != -1) {
-                            taskList.removeAt(holder.adapterPosition).update()
-                            notifyDataSetChanged()
-                            true
-                        } else false
+            PopupMenu(it.context, it).apply {
+                inflate(R.menu.menu_task_card)
+                setOnMenuItemClickListener {
+                    return@setOnMenuItemClickListener when (it.itemId) {
+                        R.id.deleteTask_menuItem -> {
+                            if (holder.adapterPosition != -1) {
+                                taskList.removeAt(holder.adapterPosition).update()
+                                notifyDataSetChanged()
+                                true
+                            } else false
+                        }
+                        else -> false
                     }
-                    else -> false
                 }
-            }
-            popupMenu.show()
+            }.show()
         }
     }
 
@@ -226,7 +226,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                     onDragInDifferentLists(draggingState, holder, otherAdapter)
 
-                    dragAcrossLists()
+                    dragAcrossLists(draggingState)
 
                     true
                 } else false
@@ -316,20 +316,35 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         otherAdapter.notifyDataSetChanged()
     }
 
-    private fun dragAcrossLists() {
+    private fun dragAcrossLists(draggingState: DragEventLocalState? = null) {
+
         taskListView.boardView.apply {
 
             postDelayed(
                     {
-                        @MissingFeature
-                        // TODO: 26-Dec-18 Alpha is a problem
-                        // maybe we could use visibility??
 
                         val pos = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
                         smoothScrollToPosition(pos)
 
                     },
                     350L
+            )
+
+            postDelayed(
+                    {
+                        @Inconvenience
+                        @Bug
+                        // TODO: 29-Dec-18 Alpha changing only works with delay of around 450+,
+                        // the view briefly appears
+
+                        val position = if (draggingState != null) draggingState.adapterPosition else 0
+
+                        this@TaskListAdapter.taskListView
+                                .findViewHolderForAdapterPosition(position)
+                                ?.itemView?.alpha = 0F
+
+                    },
+                    450L
             )
         }
     }

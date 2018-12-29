@@ -2,7 +2,6 @@
 
 package uk.whitecrescent.waqti.model
 
-import android.util.Log
 import uk.whitecrescent.waqti.model.collections.Tuple
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.GRACE_PERIOD
@@ -11,18 +10,6 @@ import uk.whitecrescent.waqti.model.task.Task
 import java.util.Objects
 
 inline fun sleep(seconds: Int) = Thread.sleep((seconds) * 1000L)
-
-inline fun logD(string: String) {
-    Log.d("DEFAULT", string)
-}
-
-inline fun <T> logI(string: String) {
-    Log.i("DEFAULT", string)
-}
-
-inline fun logE(string: String) {
-    Log.e("DEFAULT", string)
-}
 
 inline fun setGracePeriod(duration: Duration) {
     GRACE_PERIOD = duration

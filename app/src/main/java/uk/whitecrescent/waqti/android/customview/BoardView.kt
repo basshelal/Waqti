@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,7 +19,7 @@ import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.fragments.CreateTaskFragment
 import uk.whitecrescent.waqti.android.mainActivity
-import uk.whitecrescent.waqti.model.logE
+import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID
@@ -47,6 +48,7 @@ class BoardView
     }
 
     private fun attachHelpers() {
+
         ItemTouchHelper(object : ItemTouchHelper.Callback() {
             // TODO: 24-Dec-18 remember to make the dragging only doable from the header, currently its from anywhere
             // so a very fast scroll or a hold on an empty list will trigger a drag
@@ -79,13 +81,9 @@ class BoardView
 
                 boardAdapter.apply {
                     board.move(fromPos, toPos).update()
-                    val taskListAdapter = taskListAdapters[fromPos]
-                    taskListAdapters.removeAt(fromPos)
-                    taskListAdapters.add(toPos, taskListAdapter)
+                    matchOrder()
                     notifyItemMoved(fromPos, toPos)
                 }
-                logE("TaskListAdapters Size: ${taskListAdapters.size}")
-                logE("TaskListAdapters: ${taskListAdapters.map { it.taskListID }}")
             }
 
             override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int, viewSizeOutOfBounds: Int, totalSize: Int, msSinceStartScroll: Long): Int {
@@ -99,7 +97,7 @@ class BoardView
         object : PagerSnapHelper() {
             override fun findTargetSnapPosition(layoutManager: LayoutManager?, velocityX: Int, velocityY: Int): Int {
                 val currentBoardPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
-                mainActivity.viewModel.boardPosition = currentBoardPos
+                mainActivity.viewModel.boardPosition = true to currentBoardPos
                 return currentBoardPos
             }
         }.attachToRecyclerView(this)
@@ -167,16 +165,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         holder.list.adapter = taskListAdapter
         boardView.addListAdapterIfNotExists(taskListAdapter)
 
-        /* TODO see below
-         * Below is so that we ensure that the order of the adapters is consistent with the lists
-         * since there is a bug, when you create a new List the order of taskListAdapters will be
-         * based on the order of binding which can often not be the same as the order of the
-         * lists in the board, if we force a check every time then we can make sure they're ordered
-         *
-         * if(boardView.taskListAdapters.doesNotMatchOrder(boardView.board))
-         *     boardView.taskListAdapters.matchOrder(boardView.board)
-         * */
-
         matchOrder()
 
         holder.header.text = "${board[position].name} id: ${board[position].id}"
@@ -196,17 +184,29 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             }.commit()
         }
 
-        holder.itemView.taskList_deleteButton.setOnClickListener {
-            if (holder.adapterPosition != -1) {
-
-                boardView.removeListAdapterIfExists(holder.list.listAdapter)
-
-                board.removeAt(holder.adapterPosition).update()
-                notifyDataSetChanged()
-            }
+        holder.itemView.overflow_imageView.setOnClickListener {
+            PopupMenu(it.context, it).apply {
+                inflate(R.menu.menu_list)
+                setOnMenuItemClickListener {
+                    return@setOnMenuItemClickListener when (it.itemId) {
+                        R.id.deleteList_menuItem -> {
+                            if (holder.adapterPosition != -1) {
+                                boardView.removeListAdapterIfExists(holder.list.listAdapter)
+                                board.removeAt(holder.adapterPosition).update()
+                                notifyDataSetChanged()
+                                true
+                            } else false
+                        }
+                        R.id.renameList_menuItem -> {
+                            boardView.snackBar("Clicked Rename List")
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            }.show()
         }
     }
-
 
     fun matchOrder() {
         val taskListAdaptersCopy = ArrayList(boardView.taskListAdapters)

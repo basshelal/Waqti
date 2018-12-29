@@ -80,7 +80,7 @@ class CreateListFragment : WaqtiCreateFragment() {
 
     private fun finalize() {
         listName_editText.hideSoftKeyboard()
-        viewModel.boardPosition++
+        viewModel.boardPosition = true to viewModel.boardPosition.second + 1
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }

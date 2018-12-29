@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.model.persistence
 
 import uk.whitecrescent.waqti.model.Committable
+import uk.whitecrescent.waqti.model.NeedsOptimization
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.task.Label
@@ -60,6 +61,10 @@ object Caches {
             tasks, templates, labels, priorities, timeUnits, taskLists, boards
     )
 
+    @NeedsOptimization
+    // TODO: 29-Dec-18 A little too slow initializing Caches and Building Database
+    // possible idea is to do it asynchronously but we have to be careful with that as many
+    // caches rely on one another
     fun initialize() {
         allCaches.forEach { it.initialize() }
     }
