@@ -11,5 +11,6 @@ class MainActivityViewModel : ViewModel() {
     var boardID: ID = 0L
     var listID: ID = 0L
     var taskID: ID = 0L
+    var boardPosition: Int = -1
 
 }

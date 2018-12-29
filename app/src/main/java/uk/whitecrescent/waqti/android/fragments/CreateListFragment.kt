@@ -11,6 +11,7 @@ import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.fragments.base.WaqtiCreateFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.android.showSoftKeyboard
+import uk.whitecrescent.waqti.model.Bug
 import uk.whitecrescent.waqti.model.Inconvenience
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -60,9 +61,13 @@ class CreateListFragment : WaqtiCreateFragment() {
         }
 
         dev_addList_button.setOnClickListener {
+            @Bug
+            // TODO: 29-Dec-18 Adding a new list doesn't notify the boardView that there is now a new taskListAdapter
+            // however a hacky solution could be to scroll to the new list forcing it to be added
+            // because it's now in the window
             Caches.boards[boardID]
                     .add(TaskList("Dev TaskList")).update()
-            @Inconvenience // TODO: 28-Dec-18 BoardView scroll to the new list's position 
+            @Inconvenience // TODO: 28-Dec-18 BoardView scroll to the new list's position
             finalize()
         }
     }

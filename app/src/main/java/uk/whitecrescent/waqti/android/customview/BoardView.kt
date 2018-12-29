@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.model.Bug
-import uk.whitecrescent.waqti.model.ForLater
 
 class BoardView
 @JvmOverloads constructor(context: Context,
@@ -49,7 +48,6 @@ class BoardView
 
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
                                 target: RecyclerView.ViewHolder): Boolean {
-                // TODO: 15-Dec-18 check what this does?
                 return true
             }
 
@@ -63,9 +61,6 @@ class BoardView
 
                 boardAdapter.apply {
                     board.move(fromPos, toPos).update()
-                    @Bug
-                    @ForLater
-                    // TODO: 28-Dec-18 Apply changes to the taskListAdapters order as well
                     val taskListAdapter = taskListAdapters[fromPos]
                     taskListAdapters.removeAt(fromPos)
                     taskListAdapters.add(toPos, taskListAdapter)
