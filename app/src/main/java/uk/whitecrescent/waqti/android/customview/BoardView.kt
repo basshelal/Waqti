@@ -2,27 +2,35 @@ package uk.whitecrescent.waqti.android.customview
 
 import android.content.Context
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
-import uk.whitecrescent.waqti.model.Bug
+import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
+import uk.whitecrescent.waqti.android.GoToFragment
+import uk.whitecrescent.waqti.android.fragments.CreateTaskFragment
+import uk.whitecrescent.waqti.android.mainActivity
+import uk.whitecrescent.waqti.model.logE
+import uk.whitecrescent.waqti.model.persistence.Database
+import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
+import uk.whitecrescent.waqti.model.task.ID
 
 class BoardView
 @JvmOverloads constructor(context: Context,
                           attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) :
-        RecyclerView(context, attributeSet, defStyle) {
+                          defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
 
     val boardAdapter: BoardAdapter
         get() = this.adapter as BoardAdapter
 
-    @Bug
-    // TODO: 28-Dec-18 This guy causes a lot of problems, possibly fix but maybe change how it's done
     val taskListAdapters = ArrayList<TaskListAdapter>()
 
     init {
@@ -31,8 +39,14 @@ class BoardView
 
     override fun setAdapter(_adapter: Adapter<*>?) {
         super.setAdapter(_adapter)
-        assert(this.adapter != null)
-        assert(this.adapter is BoardAdapter)
+        require(this.adapter != null &&
+                this.adapter is BoardAdapter
+        ) { "Adapter must be non null and a BoardAdapter, passed in ${_adapter}" }
+
+        attachHelpers()
+    }
+
+    private fun attachHelpers() {
         ItemTouchHelper(object : ItemTouchHelper.Callback() {
             // TODO: 24-Dec-18 remember to make the dragging only doable from the header, currently its from anywhere
             // so a very fast scroll or a hold on an empty list will trigger a drag
@@ -55,6 +69,10 @@ class BoardView
                 /*This will never be called as we do not support swiping*/
             }
 
+            override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
+                super.clearView(recyclerView, viewHolder)
+            }
+
             override fun onMoved(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, fromPos: Int,
                                  target: RecyclerView.ViewHolder, toPos: Int, x: Int, y: Int) {
                 super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
@@ -66,6 +84,8 @@ class BoardView
                     taskListAdapters.add(toPos, taskListAdapter)
                     notifyItemMoved(fromPos, toPos)
                 }
+                logE("TaskListAdapters Size: ${taskListAdapters.size}")
+                logE("TaskListAdapters: ${taskListAdapters.map { it.taskListID }}")
             }
 
             override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int, viewSizeOutOfBounds: Int, totalSize: Int, msSinceStartScroll: Long): Int {
@@ -76,10 +96,146 @@ class BoardView
 
         }).attachToRecyclerView(this)
 
-        PagerSnapHelper().attachToRecyclerView(this)
+        object : PagerSnapHelper() {
+            override fun findTargetSnapPosition(layoutManager: LayoutManager?, velocityX: Int, velocityY: Int): Int {
+                val currentBoardPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
+                mainActivity.viewModel.boardPosition = currentBoardPos
+                return currentBoardPos
+            }
+        }.attachToRecyclerView(this)
     }
 
+    fun addListAdapterIfNotExists(taskListAdapter: TaskListAdapter) {
+        taskListAdapter.let {
+            if (!adapterExists(it.taskListID)) taskListAdapters.add(it)
+        }
+    }
+
+    fun removeListAdapterIfExists(taskListAdapter: TaskListAdapter) {
+        getListAdapter(taskListAdapter.taskListID).apply {
+            if (this != null) taskListAdapters.remove(this)
+        }
+    }
+
+    fun getListAdapter(taskListID: ID): TaskListAdapter? {
+        return taskListAdapters.find { it.taskListID == taskListID }
+    }
+
+    fun adapterExists(taskListID: ID): Boolean {
+        return taskListID in taskListAdapters.map { it.taskListID }
+    }
 }
+
+class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
+
+    // TODO: 21-Dec-18 Use paging and LiveData from AndroidX
+
+    val board = Database.boards[boardID] ?: throw ElementNotFoundException(boardID)
+
+    lateinit var boardView: BoardView
+
+    init {
+        this.setHasStableIds(true)
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        check(recyclerView is BoardView)
+        boardView = recyclerView as BoardView
+    }
+
+    override fun getItemCount(): Int {
+        return board.size
+    }
+
+    override fun getItemId(position: Int): Long {
+        return board[position].id
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardViewHolder {
+        return BoardViewHolder(
+                LayoutInflater.from(parent.context)
+                        .inflate(R.layout.task_list, parent, false)
+        )
+    }
+
+    override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
+
+        // Adapters get created and destroyed because their associated views do too, actually
+        // more specifically, they get recycled
+
+        val taskListAdapter = TaskListAdapter(board[position].id)
+        holder.list.adapter = taskListAdapter
+        boardView.addListAdapterIfNotExists(taskListAdapter)
+
+        /* TODO see below
+         * Below is so that we ensure that the order of the adapters is consistent with the lists
+         * since there is a bug, when you create a new List the order of taskListAdapters will be
+         * based on the order of binding which can often not be the same as the order of the
+         * lists in the board, if we force a check every time then we can make sure they're ordered
+         *
+         * if(boardView.taskListAdapters.doesNotMatchOrder(boardView.board))
+         *     boardView.taskListAdapters.matchOrder(boardView.board)
+         * */
+
+        matchOrder()
+
+        holder.header.text = "${board[position].name} id: ${board[position].id}"
+        holder.footer.text = "Add Task"
+
+        holder.footer.setOnClickListener {
+
+            @GoToFragment()
+            it.mainActivity.supportFragmentManager.beginTransaction().apply {
+
+                it.mainActivity.viewModel.boardID = this@BoardAdapter.boardID
+                it.mainActivity.viewModel.listID = holder.list.listAdapter.taskListID
+
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                replace(R.id.fragmentContainer, CreateTaskFragment.newInstance(), CREATE_TASK_FRAGMENT)
+                addToBackStack("")
+            }.commit()
+        }
+
+        holder.itemView.taskList_deleteButton.setOnClickListener {
+            if (holder.adapterPosition != -1) {
+
+                boardView.removeListAdapterIfExists(holder.list.listAdapter)
+
+                board.removeAt(holder.adapterPosition).update()
+                notifyDataSetChanged()
+            }
+        }
+    }
+
+
+    fun matchOrder() {
+        val taskListAdaptersCopy = ArrayList(boardView.taskListAdapters)
+        if (doesNotMatchOrder()) {
+
+            board.filter { taskList -> taskList.id in taskListAdaptersCopy.map { it.taskListID } }
+                    .mapIndexed { index, taskList -> index to taskList }.toMap()
+                    .forEach { entry ->
+                        val (index, taskList) = entry
+
+                        boardView.taskListAdapters[index] =
+                                taskListAdaptersCopy.find { it.taskListID == taskList.id }!!
+                    }
+
+        }
+    }
+
+    private fun doesNotMatchOrder(): Boolean {
+
+        /*
+         * Possible Optimization is to check that doing the matchOrder() operation will change
+         * anything or not but seems a little unnecessary right now
+         */
+
+        return boardView.taskListAdapters.size != board.size ||
+                boardView.taskListAdapters.map { it.taskListID } != board.map { it.id }
+    }
+}
+
 
 class BoardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val header: TextView

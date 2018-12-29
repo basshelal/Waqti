@@ -38,6 +38,9 @@ inline fun Activity.checkWritePermission() {
     }
 }
 
+inline val View.mainActivity: MainActivity
+    get() = this.context as MainActivity
+
 inline fun View.snackBar(string: String) = Snackbar.make(this, string, Snackbar.LENGTH_SHORT).show()
 
 inline fun View.hideSoftKeyboard() {

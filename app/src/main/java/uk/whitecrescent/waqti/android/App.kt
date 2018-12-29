@@ -10,14 +10,12 @@ import uk.whitecrescent.waqti.model.now
 
 class App : Application() {
 
+    // Ignore the error in AndroidThreeTen.init() it doesn't fail the build and runs fine on
+    // emulator and physical, I don't know how to get rid of the error, but it's wrong
     override fun onCreate() {
         super.onCreate()
         AndroidThreeTen.init(this)
-        // TODO: 26-Dec-18 About 800 ms between here at first line of Activity's onCreate
-        // I suspect its the Caches.initialize, I hope we can figure out some sort of
-        // asynchronous way to initialize it but I'm not sure
-
-        Database.build(applicationContext)
+        Database.build(this)
         Caches.initialize()
     }
 }

@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android.fragments.base
+package uk.whitecrescent.waqti.android.fragments.parents
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

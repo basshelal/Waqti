@@ -118,7 +118,7 @@ class Template(name: String = "", task: Task = Task("")) : Cacheable {
 
         fun templatesAreSubset(superTemplate: Template, subTemplate: Template): Boolean {
             val list = (0..10).map { true }.toMutableList()
-            assert(list.size == 11)
+            check(list.size == 11)
 
             if (superTemplate.time != DEFAULT_TIME_PROPERTY) {
                 list[timeIndex] = subTemplate.time == superTemplate.time

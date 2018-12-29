@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_view_task.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.fragments.base.WaqtiFragment
+import uk.whitecrescent.waqti.android.fragments.parents.WaqtiFragment
 import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
@@ -32,9 +32,7 @@ class ViewTaskFragment : WaqtiFragment() {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
 
-        if (arguments != null) {
-            taskID = arguments!!["taskID"] as ID
-        }
+        taskID = viewModel.taskID
 
         setUpViews(Caches.tasks[taskID])
 

@@ -12,9 +12,9 @@ import kotlinx.android.synthetic.main.fragment_board_view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.android.GoToFragment
-import uk.whitecrescent.waqti.android.MainActivity
 import uk.whitecrescent.waqti.android.customview.BoardAdapter
-import uk.whitecrescent.waqti.android.fragments.base.WaqtiFragment
+import uk.whitecrescent.waqti.android.fragments.parents.WaqtiFragment
+import uk.whitecrescent.waqti.android.mainActivity
 import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.task.ID
 
@@ -35,9 +35,7 @@ class BoardFragment : WaqtiFragment() {
         super.onActivityCreated(savedInstanceState)
         setHasOptionsMenu(true)
 
-        if (arguments != null) {
-            boardID = arguments!!["boardID"] as Long
-        }
+        boardID = viewModel.boardID
 
         boardView.adapter = BoardAdapter(boardID)
 
@@ -45,18 +43,24 @@ class BoardFragment : WaqtiFragment() {
                 "Waqti - ${boardView.boardAdapter.board.name} ${boardView.boardAdapter.boardID} " +
                 "DEV BUILD"
 
-
         addList_floatingButton.setOnClickListener {
             @GoToFragment()
-            (it.context as MainActivity).supportFragmentManager.beginTransaction().apply {
-                val fragment = CreateListFragment.newInstance()
-                val bundle = Bundle()
-                bundle.putLong("boardID", boardID)
-                fragment.arguments = bundle
-                replace(R.id.blank_constraintLayout, fragment, CREATE_LIST_FRAGMENT)
+            it.mainActivity.supportFragmentManager.beginTransaction().apply {
+
+                it.mainActivity.viewModel.boardID = boardID
+                it.mainActivity.viewModel.boardPosition = boardView.boardAdapter.itemCount - 1
+
+                replace(R.id.fragmentContainer, CreateListFragment.newInstance(), CREATE_LIST_FRAGMENT)
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")
             }.commit()
+        }
+
+        if (boardView.boardAdapter.itemCount > 0) {
+            boardView.postDelayed(
+                    { boardView.smoothScrollToPosition(viewModel.boardPosition) },
+                    100L
+            )
         }
     }
 

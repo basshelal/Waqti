@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.fragments.BoardFragment
 import uk.whitecrescent.waqti.android.fragments.HomeFragment
 import uk.whitecrescent.waqti.model.Inconvenience
 
@@ -13,14 +12,6 @@ import uk.whitecrescent.waqti.model.Inconvenience
 class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel: MainActivityViewModel
-
-    // Our Fragments (since ViewModels shouldn't contain Contexts)
-    val homeFragment: HomeFragment?
-        get() = this.supportFragmentManager.findFragmentByTag(HOME_FRAGMENT) as? HomeFragment
-
-    val boardFragment: BoardFragment?
-        get() = this.supportFragmentManager.findFragmentByTag(BOARD_FRAGMENT) as? BoardFragment
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -34,15 +25,8 @@ class MainActivity : AppCompatActivity() {
 
         @GoToFragment
         supportFragmentManager.beginTransaction().apply {
-            add(R.id.blank_constraintLayout, HomeFragment.newInstance(), HOME_FRAGMENT)
+            add(R.id.fragmentContainer, HomeFragment.newInstance(), HOME_FRAGMENT)
             setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }.commit()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        // TODO: 26-Dec-18 What to do with this?? Below
-        //logE("Caches closed!")
-        //Caches.close()
     }
 }

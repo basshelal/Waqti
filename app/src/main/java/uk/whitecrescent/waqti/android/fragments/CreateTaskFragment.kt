@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
-import uk.whitecrescent.waqti.android.fragments.base.WaqtiCreateFragment
+import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.android.showSoftKeyboard
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -34,10 +34,8 @@ class CreateTaskFragment : WaqtiCreateFragment() {
 
         mainActivity.supportActionBar?.title = "Create Task"
 
-        if (arguments != null) {
-            boardID = arguments!!["boardID"] as ID
-            listID = arguments!!["listID"] as ID
-        }
+        boardID = viewModel.boardID
+        listID = viewModel.listID
 
         focusTaskNameTextView()
 

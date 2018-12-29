@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.fragments.base.WaqtiCreateFragment
+import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
 
 class CreateBoardFragment : WaqtiCreateFragment() {
 

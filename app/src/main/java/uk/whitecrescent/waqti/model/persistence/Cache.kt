@@ -107,14 +107,14 @@ open class Cache<E : Cacheable>(
 
     fun put(element: E) {
         val id = db.put(element)
-        assert(element.id == id)
+        check(element.id == id)
         safeAdd(element)
     }
 
     fun put(elements: Collection<E>) {
         db.put(elements)
         elements.forEach {
-            assert(it.id != 0L)
+            check(it.id != 0L)
             safeAdd(it)
         }
     }
@@ -231,7 +231,7 @@ open class Cache<E : Cacheable>(
             map.keys.toList()
                     .filter { it !in db.ids }
                     .forEach { map.remove(it) }
-            assert(!isInconsistent)
+            check(!isInconsistent)
         }
     }
 
@@ -241,7 +241,7 @@ open class Cache<E : Cacheable>(
                     //.reversed()
                     .filterIndexed { index, _ -> index < (size - sizeLimit) }
                     .forEach { map.remove(it) }
-            assert(map.size == sizeLimit)
+            check(map.size == sizeLimit)
         }
     }
 
