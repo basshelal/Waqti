@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android.fragments
+package uk.whitecrescent.waqti.android.fragments.create
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android.fragments
+package uk.whitecrescent.waqti.android.fragments.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -13,12 +13,13 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.BoardAdapter
-import uk.whitecrescent.waqti.android.fragments.parents.WaqtiFragment
+import uk.whitecrescent.waqti.android.fragments.create.CreateListFragment
+import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.android.mainActivity
 import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.task.ID
 
-class BoardFragment : WaqtiFragment() {
+class BoardFragment : WaqtiViewFragment() {
 
     companion object {
         fun newInstance() = BoardFragment()
@@ -74,7 +75,7 @@ class BoardFragment : WaqtiFragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        // TODO: 27-Dec-18 This menu could be a Context or Popup menu in the HomeFragment for each View
+        // TODO: 27-Dec-18 This menu could be a Context or Popup menu in the BoardListFragment for each View
         return when (item.itemId) {
             R.id.renameBoard_menuItem -> {
                 boardView.snackBar("Rename board clicked")

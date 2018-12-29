@@ -4,6 +4,7 @@ package uk.whitecrescent.waqti.android
 
 import android.Manifest
 import android.app.Activity
+import android.app.AlarmManager
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -37,6 +38,9 @@ inline fun Activity.checkWritePermission() {
 
     }
 }
+
+inline val Activity.alarmManager: AlarmManager
+    get() = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
 inline val View.mainActivity: MainActivity
     get() = this.context as MainActivity

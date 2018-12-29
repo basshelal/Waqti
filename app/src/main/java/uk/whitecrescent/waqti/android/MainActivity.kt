@@ -5,10 +5,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.fragments.HomeFragment
+import uk.whitecrescent.waqti.android.fragments.view.BoardListFragment
 import uk.whitecrescent.waqti.model.Inconvenience
 
-// We want to have a Single Activity Application :)
 class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel: MainActivityViewModel
@@ -25,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         @GoToFragment
         supportFragmentManager.beginTransaction().apply {
-            add(R.id.fragmentContainer, HomeFragment.newInstance(), HOME_FRAGMENT)
+            add(R.id.fragmentContainer, BoardListFragment.newInstance(), BOARD_LIST_FRAGMENT)
             setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }.commit()
     }

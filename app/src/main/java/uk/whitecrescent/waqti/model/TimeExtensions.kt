@@ -2,6 +2,8 @@
 
 package uk.whitecrescent.waqti.model
 
+import org.threeten.bp.ZoneOffset
+
 // TODO: 15-Nov-18 It would be cool to publish this as a separate thing, test it properly first ofcourse
 
 // Type Aliases for which Time API to use
@@ -117,3 +119,6 @@ inline fun coming(dayOfWeek: DayOfWeek): Date {
 inline fun last(dayOfWeek: DayOfWeek): Date {
     return Date.from(today.dayOfWeek - dayOfWeek.value.toLong())
 }
+
+inline val Time.toEpoch: Long
+    get() = toEpochSecond(ZoneOffset.UTC)

@@ -18,11 +18,9 @@ import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.VIEW_TASK_FRAGMENT
-import uk.whitecrescent.waqti.android.fragments.ViewTaskFragment
+import uk.whitecrescent.waqti.android.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.android.mainActivity
-import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.Bug
-import uk.whitecrescent.waqti.model.FutureIdea
 import uk.whitecrescent.waqti.model.Inconvenience
 import uk.whitecrescent.waqti.model.MissingFeature
 import uk.whitecrescent.waqti.model.collections.AbstractWaqtiList
@@ -44,15 +42,11 @@ class TaskListView
 
     init {
         layoutManager = LinearLayoutManager(getContext(), VERTICAL, false)
-        //LinearSnapHelper().attachToRecyclerView(this)
     }
 
 }
 
 class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>() {
-
-    @FutureIdea
-    // TODO: 21-Dec-18 Use paging and LiveData from AndroidX
 
     val taskList = Database.taskLists[taskListID] ?: throw ElementNotFoundException(taskListID)
 
@@ -73,16 +67,12 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
             val draggingState = event.localState as DragEventLocalState
             when (event.action) {
                 DragEvent.ACTION_DRAG_ENTERED -> {
-                    @Bug
-                    // TODO: 28-Dec-18 It is possible to continously add the same Task to one or more lists,
-                    // difficult to recreate but basically add a new List then drag a task to it when
-                    // it's empty, this may also be repeatable with non-empty lists as well
 
                     @MissingFeature
                     @Inconvenience
                     // TODO: 28-Dec-18 Works when the list is empty but what about when we're dragging
                     // over the bottom of it when it's not empty
-                    // This is a big inconvenience, close to missing to missing feature because
+                    // This is a big inconvenience, close to missing feature because
                     // without it we can only drag across non empty lists when we drag over a
                     // Task card
                     if (this.taskList.isEmpty()) {
@@ -92,7 +82,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                             dragAcrossLists()
                         }
                     } else {
-                        taskListView.snackBar("Dragging over non-empty list")
+                        //taskListView.snackBar("Dragging over non-empty list")
                     }
 
                 }
@@ -144,7 +134,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                     DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
                     0
             )
-            it.alpha = 0F
+            it.alpha = 0.2F
             //it.visibility = View.INVISIBLE
             return@setOnLongClickListener true
         }
@@ -208,6 +198,10 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                 else {
                     onDragInSameList(draggingState, holder)
 
+                    @Bug
+                    @Inconvenience
+                    // TODO: 29-Dec-18 When the bottom or top of the list fits perfectly into the list we cant scoll
+
                     // Scroll down
                     checkForScrollDown(draggingState, holder)
 
@@ -248,33 +242,37 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
     }
 
     private fun checkForScrollDown(draggingState: DragEventLocalState, holder: TaskViewHolder) {
-        if (draggingState.adapterPosition >=
-                linearLayoutManager.findLastVisibleItemPosition()) {
-            if (draggingState.adapterPosition != itemCount - 1 ||
-                    linearLayoutManager.findLastCompletelyVisibleItemPosition() != itemCount - 1) {
-                taskListView.postDelayed(
-                        {
-                            val scrollBy = (holder.itemView.height * 1.25).roundToInt()
-                            taskListView.smoothScrollBy(0, scrollBy)
-                        },
-                        600L
-                )
+        if (draggingState.adapterPosition <= itemCount - 1) {
+            if (draggingState.adapterPosition >=
+                    linearLayoutManager.findLastVisibleItemPosition()) {
+                if (draggingState.adapterPosition != itemCount - 1 ||
+                        linearLayoutManager.findLastCompletelyVisibleItemPosition() != itemCount - 1) {
+                    taskListView.postDelayed(
+                            {
+                                val scrollBy = (holder.itemView.height * 1.25).roundToInt()
+                                taskListView.smoothScrollBy(0, scrollBy)
+                            },
+                            600L
+                    )
+                }
             }
         }
     }
 
     private fun checkForScrollUp(draggingState: DragEventLocalState, holder: TaskViewHolder) {
-        if (draggingState.adapterPosition <=
-                linearLayoutManager.findFirstVisibleItemPosition()) {
-            if (draggingState.adapterPosition != 0 ||
-                    linearLayoutManager.findFirstCompletelyVisibleItemPosition() != 0) {
-                taskListView.postDelayed(
-                        {
-                            val scrollBy = (holder.itemView.height * -1.25).roundToInt()
-                            taskListView.smoothScrollBy(0, scrollBy)
-                        },
-                        600L
-                )
+        if (draggingState.adapterPosition >= 0) {
+            if (draggingState.adapterPosition <=
+                    linearLayoutManager.findFirstVisibleItemPosition()) {
+                if (draggingState.adapterPosition != 0 ||
+                        linearLayoutManager.findFirstCompletelyVisibleItemPosition() != 0) {
+                    taskListView.postDelayed(
+                            {
+                                val scrollBy = (holder.itemView.height * -1.25).roundToInt()
+                                taskListView.smoothScrollBy(0, scrollBy)
+                            },
+                            600L
+                    )
+                }
             }
         }
     }
@@ -327,7 +325,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                         smoothScrollToPosition(pos)
 
                     },
-                    350L
+                    450L
             )
 
             postDelayed(
@@ -341,7 +339,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                         this@TaskListAdapter.taskListView
                                 .findViewHolderForAdapterPosition(position)
-                                ?.itemView?.alpha = 0F
+                                ?.itemView?.alpha = 0.25F
 
                     },
                     450L

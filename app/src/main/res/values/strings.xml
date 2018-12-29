@@ -14,4 +14,5 @@
     <string name="deleteTask">Delete Task</string>
     <string name="deleteList">Delete List</string>
     <string name="renameList">Rename List</string>
+    <string name="defaultList">Default List</string>
 </resources>

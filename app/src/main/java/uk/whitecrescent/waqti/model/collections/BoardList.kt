@@ -5,7 +5,7 @@ import uk.whitecrescent.waqti.model.persistence.Cache
 import uk.whitecrescent.waqti.model.task.ID
 
 @ForLater
-// A generic list of Boards, we'll use this to contain all Boards in HomeFragment and the Grid's adapter
+// A generic list of Boards, we'll use this to contain all Boards in BoardListFragment and the Grid's adapter
 class BoardList : AbstractWaqtiList<Board>() {
 
     override var idList: ArrayList<ID>

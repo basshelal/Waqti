@@ -17,9 +17,12 @@ import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.GoToFragment
-import uk.whitecrescent.waqti.android.fragments.CreateTaskFragment
+import uk.whitecrescent.waqti.android.VIEW_LIST_FRAGMENT
+import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
+import uk.whitecrescent.waqti.android.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.android.mainActivity
 import uk.whitecrescent.waqti.android.snackBar
+import uk.whitecrescent.waqti.model.FutureIdea
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID
@@ -73,6 +76,16 @@ class BoardView
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
+                if (viewHolder is BoardViewHolder) {
+                    viewHolder.itemView.alpha = 1F
+                }
+            }
+
+            override fun onSelectedChanged(viewHolder: ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                if (viewHolder != null && viewHolder is BoardViewHolder) {
+                    viewHolder.itemView.alpha = 0.7F
+                }
             }
 
             override fun onMoved(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, fromPos: Int,
@@ -86,7 +99,9 @@ class BoardView
                 }
             }
 
-            override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int, viewSizeOutOfBounds: Int, totalSize: Int, msSinceStartScroll: Long): Int {
+            override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int,
+                                                      viewSizeOutOfBounds: Int, totalSize: Int,
+                                                      msSinceStartScroll: Long): Int {
                 return super.interpolateOutOfBoundsScroll(
                         recyclerView, viewSize, viewSizeOutOfBounds, totalSize, 1500)
                 // TODO: 13-Dec-18 Override this to make better when we drag outside the bounds
@@ -125,8 +140,6 @@ class BoardView
 }
 
 class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
-
-    // TODO: 21-Dec-18 Use paging and LiveData from AndroidX
 
     val board = Database.boards[boardID] ?: throw ElementNotFoundException(boardID)
 
@@ -170,6 +183,18 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         holder.header.text = "${board[position].name} id: ${board[position].id}"
         holder.footer.text = "Add Task"
 
+        holder.header.setOnClickListener {
+            @GoToFragment()
+            it.mainActivity.supportFragmentManager.beginTransaction().apply {
+
+                it.mainActivity.viewModel.listID = board[position].id
+
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                addToBackStack("")
+                replace(R.id.fragmentContainer, ViewListFragment.newInstance(), VIEW_LIST_FRAGMENT)
+            }.commit()
+        }
+
         holder.footer.setOnClickListener {
 
             @GoToFragment()
@@ -206,6 +231,19 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 }
             }.show()
         }
+
+
+        @FutureIdea
+        // TODO: 29-Dec-18 Setting a background image isn't impossible
+        // generally what we'd need to do is have the image saved and divide it by the number of
+        // lists there are in the board, then in onBindViewHolder for the Board we'd set that
+        // list's background as that page of the overall image, there will be stretching though,
+        // both when the lists are too few and when the lists are too many, but overall it's not
+        // too hard
+        @FutureIdea 0
+        // the idea above could be used to have the board's board card in the BoardListFragment be the
+        // picture
+        //holder.list.setBackgroundResource(R.mipmap.waqti_icon)
     }
 
     fun matchOrder() {

@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.android.fragments
+package uk.whitecrescent.waqti.android.fragments.view
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,13 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_view_task.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.fragments.parents.WaqtiFragment
+import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 
-class ViewTaskFragment : WaqtiFragment() {
+class ViewTaskFragment : WaqtiViewFragment() {
 
     companion object {
         fun newInstance() = ViewTaskFragment()
@@ -54,7 +54,7 @@ class ViewTaskFragment : WaqtiFragment() {
     }
 
     private fun setUpViews(task: Task) {
-        mainActivity.supportActionBar?.title = task.name
+        mainActivity.supportActionBar?.title = "Task"
         taskName_textView.text = task.name
     }
 

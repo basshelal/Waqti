@@ -1,57 +1,54 @@
-package uk.whitecrescent.waqti.android.fragments
+package uk.whitecrescent.waqti.android.fragments.create
 
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import kotlinx.android.synthetic.main.fragment_create_task.*
+import kotlinx.android.synthetic.main.fragment_create_list.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.android.showSoftKeyboard
+import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
-import uk.whitecrescent.waqti.model.task.Task
 
-class CreateTaskFragment : WaqtiCreateFragment() {
+class CreateListFragment : WaqtiCreateFragment() {
 
     companion object {
-        fun newInstance() = CreateTaskFragment()
+        fun newInstance() = CreateListFragment()
     }
 
-    private var boardID: ID = 0L
-    private var listID: ID = 0L
+    var boardID: ID = 0L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_create_task, container, false)
+        return inflater.inflate(R.layout.fragment_create_list, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mainActivity.supportActionBar?.title = "Create Task"
-
         boardID = viewModel.boardID
-        listID = viewModel.listID
 
-        focusTaskNameTextView()
+        focusListNameTextView()
 
-        setUpSendButtonOnClick()
+        setUpButtonOnClick()
+
     }
 
-    private fun focusTaskNameTextView() {
-        taskName_editText.apply {
+    private fun focusListNameTextView() {
+        listName_editText.apply {
             requestFocus()
             showSoftKeyboard()
         }
     }
 
-    private fun setUpSendButtonOnClick() {
-        addTask_button.setOnClickListener {
-            val text = taskName_editText.text
+    private fun setUpButtonOnClick() {
+        addList_button.setOnClickListener {
+            val text = listName_editText.text
             if (text == null || text.isEmpty() || text.isBlank()) {
                 textIsIncorrect()
             } else {
@@ -59,32 +56,32 @@ class CreateTaskFragment : WaqtiCreateFragment() {
             }
         }
 
-        dev_addTask_button.setOnClickListener {
-            Caches.boards[boardID][listID]
-                    .add(Task("Dev Task")).update()
+        dev_addList_button.setOnClickListener {
+            Caches.boards[boardID]
+                    .add(TaskList("Dev TaskList")).update()
             finalize()
         }
     }
 
     private fun textIsIncorrect() {
-        taskName_editText.setHintTextColor(Color.RED)
-        taskName_editText.hint = "Task Name cannot be empty!"
+        listName_editText.setHintTextColor(Color.RED)
+        listName_editText.hint = "List name cannot be empty!"
     }
 
     private fun textIsCorrect() {
-        Caches.boards[boardID][listID]
-                .add(taskFromEditText()).update()
+        Caches.boards[boardID]
+                .add(listFromEditText()).update()
         finalize()
     }
 
-    private fun taskFromEditText(): Task {
-        return Task(taskName_editText.text.toString())
+    private fun listFromEditText(): TaskList {
+        return TaskList(listName_editText.text.toString())
     }
 
     private fun finalize() {
-        taskName_editText.hideSoftKeyboard()
+        listName_editText.hideSoftKeyboard()
+        viewModel.boardPosition = true to viewModel.boardPosition.second + 1
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }
-
 }
