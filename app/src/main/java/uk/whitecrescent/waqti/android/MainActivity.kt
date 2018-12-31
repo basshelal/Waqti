@@ -6,7 +6,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.fragments.view.BoardListFragment
+import uk.whitecrescent.waqti.android.fragments.view.ViewBoardListFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
 
         @GoToFragment
         supportFragmentManager.beginTransaction().apply {
-            add(R.id.fragmentContainer, BoardListFragment.newInstance(), BOARD_LIST_FRAGMENT)
+            add(R.id.fragmentContainer, ViewBoardListFragment.newInstance(), BOARD_LIST_FRAGMENT)
             setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }.commit()
     }

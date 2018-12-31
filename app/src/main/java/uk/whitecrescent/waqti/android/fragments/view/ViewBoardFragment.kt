@@ -21,7 +21,7 @@ import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
 
-class ViewBoardFragment : WaqtiViewFragment() {
+class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
     companion object {
         fun newInstance() = ViewBoardFragment()
@@ -61,17 +61,17 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
     }
 
-    private fun setUpViews(board: Board) {
+    override fun setUpViews(element: Board) {
         mainActivity.supportActionBar?.title =
-                "Board - ${board.name} ${board.id} "
+                "Board - ${element.name} ${element.id} "
 
-        boardView.adapter = BoardAdapter(board.id)
+        boardView.adapter = BoardAdapter(element.id)
 
         addList_floatingButton.setOnClickListener {
             @GoToFragment()
             it.mainActivity.supportFragmentManager.beginTransaction().apply {
 
-                it.mainActivity.viewModel.boardID = board.id
+                it.mainActivity.viewModel.boardID = element.id
                 it.mainActivity.viewModel.boardPosition = false to boardView.boardAdapter.itemCount - 1
 
                 replace(R.id.fragmentContainer, CreateListFragment.newInstance(), CREATE_LIST_FRAGMENT)
@@ -90,5 +90,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     100L
             )
         }
+    }
+
+    override fun finish() {
+
     }
 }

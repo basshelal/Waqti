@@ -16,7 +16,7 @@ import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
 
-class CreateListFragment : WaqtiCreateFragment() {
+class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 
     companion object {
         fun newInstance() = CreateListFragment()
@@ -38,7 +38,7 @@ class CreateListFragment : WaqtiCreateFragment() {
 
     }
 
-    private fun setUpViews() {
+    override fun setUpViews() {
         if (!BuildConfig.DEBUG) dev_addList_button.visibility = View.GONE
 
         mainActivity.supportActionBar?.title = "New List"
@@ -53,21 +53,21 @@ class CreateListFragment : WaqtiCreateFragment() {
 
         addList_button.isEnabled = false
         addList_button.setOnClickListener {
-            Caches.boards[boardID].add(listFromEditText()).update()
-            finalize()
+            Caches.boards[boardID].add(createElement()).update()
+            finish()
         }
 
         dev_addList_button.setOnClickListener {
             Caches.boards[boardID].add(TaskList("Dev TaskList")).update()
-            finalize()
+            finish()
         }
     }
 
-    private fun listFromEditText(): TaskList {
+    override fun createElement(): TaskList {
         return TaskList(listName_editText.text.toString())
     }
 
-    private fun finalize() {
+    override fun finish() {
         listName_editText.hideSoftKeyboard()
         viewModel.boardPosition = true to viewModel.boardPosition.second + 1
         @GoToFragment

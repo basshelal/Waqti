@@ -17,7 +17,7 @@ import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 
-class ViewTaskFragment : WaqtiViewFragment() {
+class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     companion object {
         fun newInstance() = ViewTaskFragment()
@@ -50,32 +50,32 @@ class ViewTaskFragment : WaqtiViewFragment() {
         return when (item.itemId) {
             R.id.deleteTask_menuItem -> {
                 Caches.deleteTask(taskID, listID)
-                finalize()
+                finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun setUpViews(task: Task) {
+    override fun setUpViews(element: Task) {
         mainActivity.supportActionBar?.title = "Task"
 
-        taskName_editTextView.text = SpannableStringBuilder(task.name)
+        taskName_editTextView.text = SpannableStringBuilder(element.name)
         taskName_editTextView.addAfterTextChangedListener {
             if (it != null) {
                 confirmEditTask_button.isEnabled =
-                        !(it.isEmpty() || it.isBlank() || it.toString() == task.name)
+                        !(it.isEmpty() || it.isBlank() || it.toString() == element.name)
             }
         }
 
         confirmEditTask_button.isEnabled = false
         confirmEditTask_button.setOnClickListener {
             Caches.tasks[viewModel.taskID].changeName(taskName_editTextView.text.toString())
-            finalize()
+            finish()
         }
     }
 
-    private fun finalize() {
+    override fun finish() {
         taskName_editTextView.hideSoftKeyboard()
         mainActivity.supportFragmentManager.popBackStack()
     }

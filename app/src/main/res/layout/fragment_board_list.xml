@@ -15,7 +15,7 @@
     </uk.whitecrescent.waqti.android.customview.recyclerviews.BoardListView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/addBoard_Button"
+        android:id="@+id/addBoard_FloatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"

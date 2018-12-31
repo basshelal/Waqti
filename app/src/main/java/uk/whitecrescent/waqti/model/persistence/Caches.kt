@@ -3,6 +3,7 @@ package uk.whitecrescent.waqti.model.persistence
 import uk.whitecrescent.waqti.NeedsOptimization
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.collections.Board
+import uk.whitecrescent.waqti.model.collections.BoardList
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Label
@@ -57,9 +58,10 @@ object Caches {
 
     val taskLists: Cache<TaskList> = Cache(Database.taskLists)
     val boards: Cache<Board> = Cache(Database.boards)
+    val boardLists: Cache<BoardList> = Cache(Database.boardLists)
 
     val allCaches = listOf(
-            tasks, templates, labels, priorities, timeUnits, taskLists, boards
+            tasks, templates, labels, priorities, timeUnits, taskLists, boards, boardLists
     )
 
     @NeedsOptimization
@@ -92,8 +94,9 @@ object Caches {
         Caches.boards[boardID].remove(taskListID).update()
     }
 
-    fun deleteBoard(boardID: ID) {
+    fun deleteBoard(boardID: ID, boardListID: ID) {
         Caches.boards[boardID].clear().update()
+        Caches.boardLists[boardListID].remove(boardID).update()
     }
 
 }

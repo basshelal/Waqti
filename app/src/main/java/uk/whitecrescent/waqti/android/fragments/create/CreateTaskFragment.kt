@@ -16,7 +16,7 @@ import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 
-class CreateTaskFragment : WaqtiCreateFragment() {
+class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
     companion object {
         fun newInstance() = CreateTaskFragment()
@@ -39,7 +39,7 @@ class CreateTaskFragment : WaqtiCreateFragment() {
         setUpViews()
     }
 
-    private fun setUpViews() {
+    override fun setUpViews() {
         if (!BuildConfig.DEBUG) dev_addTask_button.visibility = View.GONE
 
         mainActivity.supportActionBar?.title = "New Task"
@@ -54,22 +54,22 @@ class CreateTaskFragment : WaqtiCreateFragment() {
 
         addTask_button.isEnabled = false
         addTask_button.setOnClickListener {
-            Caches.boards[boardID][listID].add(taskFromEditText()).update()
-            finalize()
+            Caches.boards[boardID][listID].add(createElement()).update()
+            finish()
         }
 
         dev_addTask_button.setOnClickListener {
             Caches.boards[boardID][listID]
                     .add(Task("Dev Task")).update()
-            finalize()
+            finish()
         }
     }
 
-    private fun taskFromEditText(): Task {
+    override fun createElement(): Task {
         return Task(taskName_editText.text.toString())
     }
 
-    private fun finalize() {
+    override fun finish() {
         taskName_editText.hideSoftKeyboard()
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()

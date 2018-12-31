@@ -56,8 +56,8 @@ class BoardView
             // so a very fast scroll or a hold on an empty list will trigger a drag
 
             override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-                val dragFlags = ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT
-                return makeMovementFlags(dragFlags, 0)
+                return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN
+                        or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0)
             }
 
             override fun isLongPressDragEnabled() = true
@@ -141,6 +141,7 @@ class BoardView
 
 class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
+    // TODO: 31-Dec-18 Why Databse and not Caches?
     val board = Database.boards[boardID] ?: throw ElementNotFoundException(boardID)
 
     lateinit var boardView: BoardView
@@ -237,7 +238,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         // both when the lists are too few and when the lists are too many, but overall it's not
         // too hard
         @FutureIdea 0
-        // the idea above could be used to have the board's board card in the BoardListFragment be the
+        // the idea above could be used to have the board's board card in the ViewBoardListFragment be the
         // picture
         //holder.list.setBackgroundResource(R.mipmap.waqti_icon)
     }

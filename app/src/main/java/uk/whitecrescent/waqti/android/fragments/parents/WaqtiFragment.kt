@@ -17,4 +17,6 @@ abstract class WaqtiFragment : Fragment() {
         viewModel = mainActivity.viewModel
     }
 
+    abstract protected fun finish()
+
 }

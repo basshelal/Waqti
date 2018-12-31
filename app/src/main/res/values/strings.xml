@@ -18,4 +18,5 @@
     <string name="defaultList">Default List</string>
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="addBoard">Add Board</string>
 </resources>

@@ -18,7 +18,7 @@ import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
 
-class ViewListFragment : WaqtiViewFragment() {
+class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
     companion object {
         fun newInstance() = ViewListFragment()
@@ -53,32 +53,32 @@ class ViewListFragment : WaqtiViewFragment() {
                 // TODO: 31-Dec-18 Undo delete would be cool
                 // so a snackbar that says deleted List with a button to undo
                 Caches.deleteTaskList(listID, boardID)
-                finalize()
+                finish()
                 true
             }
             else -> super.onOptionsItemSelected(item)
         }
     }
 
-    private fun setUpViews(taskList: TaskList) {
+    override fun setUpViews(element: TaskList) {
         mainActivity.supportActionBar?.title = "List"
 
-        listName_editTextView.text = SpannableStringBuilder(taskList.name)
+        listName_editTextView.text = SpannableStringBuilder(element.name)
         listName_editTextView.addAfterTextChangedListener {
             if (it != null) {
                 confirmEditList_button.isEnabled =
-                        !(it.isEmpty() || it.isBlank() || it.toString() == taskList.name)
+                        !(it.isEmpty() || it.isBlank() || it.toString() == element.name)
             }
         }
 
         confirmEditList_button.isEnabled = false
         confirmEditList_button.setOnClickListener {
             Caches.taskLists[listID].name = listName_editTextView.text.toString()
-            finalize()
+            finish()
         }
     }
 
-    private fun finalize() {
+    override fun finish() {
         listName_editTextView.hideSoftKeyboard()
         mainActivity.supportFragmentManager.popBackStack()
     }
