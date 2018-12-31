@@ -29,7 +29,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/listNameHint"
                 android:imeOptions="actionDone"
-                android:inputType="textCapSentences|textAutoCorrect"
+                android:inputType="textCapSentences|textAutoCorrect|text"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
                 android:textColor="@color/black"

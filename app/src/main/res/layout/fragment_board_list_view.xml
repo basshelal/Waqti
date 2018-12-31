@@ -26,7 +26,7 @@
             android:layout_marginBottom="8dp"
             android:hint="@string/allBoards"
             android:imeOptions="actionDone"
-            android:inputType="textCapSentences|textAutoCorrect"
+            android:inputType="textCapSentences|textAutoCorrect|text"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
             android:textColor="@color/black"

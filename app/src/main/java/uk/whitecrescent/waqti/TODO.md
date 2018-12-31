@@ -1,14 +1,10 @@
-# TODO (Short)
+# TODO
 
-* Test and Document all Task Subsystem
+* Update Markdown Documentation 
 
-* Test and Document all Collections Subsystem
+* Test and Document the entire back-end to be ready for release
 
 * Add features not yet implemented in the back end
-
-# TODO (Long)
-
-* Write/Update Markdown Documentation 
 
 * Write stories tests to test as many possible scenarios, here we try to write tests to break the thing
 

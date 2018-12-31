@@ -330,7 +330,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
     }
 }
 
-private data class DragEventLocalState(
+data class DragEventLocalState(
         var taskID: ID,
         var taskListID: ID,
         var adapterPosition: Int) {

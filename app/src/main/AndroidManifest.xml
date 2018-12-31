@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="uk.whitecrescent.waqti">
 
-    <!--<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:name=".android.App"

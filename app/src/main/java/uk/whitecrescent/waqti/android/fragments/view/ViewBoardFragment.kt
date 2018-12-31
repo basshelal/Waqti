@@ -1,7 +1,12 @@
 package uk.whitecrescent.waqti.android.fragments.view
 
+import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.os.VibrationEffect
+import android.os.Vibrator
 import android.text.SpannableStringBuilder
+import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +18,7 @@ import uk.whitecrescent.waqti.android.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.customview.recyclerviews.BoardAdapter
+import uk.whitecrescent.waqti.android.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.android.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
@@ -98,6 +104,43 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     },
                     100L
             )
+        }
+
+        delete_floatingButton.alpha = 0F
+        delete_floatingButton.setOnDragListener { view, event ->
+            if (event.localState is DragEventLocalState) {
+                val draggingState = event.localState as DragEventLocalState
+                when (event.action) {
+                    DragEvent.ACTION_DRAG_STARTED -> {
+                        delete_floatingButton.alpha = 1F
+                    }
+                    DragEvent.ACTION_DRAG_ENTERED -> {
+                        val vibrator = mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
+                        if (Build.VERSION.SDK_INT >= 26) {
+                            vibrator.vibrate(VibrationEffect.createOneShot(
+                                    10,
+                                    VibrationEffect.DEFAULT_AMPLITUDE))
+                        } else {
+                            @Suppress("DEPRECATION")
+                            vibrator.vibrate(10)
+                        }
+                    }
+                    DragEvent.ACTION_DROP -> {
+                        MaterialConfirmDialog().apply {
+                            title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteTaskQuestion)
+                            onConfirm = View.OnClickListener {
+                                this.dismiss()
+                                Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
+                                this@ViewBoardFragment.boardView.boardAdapter.notifyDataSetChanged()
+                            }
+                        }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+                    }
+                    DragEvent.ACTION_DRAG_ENDED -> {
+                        delete_floatingButton.alpha = 0F
+                    }
+                }
+            }
+            true
         }
     }
 

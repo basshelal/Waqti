@@ -30,7 +30,7 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/boardNameHint"
                 android:imeOptions="actionDone"
-                android:inputType="textCapSentences|textAutoCorrect"
+                android:inputType="textCapSentences|textAutoCorrect|text"
                 android:textAlignment="center"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
                 android:textColor="@color/black"
@@ -78,6 +78,18 @@
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/delete_floatingButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:fabSize="normal"
+        android:backgroundTint="@color/design_default_color_error"
+        android:clickable="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/boardName_cardView"
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

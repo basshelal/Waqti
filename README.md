@@ -4,6 +4,8 @@ README last updated on Mon-31-Dec-18
 
 ![Waqti Demo Mon-31-Dec-18](WaqtiDemo-31-Dec-18.gif)
 
+[Short Feature Demo Mon-31-Dec-18](https://www.youtube.com/watch?v=M1I4selR5lw)
+
 ## Overview
 
 Waqti (My Time in Arabic) is a Time Management System based on boards and lists, very similar to 
