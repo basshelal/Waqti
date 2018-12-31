@@ -6,12 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
+import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
+import uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListAdapter
+import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
+import uk.whitecrescent.waqti.android.mainActivity
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
@@ -74,6 +80,21 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                     finish()
                 }
             }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+        }
+
+        taskList_recyclerView.adapter = TaskListAdapter(listID)
+
+        addTask_floatingButton.setOnClickListener {
+            @GoToFragment()
+            it.mainActivity.supportFragmentManager.beginTransaction().apply {
+
+                it.mainActivity.viewModel.boardID = boardID
+                it.mainActivity.viewModel.listID = listID
+
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                replace(R.id.fragmentContainer, CreateTaskFragment.newInstance(), CREATE_TASK_FRAGMENT)
+                addToBackStack("")
+            }.commit()
         }
 
         confirmEditList_button.isEnabled = false

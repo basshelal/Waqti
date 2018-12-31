@@ -129,7 +129,7 @@ class BoardListAdapter(val boardListID: ID) : RecyclerView.Adapter<BoardListView
     }
 
     override fun onBindViewHolder(holder: BoardListViewHolder, position: Int) {
-        holder.itemView.boardName_textView.text = boardList[position].name + " id: ${boardList[position].id}"
+        holder.itemView.boardName_textView.text = boardList[position].name
         holder.itemView.boardCard_cardView.setOnClickListener {
             @GoToFragment()
             it.mainActivity.supportFragmentManager.beginTransaction().apply {

@@ -19,6 +19,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.VIEW_LIST_FRAGMENT
+import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.android.mainActivity
@@ -181,8 +182,8 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
         matchOrder()
 
-        holder.header.text = "${board[position].name} id: ${board[position].id}"
-        holder.footer.text = "Add Task"
+        holder.header.text = board[position].name
+        holder.footer.text = boardView.mainActivity.getText(R.string.addTask)
 
         holder.header.setOnClickListener {
             @GoToFragment()
@@ -216,12 +217,27 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 setOnMenuItemClickListener {
                     return@setOnMenuItemClickListener when (it.itemId) {
                         R.id.deleteList_menuItem -> {
+
                             if (holder.adapterPosition != -1) {
+                                MaterialConfirmDialog().apply {
+                                    title = boardView.mainActivity.getString(R.string.deleteListQuestion)
+                                    message = boardView.mainActivity.getString(R.string.deleteListDetails)
+                                    onConfirm = View.OnClickListener {
+                                        this.dismiss()
+                                        boardView.removeListAdapterIfExists(holder.list.listAdapter)
+                                        board.removeAt(holder.adapterPosition).update()
+                                        notifyDataSetChanged()
+                                    }
+                                }.show(boardView.mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+                                true
+                            } else false
+
+                            /*if (holder.adapterPosition != -1) {
                                 boardView.removeListAdapterIfExists(holder.list.listAdapter)
                                 board.removeAt(holder.adapterPosition).update()
                                 notifyDataSetChanged()
                                 true
-                            } else false
+                            } else false*/
                         }
                         else -> false
                     }
@@ -230,14 +246,13 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         }
 
 
-        @FutureIdea
+        @FutureIdea 0
         // TODO: 29-Dec-18 Setting a background image isn't impossible
         // generally what we'd need to do is have the image saved and divide it by the number of
         // lists there are in the board, then in onBindViewHolder for the Board we'd set that
         // list's background as that page of the overall image, there will be stretching though,
         // both when the lists are too few and when the lists are too many, but overall it's not
         // too hard
-        @FutureIdea 0
         // the idea above could be used to have the board's board card in the ViewBoardListFragment be the
         // picture
         //holder.list.setBackgroundResource(R.mipmap.waqti_icon)

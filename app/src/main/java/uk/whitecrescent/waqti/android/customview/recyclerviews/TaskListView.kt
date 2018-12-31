@@ -107,7 +107,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
 
-        holder.itemView.task_textView.text = "${taskList[position].name} id: ${taskList[position].id}"
+        holder.itemView.task_textView.text = taskList[position].name
         holder.taskID = taskList[position].id
         holder.taskListID = this.taskListID
 
