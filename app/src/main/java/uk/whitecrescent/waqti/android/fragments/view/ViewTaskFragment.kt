@@ -1,17 +1,18 @@
 package uk.whitecrescent.waqti.android.fragments.view
 
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.fragment_view_task.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.customview.dialogs.MaterialEditTextDialog
+import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
+import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
@@ -47,21 +48,9 @@ class ViewTaskFragment : WaqtiViewFragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.renameTask_menuItem -> {
-                viewModel.taskID = this.taskID
-                MaterialEditTextDialog().show(
-                        mainActivity.supportFragmentManager.beginTransaction().apply {
-                            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                            addToBackStack("")
-                        },
-                        "EditTextDialog"
-                )
-                true
-            }
             R.id.deleteTask_menuItem -> {
-                Caches.taskLists[listID].remove(taskID).update()
-                Caches.tasks.remove(taskID)
-                mainActivity.supportFragmentManager.popBackStack()
+                Caches.deleteTask(taskID, listID)
+                finalize()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -70,11 +59,24 @@ class ViewTaskFragment : WaqtiViewFragment() {
 
     private fun setUpViews(task: Task) {
         mainActivity.supportActionBar?.title = "Task"
-        taskName_textView.text = task.name
+
+        taskName_editTextView.text = SpannableStringBuilder(task.name)
+        taskName_editTextView.addAfterTextChangedListener {
+            if (it != null) {
+                confirmEditTask_button.isEnabled =
+                        !(it.isEmpty() || it.isBlank() || it.toString() == task.name)
+            }
+        }
+
+        confirmEditTask_button.isEnabled = false
+        confirmEditTask_button.setOnClickListener {
+            Caches.tasks[viewModel.taskID].changeName(taskName_editTextView.text.toString())
+            finalize()
+        }
     }
 
-    fun updateText() {
-        setUpViews(Caches.tasks[taskID])
+    private fun finalize() {
+        taskName_editTextView.hideSoftKeyboard()
+        mainActivity.supportFragmentManager.popBackStack()
     }
-
 }

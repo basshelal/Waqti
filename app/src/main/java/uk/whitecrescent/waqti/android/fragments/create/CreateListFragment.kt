@@ -1,13 +1,14 @@
 package uk.whitecrescent.waqti.android.fragments.create
 
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_create_list.*
+import uk.whitecrescent.waqti.BuildConfig
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
+import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.android.openKeyboard
@@ -31,46 +32,35 @@ class CreateListFragment : WaqtiCreateFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mainActivity.supportActionBar?.title = "New List"
-
         boardID = viewModel.boardID
 
-        focusListNameTextView()
-
-        setUpButtonOnClick()
+        setUpViews()
 
     }
 
-    private fun focusListNameTextView() {
+    private fun setUpViews() {
+        if (!BuildConfig.DEBUG) dev_addList_button.visibility = View.GONE
+
+        mainActivity.supportActionBar?.title = "New List"
+
         listName_editText.openKeyboard()
-    }
 
-    private fun setUpButtonOnClick() {
-        addList_button.setOnClickListener {
-            val text = listName_editText.text
-            if (text == null || text.isEmpty() || text.isBlank()) {
-                textIsIncorrect()
-            } else {
-                textIsCorrect()
+        listName_editText.addAfterTextChangedListener {
+            if (it != null) {
+                addList_button.isEnabled = !(it.isEmpty() || it.isBlank())
             }
         }
 
-        dev_addList_button.setOnClickListener {
-            Caches.boards[boardID]
-                    .add(TaskList("Dev TaskList")).update()
+        addList_button.isEnabled = false
+        addList_button.setOnClickListener {
+            Caches.boards[boardID].add(listFromEditText()).update()
             finalize()
         }
-    }
 
-    private fun textIsIncorrect() {
-        listName_editText.setHintTextColor(Color.RED)
-        listName_editText.hint = "List name cannot be empty!"
-    }
-
-    private fun textIsCorrect() {
-        Caches.boards[boardID]
-                .add(listFromEditText()).update()
-        finalize()
+        dev_addList_button.setOnClickListener {
+            Caches.boards[boardID].add(TaskList("Dev TaskList")).update()
+            finalize()
+        }
     }
 
     private fun listFromEditText(): TaskList {

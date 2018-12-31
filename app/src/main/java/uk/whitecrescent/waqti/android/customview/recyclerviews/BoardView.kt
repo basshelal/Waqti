@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
+import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.GoToFragment
@@ -21,8 +22,6 @@ import uk.whitecrescent.waqti.android.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.android.mainActivity
-import uk.whitecrescent.waqti.android.snackBar
-import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID
@@ -97,6 +96,7 @@ class BoardView
                     matchOrder()
                     notifyItemMoved(fromPos, toPos)
                 }
+                mainActivity.viewModel.boardPosition = true to toPos
             }
 
             override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int,
@@ -221,10 +221,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                                 notifyDataSetChanged()
                                 true
                             } else false
-                        }
-                        R.id.renameList_menuItem -> {
-                            boardView.snackBar("Clicked Rename List")
-                            true
                         }
                         else -> false
                     }

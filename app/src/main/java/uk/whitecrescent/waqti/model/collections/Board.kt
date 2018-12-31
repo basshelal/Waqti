@@ -37,6 +37,13 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
         }
     }
 
+    override fun clear(): AbstractWaqtiList<TaskList> {
+        forEach { it.clear().update() }
+        val toRemove = this.toList()
+        Caches.taskLists.remove(toRemove)
+        return super.clear()
+    }
+
     override fun removeAt(index: Int): AbstractWaqtiList<TaskList> {
         val listToRemove = this[index]
         listToRemove.clear().update()

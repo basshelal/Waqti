@@ -35,7 +35,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_action_name" />
+            app:srcCompat="@drawable/overflow_icon" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListView

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/renameTask_menuItem"
-        android:title="@string/renameTask" />
-    <item
+
         android:id="@+id/deleteTask_menuItem"
-        android:title="@string/deleteTask" />
+        android:icon="@drawable/delete_icon"
+        android:title="@string/deleteTask"
+        app:showAsAction="ifRoom" />
 </menu>

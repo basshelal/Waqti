@@ -8,15 +8,14 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.board_card.view.*
+import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.BOARD_FRAGMENT
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.android.mainActivity
-import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
@@ -58,8 +57,6 @@ class BoardListView
             }
 
         }).attachToRecyclerView(this)
-
-        LinearSnapHelper().attachToRecyclerView(this)
     }
 
 }

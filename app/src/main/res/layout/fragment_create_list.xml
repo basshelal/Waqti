@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/addList_button"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
+    <uk.whitecrescent.waqti.android.customview.EditTextView
         android:id="@+id/listName_editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -22,7 +22,10 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:hint="@string/listNameHint"
-        android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
+        android:inputType="textCapSentences|textAutoCorrect"
+        android:textAlignment="center"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+        android:textIsSelectable="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

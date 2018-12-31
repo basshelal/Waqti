@@ -1,9 +1,10 @@
 package uk.whitecrescent.waqti.model.persistence
 
-import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.NeedsOptimization
+import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.collections.TaskList
+import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
@@ -79,6 +80,20 @@ object Caches {
                 allCaches.forEach { it.clearAll().commit() }
             }
         }
+    }
+
+    fun deleteTask(taskID: ID, listID: ID) {
+        Caches.taskLists[listID].remove(taskID).update()
+        Caches.tasks.remove(taskID)
+    }
+
+    fun deleteTaskList(taskListID: ID, boardID: ID) {
+        Caches.taskLists[taskListID].clear().update()
+        Caches.boards[boardID].remove(taskListID).update()
+    }
+
+    fun deleteBoard(boardID: ID) {
+        Caches.boards[boardID].clear().update()
     }
 
 }

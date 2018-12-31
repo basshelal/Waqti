@@ -1,21 +1,8 @@
 package uk.whitecrescent.waqti.android.customview.dialogs
 
-import android.app.Dialog
-import android.content.DialogInterface
-import android.graphics.Color
-import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
-import kotlinx.android.synthetic.main.dialog_edit_text.*
-import uk.whitecrescent.waqti.Inconvenience
-import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.VIEW_TASK_FRAGMENT
-import uk.whitecrescent.waqti.android.fragments.view.ViewTaskFragment
-import uk.whitecrescent.waqti.android.openKeyboard
-import uk.whitecrescent.waqti.model.persistence.Caches
-
 class EditTextDialog : WaqtiDialog() {
 
-    lateinit var dialog: AlertDialog
+    /*lateinit var dialog: AlertDialog
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         if (activity != null) {
@@ -74,5 +61,5 @@ class EditTextDialog : WaqtiDialog() {
 
     private fun focusTextView() {
         dialog.dialog_editText.openKeyboard()
-    }
+    }*/
 }

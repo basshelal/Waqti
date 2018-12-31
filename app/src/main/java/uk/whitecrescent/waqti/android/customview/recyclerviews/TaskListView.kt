@@ -10,7 +10,6 @@ import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -166,25 +165,6 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
             }
             return@setOnDragListener true
         }
-
-
-        holder.itemView.delete_button.setOnClickListener {
-            PopupMenu(it.context, it).apply {
-                inflate(R.menu.menu_task)
-                setOnMenuItemClickListener {
-                    return@setOnMenuItemClickListener when (it.itemId) {
-                        R.id.deleteTask_menuItem -> {
-                            if (holder.adapterPosition != -1) {
-                                taskList.removeAt(holder.adapterPosition).update()
-                                notifyDataSetChanged()
-                                true
-                            } else false
-                        }
-                        else -> false
-                    }
-                }
-            }.show()
-        }
     }
 
     private fun onDrag(draggingState: DragEventLocalState, holder: TaskViewHolder): Boolean {
@@ -324,6 +304,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                         val pos = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
                         smoothScrollToPosition(pos)
+                        mainActivity.viewModel.boardPosition = true to pos
 
                     },
                     450L
