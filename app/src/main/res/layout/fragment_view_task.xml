@@ -4,21 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <uk.whitecrescent.waqti.android.customview.EditTextView
-        android:id="@+id/taskName_editTextView"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:hint="@string/taskNameHint"
-        android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-        android:textIsSelectable="true"
+        android:backgroundTint="@color/primaryColor"
+        app:cardCornerRadius="0dp"
+        app:cardElevation="14dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <uk.whitecrescent.waqti.android.customview.EditTextView
+            android:id="@+id/taskName_editTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:hint="@string/taskNameHint"
+            android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            android:textColor="@color/black"
+            android:textIsSelectable="true" />
+    </androidx.cardview.widget.CardView>
+
 
     <Button
         android:id="@+id/confirmEditTask_button"

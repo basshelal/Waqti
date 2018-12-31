@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <androidx.cardview.widget.CardView
+        android:id="@+id/listName_cardView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:backgroundTint="@color/primaryColor"
@@ -15,14 +17,15 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <uk.whitecrescent.waqti.android.customview.EditTextView
-            android:id="@+id/listName_editTextView"
+            android:id="@+id/boardListName_editTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:hint="@string/listNameHint"
+            android:hint="@string/allBoards"
+            android:imeOptions="actionDone"
             android:inputType="textCapSentences|textAutoCorrect"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
@@ -31,15 +34,29 @@
 
     </androidx.cardview.widget.CardView>
 
-
-    <Button
-        android:id="@+id/confirmEditList_button"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/addBoard_FloatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/confirm"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:src="@android:drawable/ic_menu_add"
+        app:backgroundTint="@color/secondaryColor"
+        app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <uk.whitecrescent.waqti.android.customview.recyclerviews.BoardListView
+        android:id="@+id/boardsList_recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/listName_cardView"
+        tools:listitem="@layout/board_card" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

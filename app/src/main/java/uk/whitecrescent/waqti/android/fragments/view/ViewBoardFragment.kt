@@ -1,12 +1,14 @@
 package uk.whitecrescent.waqti.android.fragments.view
 
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import uk.whitecrescent.waqti.R
@@ -15,6 +17,7 @@ import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.android.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
+import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.android.mainActivity
 import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.collections.Board
@@ -64,6 +67,22 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     override fun setUpViews(element: Board) {
         mainActivity.supportActionBar?.title =
                 "Board - ${element.name} ${element.id} "
+
+        boardName_editTextView.text = SpannableStringBuilder(element.name)
+        boardName_editTextView.setOnEditorActionListener { textView, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (textView.text != null &&
+                        textView.text.isNotBlank() &&
+                        textView.text.isNotEmpty()) {
+                    if (textView.text != element.name) {
+                        Caches.boards[boardID].name = boardName_editTextView.text.toString()
+                    }
+                }
+                textView.clearFocus()
+                textView.hideSoftKeyboard()
+                true
+            } else false
+        }
 
         boardView.adapter = BoardAdapter(element.id)
 

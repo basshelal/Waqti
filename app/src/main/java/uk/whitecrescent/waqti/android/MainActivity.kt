@@ -1,5 +1,7 @@
 package uk.whitecrescent.waqti.android
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
@@ -27,5 +29,9 @@ class MainActivity : AppCompatActivity() {
             add(R.id.fragmentContainer, ViewBoardListFragment.newInstance(), BOARD_LIST_FRAGMENT)
             setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }.commit()
+    }
+
+    fun getWaqtiSharedPreferences(): SharedPreferences {
+        return getSharedPreferences(WAQTI_SHARED_PREFERENCES, Context.MODE_PRIVATE)
     }
 }

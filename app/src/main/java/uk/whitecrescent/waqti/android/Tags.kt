@@ -7,3 +7,6 @@ const val VIEW_TASK_FRAGMENT = "ViewTaskFragment"
 const val CREATE_LIST_FRAGMENT = "CreateListFragment"
 const val VIEW_LIST_FRAGMENT = "ViewListFragment"
 const val CREATE_BOARD_FRAGMENT = "CreateBoardFragment"
+
+const val WAQTI_SHARED_PREFERENCES = "WaqtiSharedPreferences"
+const val BOARD_LIST_NAME_PREFERENCES_KEY = "BoardListName"

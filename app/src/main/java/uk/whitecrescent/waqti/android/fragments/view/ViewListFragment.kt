@@ -8,6 +8,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.R
@@ -70,6 +71,21 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                         !(it.isEmpty() || it.isBlank() || it.toString() == element.name)
             }
         }
+        listName_editTextView.setOnEditorActionListener { textView, actionId, event ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (textView.text != null &&
+                        textView.text.isNotBlank() &&
+                        textView.text.isNotEmpty()) {
+                    if (textView.text != element.name) {
+                        Caches.taskLists[listID].name = listName_editTextView.text.toString()
+                    }
+                }
+                textView.clearFocus()
+                textView.hideSoftKeyboard()
+                true
+            } else false
+        }
+
 
         confirmEditList_button.isEnabled = false
         confirmEditList_button.setOnClickListener {
