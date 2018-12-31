@@ -134,7 +134,7 @@ class BoardListAdapter(val boardListID: ID) : RecyclerView.Adapter<BoardListView
             @GoToFragment()
             it.mainActivity.supportFragmentManager.beginTransaction().apply {
 
-                it.mainActivity.viewModel.boardID = boardList[position].id
+                it.mainActivity.viewModel.boardID = boardList[holder.adapterPosition].id
 
                 it.mainActivity.viewModel.boardListPosition = false to position
 

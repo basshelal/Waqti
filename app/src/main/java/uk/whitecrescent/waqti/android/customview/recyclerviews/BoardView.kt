@@ -189,7 +189,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             @GoToFragment()
             it.mainActivity.supportFragmentManager.beginTransaction().apply {
 
-                it.mainActivity.viewModel.listID = board[position].id
+                it.mainActivity.viewModel.listID = board[holder.adapterPosition].id
 
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")

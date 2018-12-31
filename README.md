@@ -1,8 +1,8 @@
 # Waqti Android (Work in Progress)
 
-README last updated on Thur-27-Dec-18
+README last updated on Mon-31-Dec-18
 
-![Waqti Demo Thur-27-Dec-18](WaqtiDemo-27-Dec-18.gif)
+![Waqti Demo Mon-31-Dec-18](WaqtiDemo-31-Dec-18.gif)
 
 ## Overview
 
@@ -13,6 +13,17 @@ Waqti was motivated by a frustration with using Trello as a daily time managemen
 is excellent for many applications, particularly project management, but lacks in terms of being 
 a personal time management system. Waqti is intended to fill the gaps where Trello fails in this 
 regard.
+
+## Current Functionality
+
+Currently the application is fully usable with minimal functionality.
+
+Currently (Mon-31-Dec-18) the user can: 
+
+* View, rename and delete boards, lists and tasks
+* Create new boards, lists and tasks
+* Reorder boards lists and tasks
+* Rename the container of all the boards and reorder the boards in it
 
 ## Implementation Details
 
@@ -25,7 +36,7 @@ at least in terms of models, so in theory the entire back-end can be transferred
 platform such as JavaFX while only changing the front-end and possibly the database (ObjectBox, 
 our database, is available on Desktop and Server Applications as well as Android).
 
-Currently the back-end (Models and Database) are almost completely finished and some basic 
+Currently the back-end (Models and Database) are almost completely finished and some minimal 
 front-end is usable as well. Waqti uses a Single-Activity design so all Android UI controllers 
 are Fragments within the same Activity, thus they can share resources among each other, 
 particularly the Activity's ViewModel.
