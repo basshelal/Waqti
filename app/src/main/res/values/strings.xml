@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Waqti</string>
+    <string name="waqti">Waqti</string>
     <string name="defaultTask">Default Task</string>
     <string name="defaultTaskName">Default Task Name</string>
     <string name="defaultDeadline">Default Deadline</string>
@@ -20,4 +20,12 @@
     <string name="cancel">Cancel</string>
     <string name="addBoard">Add Board</string>
     <string name="allBoards">All Boards</string>
+    <string name="confirmDialog">Confirm Dialog</string>
+    <string name="confirmDialogMessage">Confirm Dialog Message</string>
+    <string name="deleteTaskQuestion">Delete Task?</string>
+    <string name="deleteListQuestion">Delete List?</string>
+    <string name="deleteListDetails">This will delete all the tasks in this list</string>
+    <string name="deleteBoardQuestion">Delete Board?</string>
+    <string name="deleteBoardDetails">This will delete all the tasks and lists in this
+        board</string>
 </resources>

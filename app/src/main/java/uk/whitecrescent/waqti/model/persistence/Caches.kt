@@ -94,9 +94,9 @@ object Caches {
         Caches.boards[boardID].remove(taskListID).update()
     }
 
-    fun deleteBoard(boardID: ID, boardListID: ID) {
+    fun deleteBoard(boardID: ID) {
         Caches.boards[boardID].clear().update()
-        Caches.boardLists[boardListID].remove(boardID).update()
+        Caches.boardLists.first().remove(boardID).update()
     }
 
 }

@@ -14,7 +14,7 @@
 
             <!--Title-->
             <TextView
-                android:id="@+id/title"
+                android:id="@+id/title_taskCard"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="@string/defaultTaskName"
@@ -30,9 +30,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:layout_constraintLeft_toLeftOf="@id/title"
-                app:layout_constraintRight_toRightOf="@id/title"
-                app:layout_constraintTop_toBottomOf="@id/title" />
+                app:layout_constraintLeft_toLeftOf="@id/title_taskCard"
+                app:layout_constraintRight_toRightOf="@id/title_taskCard"
+                app:layout_constraintTop_toBottomOf="@id/title_taskCard" />
 
             <!--
                 All Other Properties

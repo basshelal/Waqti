@@ -3,9 +3,6 @@ package uk.whitecrescent.waqti.android.fragments.view
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -14,12 +11,12 @@ import kotlinx.android.synthetic.main.fragment_board_view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.android.GoToFragment
+import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.android.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.android.mainActivity
-import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
@@ -45,25 +42,6 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         setUpViews(Caches.boards[boardID])
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_board, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.renameBoard_menuItem -> {
-                boardView.snackBar("Rename board clicked")
-                true
-            }
-            R.id.deleteBoard_menuItem -> {
-                boardView.snackBar("Delete board clicked")
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun setUpViews(element: Board) {
         mainActivity.supportActionBar?.title =
                 "Board - ${element.name} ${element.id} "
@@ -82,6 +60,18 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 textView.hideSoftKeyboard()
                 true
             } else false
+        }
+
+        deleteBoard_imageButton.setOnClickListener {
+            MaterialConfirmDialog().apply {
+                title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardQuestion)
+                message = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardDetails)
+                onConfirm = View.OnClickListener {
+                    this.dismiss()
+                    Caches.deleteBoard(boardID)
+                    finish()
+                }
+            }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
         }
 
         boardView.adapter = BoardAdapter(element.id)
@@ -112,6 +102,6 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     }
 
     override fun finish() {
-
+        mainActivity.supportFragmentManager.popBackStack()
     }
 }

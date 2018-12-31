@@ -9,13 +9,13 @@
         android:name=".android.App"
         android:allowBackup="true"
         android:icon="@mipmap/waqti_icon"
-        android:label="@string/app_name"
+        android:label="@string/waqti"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Launcher"
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".android.MainActivity"
-            android:label="@string/app_name"
+            android:label="@string/waqti"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -14,23 +14,43 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <uk.whitecrescent.waqti.android.customview.EditTextView
-            android:id="@+id/listName_editTextView"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:hint="@string/listNameHint"
-            android:inputType="textCapSentences|textAutoCorrect"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-            android:textColor="@color/black"
-            android:textIsSelectable="true" />
+            android:layout_marginBottom="8dp">
+
+            <uk.whitecrescent.waqti.android.customview.EditTextView
+                android:id="@+id/listName_editTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:hint="@string/listNameHint"
+                android:inputType="textCapSentences|textAutoCorrect"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                android:textColor="@color/black"
+                android:textIsSelectable="true"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/deleteList_imageButton"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageButton
+                android:id="@+id/deleteList_imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/primaryColor"
+                android:contentDescription="@string/deleteList"
+                android:src="@drawable/delete_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.cardview.widget.CardView>
-
 
     <Button
         android:id="@+id/confirmEditList_button"

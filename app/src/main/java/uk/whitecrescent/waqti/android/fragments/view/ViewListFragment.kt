@@ -3,16 +3,13 @@ package uk.whitecrescent.waqti.android.fragments.view
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.fragment_view_list.*
-import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
+import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.model.collections.TaskList
@@ -42,25 +39,6 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
         setUpViews(Caches.taskLists[listID])
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_list, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.deleteList_menuItem -> {
-                @FutureIdea
-                // TODO: 31-Dec-18 Undo delete would be cool
-                // so a snackbar that says deleted List with a button to undo
-                Caches.deleteTaskList(listID, boardID)
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun setUpViews(element: TaskList) {
         mainActivity.supportActionBar?.title = "List"
 
@@ -86,6 +64,17 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
             } else false
         }
 
+        deleteList_imageButton.setOnClickListener {
+            MaterialConfirmDialog().apply {
+                title = this@ViewListFragment.mainActivity.getString(R.string.deleteListQuestion)
+                message = this@ViewListFragment.mainActivity.getString(R.string.deleteListDetails)
+                onConfirm = View.OnClickListener {
+                    this.dismiss()
+                    Caches.deleteTaskList(listID, boardID)
+                    finish()
+                }
+            }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+        }
 
         confirmEditList_button.isEnabled = false
         confirmEditList_button.setOnClickListener {

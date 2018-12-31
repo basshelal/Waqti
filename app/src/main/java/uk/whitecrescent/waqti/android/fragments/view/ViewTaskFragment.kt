@@ -3,15 +3,14 @@ package uk.whitecrescent.waqti.android.fragments.view
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.fragment_view_task.*
+import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
+import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -42,22 +41,6 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_task, menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.deleteTask_menuItem -> {
-                Caches.deleteTask(taskID, listID)
-                finish()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     override fun setUpViews(element: Task) {
         mainActivity.supportActionBar?.title = "Task"
 
@@ -83,6 +66,19 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
             } else false
         }
 
+        deleteTask_imageButton.setOnClickListener {
+            MaterialConfirmDialog().apply {
+                title = this@ViewTaskFragment.mainActivity.getString(R.string.deleteTaskQuestion)
+                onConfirm = View.OnClickListener {
+                    @FutureIdea
+                    // TODO: 31-Dec-18 Undo delete would be cool
+                    // so a snackbar that says deleted task with a button to undo
+                    this.dismiss()
+                    Caches.deleteTask(taskID, listID)
+                    finish()
+                }
+            }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+        }
 
         confirmEditTask_button.isEnabled = false
         confirmEditTask_button.setOnClickListener {
