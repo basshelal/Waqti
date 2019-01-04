@@ -22,10 +22,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:hint="@string/listNameHint"
-        android:inputType="textCapSentences|textAutoCorrect|text"
-        android:textAlignment="center"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-        android:textIsSelectable="true"
+        android:inputType="textCapSentences|textAutoCorrect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

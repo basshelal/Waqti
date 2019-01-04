@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusableInTouchMode="true">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/listName_cardView"
@@ -26,11 +27,7 @@
             android:layout_marginBottom="8dp"
             android:hint="@string/allBoards"
             android:imeOptions="actionDone"
-            android:inputType="textCapSentences|textAutoCorrect|text"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
-            android:textColor="@color/black"
-            android:textIsSelectable="true" />
+            android:inputType="textCapSentences|textAutoCorrect" />
 
     </androidx.cardview.widget.CardView>
 
