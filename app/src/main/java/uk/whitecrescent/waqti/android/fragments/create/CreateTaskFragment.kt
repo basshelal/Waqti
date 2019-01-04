@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import uk.whitecrescent.waqti.BuildConfig
+import uk.whitecrescent.waqti.ForLater
+import uk.whitecrescent.waqti.MissingFeature
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
@@ -13,6 +15,7 @@ import uk.whitecrescent.waqti.android.customview.dialogs.MaterialDateTimePickerD
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.android.openKeyboard
+import uk.whitecrescent.waqti.formattedString
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.ID
@@ -69,12 +72,16 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
             }
         }
 
+        @MissingFeature
+        @ForLater
+        // TODO: 04-Jan-19 Remember to allow to remove the property after it's been set, either somewhere here or in the Dialog
         taskTime_button.apply {
             setOnClickListener {
                 MaterialDateTimePickerDialog().apply {
                     onConfirm = {
                         viewModel.createdTaskTime = it
-                        this.dismiss()
+                        this@CreateTaskFragment.taskTime_button.text = it.formattedString
+                        dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
@@ -84,7 +91,10 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
     override fun createElement(): Task {
         return Task(taskName_editText.text.toString()).apply {
-            if (viewModel.createdTaskTime != DEFAULT_TIME) setTimePropertyValue(viewModel.createdTaskTime)
+            if (viewModel.createdTaskTime != DEFAULT_TIME) {
+                if (taskTimeConstraint_checkBox.isChecked) setTimeConstraintValue(viewModel.createdTaskTime)
+                else setTimePropertyValue(viewModel.createdTaskTime)
+            }
         }
     }
 

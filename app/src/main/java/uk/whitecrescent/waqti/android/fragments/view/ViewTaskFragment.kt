@@ -94,9 +94,12 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
         }
 
         taskTime_button.apply {
-            if (element.time != DEFAULT_TIME_PROPERTY) {
-                text = element.time.value.formattedString
-            } else this.visibility = View.GONE
+            element.time.let {
+                if (it != DEFAULT_TIME_PROPERTY) {
+                    if (it.isConstrained) text = "Constraint: ${it.value.formattedString}"
+                    else text = "Property: ${it.value.formattedString}"
+                } else this.visibility = View.GONE
+            }
         }
     }
 

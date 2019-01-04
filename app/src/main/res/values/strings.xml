@@ -14,7 +14,9 @@
     <string name="boardNameHint">Board Name</string>
     <string name="listNameHint">List Name</string>
     <string name="allBoards">All Boards</string>
-    <string name="constrainQuestion">Constrain?</string>
+    <string name="constraintQuestion">Constraint?</string>
+    <string name="constrainedHint">Constrained</string>
+    <string name="unconstrainedHint">Unconstrained</string>
 
     <string name="selectTimeProperty">Select Time Property</string>
 

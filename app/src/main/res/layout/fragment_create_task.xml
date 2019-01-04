@@ -27,143 +27,42 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/taskTime_button"
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:text="@string/selectTimeProperty"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-        app:cornerRadius="15dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="@id/taskName_editText"
         app:layout_constraintStart_toStartOf="@id/taskName_editText"
-        app:layout_constraintTop_toBottomOf="@id/taskName_editText"
-        app:rippleColor="@color/primaryLightColor" />
-    <!--
-        <EditText
-            android:id="@+id/editText3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Time"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editText"
-            android:visibility="gone"/>
+        app:layout_constraintTop_toBottomOf="@id/taskName_editText">
 
-        <EditText
-            android:id="@+id/editText4"
+        <CheckBox
+            android:id="@+id/taskTimeConstraint_checkBox"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Duration"
-            app:layout_constraintTop_toBottomOf="@+id/editText3"
-            tools:layout_editor_absoluteX="0dp"
-            android:visibility="gone"/>
+            android:layout_height="match_parent"
+            android:text="@string/constraintQuestion"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Hint"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/taskTime_button"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/editText5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Priority"
-            app:layout_constraintTop_toBottomOf="@+id/editText4"
-            tools:layout_editor_absoluteX="0dp"
-            android:visibility="gone"/>
+        <Button
+            android:id="@+id/taskTime_button"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="@string/selectTimeProperty"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/taskTimeConstraint_checkBox"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:rippleColor="@color/primaryLightColor" />
 
-        <EditText
-            android:id="@+id/editText6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Labels"
-            app:layout_constraintTop_toBottomOf="@+id/editText5"
-            tools:layout_editor_absoluteX="0dp"
-            android:visibility="gone"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <EditText
-            android:id="@+id/editText7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Optional"
-            app:layout_constraintTop_toBottomOf="@+id/editText6"
-            tools:layout_editor_absoluteX="0dp"
-            android:visibility="gone"/>
-
-        <EditText
-            android:id="@+id/editText8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Description"
-            app:layout_constraintTop_toBottomOf="@+id/editText7"
-            tools:layout_editor_absoluteX="0dp"
-            android:visibility="gone"/>
-
-        <EditText
-            android:id="@+id/editText9"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Target"
-            app:layout_constraintTop_toBottomOf="@+id/editText10"
-            tools:layout_editor_absoluteX="0dp"
-            android:visibility="gone"/>
-
-        <EditText
-            android:id="@+id/editText2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Checklist"
-            app:layout_constraintTop_toBottomOf="@+id/editText8"
-            tools:layout_editor_absoluteX="0dp"
-            android:visibility="gone" />
-
-        <EditText
-            android:id="@+id/editText10"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Deadline"
-            app:layout_constraintTop_toBottomOf="@+id/editText2"
-            tools:layout_editor_absoluteX="0dp"
-            android:visibility="gone"/>
-
-        <EditText
-            android:id="@+id/editText11"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Before"
-            app:layout_constraintTop_toBottomOf="@+id/editText9"
-            tools:layout_editor_absoluteX="0dp"
-            android:visibility="gone"/>
-
-        <EditText
-            android:id="@+id/editText12"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:inputType="textPersonName"
-            android:text="SubTasks"
-            app:layout_constraintTop_toBottomOf="@+id/editText11"
-            tools:layout_editor_absoluteX="0dp"
-            android:visibility="gone"/>
-        -->
 
     <Button
         android:id="@+id/addTask_button"
