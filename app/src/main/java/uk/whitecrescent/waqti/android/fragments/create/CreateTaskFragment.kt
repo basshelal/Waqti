@@ -9,10 +9,12 @@ import uk.whitecrescent.waqti.BuildConfig
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
+import uk.whitecrescent.waqti.android.customview.dialogs.MaterialDateTimePickerDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.android.openKeyboard
 import uk.whitecrescent.waqti.model.persistence.Caches
+import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 
@@ -42,31 +44,48 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     override fun setUpViews() {
         if (!BuildConfig.DEBUG) dev_addTask_button.visibility = View.GONE
 
-        mainActivity.supportActionBar?.title = "New Task"
-
-        taskName_editText.openKeyboard()
-
-        taskName_editText.addAfterTextChangedListener {
-            if (it != null) {
-                addTask_button.isEnabled = !(it.isEmpty() || it.isBlank())
+        taskName_editText.apply {
+            openKeyboard()
+            addAfterTextChangedListener {
+                if (it != null) {
+                    addTask_button.isEnabled = !(it.isEmpty() || it.isBlank())
+                }
             }
         }
 
-        addTask_button.isEnabled = false
-        addTask_button.setOnClickListener {
-            Caches.boards[boardID][listID].add(createElement()).update()
-            finish()
+        addTask_button.apply {
+            isEnabled = false
+            setOnClickListener {
+                Caches.boards[boardID][listID].add(createElement()).update()
+                finish()
+            }
         }
 
-        dev_addTask_button.setOnClickListener {
-            Caches.boards[boardID][listID]
-                    .add(Task("Dev Task")).update()
-            finish()
+        dev_addTask_button.apply {
+            setOnClickListener {
+                Caches.boards[boardID][listID]
+                        .add(Task("Dev Task")).update()
+                finish()
+            }
         }
+
+        taskTime_button.apply {
+            setOnClickListener {
+                MaterialDateTimePickerDialog().apply {
+                    onConfirm = {
+                        viewModel.createdTaskTime = it
+                        this.dismiss()
+                    }
+                }.show(mainActivity.supportFragmentManager, "")
+            }
+        }
+
     }
 
     override fun createElement(): Task {
-        return Task(taskName_editText.text.toString())
+        return Task(taskName_editText.text.toString()).apply {
+            if (viewModel.createdTaskTime != DEFAULT_TIME) setTimePropertyValue(viewModel.createdTaskTime)
+        }
     }
 
     override fun finish() {

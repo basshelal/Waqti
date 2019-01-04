@@ -13,7 +13,9 @@ import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
+import uk.whitecrescent.waqti.formattedString
 import uk.whitecrescent.waqti.model.persistence.Caches
+import uk.whitecrescent.waqti.model.task.DEFAULT_TIME_PROPERTY
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 
@@ -42,48 +44,59 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
     }
 
     override fun setUpViews(element: Task) {
-        mainActivity.supportActionBar?.title = "Task"
 
-        taskName_editTextView.text = SpannableStringBuilder(element.name)
-        taskName_editTextView.addAfterTextChangedListener {
-            if (it != null) {
-                confirmEditTask_button.isEnabled =
-                        !(it.isEmpty() || it.isBlank() || it.toString() == element.name)
+        taskName_editTextView.apply {
+            text = SpannableStringBuilder(element.name)
+            addAfterTextChangedListener {
+                if (it != null) {
+                    confirmEditTask_button.isEnabled =
+                            !(it.isEmpty() || it.isBlank() || it.toString() == element.name)
+                }
+            }
+            setOnEditorActionListener { textView, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (textView.text != null &&
+                            textView.text.isNotBlank() &&
+                            textView.text.isNotEmpty()) {
+                        if (textView.text != element.name) {
+                            Caches.tasks[taskID].changeName(taskName_editTextView.text.toString())
+                        }
+                    }
+                    textView.clearFocus()
+                    textView.hideSoftKeyboard()
+                    true
+                } else false
             }
         }
-        taskName_editTextView.setOnEditorActionListener { textView, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (textView.text != null &&
-                        textView.text.isNotBlank() &&
-                        textView.text.isNotEmpty()) {
-                    if (textView.text != element.name) {
-                        Caches.tasks[taskID].changeName(taskName_editTextView.text.toString())
+
+        deleteTask_imageButton.apply {
+            setOnClickListener {
+                MaterialConfirmDialog().apply {
+                    title = this@ViewTaskFragment.mainActivity.getString(R.string.deleteTaskQuestion)
+                    onConfirm = View.OnClickListener {
+                        @FutureIdea
+                        // TODO: 31-Dec-18 Undo delete would be cool
+                        // so a snackbar that says deleted task with a button to undo
+                        this.dismiss()
+                        Caches.deleteTask(taskID, listID)
+                        finish()
                     }
-                }
-                textView.clearFocus()
-                textView.hideSoftKeyboard()
-                true
-            } else false
+                }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+            }
         }
 
-        deleteTask_imageButton.setOnClickListener {
-            MaterialConfirmDialog().apply {
-                title = this@ViewTaskFragment.mainActivity.getString(R.string.deleteTaskQuestion)
-                onConfirm = View.OnClickListener {
-                    @FutureIdea
-                    // TODO: 31-Dec-18 Undo delete would be cool
-                    // so a snackbar that says deleted task with a button to undo
-                    this.dismiss()
-                    Caches.deleteTask(taskID, listID)
-                    finish()
-                }
-            }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+        confirmEditTask_button.apply {
+            isEnabled = false
+            setOnClickListener {
+                Caches.tasks[viewModel.taskID].changeName(taskName_editTextView.text.toString())
+                finish()
+            }
         }
 
-        confirmEditTask_button.isEnabled = false
-        confirmEditTask_button.setOnClickListener {
-            Caches.tasks[viewModel.taskID].changeName(taskName_editTextView.text.toString())
-            finish()
+        taskTime_button.apply {
+            if (element.time != DEFAULT_TIME_PROPERTY) {
+                text = element.time.value.formattedString
+            } else this.visibility = View.GONE
         }
     }
 

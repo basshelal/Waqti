@@ -122,3 +122,9 @@ inline fun last(dayOfWeek: DayOfWeek): Date {
 
 inline val Time.toEpoch: Long
     get() = toEpochSecond(ZoneOffset.UTC)
+
+inline val Time.formattedString: String
+    get() {
+        return "$hour:$minute ${dayOfWeek.toString().toLowerCase().capitalize()} " +
+                "$dayOfMonth ${month.toString().toLowerCase().capitalize()} $year"
+    }

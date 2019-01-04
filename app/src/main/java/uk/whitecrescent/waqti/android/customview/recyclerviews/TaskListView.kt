@@ -16,15 +16,13 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.Inconvenience
-import uk.whitecrescent.waqti.MissingFeature
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.android.mainActivity
 import uk.whitecrescent.waqti.model.collections.AbstractWaqtiList
-import uk.whitecrescent.waqti.model.persistence.Database
-import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
+import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
 import kotlin.math.roundToInt
 
@@ -47,7 +45,7 @@ class TaskListView
 
 class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>() {
 
-    val taskList = Database.taskLists[taskListID] ?: throw ElementNotFoundException(taskListID)
+    val taskList = Caches.taskLists[taskListID]
 
     lateinit var taskListView: TaskListView
 
@@ -66,22 +64,13 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
             val draggingState = event.localState as DragEventLocalState
             when (event.action) {
                 DragEvent.ACTION_DRAG_ENTERED -> {
-
-                    @MissingFeature
-                    @Inconvenience
-                    // TODO: 28-Dec-18 Works when the list is empty but what about when we're dragging
-                    // over the bottom of it when it's not empty
-                    // This is a big inconvenience, close to missing feature because
-                    // without it we can only drag across non empty lists when we drag over a
-                    // Task card
-                    if (this.taskList.isEmpty()) {
+                    if (this.taskListID != draggingState.taskListID &&
+                            draggingState.adapterPosition > this.itemCount - 1) {
                         val otherAdapter = taskListView.boardView.getListAdapter(draggingState.taskListID)
                         if (otherAdapter != null) {
-                            onDragInDifferentList(draggingState, otherAdapter)
-                            dragAcrossLists()
+                            onDragInDifferentLists(draggingState, otherAdapter)
+                            dragAcrossLists(draggingState)
                         }
-                    } else {
-                        //taskListView.snackBar("Dragging over non-empty list")
                     }
 
                 }
@@ -278,7 +267,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         otherAdapter.notifyDataSetChanged()
     }
 
-    private fun onDragInDifferentList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
+    private fun onDragInDifferentLists(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
         val otherTaskList = otherAdapter.taskList
         val task = otherTaskList[draggingState.taskID]
         val newDragPos = this.taskList.nextIndex
@@ -295,7 +284,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         otherAdapter.notifyDataSetChanged()
     }
 
-    private fun dragAcrossLists(draggingState: DragEventLocalState? = null) {
+    private fun dragAcrossLists(draggingState: DragEventLocalState) {
 
         taskListView.boardView.apply {
 
@@ -316,8 +305,9 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                         @Bug
                         // TODO: 29-Dec-18 Alpha changing only works with delay of around 450+,
                         // the view briefly appears
+                        // TODO: 04-Jan-19 Alpha still has loads of issues
 
-                        val position = if (draggingState != null) draggingState.adapterPosition else 0
+                        val position = draggingState.adapterPosition
 
                         this@TaskListAdapter.taskListView
                                 .findViewHolderForAdapterPosition(position)

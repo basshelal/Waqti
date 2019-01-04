@@ -23,8 +23,8 @@ import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.android.mainActivity
-import uk.whitecrescent.waqti.model.persistence.Database
-import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
+import uk.whitecrescent.waqti.model.persistence.Caches
+import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.ID
 
 class BoardView
@@ -142,8 +142,7 @@ class BoardView
 
 class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
-    // TODO: 31-Dec-18 Why Databse and not Caches?
-    val board = Database.boards[boardID] ?: throw ElementNotFoundException(boardID)
+    val board = Caches.boards[boardID]
 
     lateinit var boardView: BoardView
 
@@ -204,6 +203,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
                 it.mainActivity.viewModel.boardID = this@BoardAdapter.boardID
                 it.mainActivity.viewModel.listID = holder.list.listAdapter.taskListID
+                it.mainActivity.viewModel.createdTaskTime = DEFAULT_TIME
 
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 replace(R.id.fragmentContainer, CreateTaskFragment.newInstance(), CREATE_TASK_FRAGMENT)

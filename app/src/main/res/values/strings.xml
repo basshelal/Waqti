@@ -1,25 +1,38 @@
 <resources>
+
     <string name="waqti">Waqti</string>
+
+    <!--Defaults-->
     <string name="defaultTask">Default Task</string>
     <string name="defaultTaskName">Default Task Name</string>
+    <string name="defaultTime">Default Time</string>
     <string name="defaultDeadline">Default Deadline</string>
-    <string name="createTask">Create Task</string>
-    <string name="addTask">Add Task</string>
-    <string name="addList">Add List</string>
+    <string name="defaultList">Default List</string>
+
+    <!--Hints-->
     <string name="taskNameHint">Task Name</string>
     <string name="boardNameHint">Board Name</string>
     <string name="listNameHint">List Name</string>
+    <string name="allBoards">All Boards</string>
+    <string name="constrainQuestion">Constrain?</string>
+
+    <string name="selectTimeProperty">Select Time Property</string>
+
+    <!--Modifications-->
+    <string name="createTask">Create Task</string>
+    <string name="addTask">Add Task</string>
+    <string name="addList">Add List</string>
     <string name="renameTask">Rename Task</string>
     <string name="renameBoard">Rename Board</string>
     <string name="deleteBoard">Delete Board</string>
     <string name="deleteTask">Delete Task</string>
     <string name="deleteList">Delete List</string>
     <string name="renameList">Rename List</string>
-    <string name="defaultList">Default List</string>
+    <string name="addBoard">Add Board</string>
+
+    <!--Dialogs-->
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
-    <string name="addBoard">Add Board</string>
-    <string name="allBoards">All Boards</string>
     <string name="confirmDialog">Confirm Dialog</string>
     <string name="confirmDialogMessage">Confirm Dialog Message</string>
     <string name="deleteTaskQuestion">Delete Task?</string>
@@ -28,4 +41,11 @@
     <string name="deleteBoardQuestion">Delete Board?</string>
     <string name="deleteBoardDetails">This will delete all the tasks and lists in this
         board</string>
+    <string name="pickTimeDialog">Pick Time Dialog</string>
+
+    <string name="next">Next</string>
+
+    <string name="selectDate">Select Date</string>
+    <string name="selectTime">Select Time</string>
+
 </resources>
