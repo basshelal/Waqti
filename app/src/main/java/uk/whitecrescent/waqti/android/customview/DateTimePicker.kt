@@ -49,4 +49,17 @@ class DateTimePicker
         timePicker.visibility = View.VISIBLE
     }
 
+    fun setInitialTime(time: Time) {
+        datePicker.updateDate(time.year, time.monthValue - 1, time.dayOfMonth)
+        timePicker.apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                hour = time.hour
+                minute = time.minute
+            } else @Suppress("DEPRECATION") {
+                currentHour = time.hour
+                currentMinute = time.minute
+            }
+        }
+    }
+
 }

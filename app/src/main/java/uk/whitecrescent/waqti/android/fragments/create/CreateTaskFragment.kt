@@ -6,8 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import uk.whitecrescent.waqti.BuildConfig
-import uk.whitecrescent.waqti.ForLater
-import uk.whitecrescent.waqti.MissingFeature
+import uk.whitecrescent.waqti.FutureIdea
+import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
@@ -44,6 +44,8 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
         setUpViews()
     }
 
+    @FutureIdea
+    // TODO: 16-Jan-19 Draggable Property Cards
     override fun setUpViews() {
         if (!BuildConfig.DEBUG) dev_addTask_button.visibility = View.GONE
 
@@ -72,18 +74,26 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
             }
         }
 
-        @MissingFeature
-        @ForLater
-        // TODO: 04-Jan-19 Remember to allow to remove the property after it's been set, either somewhere here or in the Dialog
-        taskTime_button.apply {
+        @Inconvenience
+        // TODO: 16-Jan-19 Formatted Time String looks ugly, 02:00 becomes 2:0, change this
+
+        taskTime_cardView.apply {
             setOnClickListener {
                 MaterialDateTimePickerDialog().apply {
+                    initialTime = this@CreateTaskFragment.viewModel.createdTaskTime
                     onConfirm = {
                         viewModel.createdTaskTime = it
-                        this@CreateTaskFragment.taskTime_button.text = it.formattedString
+                        this@CreateTaskFragment.selectTime_textView.text = it.formattedString
                         dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
+            }
+        }
+
+        taskTimeClear_imageButton.apply {
+            setOnClickListener {
+                viewModel.createdTaskTime = DEFAULT_TIME
+                selectTime_textView.text = getString(R.string.selectTimeProperty)
             }
         }
 

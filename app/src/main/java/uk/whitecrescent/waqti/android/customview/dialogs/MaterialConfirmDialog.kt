@@ -3,6 +3,8 @@ package uk.whitecrescent.waqti.android.customview.dialogs
 import android.app.Dialog
 import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.dialog_confirm_material.*
 import uk.whitecrescent.waqti.R
@@ -29,6 +31,10 @@ class MaterialConfirmDialog : WaqtiMaterialDialog() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         dialog = BottomSheetDialog(activity!!)
         dialog.setContentView(R.layout.dialog_confirm_material)
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            BottomSheetBehavior.from(bottomSheet!!).state = BottomSheetBehavior.STATE_EXPANDED
+        }
         return dialog
     }
 
