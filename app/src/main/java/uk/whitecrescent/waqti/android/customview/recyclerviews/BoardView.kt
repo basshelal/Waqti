@@ -152,7 +152,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         check(recyclerView is BoardView)
-        boardView = recyclerView as BoardView
+        boardView = recyclerView
     }
 
     override fun getItemCount(): Int {
