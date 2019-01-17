@@ -41,7 +41,7 @@ class DateTimePicker
                     datePicker.dayOfMonth, timePicker.currentHour, timePicker.currentMinute)
         }
 
-        timePicker.setOnTimeChangedListener { v, hourOfDay, minute ->
+        timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
             time = time(datePicker.year, datePicker.month + 1, datePicker.dayOfMonth, hourOfDay, minute)
         }
 

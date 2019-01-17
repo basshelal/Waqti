@@ -7,9 +7,11 @@
     <string name="defaultTaskName">Default Task Name</string>
     <string name="defaultTime">Default Time</string>
     <string name="defaultDeadline">Default Deadline</string>
+    <string name="defaultDescription">Default Description</string>
     <string name="defaultList">Default List</string>
 
     <!--Hints-->
+    <string name="enterTextHint">Enter Text</string>
     <string name="taskNameHint">Task Name</string>
     <string name="boardNameHint">Board Name</string>
     <string name="listNameHint">List Name</string>
@@ -20,6 +22,7 @@
 
     <string name="selectTimeProperty">Select Time Property</string>
     <string name="selectDeadlineProperty">Select Deadline Property</string>
+    <string name="selectDescriptionProperty">Select Description Property</string>
 
     <!--Modifications-->
     <string name="createTask">Create Task</string>
@@ -45,10 +48,19 @@
     <string name="deleteBoardDetails">This will delete all the tasks and lists in this
         board</string>
     <string name="pickTimeDialog">Pick Time Dialog</string>
+    <string name="pickTextDialog">Pick Text Dialog</string>
 
     <string name="next">Next</string>
 
     <string name="selectDate">Select Date</string>
     <string name="selectTime">Select Time</string>
+    <string name="enterDescription">Enter Description</string>
+
+    <string name="property">Property: </string>
+    <string name="constraint">Constraint: </string>
+
+    <string name="timeColon">Time: </string>
+    <string name="deadlineColon">Deadline: </string>
+    <string name="descriptionColon">Description: </string>
 
 </resources>

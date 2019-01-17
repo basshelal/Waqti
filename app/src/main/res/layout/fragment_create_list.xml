@@ -4,16 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <Button
-        android:id="@+id/dev_addList_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:backgroundTint="@color/developmentViewColor"
-        android:text="Add Dev List"
-        app:layout_constraintBottom_toBottomOf="@+id/addList_button"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <uk.whitecrescent.waqti.android.customview.EditTextView
         android:id="@+id/listName_editText"
         android:layout_width="match_parent"

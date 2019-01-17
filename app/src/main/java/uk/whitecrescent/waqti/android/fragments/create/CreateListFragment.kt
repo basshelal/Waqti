@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_create_list.*
-import uk.whitecrescent.waqti.BuildConfig
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
@@ -39,7 +38,6 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
     }
 
     override fun setUpViews() {
-        if (!BuildConfig.DEBUG) dev_addList_button.visibility = View.GONE
 
         mainActivity.supportActionBar?.title = "New List"
 
@@ -54,11 +52,6 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
         addList_button.isEnabled = false
         addList_button.setOnClickListener {
             Caches.boards[boardID].add(createElement()).update()
-            finish()
-        }
-
-        dev_addList_button.setOnClickListener {
-            Caches.boards[boardID].add(TaskList("Dev TaskList")).update()
             finish()
         }
     }

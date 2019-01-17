@@ -74,7 +74,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
             MaterialConfirmDialog().apply {
                 title = this@ViewListFragment.mainActivity.getString(R.string.deleteListQuestion)
                 message = this@ViewListFragment.mainActivity.getString(R.string.deleteListDetails)
-                onConfirm = View.OnClickListener {
+                onConfirm = {
                     this.dismiss()
                     Caches.deleteTaskList(listID, boardID)
                     finish()

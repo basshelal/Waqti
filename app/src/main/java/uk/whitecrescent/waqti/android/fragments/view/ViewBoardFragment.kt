@@ -72,7 +72,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
             MaterialConfirmDialog().apply {
                 title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardQuestion)
                 message = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardDetails)
-                onConfirm = View.OnClickListener {
+                onConfirm = {
                     this.dismiss()
                     Caches.deleteBoard(boardID)
                     finish()
@@ -128,7 +128,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     DragEvent.ACTION_DROP -> {
                         MaterialConfirmDialog().apply {
                             title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteTaskQuestion)
-                            onConfirm = View.OnClickListener {
+                            onConfirm = {
                                 this.dismiss()
                                 Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
                                 this@ViewBoardFragment.boardView.boardAdapter.notifyDataSetChanged()

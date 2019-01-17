@@ -1,26 +1,28 @@
 package uk.whitecrescent.waqti.android.fragments.create
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_create_task.*
-import uk.whitecrescent.waqti.BuildConfig
 import uk.whitecrescent.waqti.FutureIdea
-import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialDateTimePickerDialog
+import uk.whitecrescent.waqti.android.customview.dialogs.MaterialEditTextDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
 import uk.whitecrescent.waqti.android.openKeyboard
-import uk.whitecrescent.waqti.formattedString
+import uk.whitecrescent.waqti.formatted
 import uk.whitecrescent.waqti.model.persistence.Caches
+import uk.whitecrescent.waqti.model.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 
+@Suppress("NOTHING_TO_INLINE")
 class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
     companion object {
@@ -47,7 +49,6 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     @FutureIdea
     // TODO: 16-Jan-19 Draggable Property Cards
     override fun setUpViews() {
-        if (!BuildConfig.DEBUG) dev_addTask_button.visibility = View.GONE
 
         taskName_editText.apply {
             openKeyboard()
@@ -66,16 +67,16 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
             }
         }
 
-        dev_addTask_button.apply {
-            setOnClickListener {
-                Caches.boards[boardID][listID]
-                        .add(Task("Dev Task")).update()
-                finish()
-            }
-        }
+        setUpTimeViews()
 
-        @Inconvenience
-        // TODO: 16-Jan-19 Formatted Time String looks ugly, 02:00 becomes 2:0, change this
+        setUpDeadlineViews()
+
+        setUpDescriptionViews()
+
+    }
+
+    @SuppressLint("SetTextI18n")
+    private inline fun setUpTimeViews() {
 
         taskTime_cardView.apply {
             setOnClickListener {
@@ -83,7 +84,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     initialTime = this@CreateTaskFragment.viewModel.createdTaskTime
                     onConfirm = {
                         viewModel.createdTaskTime = it
-                        this@CreateTaskFragment.selectTime_textView.text = it.formattedString
+                        this@CreateTaskFragment.selectTime_textView.text = getString(R.string.timeColon) + it.formatted
                         dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
@@ -96,15 +97,80 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                 selectTime_textView.text = getString(R.string.selectTimeProperty)
             }
         }
+    }
 
+    @SuppressLint("SetTextI18n")
+    private inline fun setUpDeadlineViews() {
+        taskDeadline_cardView.apply {
+            setOnClickListener {
+                MaterialDateTimePickerDialog().apply {
+                    initialTime = this@CreateTaskFragment.viewModel.createdTaskDeadline
+                    onConfirm = {
+                        viewModel.createdTaskDeadline = it
+                        this@CreateTaskFragment.selectDeadline_textView.text = getString(R.string.deadlineColon) + it.formatted
+                        dismiss()
+                    }
+                }.show(mainActivity.supportFragmentManager, "")
+            }
+        }
+
+        taskDeadlineClear_imageButton.apply {
+            setOnClickListener {
+                viewModel.createdTaskDeadline = DEFAULT_TIME
+                selectDeadline_textView.text = getString(R.string.selectDeadlineProperty)
+            }
+        }
+    }
+
+    private inline fun setUpDescriptionViews() {
+        taskDescription_cardView.apply {
+            setOnClickListener {
+                MaterialEditTextDialog().apply {
+                    title = this@CreateTaskFragment.getString(R.string.enterDescription)
+                    hint = this@CreateTaskFragment.getString(R.string.enterDescription)
+                    initialText = this@CreateTaskFragment.viewModel.createdTaskDescription
+                    onConfirm = {
+                        viewModel.createdTaskDescription = it
+                        this@CreateTaskFragment.selectDescription_textView.text = it
+                        dismiss()
+                    }
+                }.show(mainActivity.supportFragmentManager, "")
+            }
+        }
+
+        taskDescriptionClear_imageButton.apply {
+            setOnClickListener {
+                viewModel.createdTaskDescription = DEFAULT_DESCRIPTION
+                selectDescription_textView.text = getString(R.string.selectDescriptionProperty)
+            }
+        }
     }
 
     override fun createElement(): Task {
         return Task(taskName_editText.text.toString()).apply {
-            if (viewModel.createdTaskTime != DEFAULT_TIME) {
-                if (taskTimeConstraint_checkBox.isChecked) setTimeConstraintValue(viewModel.createdTaskTime)
-                else setTimePropertyValue(viewModel.createdTaskTime)
-            }
+            setTime()
+            setDeadline()
+            setDescription()
+        }
+    }
+
+    private inline fun Task.setTime() {
+        if (viewModel.createdTaskTime != DEFAULT_TIME) {
+            if (taskTimeConstraint_checkBox.isChecked) setTimeConstraintValue(viewModel.createdTaskTime)
+            else setTimePropertyValue(viewModel.createdTaskTime)
+        }
+    }
+
+    private inline fun Task.setDeadline() {
+        if (viewModel.createdTaskDeadline != DEFAULT_TIME) {
+            if (taskDeadlineConstraint_checkBox.isChecked) setDeadlineConstraintValue(viewModel.createdTaskDeadline)
+            else setDeadlinePropertyValue(viewModel.createdTaskDeadline)
+        }
+    }
+
+    private inline fun Task.setDescription() {
+        if (viewModel.createdTaskDescription != DEFAULT_DESCRIPTION) {
+            setDescriptionValue(viewModel.createdTaskDescription)
         }
     }
 

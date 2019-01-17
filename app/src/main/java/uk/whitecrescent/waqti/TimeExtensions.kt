@@ -3,6 +3,7 @@
 package uk.whitecrescent.waqti
 
 import org.threeten.bp.ZoneOffset
+import org.threeten.bp.format.DateTimeFormatter
 
 // TODO: 15-Nov-18 It would be cool to publish this as a separate thing, test it properly first ofcourse
 
@@ -123,8 +124,7 @@ inline fun last(dayOfWeek: DayOfWeek): Date {
 inline val Time.toEpoch: Long
     get() = toEpochSecond(ZoneOffset.UTC)
 
-inline val Time.formattedString: String
+inline val Time.formatted: String
     get() {
-        return "$hour:$minute ${dayOfWeek.toString().toLowerCase().capitalize()} " +
-                "$dayOfMonth ${month.toString().toLowerCase().capitalize()} $year"
+        return this.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.RFC_1123_DATE_TIME)
     }

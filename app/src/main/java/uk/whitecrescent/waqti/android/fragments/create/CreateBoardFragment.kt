@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_create_board.*
-import uk.whitecrescent.waqti.BuildConfig
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
@@ -33,7 +32,6 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
     }
 
     override fun setUpViews() {
-        if (!BuildConfig.DEBUG) dev_addBoard_button.visibility = View.GONE
 
         mainActivity.supportActionBar?.title = "New Board"
 
@@ -48,11 +46,6 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
         addBoard_button.isEnabled = false
         addBoard_button.setOnClickListener {
             Caches.boardLists.first().add(createElement()).update()
-            finish()
-        }
-
-        dev_addBoard_button.setOnClickListener {
-            Caches.boardLists.first().add(Board("Dev Board")).update()
             finish()
         }
     }

@@ -1,5 +1,6 @@
 package uk.whitecrescent.waqti.android.fragments.view
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
@@ -13,8 +14,10 @@ import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
-import uk.whitecrescent.waqti.formattedString
+import uk.whitecrescent.waqti.formatted
 import uk.whitecrescent.waqti.model.persistence.Caches
+import uk.whitecrescent.waqti.model.task.DEFAULT_DEADLINE_PROPERTY
+import uk.whitecrescent.waqti.model.task.DEFAULT_DESCRIPTION_PROPERTY
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME_PROPERTY
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
@@ -43,6 +46,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     }
 
+    @SuppressLint("SetTextI18n")
     override fun setUpViews(element: Task) {
 
         taskName_editTextView.apply {
@@ -73,7 +77,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
             setOnClickListener {
                 MaterialConfirmDialog().apply {
                     title = this@ViewTaskFragment.mainActivity.getString(R.string.deleteTaskQuestion)
-                    onConfirm = View.OnClickListener {
+                    onConfirm = {
                         @FutureIdea
                         // TODO: 31-Dec-18 Undo delete would be cool
                         // so a snackbar that says deleted task with a button to undo
@@ -93,11 +97,28 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
             }
         }
 
-        taskTime_button.apply {
+        taskTime_textView.apply {
             element.time.let {
                 if (it != DEFAULT_TIME_PROPERTY) {
-                    if (it.isConstrained) text = "Constraint: ${it.value.formattedString}"
-                    else text = "Property: ${it.value.formattedString}"
+                    if (it.isConstrained) text = getString(R.string.timeColon) + getString(R.string.constraint) + it.value.formatted
+                    else text = getString(R.string.timeColon) + getString(R.string.property) + it.value.formatted
+                } else this.visibility = View.GONE
+            }
+        }
+
+        taskDeadline_textView.apply {
+            element.deadline.let {
+                if (it != DEFAULT_DEADLINE_PROPERTY) {
+                    if (it.isConstrained) text = getString(R.string.deadlineColon) + getString(R.string.constraint) + it.value.formatted
+                    else text = getString(R.string.deadlineColon) + getString(R.string.property) + it.value.formatted
+                } else this.visibility = View.GONE
+            }
+        }
+
+        taskDescription_textView.apply {
+            element.description.let {
+                if (it != DEFAULT_DESCRIPTION_PROPERTY) {
+                    text = getString(R.string.descriptionColon) + it.value
                 } else this.visibility = View.GONE
             }
         }

@@ -222,7 +222,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                                 MaterialConfirmDialog().apply {
                                     title = boardView.mainActivity.getString(R.string.deleteListQuestion)
                                     message = boardView.mainActivity.getString(R.string.deleteListDetails)
-                                    onConfirm = View.OnClickListener {
+                                    onConfirm = {
                                         this.dismiss()
                                         boardView.removeListAdapterIfExists(holder.list.listAdapter)
                                         board.removeAt(holder.adapterPosition).update()
