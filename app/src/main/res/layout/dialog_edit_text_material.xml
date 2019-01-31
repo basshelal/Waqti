@@ -28,7 +28,8 @@
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:hint="@string/enterTextHint"
-        android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
+        android:imeOptions="actionDone"
+        android:inputType="textCapSentences|textAutoCorrect"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dialogTitle_textView" />

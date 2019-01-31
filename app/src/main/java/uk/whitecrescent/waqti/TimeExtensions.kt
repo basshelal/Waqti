@@ -5,8 +5,6 @@ package uk.whitecrescent.waqti
 import org.threeten.bp.ZoneOffset
 import org.threeten.bp.format.DateTimeFormatter
 
-// TODO: 15-Nov-18 It would be cool to publish this as a separate thing, test it properly first ofcourse
-
 // Type Aliases for which Time API to use
 
 typealias Time = org.threeten.bp.LocalDateTime

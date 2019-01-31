@@ -1,8 +1,10 @@
 package uk.whitecrescent.waqti.android.customview.dialogs
 
 import android.text.SpannableStringBuilder
+import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.dialog_edit_text_material.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.android.hideSoftKeyboard
 
 class MaterialEditTextDialog : WaqtiMaterialDialog() {
 
@@ -22,6 +24,15 @@ class MaterialEditTextDialog : WaqtiMaterialDialog() {
             dialog_editTextView.hint = hint
 
             if (initialText != "") dialog_editTextView.text = SpannableStringBuilder(initialText)
+
+            dialog_editTextView.setOnEditorActionListener { textView, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    textView.clearFocus()
+                    textView.hideSoftKeyboard()
+                    true
+                } else false
+            }
+
 
             confirm_button.setOnClickListener {
                 onConfirm(dialog_editTextView.text.toString())
