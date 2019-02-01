@@ -79,13 +79,13 @@
         android:id="@+id/delete_floatingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:fabSize="normal"
-        android:backgroundTint="@color/errorColor"
         android:clickable="false"
+        android:src="@android:drawable/ic_menu_close_clear_cancel"
+        app:backgroundTint="@color/errorColor"
+        app:fabSize="normal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/boardName_cardView"
-        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+        app:layout_constraintTop_toBottomOf="@id/boardName_cardView" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

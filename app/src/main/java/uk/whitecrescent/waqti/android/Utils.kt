@@ -11,6 +11,9 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.task.Task
@@ -72,4 +75,8 @@ inline fun RecyclerView.scrollToStart() {
     if (this.adapter != null) {
         this.smoothScrollToPosition(0)
     }
+}
+
+inline fun <reified T : ViewModel> Fragment.getViewModel(): T {
+    return ViewModelProviders.of(this).get(T::class.java)
 }

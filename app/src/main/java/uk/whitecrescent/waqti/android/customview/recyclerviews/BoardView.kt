@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
+import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.FutureIdea
+import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.GoToFragment
@@ -244,6 +246,16 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 }
             }.show()
         }
+
+        @Bug
+        @Inconvenience
+        0
+        // TODO: 01-Feb-19 Scrolling while dragging across on Nexus 5 doesn't trigger an onBindViewHolder
+        // meaning that we end up dragging from list 0 to list 1 and then no more because for
+        // some reason the next list isn't being bound, this isn't an issue on Pixel API 28 but
+        // is on Nexus 5 API 21 and API 23, it also seems like this has nothing to do with width,
+        // as we tried to do it with lower width lists and still the issue remained, we'd have to
+        // do a manual bind or something like that
 
 
         @FutureIdea 0
