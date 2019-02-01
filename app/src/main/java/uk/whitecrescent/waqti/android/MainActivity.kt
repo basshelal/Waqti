@@ -27,11 +27,10 @@ class MainActivity : AppCompatActivity() {
         @GoToFragment
         supportFragmentManager.beginTransaction().apply {
             add(R.id.fragmentContainer, ViewBoardListFragment.newInstance(), BOARD_LIST_FRAGMENT)
-            setTransitionStyle(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }.commit()
     }
 
-    fun getWaqtiSharedPreferences(): SharedPreferences {
-        return getSharedPreferences(WAQTI_SHARED_PREFERENCES, Context.MODE_PRIVATE)
-    }
+    inline val waqtiSharedPreferences: SharedPreferences
+        get() = getSharedPreferences(WAQTI_SHARED_PREFERENCES, Context.MODE_PRIVATE)
 }

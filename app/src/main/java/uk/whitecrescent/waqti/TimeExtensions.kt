@@ -2,9 +2,6 @@
 
 package uk.whitecrescent.waqti
 
-import org.threeten.bp.ZoneOffset
-import org.threeten.bp.format.DateTimeFormatter
-
 // Type Aliases for which Time API to use
 
 typealias Time = org.threeten.bp.LocalDateTime
@@ -23,6 +20,8 @@ typealias Year = org.threeten.bp.Year
 typealias YearMonth = org.threeten.bp.YearMonth
 typealias Month = org.threeten.bp.Month
 typealias MonthDay = org.threeten.bp.MonthDay
+typealias DateTimeFormatter = org.threeten.bp.format.DateTimeFormatter
+typealias ZoneOffset = org.threeten.bp.ZoneOffset
 
 // Useful Extensions for java.time to make code readable and concise
 

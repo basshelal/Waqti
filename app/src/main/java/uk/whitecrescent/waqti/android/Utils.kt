@@ -6,14 +6,12 @@ import android.Manifest
 import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.task.Task
 
@@ -23,12 +21,6 @@ import uk.whitecrescent.waqti.model.task.Task
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.EXPRESSION)
 annotation class GoToFragment
-
-inline fun Activity.shortSnackbar(view: View, string: CharSequence) =
-        Snackbar.make(view, string, Snackbar.LENGTH_SHORT).show()
-
-inline fun Activity.longSnackbar(view: View, string: CharSequence) =
-        Snackbar.make(view, string, Snackbar.LENGTH_LONG).show()
 
 inline fun Activity.checkWritePermission() {
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -45,8 +37,6 @@ inline val Activity.alarmManager: AlarmManager
 inline val View.mainActivity: MainActivity
     get() = this.context as MainActivity
 
-inline fun View.snackBar(string: String) = Snackbar.make(this, string, Snackbar.LENGTH_SHORT).show()
-
 inline fun View.hideSoftKeyboard() {
     (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
             .hideSoftInputFromWindow(this.windowToken, 0)
@@ -62,8 +52,9 @@ inline fun View.openKeyboard() {
     showSoftKeyboard()
 }
 
-inline fun <A : Activity> Activity.goToActivity(activity: Class<A>) {
-    this.startActivity(Intent(this, activity))
+inline fun View.closeKeyboard() {
+    clearFocus()
+    hideSoftKeyboard()
 }
 
 inline fun addTasks(amount: Int) {

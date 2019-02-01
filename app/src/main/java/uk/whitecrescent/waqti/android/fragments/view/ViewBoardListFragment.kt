@@ -50,7 +50,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
         mainActivity.supportActionBar?.title = "Boards"
 
         boardListName_editTextView.text = SpannableStringBuilder(
-                mainActivity.getWaqtiSharedPreferences()
+                mainActivity.waqtiSharedPreferences
                         .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards)))
 
         boardListName_editTextView.setOnEditorActionListener { textView, actionId, event ->
@@ -58,9 +58,9 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                 if (textView.text != null &&
                         textView.text.isNotBlank() &&
                         textView.text.isNotEmpty()) {
-                    if (textView.text != mainActivity.getWaqtiSharedPreferences()
+                    if (textView.text != mainActivity.waqtiSharedPreferences
                                     .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards))) {
-                        mainActivity.getWaqtiSharedPreferences()
+                        mainActivity.waqtiSharedPreferences
                                 .edit().putString(BOARD_LIST_NAME_PREFERENCES_KEY, textView.text
                                         .toString()).apply()
                     }
