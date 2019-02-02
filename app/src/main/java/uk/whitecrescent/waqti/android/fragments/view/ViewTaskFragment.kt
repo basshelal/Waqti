@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_view_task.*
 import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.R
@@ -14,6 +15,7 @@ import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.android.hideSoftKeyboard
+import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.formatted
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.DEFAULT_DEADLINE_PROPERTY
@@ -78,14 +80,18 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                 MaterialConfirmDialog().apply {
                     title = this@ViewTaskFragment.mainActivity.getString(R.string.deleteTaskQuestion)
                     onConfirm = {
-                        @FutureIdea
-                        // TODO: 31-Dec-18 Undo delete would be cool
-                        // so a snackbar that says deleted task with a button to undo
                         this.dismiss()
                         Caches.deleteTask(taskID, listID)
                         finish()
                     }
                 }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+
+                @FutureIdea
+                // TODO: 31-Dec-18 Undo delete would be cool
+                // so a snackbar that says deleted task with a button to undo
+                Snackbar.make(it, "Deleted", Snackbar.LENGTH_LONG)
+                        .setAction("Undo", { it.snackBar("Not yet implemented") })
+                        .show()
             }
         }
 

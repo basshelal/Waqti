@@ -9,8 +9,8 @@ import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.size
-import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.sleep
 
 @DisplayName("Task Cache Tests")
 class TaskCache : BasePersistenceTest() {

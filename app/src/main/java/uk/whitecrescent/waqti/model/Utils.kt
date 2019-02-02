@@ -5,19 +5,21 @@ package uk.whitecrescent.waqti.model
 import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.model.collections.Tuple
 import uk.whitecrescent.waqti.model.persistence.Caches
+import uk.whitecrescent.waqti.model.task.DEBUG
 import uk.whitecrescent.waqti.model.task.GRACE_PERIOD
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 import java.util.Objects
 
-inline fun sleep(seconds: Int) = Thread.sleep((seconds) * 1000L)
+inline fun debug(string: String) {
+    if (DEBUG) println(string)
+}
 
 inline fun setGracePeriod(duration: Duration) {
     GRACE_PERIOD = duration
 }
 
-inline fun hash(vararg elements: Any) =
-        Objects.hash(*elements)
+inline fun hash(vararg elements: Any?) = Objects.hash(*elements)
 
 // Extensions
 

@@ -6,11 +6,9 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.getTasks
 import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.Time
-import uk.whitecrescent.waqti.now
-import uk.whitecrescent.waqti.model.sleep
+import uk.whitecrescent.waqti.getTasks
 import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_DEADLINE
 import uk.whitecrescent.waqti.model.task.DEFAULT_DEADLINE_PROPERTY
@@ -21,6 +19,8 @@ import uk.whitecrescent.waqti.model.task.SHOWING
 import uk.whitecrescent.waqti.model.task.TaskState
 import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.model.task.UNMET
+import uk.whitecrescent.waqti.now
+import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTask
 
 

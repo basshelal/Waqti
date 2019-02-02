@@ -9,15 +9,14 @@ import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.Time
 import uk.whitecrescent.waqti.model.ids
-import uk.whitecrescent.waqti.now
-import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.Checklist
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.MANDATORY
 import uk.whitecrescent.waqti.model.task.OPTIONAL
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
-import uk.whitecrescent.waqti.model.toArrayList
+import uk.whitecrescent.waqti.now
+import uk.whitecrescent.waqti.sleep
 
 @DisplayName("Other Task Tests")
 class OtherTask : BaseTaskTest() {
@@ -335,8 +334,8 @@ class OtherTask : BaseTaskTest() {
     @Test
     fun testTaskEqualsSubTasks() {
         val subTasks = arrayListOf(Task("SubTask1"), Task("SubTask2")).ids
-        val task1 = Task("Task").setSubTasksPropertyValue(subTasks.toArrayList)
-        val task2 = Task("Task").setSubTasksPropertyValue(subTasks.toArrayList)
+        val task1 = Task("Task").setSubTasksPropertyValue(subTasks)
+        val task2 = Task("Task").setSubTasksPropertyValue(subTasks)
 
         assertTrue(task1 == task2)
 
@@ -386,7 +385,7 @@ class OtherTask : BaseTaskTest() {
                 .setDeadlinePropertyValue(Time.of(2018, 6, 6, 6, 6))
                 .setTargetConstraintValue("My Target")
                 .setBeforePropertyValue(beforeTask)
-                .setSubTasksPropertyValue(arrayListOf(subTask1, subTask2).ids.toArrayList)
+                .setSubTasksPropertyValue(arrayListOf(subTask1, subTask2).ids)
 
         task.unConstrainAll()
 

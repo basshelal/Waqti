@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.message
-import uk.whitecrescent.waqti.secs
-import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.Timer
+import uk.whitecrescent.waqti.secs
+import uk.whitecrescent.waqti.sleep
 
 @DisplayName("Timer Tests")
 class Timer : BaseTaskTest() {

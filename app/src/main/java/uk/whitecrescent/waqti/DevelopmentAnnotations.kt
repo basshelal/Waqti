@@ -48,7 +48,7 @@ annotation class NonFinal
         AnnotationTarget.FILE,
         AnnotationTarget.TYPEALIAS
 )
-annotation class FinalSince
+annotation class FinalSince(val waqtiVersion: WaqtiVersion)
 
 /**
  * Needs some kind of testing

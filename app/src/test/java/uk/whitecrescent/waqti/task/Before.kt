@@ -8,7 +8,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
 import uk.whitecrescent.waqti.model.persistence.Caches
-import uk.whitecrescent.waqti.model.sleep
 import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_BEFORE_PROPERTY
 import uk.whitecrescent.waqti.model.task.DEFAULT_TASK_ID
@@ -20,6 +19,9 @@ import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.TaskState
 import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.model.task.UNMET
+import uk.whitecrescent.waqti.mustBe
+import uk.whitecrescent.waqti.mustEqual
+import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Before Tests")
@@ -29,9 +31,9 @@ class Before : BaseTaskTest() {
     @Test
     fun testTaskBeforeDefaultValues() {
         val task = testTask
-        assertFalse(task.before.isConstrained)
-        assertEquals(DEFAULT_TASK_ID, task.before.value)
-        assertFalse(task.before.isVisible)
+        (task.before.isConstrained) mustBe false
+        DEFAULT_TASK_ID mustEqual task.before.value
+        (task.before.isVisible) mustBe false
     }
 
     @DisplayName("Set Before Property using setBeforeProperty")

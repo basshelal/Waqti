@@ -99,4 +99,21 @@ object Caches {
         Caches.boardLists.first().remove(boardID).update()
     }
 
+    fun seed() {
+        Caches.clearAllCaches().commit()
+
+        Caches.boardLists.put(BoardList("Default"))
+        require(Caches.boardLists.size == 1)
+
+        Caches.boardLists.first().addAll(Array(5) { Board("Board #$it") }.asList()).update()
+
+        Caches.boards.forEach {
+            it.addAll(Array(5) { TaskList("TaskList #$it") }.asList()).update()
+        }
+
+        Caches.taskLists.forEach {
+            it.addAll(Array(10) { Task("Task #$it") }.asList()).update()
+        }
+    }
+
 }

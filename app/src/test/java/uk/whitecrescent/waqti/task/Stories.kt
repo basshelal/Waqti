@@ -10,7 +10,7 @@
 //import uk.whitecrescent.waqti.getMinutes
 //import uk.whitecrescent.waqti.getNow
 //import uk.whitecrescent.waqti.getSeconds
-//import uk.whitecrescent.waqti.model.sleep
+//import uk.whitecrescent.waqti.sleep
 //import uk.whitecrescent.waqti.model.task.Checklist
 //import uk.whitecrescent.waqti.model.task.Label
 //import uk.whitecrescent.waqti.model.task.MANDATORY
