@@ -236,3 +236,19 @@ class DurationConverter : PropertyConverter<Duration, String> {
 }
 
 //endregion Converters
+
+enum class Properties {
+    TIME,
+    DURATION,
+    PRIORITY,
+    LABELS,
+    OPTIONAL,
+    DESCRIPTION,
+    CHECKLIST,
+    TARGET,
+    DEADLINE,
+    BEFORE,
+    SUB_TASKS
+}
+
+val NUMBER_OF_PROPERTIES = Properties.values().size

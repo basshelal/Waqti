@@ -1,7 +1,5 @@
 package uk.whitecrescent.waqti
 
-// An idea I came up with while asleep as a way to document issues, still thinking about it 23-Dec-18 B.Helal
-
 /**
  * Is expected to change
  */

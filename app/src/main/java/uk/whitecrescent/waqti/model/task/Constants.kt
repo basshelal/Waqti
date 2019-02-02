@@ -1,6 +1,5 @@
 package uk.whitecrescent.waqti.model.task
 
-import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.Time
 import java.util.concurrent.TimeUnit
@@ -85,33 +84,8 @@ var GRACE_PERIOD: Duration = Duration.ZERO
 
 //region Concurrency
 
-// Threads for Concurrency
-val TIME_CONSTRAINT_THREAD = Schedulers.newThread()
-val DURATION_CONSTRAINT_THREAD = Schedulers.newThread()
-val CHECKLIST_CONSTRAINT_THREAD = Schedulers.newThread()
-val DEADLINE_CONSTRAINT_THREAD = Schedulers.newThread()
-val BEFORE_CONSTRAINT_THREAD = Schedulers.newThread()
-val SUB_TASKS_CONSTRAINT_THREAD = Schedulers.newThread()
-
 // Used for how often will Observers check stuff on the background threads
 const val TIME_CHECKING_PERIOD = 1000L
 val TIME_CHECKING_UNIT = TimeUnit.MILLISECONDS
 
 //endregion Concurrency
-
-
-val ALL_PROPERTIES = arrayOf(
-        DEFAULT_TIME_PROPERTY,
-        DEFAULT_DURATION_PROPERTY,
-        DEFAULT_PRIORITY_PROPERTY,
-        DEFAULT_LABELS_PROPERTY,
-        DEFAULT_OPTIONAL_PROPERTY,
-        DEFAULT_DESCRIPTION_PROPERTY,
-        DEFAULT_CHECKLIST_PROPERTY,
-        DEFAULT_TARGET_PROPERTY,
-        DEFAULT_DEADLINE_PROPERTY,
-        DEFAULT_BEFORE_PROPERTY,
-        DEFAULT_SUB_TASKS_PROPERTY
-)
-
-val NUMBER_OF_PROPERTIES = ALL_PROPERTIES.size

@@ -50,7 +50,7 @@ class Task(name: String = "") : Cacheable {
         }
 
     /**
-     * The Id of this Entity as given by ObjectBox
+     * The [ID] of this Entity as given by ObjectBox
      *
      * @see Cacheable.id
      */
@@ -58,11 +58,11 @@ class Task(name: String = "") : Cacheable {
     override var id = 0L
 
     /**
-     * The Task State is the state in which the task is in at this point in time.
-     * By default this is initialized to EXISTING.
-     * The Task State changes according to Lifecycle changes such as [sleep], [kill], [fail],
+     * The [TaskState] is the state in which the task is in at this point in time.
+     * By default this is initialized to [TaskState.EXISTING].
+     *
+     * The Task State changes according to Lifecycle changes made by [sleep], [kill] or [fail],
      * such changes can also occur due to Constraints.
-     * See The Task Lifecycle Documentation for more information
      *
      * @see TaskState
      * @see DEFAULT_TASK_STATE
@@ -76,10 +76,11 @@ class Task(name: String = "") : Cacheable {
 
     /**
      * Boolean value representing whether it is possible for this Task to be failed at any arbitrary point in time.
+     *
      * Note that this is not the same as whether it can be failed right now, however if a Task's `isFailable`
      * is `false` then it can not be failed at this point in time.
+     *
      * @see TaskState
-     * @see Constraint
      */
     var isFailable = DEFAULT_FAILABLE
         set(value) {
@@ -89,8 +90,10 @@ class Task(name: String = "") : Cacheable {
 
     /**
      * Boolean value representing whether it is possible for this Task to be killed at any arbitrary point in time.
+     *
      * Note that this is not the same as whether it can be killed right now, however if a Task's `isKillable`
      * is `false` then it can not be killed at this point in time.
+     *
      * @see TaskState
      */
     var isKillable = DEFAULT_KILLABLE
@@ -99,12 +102,18 @@ class Task(name: String = "") : Cacheable {
             update()
         }
 
-    @MissingFeature // we haven't properly used this, should we keep it?
+    //                                       Missing Features and Unfinished stuff below
+    //=================================================================================================================
+    //=================================================================================================================
+
+    @MissingFeature
+    // TODO: 02-Feb-19 we haven't properly used this, should we keep it?
     // A Task ages when it is failed
     var age = 0
         private set
 
-    @MissingFeature // we haven't properly used this, should we keep it?
+    @MissingFeature
+    // TODO: 02-Feb-19 we haven't properly used this, should we keep it?
     // The times a task has been failed
     @Convert(converter = TimeArrayListConverter::class, dbType = String::class)
     val failedTimes = TimeArrayList()
@@ -117,6 +126,10 @@ class Task(name: String = "") : Cacheable {
     // Used for Duration Constraint
     @Transient
     private val timer = Timer()
+
+    //                                       Missing Features and Unfinished stuff above
+    //=================================================================================================================
+    //=================================================================================================================
 
     /**
      * Used to determine the overall state of this Task at this point in time.
@@ -158,6 +171,20 @@ class Task(name: String = "") : Cacheable {
         bundle["properties"] = this.getAllProperties()
         return bundle
     }
+
+    /**
+     * Map showing which properties we are currently observing, represented by a string being the
+     * name of the property to the boolean whether it is being observed or not.
+     */
+    @Transient
+    private val observingProperties = mutableMapOf(
+            Properties.TIME to false,
+            Properties.DURATION to false,
+            Properties.CHECKLIST to false,
+            Properties.DEADLINE to false,
+            Properties.BEFORE to false,
+            Properties.SUB_TASKS to false
+    )
 
     //endregion Class Properties
 
@@ -337,16 +364,6 @@ class Task(name: String = "") : Cacheable {
     var subTasks: LongArrayListProperty = DEFAULT_SUB_TASKS_PROPERTY
         private set
 
-    @Transient
-    private val checking = mutableMapOf(
-            "Time" to false,
-            "Duration" to false,
-            "Checklist" to false,
-            "Deadline" to false,
-            "Before" to false,
-            "SubTasks" to false
-    )
-
     init {
         if (notDefault()) {
             update()
@@ -361,7 +378,6 @@ class Task(name: String = "") : Cacheable {
     /**
      * Makes this Task failable if the passed in Property is a Constraint and this Task is not currently failable.
      * @see Property
-     * @see Constraint
      * @see isFailable
      * @param property the Property to check for if it is a Constraint
      */
@@ -423,7 +439,6 @@ class Task(name: String = "") : Cacheable {
 
     /**
      * Gets the list of all Constraints of this Task that are showing. The `isMet` value of the Constraints is ignored.
-     * @see Constraint
      * @return the list of all showing Constraints this Task has
      */
     fun getAllShowingConstraints() =
@@ -433,7 +448,6 @@ class Task(name: String = "") : Cacheable {
      * Gets the list of all Constraints of this Task that are showing and also unmet. These would usually be the
      * Constraints of interest and the Constraints that would prevent a Task from being killed.
      * A Task can only be killed if this list is empty.
-     * @see Constraint
      * @see canKill
      * @see kill
      * @return the list of all showing and unmet Constraints this Task has
@@ -485,8 +499,7 @@ class Task(name: String = "") : Cacheable {
             if (this.time.value.isBefore(now)) {
                 this.time.isMet = MET
             }
-//            timeConstraintTimeChecking()
-            checking["Time"] = true
+            observingProperties[Properties.TIME] = true
         }
         update()
         return this
@@ -542,7 +555,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (durationProperty.isConstrained) {
             makeFailableIfConstraint(durationProperty)
-            //checking["Duration"] = true
+            //observingProperties[Properties.DURATION] = true
         }
         update()
         return this
@@ -849,8 +862,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (checklistProperty.isConstrained) {
             makeFailableIfConstraint(checklistProperty)
-//            checklistConstraintChecking()
-            checking["Checklist"] = true
+            observingProperties[Properties.CHECKLIST] = true
         }
         update()
         return this
@@ -913,8 +925,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (deadlineProperty.isConstrained) {
             makeFailableIfConstraint(deadlineProperty)
-//            deadlineConstraintChecking()
-            checking["Deadline"] = true
+            observingProperties[Properties.DEADLINE] = true
         }
         update()
         return this
@@ -1035,8 +1046,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (beforeProperty.isConstrained) {
             makeFailableIfConstraint(beforeProperty)
-//            beforeConstraintChecking()
-            checking["Before"] = true
+            observingProperties[Properties.BEFORE] = true
         }
         update()
         return this
@@ -1048,7 +1058,8 @@ class Task(name: String = "") : Cacheable {
      * This is a shorthand of writing `setBeforeProperty(Property(SHOWING, myBefore))`.
      *
      * @see Task.setBeforeProperty
-     * @param beforeuk.whitecrescent.waqti.task.ID the uk.whitecrescent.waqti.model.task.ID of the Task that is before this one that this Task's before value will be set to
+     * @param beforeID the ID of the Task that is before this one that this Task's before value
+     * will be set to
      * @return this Task after setting the Task's before Property
      */
     fun setBeforePropertyValue(beforeID: ID) =
@@ -1120,8 +1131,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (subTasksProperty.isConstrained) {
             makeFailableIfConstraint(subTasksProperty)
-//            subTasksConstraintChecking()
-            checking["SubTasks"] = true
+            observingProperties[Properties.SUB_TASKS] = true
         }
         update()
         return this
@@ -1389,8 +1399,7 @@ class Task(name: String = "") : Cacheable {
         } else {
             timer.start()
             if (duration.isConstrained) {
-//                durationConstraintTimerChecking()
-                checking["Duration"] = true
+                observingProperties[Properties.DURATION] = true
             }
         }
         return this
@@ -1429,12 +1438,12 @@ class Task(name: String = "") : Cacheable {
 
                             override fun onNext(it: Long) {
                                 if (this@Task !in Caches.tasks) done = true
-                                if (checking["Time"]!!) checkTime()
-                                if (checking["Duration"]!!) checkDuration()
-                                if (checking["Checklist"]!!) checkChecklist()
-                                if (checking["Deadline"]!!) checkDeadline()
-                                if (checking["Before"]!!) checkBefore()
-                                if (checking["SubTasks"]!!) checkSubTasks()
+                                if (observingProperties[Properties.TIME]!!) observeTime()
+                                if (observingProperties[Properties.DURATION]!!) observeDuration()
+                                if (observingProperties[Properties.CHECKLIST]!!) observeChecklist()
+                                if (observingProperties[Properties.DEADLINE]!!) observeDeadline()
+                                if (observingProperties[Properties.BEFORE]!!) observeBefore()
+                                if (observingProperties[Properties.SUB_TASKS]!!) observeSubTasks()
                             }
 
                             override fun onError(e: Throwable) {
@@ -1453,82 +1462,82 @@ class Task(name: String = "") : Cacheable {
                 )
     }
 
-    private inline fun checkingDone(string: String) {
-        if (string !in checking.keys)
-            throw IllegalArgumentException("$string doesn't exist in checking")
-        checking[string] = false
+    private inline fun observingDone(property: Properties) {
+        if (property !in observingProperties.keys)
+            throw IllegalArgumentException("$property doesn't exist in checking")
+        observingProperties[property] = false
         update()
     }
 
-    private inline fun checkTime() {
+    private inline fun observeTime() {
         when {
             !this.time.isConstrained -> {
                 makeNonFailableIfNoConstraints()
                 if (this.state == TaskState.SLEEPING) this.state = TaskState.EXISTING
-                checkingDone("Time")
+                observingDone(Properties.TIME)
             }
             now.isAfter(this.time.value) -> {
                 if (this.state == TaskState.SLEEPING) this.state = TaskState.EXISTING
                 if (this.time.isConstrained && !this.time.isMet) {
                     this.time.isMet = MET
                 }
-                checkingDone("Time")
+                observingDone(Properties.TIME)
             }
         }
     }
 
-    private inline fun checkDuration() {
+    private inline fun observeDuration() {
         when {
             !this.duration.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                checkingDone("Duration")
+                observingDone(Properties.DURATION)
             }
             this.timer.stopped -> {
-                checkingDone("Duration")
+                observingDone(Properties.DURATION)
             }
             timer.duration >= this.duration.value -> {
                 if (this.duration.isConstrained && !this.duration.isMet) {
                     this.duration.isMet = MET
                 }
-                checkingDone("Duration")
+                observingDone(Properties.DURATION)
             }
         }
     }
 
-    private inline fun checkChecklist() {
+    private inline fun observeChecklist() {
         when {
             !this.checklist.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                checkingDone("Checklist")
+                observingDone(Properties.CHECKLIST)
             }
             this.checklist.value.getAllUncheckedItems().isEmpty() -> {
                 if (this.checklist.isConstrained && this.checklist.isMet != MET) {
                     this.checklist.isMet = MET
                 }
-                checkingDone("Checklist")
+                observingDone(Properties.CHECKLIST)
             }
         }
     }
 
-    private inline fun checkDeadline() {
+    private inline fun observeDeadline() {
         val deadlineWithGrace = this.deadline.value + GRACE_PERIOD
         when {
             !this.deadline.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                checkingDone("Deadline")
+                observingDone(Properties.DEADLINE)
             }
             now.isAfter(deadlineWithGrace) -> {
                 if (canFail()) {
                     this.fail()
                     deadline.isMet = false
                 }
-                checkingDone("Deadline")
+                observingDone(Properties.DEADLINE)
             }
         }
     }
 
-    private inline fun checkBefore() {
-        val beforeTask = Caches.tasks.get(this.before.value)
+    private inline fun observeBefore() {
+        val beforeTask = Caches.tasks[this.before.value]
         when {
             !Caches.tasks.contains(beforeTask) -> {
                 throw ObserverException("Before Constraint checking failed!" +
@@ -1536,22 +1545,22 @@ class Task(name: String = "") : Cacheable {
             }
             !this.before.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                checkingDone("Before")
+                observingDone(Properties.BEFORE)
             }
             beforeTask.state == TaskState.KILLED -> {
                 this.before.isMet = true
-                checkingDone("Before")
+                observingDone(Properties.BEFORE)
             }
             beforeTask.state == TaskState.FAILED -> {
                 this.before.isMet = false
                 if (canFail()) fail()
-                checkingDone("Before")
+                observingDone(Properties.BEFORE)
             }
 
         }
     }
 
-    private inline fun checkSubTasks() {
+    private inline fun observeSubTasks() {
         when {
             !Caches.tasks.containsAll(this.subTasks.value.tasks) -> {
                 throw ObserverException("SubTasks Constraint checking failed!" +
@@ -1559,17 +1568,17 @@ class Task(name: String = "") : Cacheable {
             }
             !this.subTasks.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                checkingDone("SubTasks")
+                observingDone(Properties.SUB_TASKS)
             }
             this.subTasks.value.tasks.any { it.state == TaskState.FAILED } -> {
                 subTasks.isMet = false
                 if (canFail()) fail()
-                checkingDone("SubTasks")
+                observingDone(Properties.SUB_TASKS)
             }
             this.subTasks.value.tasks
                     .all { it.state == TaskState.KILLED } -> {
                 subTasks.isMet = true
-                checkingDone("SubTasks")
+                observingDone(Properties.SUB_TASKS)
             }
 
         }
@@ -1643,7 +1652,7 @@ class Task(name: String = "") : Cacheable {
      *         ...
      * ```
      *
-     * The Properties and Constraints are represented using their toString function. [Property.toString] [Constraint.toString]
+     * The Properties and Constraints are represented using their toString function. [Property.toString]
      *
      * @see Any.toString
      * @return the String representation of this Task
