@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.whitecrescent.waqti.get
 import uk.whitecrescent.waqti.getTasks
+import uk.whitecrescent.waqti.hiddenProperty
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_BEFORE_PROPERTY
@@ -21,38 +23,50 @@ import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.model.task.UNMET
 import uk.whitecrescent.waqti.mustBe
 import uk.whitecrescent.waqti.mustEqual
+import uk.whitecrescent.waqti.simpleProperty
 import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTask
 
+/**
+ *
+ * Two "injected" properties, [BaseTaskTest.task] and [Before.beforeTask], they are reset after
+ * each test and are initially just [testTask]
+ */
 @DisplayName("Before Tests")
 class Before : BaseTaskTest() {
+
+    var beforeTask: Task = testTask
+
+    override fun beforeEach() {
+        super.beforeEach()
+
+        beforeTask = testTask
+    }
 
     @DisplayName("Before Default Values")
     @Test
     fun testTaskBeforeDefaultValues() {
-        val task = testTask
-        (task.before.isConstrained) mustBe false
-        DEFAULT_TASK_ID mustEqual task.before.value
-        (task.before.isVisible) mustBe false
+        task.before.apply {
+            isConstrained mustBe false
+            value mustEqual DEFAULT_TASK_ID
+            isVisible mustBe false
+        }
     }
 
     @DisplayName("Set Before Property using setBeforeProperty")
     @Test
     fun testTaskSetBeforeProperty() {
-        val beforeTask = Task("Before Task")
-        val task = testTask
-                .setBeforeProperty(
-                        Property(SHOWING, beforeTask.id, NOT_CONSTRAINED, UNMET)
-                )
+        task.apply {
+            setBeforeProperty(simpleProperty(beforeTask.id))
 
-        assertFalse(task.before.isConstrained)
-        assertEquals(beforeTask.id, task.before.value)
-        assertEquals(beforeTask, Caches.tasks.get(task.before.value))
-        assertTrue(task.before.isVisible)
+            before.isConstrained mustBe false
+            before.value mustEqual beforeTask.id
+            beforeTask mustEqual Caches[task.before.value]
+            before.isVisible mustBe true
 
-
-        task.hideBefore()
-        assertEquals(Property(HIDDEN, DEFAULT_TASK_ID, NOT_CONSTRAINED, UNMET), task.before)
+            hideBefore()
+            before mustEqual hiddenProperty(DEFAULT_TASK_ID)
+        }
     }
 
     @DisplayName("Set Before Property using setBeforeValue ID")

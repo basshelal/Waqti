@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.whitecrescent.waqti.after
+import uk.whitecrescent.waqti.constraintProperty
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.now
-import uk.whitecrescent.waqti.seconds
+import uk.whitecrescent.waqti.hiddenProperty
 import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME_PROPERTY
-import uk.whitecrescent.waqti.model.task.HIDDEN
 import uk.whitecrescent.waqti.model.task.MET
 import uk.whitecrescent.waqti.model.task.NOT_CONSTRAINED
 import uk.whitecrescent.waqti.model.task.Property
@@ -21,94 +21,98 @@ import uk.whitecrescent.waqti.model.task.TaskException
 import uk.whitecrescent.waqti.model.task.TaskState
 import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.model.task.UNMET
+import uk.whitecrescent.waqti.mustBe
+import uk.whitecrescent.waqti.mustEqual
+import uk.whitecrescent.waqti.mustThrow
+import uk.whitecrescent.waqti.now
+import uk.whitecrescent.waqti.on
+import uk.whitecrescent.waqti.seconds
+import uk.whitecrescent.waqti.simpleProperty
 import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTask
 import uk.whitecrescent.waqti.testTimeFuture
 import uk.whitecrescent.waqti.testTimePast
 
-// Done @ 19-Nov-18 B.Helal
 @DisplayName("Time Tests")
 class Time : BaseTaskTest() {
 
     @DisplayName("Time Default Values")
     @Test
     fun testTaskTimeDefaultValues() {
-        val task = testTask
-        assertFalse(task.time.isConstrained)
-        assertEquals(DEFAULT_TIME, task.time.value)
-        assertFalse(task.time.isVisible)
-        assertEquals(DEFAULT_TIME_PROPERTY, task.time)
-        assertEquals(DEFAULT_TIME_PROPERTY, Property(HIDDEN, DEFAULT_TIME, NOT_CONSTRAINED, UNMET))
+        on(task.time) {
+            isConstrained mustBe false
+            value mustEqual DEFAULT_TIME
+            isVisible mustBe false
+            this mustEqual DEFAULT_TIME_PROPERTY
+        }
+
+        DEFAULT_TIME_PROPERTY mustEqual hiddenProperty(DEFAULT_TIME)
     }
 
     @DisplayName("Set Time Property")
     @Test
     fun testTaskSetTimeProperty() {
-        val task = testTask
-                .setTimeProperty(
-                        Property(SHOWING, testTimePast, NOT_CONSTRAINED, UNMET)
-                )
+        task.setTimeProperty(simpleProperty(testTimePast))
 
-        assertTrue(task.time.isVisible)
-        assertEquals(testTimePast, task.time.value)
-        assertFalse(task.time.isConstrained)
-        assertFalse(task.time.isMet)
+        on(task.time) {
+            isVisible mustBe true
+            value mustEqual testTimePast
+            isConstrained mustBe false
+            isMet mustBe false
+            this mustEqual simpleProperty(testTimePast)
+        }
 
-        assertEquals(
-                Property(SHOWING, testTimePast, NOT_CONSTRAINED, UNMET),
-                task.time)
-
-        task.hideTime()
-        assertEquals(DEFAULT_TIME_PROPERTY, task.time)
+        after({ task.hideTime() }) {
+            task.time mustEqual DEFAULT_TIME_PROPERTY
+        }
     }
 
     @DisplayName("Set Time Property Value")
     @Test
     fun testTaskSetTimePropertyValue() {
-        val task = testTask
-                .setTimePropertyValue(testTimePast)
+        task.setTimePropertyValue(testTimePast)
 
-        assertTrue(task.time.isVisible)
-        assertEquals(testTimePast, task.time.value)
-        assertFalse(task.time.isConstrained)
-        assertFalse(task.time.isMet)
+        on(task.time) {
+            isVisible mustBe true
+            value mustEqual testTimePast
+            isConstrained mustBe false
+            isMet mustBe false
+            this mustEqual simpleProperty(testTimePast)
+        }
 
-        assertEquals(
-                Property(SHOWING, testTimePast, NOT_CONSTRAINED, UNMET),
-                task.time)
-
-        task.hideTime()
-        assertEquals(DEFAULT_TIME_PROPERTY, task.time)
+        after({ task.hideTime() }) {
+            task.time mustEqual DEFAULT_TIME_PROPERTY
+        }
     }
 
     @DisplayName("Set Time Constraint")
     @Test
     fun testTaskSetTimeConstraint() {
-        val task = testTask
-                .setTimeProperty(
-                        Property(SHOWING, testTimeFuture, CONSTRAINED, UNMET)
-                )
+        task.setTimeProperty(constraintProperty(testTimeFuture))
 
-        assertTrue(task.time.isVisible)
-        assertEquals(testTimeFuture, task.time.value)
-        assertTrue(task.time.isConstrained)
-        assertFalse(task.time.isMet)
+        on(task.time) {
+            isVisible mustBe true
+            value mustEqual testTimeFuture
+            isConstrained mustBe true
+            isMet mustBe false
+            this mustEqual constraintProperty(testTimeFuture)
+        }
 
-        assertEquals(Property(SHOWING, testTimeFuture, CONSTRAINED, UNMET), task.time)
+        ({ task.hideTime() }) mustThrow TaskException::class
     }
 
     @DisplayName("Set Time Constraint Value")
     @Test
     fun testTaskSetTimeConstraintValue() {
-        val task = testTask
-                .setTimeConstraintValue(testTimeFuture)
+        task.setTimeConstraintValue(testTimeFuture)
 
-        assertTrue(task.time.isVisible)
-        assertEquals(testTimeFuture, task.time.value)
-        assertTrue(task.time.isConstrained)
-        assertFalse(task.time.isMet)
-
-        assertEquals(Property(SHOWING, testTimeFuture, CONSTRAINED, UNMET), task.time)
+        on(task.time) {
+            isVisible mustBe true
+            value mustEqual testTimeFuture
+            isConstrained mustBe true
+            isMet mustBe false
+            this mustEqual constraintProperty(testTimeFuture)
+        }
     }
 
     @DisplayName("Set Time Property before now")

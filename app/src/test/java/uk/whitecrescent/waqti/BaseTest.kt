@@ -1,5 +1,6 @@
 package uk.whitecrescent.waqti
 
+import androidx.annotation.CallSuper
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
@@ -32,7 +33,8 @@ abstract class BaseTest {
     }
 
     @BeforeEach
-    fun beforeEach() {
+    @CallSuper
+    open fun beforeEach() {
         Database.clearAllDBs().commit()
         Caches.clearAllCaches().commit()
 
@@ -41,7 +43,8 @@ abstract class BaseTest {
     }
 
     @AfterEach
-    fun afterEach() {
+    @CallSuper
+    open fun afterEach() {
         Database.clearAllDBs().commit()
         Caches.clearAllCaches().commit()
 
