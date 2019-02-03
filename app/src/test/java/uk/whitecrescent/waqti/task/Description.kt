@@ -62,7 +62,7 @@ class Description : BaseTaskTest() {
                 .setDescriptionProperty(Property(SHOWING, "Test Description", CONSTRAINED, UNMET))
 
         assertFalse(task.description.isConstrained)
-        assertTrue(task.getAllUnmetAndShowingConstraints().isEmpty())
+        assertTrue(task.allUnmetAndShowingConstraints.isEmpty())
         assertEquals("Test Description", task.description.value)
         assertTrue(task.description.isVisible)
 

@@ -63,7 +63,7 @@ class Optional : BaseTaskTest() {
                 .setOptionalProperty(Property(SHOWING, OPTIONAL, CONSTRAINED, UNMET))
 
         assertFalse(task.optional.isConstrained)
-        assertTrue(task.getAllUnmetAndShowingConstraints().isEmpty())
+        assertTrue(task.allUnmetAndShowingConstraints.isEmpty())
         assertEquals(OPTIONAL, task.optional.value)
         assertTrue(task.optional.isVisible)
 

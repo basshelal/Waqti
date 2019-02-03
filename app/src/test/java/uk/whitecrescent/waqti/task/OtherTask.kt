@@ -389,8 +389,8 @@ class OtherTask : BaseTaskTest() {
 
         task.unConstrainAll()
 
-        assertTrue(task.getAllShowingConstraints().isEmpty())
-        assertTrue(task.getAllUnmetAndShowingConstraints().isEmpty())
+        assertTrue(task.allShowingConstraints.isEmpty())
+        assertTrue(task.allUnmetAndShowingConstraints.isEmpty())
 
         assertFalse(task.time.isConstrained)
         assertEquals(Time.of(2018, 5, 5, 5, 5), task.time.value)

@@ -72,7 +72,7 @@ class Priority : BaseTaskTest() {
                 .setPriorityProperty(Property(SHOWING, priority, CONSTRAINED, UNMET))
 
         assertFalse(task.priority.isConstrained)
-        assertTrue(task.getAllUnmetAndShowingConstraints().isEmpty())
+        assertTrue(task.allUnmetAndShowingConstraints.isEmpty())
         assertEquals(priority, task.priority.value)
         assertTrue(task.priority.isVisible)
 

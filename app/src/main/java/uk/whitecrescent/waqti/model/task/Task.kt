@@ -146,9 +146,9 @@ class Task(name: String = "") : Cacheable {
      * * [age]
      * * [failedTimes]
      * * [killedTime]
-     * * [getAllProperties], the list of this Task's Properties.
+     * * [allProperties], the list of this Task's Properties.
      *
-     * For [getAllProperties] see [java.util.ArrayList.equals], essentially all Properties must be equal in order for
+     * For [allProperties] see [java.util.ArrayList.equals], essentially all Properties must be equal in order for
      * this to be satisfied see [Property.equals] meaning even the values must be equal, this will differ depending
      * on the type of value, for example any [Time] is equal to another if and only if they are exactly the
      * same to the nanosecond precision see [Time.equals] whereas [StringBuilder] checks for equality using
@@ -168,7 +168,7 @@ class Task(name: String = "") : Cacheable {
         bundle["age"] = this.age
         bundle["failedTimes"] = this.failedTimes
         bundle["killedTime"] = this.killedTime
-        bundle["properties"] = this.getAllProperties()
+        bundle["properties"] = this.allProperties
         return bundle
     }
 
@@ -376,57 +376,32 @@ class Task(name: String = "") : Cacheable {
     //region Task Properties Functions
 
     /**
-     * Makes this Task failable if the passed in Property is a Constraint and this Task is not currently failable.
-     * @see Property
-     * @see isFailable
-     * @param property the Property to check for if it is a Constraint
-     */
-    private fun makeFailableIfConstraint(property: Property<*>) {
-        if (!this.isFailable && property.isConstrained) {
-            this.isFailable = true
-        }
-    }
-
-    private fun makeNonFailableIfNoConstraints() {
-        if (this.getAllConstraints().isEmpty()) this.isFailable = false
-    }
-
-    /**
      * Gets the list of all the Properties of a Task, does not matter what their values are.
      * See the Properties.md docs for more.
      * @return the list of all the Properties of a Task.
      */
-    fun getAllProperties() = listOf(
-            time,
-            duration,
-            priority,
-            labels,
-            optional,
-            description,
-            checklist,
-            deadline,
-            target,
-            before,
-            subTasks
-    )
-
-    fun unConstrainAll(): Task {
-        getAllProperties()
-                .filter { it.isConstrained }
-                .forEach {
-                    it.isConstrained = false
-                    it.isMet = false
-                }
-        return this
-    }
+    val allProperties
+        get() = listOf(
+                time,
+                duration,
+                priority,
+                labels,
+                optional,
+                description,
+                checklist,
+                deadline,
+                target,
+                before,
+                subTasks
+        )
 
     /**
      * Gets the list of all Constraints of this Task, does not matter what their values are as long as they are
      * Constraints.
      * @return the list of all current Constraints of this Task
      */
-    private fun getAllConstraints() =
-            getAllProperties().filter { it.isConstrained }
+    val allConstraints
+        get() = allProperties.filter { it.isConstrained }
 
     /**
      * Gets the list of all Properties of this Task that are showing. These would usually be the Properties of
@@ -434,15 +409,15 @@ class Task(name: String = "") : Cacheable {
      * @see Property
      * @return the list of all showing Properties this Task has
      */
-    fun getAllShowingProperties() =
-            getAllProperties().filter { it.isVisible }
+    val allShowingProperties
+        get() = allProperties.filter { it.isVisible }
 
     /**
      * Gets the list of all Constraints of this Task that are showing. The `isMet` value of the Constraints is ignored.
      * @return the list of all showing Constraints this Task has
      */
-    fun getAllShowingConstraints() =
-            getAllConstraints().filter { it.isVisible }
+    val allShowingConstraints
+        get() = allConstraints.filter { it.isVisible }
 
     /**
      * Gets the list of all Constraints of this Task that are showing and also unmet. These would usually be the
@@ -452,8 +427,32 @@ class Task(name: String = "") : Cacheable {
      * @see kill
      * @return the list of all showing and unmet Constraints this Task has
      */
-    fun getAllUnmetAndShowingConstraints() =
-            getAllConstraints().filter { !it.isMet && it.isVisible }
+    val allUnmetAndShowingConstraints
+        get() = allConstraints.filter { !it.isMet && it.isVisible }
+
+    fun unConstrainAll(): Task {
+        allConstraints.forEach {
+            it.isConstrained = false
+            it.isMet = false
+        }
+        return this
+    }
+
+    /**
+     * Makes this Task failable if the passed in Property is a Constraint and this Task is not currently failable.
+     * @see Property
+     * @see isFailable
+     * @param property the Property to check for if it is a Constraint
+     */
+    private inline fun makeFailableIfConstraint(property: Property<*>) {
+        if (!this.isFailable && property.isConstrained) {
+            this.isFailable = true
+        }
+    }
+
+    private inline fun makeNonFailableIfNoConstraints() {
+        if (this.allConstraints.isEmpty()) this.isFailable = false
+    }
 
     //endregion Task Properties Functions
 
@@ -1220,15 +1219,24 @@ class Task(name: String = "") : Cacheable {
 
     //region Hide Properties
 
-    // hiding means setting to default which in the user's perspective means remove this
-    // property completely, this currently only works if the property is not constrained
-    // if you want to remove a constraint, first you must un-constrain then you can hide
-    // we may change this later
+    /**
+     * Re-sets the Time Property to the default Time Property value [DEFAULT_TIME_PROPERTY] if
+     * and only if either:
+     * * Time is not constrained, [Property.isConstrained] is false
+     * * Time is constrained but also met, [Property.isConstrained] is true AND
+     * [Property.isMet] is true
+     *
+     * We call this hiding because the user will see the Time property as hidden or gone because
+     * it resets to the default value.
+     *
+     * @see Property
+     * @throws TaskException if the above conditions are not met
+     */
     fun hideTime() {
-        if (!time.isConstrained) {
+        if (!time.isConstrained || (time.isConstrained && time.isMet)) {
             time = DEFAULT_TIME_PROPERTY
             update()
-        } else throw TaskException("Cannot hide, time is Constraint")
+        } else throw CannotHidePropertyException("Cannot hide, time is an unmet Constraint: $time")
     }
 
     fun hideDuration() {
@@ -1303,6 +1311,27 @@ class Task(name: String = "") : Cacheable {
 
     //endregion Hide Properties
 
+    //region UnConstrain Properties
+
+    fun unConstrain(property: Properties): Task {
+        when (property) {
+            Properties.TIME -> setTimeProperty(this.time.unConstrain())
+            Properties.DURATION -> setDurationProperty(this.duration.unConstrain())
+            Properties.PRIORITY -> setPriorityProperty(this.priority.unConstrain())
+            Properties.LABELS -> setLabelsProperty(this.labels.unConstrain())
+            Properties.OPTIONAL -> setOptionalProperty(this.optional.unConstrain())
+            Properties.DESCRIPTION -> setDescriptionProperty(this.description.unConstrain())
+            Properties.CHECKLIST -> setChecklistProperty(this.checklist.unConstrain())
+            Properties.TARGET -> setTargetProperty(this.target.unConstrain())
+            Properties.DEADLINE -> setDeadlineProperty(this.deadline.unConstrain())
+            Properties.BEFORE -> setBeforeProperty(this.before.unConstrain())
+            Properties.SUB_TASKS -> setSubTasksProperty(this.subTasks.unConstrain())
+        }
+        return this
+    }
+
+    //endregion UnConstrain Properties
+
     //region Task lifecycle
 
     // TODO: 05-Nov-18 needs to be put in way more places maybe?
@@ -1312,7 +1341,7 @@ class Task(name: String = "") : Cacheable {
 
     fun canKill() = isKillable &&
             this.state == TaskState.EXISTING &&
-            getAllUnmetAndShowingConstraints().isEmpty()
+            allUnmetAndShowingConstraints.isEmpty()
 
     fun canFail() = isFailable &&
             this.state == TaskState.EXISTING
@@ -1372,9 +1401,9 @@ class Task(name: String = "") : Cacheable {
         if (state == TaskState.SLEEPING) {
             throw TaskStateException("Kill unsuccessful, ${this.name} is Sleeping", this.state)
         }
-        if (getAllUnmetAndShowingConstraints().isNotEmpty()) {
+        if (allUnmetAndShowingConstraints.isNotEmpty()) {
             throw TaskStateException(
-                    "Kill unsuccessful, ${this.name} has unmet Constraints ${this.getAllUnmetAndShowingConstraints()}",
+                    "Kill unsuccessful, ${this.name} has unmet Constraints ${this.allUnmetAndShowingConstraints}",
                     this.state)
         } else if (canKill()) {
             state = TaskState.KILLED
@@ -1661,14 +1690,14 @@ class Task(name: String = "") : Cacheable {
         val result = StringBuilder("$name\n")
         result.append("ID: $id isKillable: $isKillable isFailable: $isFailable state: $state\n")
 
-        if (getAllShowingProperties().isNotEmpty()) {
+        if (allShowingProperties.isNotEmpty()) {
             result.append("\tP:\n")
-            getAllShowingProperties().filter { !it.isConstrained }.forEach { result.append("\t\t$it\n") }
+            allShowingProperties.filter { !it.isConstrained }.forEach { result.append("\t\t$it\n") }
         }
 
-        if (getAllShowingConstraints().isNotEmpty()) {
+        if (allShowingConstraints.isNotEmpty()) {
             result.append("\tC:\n")
-            getAllShowingConstraints().forEach { result.append("\t\t$it\n") }
+            allShowingConstraints.forEach { result.append("\t\t$it\n") }
         }
 
         return result.toString()

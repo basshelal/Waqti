@@ -343,12 +343,12 @@ class SubTasks : BaseTaskTest() {
 
         sleep(1)
         assertThrows(TaskStateException::class.java, { task.kill() })
-        assertTrue(task.getAllUnmetAndShowingConstraints().size == 1)
+        assertTrue(task.allUnmetAndShowingConstraints.size == 1)
         task.setSubTasksProperty((task.subTasks).unConstrain())
 
         sleep(1)
 
-        assertTrue(task.getAllUnmetAndShowingConstraints().isEmpty())
+        assertTrue(task.allUnmetAndShowingConstraints.isEmpty())
         task.kill()
         assertEquals(TaskState.KILLED, task.state)
     }
@@ -367,7 +367,7 @@ class SubTasks : BaseTaskTest() {
 
         sleep(1)
         assertThrows(TaskStateException::class.java, { task.kill() })
-        assertTrue(task.getAllUnmetAndShowingConstraints().size == 1)
+        assertTrue(task.allUnmetAndShowingConstraints.size == 1)
 
         val newSubTasks = arrayListOf(
                 Task("New SubTask1"),

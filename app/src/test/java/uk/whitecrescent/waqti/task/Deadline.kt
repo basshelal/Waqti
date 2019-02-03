@@ -221,7 +221,7 @@ class Deadline : BaseTaskTest() {
         sleep(2)
 
         assertFalse(task.isFailable)
-        assertTrue(task.getAllUnmetAndShowingConstraints().isEmpty())
+        assertTrue(task.allUnmetAndShowingConstraints.isEmpty())
         task.kill()
         assertEquals(TaskState.KILLED, task.state)
     }

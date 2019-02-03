@@ -275,12 +275,12 @@ class Checklist : BaseTaskTest() {
 
         sleep(1)
         assertThrows(TaskStateException::class.java, { task.kill() })
-        assertTrue(task.getAllUnmetAndShowingConstraints().size == 1)
+        assertTrue(task.allUnmetAndShowingConstraints.size == 1)
         task.setChecklistProperty((task.checklist).unConstrain())
 
         sleep(1)
 
-        assertTrue(task.getAllUnmetAndShowingConstraints().isEmpty())
+        assertTrue(task.allUnmetAndShowingConstraints.isEmpty())
         task.kill()
         assertEquals(TaskState.KILLED, task.state)
     }
@@ -293,7 +293,7 @@ class Checklist : BaseTaskTest() {
 
         sleep(1)
         assertThrows(TaskStateException::class.java, { task.kill() })
-        assertTrue(task.getAllUnmetAndShowingConstraints().size == 1)
+        assertTrue(task.allUnmetAndShowingConstraints.size == 1)
 
         task.setChecklistConstraintValue(Checklist("Second"))
         assertEquals(Checklist("Second"), task.checklist.value)

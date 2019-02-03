@@ -7,13 +7,11 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertAll
-import uk.whitecrescent.waqti.getTasks
 import uk.whitecrescent.waqti.at
 import uk.whitecrescent.waqti.days
+import uk.whitecrescent.waqti.getTasks
 import uk.whitecrescent.waqti.hours
 import uk.whitecrescent.waqti.minutes
-import uk.whitecrescent.waqti.seconds
-import uk.whitecrescent.waqti.secs
 import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_DURATION
 import uk.whitecrescent.waqti.model.task.DEFAULT_DURATION_PROPERTY
@@ -26,9 +24,11 @@ import uk.whitecrescent.waqti.model.task.TaskState
 import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.model.task.TimeUnit
 import uk.whitecrescent.waqti.model.task.UNMET
-import uk.whitecrescent.waqti.tomorrow
+import uk.whitecrescent.waqti.seconds
+import uk.whitecrescent.waqti.secs
 import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTask
+import uk.whitecrescent.waqti.tomorrow
 
 // NOTE: Pretty good, could still maybe improve and add to but good enough for now
 
@@ -254,7 +254,7 @@ class Duration : BaseTaskTest() {
 
         sleep(1.seconds)
         assertThrows(TaskStateException::class.java) { task.kill() }
-        assertTrue(task.getAllUnmetAndShowingConstraints().size == 1)
+        assertTrue(task.allUnmetAndShowingConstraints.size == 1)
         task.setDurationProperty(task.duration.unConstrain())
 
         task.stopTimer()
@@ -264,7 +264,7 @@ class Duration : BaseTaskTest() {
 
         sleep(1.seconds)
 
-        assertTrue(task.getAllUnmetAndShowingConstraints().isEmpty())
+        assertTrue(task.allUnmetAndShowingConstraints.isEmpty())
         task.kill()
         assertTrue(task.state == TaskState.KILLED)
     }
@@ -279,7 +279,7 @@ class Duration : BaseTaskTest() {
 
         sleep(1.seconds)
         assertThrows(TaskStateException::class.java) { task.kill() }
-        assertTrue(task.getAllUnmetAndShowingConstraints().size == 1)
+        assertTrue(task.allUnmetAndShowingConstraints.size == 1)
 
         val newDuration = 1.seconds
 
@@ -364,7 +364,7 @@ class Duration : BaseTaskTest() {
         sleep(2.seconds)
 
         assertFalse(task.duration.isMet)
-        assertTrue(task.getAllUnmetAndShowingConstraints().isNotEmpty())
+        assertTrue(task.allUnmetAndShowingConstraints.isNotEmpty())
         assertThrows(TaskStateException::class.java) { task.kill() }
 
     }

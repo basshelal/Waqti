@@ -81,7 +81,7 @@ class Label : BaseTaskTest() {
                 .setLabelsProperty(Property(SHOWING, arrayListOf(label1, label2), CONSTRAINED, UNMET))
 
         assertFalse(task.labels.isConstrained)
-        assertTrue(task.getAllUnmetAndShowingConstraints().isEmpty())
+        assertTrue(task.allUnmetAndShowingConstraints.isEmpty())
         assertEquals(arrayListOf(label1, label2), task.labels.value)
         assertTrue(task.labels.isVisible)
 

@@ -82,6 +82,14 @@ inline infix fun Boolean.mustBe(boolean: Boolean) {
     }
 }
 
+inline fun <T> Collection<T>.mustBeEmpty() {
+    this.isEmpty() mustBe true
+}
+
+inline infix fun <T> Collection<T>.mustHaveSizeOf(size: Int) {
+    this.size mustEqual size
+}
+
 inline fun <T : () -> Unit> after(first: T, `do`: T) {
     first.mustNotThrowAnyException()
     `do`()
