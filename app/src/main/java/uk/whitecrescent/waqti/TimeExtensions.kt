@@ -1,29 +1,54 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "UNUSED")
 
 package uk.whitecrescent.waqti
 
-// Type Aliases for which Time API to use
+//region TypeAliases
+
+//region Root
 
 typealias Time = org.threeten.bp.LocalDateTime
 typealias Duration = org.threeten.bp.Duration
 typealias Date = org.threeten.bp.LocalDate
 typealias ZonedTime = org.threeten.bp.ZonedDateTime
-typealias Temporal = org.threeten.bp.temporal.Temporal
-typealias TemporalAmount = org.threeten.bp.temporal.TemporalAmount
-typealias TemporalUnit = org.threeten.bp.temporal.TemporalUnit
 typealias LocalTime = org.threeten.bp.LocalTime
-typealias ChronoUnit = org.threeten.bp.temporal.ChronoUnit
-typealias ChronoField = org.threeten.bp.temporal.ChronoField
 typealias Instant = org.threeten.bp.Instant
 typealias DayOfWeek = org.threeten.bp.DayOfWeek
 typealias Year = org.threeten.bp.Year
 typealias YearMonth = org.threeten.bp.YearMonth
 typealias Month = org.threeten.bp.Month
 typealias MonthDay = org.threeten.bp.MonthDay
-typealias DateTimeFormatter = org.threeten.bp.format.DateTimeFormatter
 typealias ZoneOffset = org.threeten.bp.ZoneOffset
 
-// Useful Extensions for java.time to make code readable and concise
+//endregion Root
+
+//region Temporal
+
+typealias Temporal = org.threeten.bp.temporal.Temporal
+typealias TemporalAmount = org.threeten.bp.temporal.TemporalAmount
+typealias TemporalUnit = org.threeten.bp.temporal.TemporalUnit
+typealias ChronoUnit = org.threeten.bp.temporal.ChronoUnit
+typealias ChronoField = org.threeten.bp.temporal.ChronoField
+
+//endregion Temporal
+
+//region Chrono
+
+typealias ChronoLocalDate = org.threeten.bp.chrono.ChronoLocalDate
+typealias ChronoLocalDateTime<D> = org.threeten.bp.chrono.ChronoLocalDateTime<D>
+
+//endregion Chrono
+
+//region Format
+
+typealias DateTimeFormatter = org.threeten.bp.format.DateTimeFormatter
+
+//endregion Format
+
+//endregion TypeAliases
+
+//region Extensions
+
+//region Values
 
 inline val now: Time
     get() = Time.now()
@@ -77,17 +102,19 @@ inline val Duration.millis: Long
     get() = this.toMillis()
 
 inline val Duration.secs: Double
-    get() {
-        return (this.millis) / 1000.0
-    }
+    get() = (this.millis) / 1000.0
+
+//endregion Values
+
+//region Functions
 
 inline fun time(year: Int, month: Int, dayOfMonth: Int,
                 hour: Int = 0, minute: Int = 0, second: Int = 0, nanoOfSecond: Int = 0) =
-        Time.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond)
+        Time.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond)!!
 
 inline fun time(year: Int, month: Month, dayOfMonth: Int,
                 hour: Int = 0, minute: Int = 0, second: Int = 0, nanoOfSecond: Int = 0) =
-        Time.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond)
+        Time.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond)!!
 
 inline fun time(hour: Number, minute: Number): Pair<Number, Number> = Pair(hour, minute)
 
@@ -110,18 +137,37 @@ inline infix fun Temporal.till(other: Temporal): Duration = Duration.between(thi
 
 inline infix fun Duration.from(temporalAmount: TemporalAmount): Duration = Duration.from(temporalAmount)
 
-inline fun coming(dayOfWeek: DayOfWeek): Date {
-    return Date.from(today.dayOfWeek + dayOfWeek.value.toLong())
-}
+inline infix fun <D : ChronoLocalDate>
+        ChronoLocalDateTime<D>.isAfter(other: ChronoLocalDateTime<*>) = this.isAfter(other)
 
-inline fun last(dayOfWeek: DayOfWeek): Date {
-    return Date.from(today.dayOfWeek - dayOfWeek.value.toLong())
-}
+inline infix fun <D : ChronoLocalDate>
+        ChronoLocalDateTime<D>.isBefore(other: ChronoLocalDateTime<*>) = this.isBefore(other)
+
+inline infix fun <D : ChronoLocalDate>
+        ChronoLocalDateTime<D>.isEqual(other: ChronoLocalDateTime<*>) = this.isEqual(other)
+
+inline val <D : ChronoLocalDate> ChronoLocalDateTime<D>.isInThePast: Boolean
+    get() = now isAfter this
+
+inline val <D : ChronoLocalDate> ChronoLocalDateTime<D>.isInTheFuture: Boolean
+    get() = now isBefore this
+
+inline fun coming(dayOfWeek: DayOfWeek) =
+        Date.from(today.dayOfWeek + dayOfWeek.value.toLong())!!
+
+inline fun last(dayOfWeek: DayOfWeek) =
+        Date.from(today.dayOfWeek - dayOfWeek.value.toLong())!!
+
+//endregion Functions
+
+//region Other
 
 inline val Time.toEpoch: Long
-    get() = toEpochSecond(ZoneOffset.UTC)
+    get() = this.toEpochSecond(ZoneOffset.UTC)
 
 inline val Time.formatted: String
-    get() {
-        return this.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.RFC_1123_DATE_TIME)
-    }
+    get() = this.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.RFC_1123_DATE_TIME)
+
+//endregion Other
+
+//endregion Extensions

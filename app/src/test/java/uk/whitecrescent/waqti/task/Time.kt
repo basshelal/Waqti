@@ -13,7 +13,7 @@ import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME_PROPERTY
 import uk.whitecrescent.waqti.model.task.MET
 import uk.whitecrescent.waqti.model.task.NOT_CONSTRAINED
-import uk.whitecrescent.waqti.model.task.Properties
+import uk.whitecrescent.waqti.model.task.Properties.TIME
 import uk.whitecrescent.waqti.model.task.Property
 import uk.whitecrescent.waqti.model.task.SHOWING
 import uk.whitecrescent.waqti.model.task.TaskException
@@ -241,7 +241,7 @@ class Time : BaseTaskTest() {
             allShowingConstraints mustHaveSizeOf 1
         }
 
-        task.unConstrain(Properties.TIME)
+        task.unConstrain(TIME)
 
         after({ sleep(1.seconds) }) {
             on(task.time) {
@@ -279,7 +279,7 @@ class Time : BaseTaskTest() {
             { task.kill() } mustThrow TaskStateException::class
         }
 
-        task.unConstrain(Properties.TIME)
+        task.unConstrain(TIME)
 
         after({ sleep(1.seconds) }) {
             on(task.time) {

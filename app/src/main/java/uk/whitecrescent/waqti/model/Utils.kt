@@ -8,6 +8,7 @@ import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.DEBUG
 import uk.whitecrescent.waqti.model.task.GRACE_PERIOD
 import uk.whitecrescent.waqti.model.task.ID
+import uk.whitecrescent.waqti.model.task.Property
 import uk.whitecrescent.waqti.model.task.Task
 import java.util.Objects
 
@@ -42,3 +43,12 @@ inline val Collection<Tuple>.tasks: Array<Task>
         }
         return result.toTypedArray()
     }
+
+inline val <T> Property<T>.isNotConstrained: Boolean
+    get() = !this.isConstrained
+
+inline val <T> Property<T>.isUnMet: Boolean
+    get() = !this.isMet
+
+inline val <T> Property<T>.isHidden: Boolean
+    get() = !this.isVisible

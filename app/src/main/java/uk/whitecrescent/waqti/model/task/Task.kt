@@ -14,13 +14,30 @@ import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.MissingFeature
 import uk.whitecrescent.waqti.NonFinal
+import uk.whitecrescent.waqti.TestedDocumentedAndFinalSince
 import uk.whitecrescent.waqti.Time
 import uk.whitecrescent.waqti.UpdateDocumentation
 import uk.whitecrescent.waqti.UpdateTests
+import uk.whitecrescent.waqti.WaqtiVersion
+import uk.whitecrescent.waqti.isAfter
+import uk.whitecrescent.waqti.isBefore
+import uk.whitecrescent.waqti.isInThePast
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.debug
 import uk.whitecrescent.waqti.model.ids
+import uk.whitecrescent.waqti.model.isNotConstrained
+import uk.whitecrescent.waqti.model.isUnMet
 import uk.whitecrescent.waqti.model.persistence.Caches
+import uk.whitecrescent.waqti.model.task.Properties.BEFORE
+import uk.whitecrescent.waqti.model.task.Properties.CHECKLIST
+import uk.whitecrescent.waqti.model.task.Properties.DEADLINE
+import uk.whitecrescent.waqti.model.task.Properties.DESCRIPTION
+import uk.whitecrescent.waqti.model.task.Properties.DURATION
+import uk.whitecrescent.waqti.model.task.Properties.LABELS
+import uk.whitecrescent.waqti.model.task.Properties.PRIORITY
+import uk.whitecrescent.waqti.model.task.Properties.SUB_TASKS
+import uk.whitecrescent.waqti.model.task.Properties.TARGET
+import uk.whitecrescent.waqti.model.task.Properties.TIME
 import uk.whitecrescent.waqti.model.tasks
 import uk.whitecrescent.waqti.model.toArrayList
 import uk.whitecrescent.waqti.now
@@ -159,18 +176,19 @@ class Task(name: String = "") : Cacheable {
      * @return a HashMap with `String` as the Key and `Any` as the Value to represent the Equality Bundle which will
      * store the parts that make up a Task's overall state
      */
-    private inline fun equalityBundle(): HashMap<String, Any> {
-        val bundle = HashMap<String, Any>(8)
-        bundle["name"] = this.name
-        bundle["state"] = this.state
-        bundle["isFailable"] = this.isFailable
-        bundle["isKillable"] = this.isKillable
-        bundle["age"] = this.age
-        bundle["failedTimes"] = this.failedTimes
-        bundle["killedTime"] = this.killedTime
-        bundle["properties"] = this.allProperties
-        return bundle
-    }
+    private inline val equalityBundle: HashMap<String, Any>
+        get() {
+            val bundle = HashMap<String, Any>(8)
+            bundle["name"] = this.name
+            bundle["state"] = this.state
+            bundle["isFailable"] = this.isFailable
+            bundle["isKillable"] = this.isKillable
+            bundle["age"] = this.age
+            bundle["failedTimes"] = this.failedTimes
+            bundle["killedTime"] = this.killedTime
+            bundle["properties"] = this.allProperties
+            return bundle
+        }
 
     /**
      * Map showing which properties we are currently observing, represented by a string being the
@@ -178,12 +196,12 @@ class Task(name: String = "") : Cacheable {
      */
     @Transient
     private val observingProperties = mutableMapOf(
-            Properties.TIME to false,
-            Properties.DURATION to false,
-            Properties.CHECKLIST to false,
-            Properties.DEADLINE to false,
-            Properties.BEFORE to false,
-            Properties.SUB_TASKS to false
+            TIME to false,
+            DURATION to false,
+            CHECKLIST to false,
+            DEADLINE to false,
+            BEFORE to false,
+            SUB_TASKS to false
     )
 
     //endregion Class Properties
@@ -194,13 +212,15 @@ class Task(name: String = "") : Cacheable {
      * The point in natural time after which this Task will be relevant, this can also be referred to as scheduled
      * time.
      *
-     * If time is a Constraint then the Task cannot be killed until after that time
-     * and is in the SLEEPING state during that period, however, if time is not a Constraint then the Task can be
-     * killed freely and will be in its previous state meaning no lifecycle change will be made. If time is a
-     * Property then it has no rules on killing the Task.
+     * If time is constrained then the Task is in the SLEEPING state during that period and
+     * cannot be killed until after that time, however, if time is not constrained then
+     * the Task can be killed freely and will be in its same state meaning no lifecycle
+     * changes will be made.
      *
      * @see Time
+     * @documented 03-Feb-19
      */
+    @TestedDocumentedAndFinalSince(WaqtiVersion.FEB_2019)
     @Convert(converter = TimePropertyConverter::class, dbType = String::class)
     var time: TimeProperty = DEFAULT_TIME_PROPERTY
         private set
@@ -466,22 +486,20 @@ class Task(name: String = "") : Cacheable {
     //region Time
 
     /**
-     * Sets this Task's time Property, the passed in Property can be a Constraint.
+     * Sets this Task's time Property.
      *
-     * Further changes will occur only if the passed in `timeProperty` is after now and it is a Constraint, otherwise
-     * no more changes will occur.
-     *
-     * In the case that the passed in `timeProperty` is a Constraint and it is after now, three things will happen:
+     * In the case that the passed in `timeProperty` is constrained and it is after now, three
+     * things will happen:
      *
      * * This Task's state will become SLEEPING
      * * This Task will become failable if it wasn't already
      * * This Task will start checking the time, and will become EXISTING once the time in `timeProperty` has passed
-     * and will also make the time Constraint MET if it wasn't already see [timeConstraintTimeChecking]
+     * and will also make the time Constraint MET if it wasn't already, see [observeTime]
      *
-     * If the passed in `timeProperty` is not a Constraint or is not after now then the Task's state will remain the
-     * same.
+     * If the passed in `timeProperty` is not constrained or is not after now then the Task's
+     * state will remain the same.
      *
-     * @see Task.timeConstraintTimeChecking
+     * @see observeTime
      * @param timeProperty the `Property` of type `Time` that this Task's time will be set to
      * @return this Task after setting the Task's time Property
      */
@@ -490,15 +508,15 @@ class Task(name: String = "") : Cacheable {
                 timeProperty.isVisible, timeProperty.value, timeProperty.isConstrained, timeProperty.isMet)
 
         if (this.time.isConstrained) {
-            if (this.time.value.isAfter(now)) {
+            if (this.time.value isAfter now) {
                 if (canSleep()) sleep()
                 makeFailableIfConstraint(this.time)
             }
 
-            if (this.time.value.isBefore(now)) {
+            if (this.time.value isBefore now) {
                 this.time.isMet = MET
             }
-            observingProperties[Properties.TIME] = true
+            observingProperties[TIME] = true
         }
         update()
         return this
@@ -507,24 +525,27 @@ class Task(name: String = "") : Cacheable {
     /**
      * Sets this Task's time Property with the given value and makes the Property showing.
      *
-     * This is a shorthand of writing `setTimeProperty(Property(SHOWING, myTime))`.
+     * This is a shorthand of writing
+     * `setTimeProperty(Property(SHOWING, myTime, NOT_CONSTRAINED, UNMET))`
      *
      * @see Task.setTimeProperty
      * @param time the Time value that this Task's time value will be set to
      * @return this Task after setting the Task's time Property
      */
-    fun setTimePropertyValue(time: Time) = setTimeProperty(Property(SHOWING, time, false, false))
+    fun setTimePropertyValue(time: Time) = setTimeProperty(Property(SHOWING, time, NOT_CONSTRAINED, UNMET))
 
     /**
-     * Sets this Task's time Constraint with the given value and makes the Constraint showing and unmet.
+     * Sets this Task's time Property with the given value and makes the Property showing,
+     * constrained and unmet.
      *
-     * This is a shorthand of writing `setTimeConstraint(Constraint(SHOWING, myTime, UNMET))`.
+     * This is a shorthand of writing
+     * `setTimeProperty(Property(SHOWING, myTime, CONSTRAINED, UNMET))`.
      *
      * @see Task.setTimeProperty
      * @param time the Time value that this Task's time value will be set to
-     * @return this Task after setting the Task's time Constraint
+     * @return this Task after setting the Task's time Property
      */
-    fun setTimeConstraintValue(time: Time) = setTimeProperty(Property(SHOWING, time, true, UNMET))
+    fun setTimeConstraintValue(time: Time) = setTimeProperty(Property(SHOWING, time, CONSTRAINED, UNMET))
 
     //endregion Time
 
@@ -861,7 +882,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (checklistProperty.isConstrained) {
             makeFailableIfConstraint(checklistProperty)
-            observingProperties[Properties.CHECKLIST] = true
+            observingProperties[CHECKLIST] = true
         }
         update()
         return this
@@ -924,7 +945,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (deadlineProperty.isConstrained) {
             makeFailableIfConstraint(deadlineProperty)
-            observingProperties[Properties.DEADLINE] = true
+            observingProperties[DEADLINE] = true
         }
         update()
         return this
@@ -1045,7 +1066,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (beforeProperty.isConstrained) {
             makeFailableIfConstraint(beforeProperty)
-            observingProperties[Properties.BEFORE] = true
+            observingProperties[BEFORE] = true
         }
         update()
         return this
@@ -1130,7 +1151,7 @@ class Task(name: String = "") : Cacheable {
         )
         if (subTasksProperty.isConstrained) {
             makeFailableIfConstraint(subTasksProperty)
-            observingProperties[Properties.SUB_TASKS] = true
+            observingProperties[SUB_TASKS] = true
         }
         update()
         return this
@@ -1230,7 +1251,7 @@ class Task(name: String = "") : Cacheable {
      * it resets to the default value.
      *
      * @see Property
-     * @throws TaskException if the above conditions are not met
+     * @throws CannotHidePropertyException if the above conditions are not met
      */
     fun hideTime() {
         if (!time.isConstrained || (time.isConstrained && time.isMet)) {
@@ -1315,17 +1336,17 @@ class Task(name: String = "") : Cacheable {
 
     fun unConstrain(property: Properties): Task {
         when (property) {
-            Properties.TIME -> setTimeProperty(this.time.unConstrain())
-            Properties.DURATION -> setDurationProperty(this.duration.unConstrain())
-            Properties.PRIORITY -> setPriorityProperty(this.priority.unConstrain())
-            Properties.LABELS -> setLabelsProperty(this.labels.unConstrain())
+            TIME -> setTimeProperty(this.time.unConstrain())
+            DURATION -> setDurationProperty(this.duration.unConstrain())
+            PRIORITY -> setPriorityProperty(this.priority.unConstrain())
+            LABELS -> setLabelsProperty(this.labels.unConstrain())
             Properties.OPTIONAL -> setOptionalProperty(this.optional.unConstrain())
-            Properties.DESCRIPTION -> setDescriptionProperty(this.description.unConstrain())
-            Properties.CHECKLIST -> setChecklistProperty(this.checklist.unConstrain())
-            Properties.TARGET -> setTargetProperty(this.target.unConstrain())
-            Properties.DEADLINE -> setDeadlineProperty(this.deadline.unConstrain())
-            Properties.BEFORE -> setBeforeProperty(this.before.unConstrain())
-            Properties.SUB_TASKS -> setSubTasksProperty(this.subTasks.unConstrain())
+            DESCRIPTION -> setDescriptionProperty(this.description.unConstrain())
+            CHECKLIST -> setChecklistProperty(this.checklist.unConstrain())
+            TARGET -> setTargetProperty(this.target.unConstrain())
+            DEADLINE -> setDeadlineProperty(this.deadline.unConstrain())
+            BEFORE -> setBeforeProperty(this.before.unConstrain())
+            SUB_TASKS -> setSubTasksProperty(this.subTasks.unConstrain())
         }
         return this
     }
@@ -1428,7 +1449,7 @@ class Task(name: String = "") : Cacheable {
         } else {
             timer.start()
             if (duration.isConstrained) {
-                observingProperties[Properties.DURATION] = true
+                observingProperties[DURATION] = true
             }
         }
         return this
@@ -1467,12 +1488,12 @@ class Task(name: String = "") : Cacheable {
 
                             override fun onNext(it: Long) {
                                 if (this@Task !in Caches.tasks) done = true
-                                if (observingProperties[Properties.TIME]!!) observeTime()
-                                if (observingProperties[Properties.DURATION]!!) observeDuration()
-                                if (observingProperties[Properties.CHECKLIST]!!) observeChecklist()
-                                if (observingProperties[Properties.DEADLINE]!!) observeDeadline()
-                                if (observingProperties[Properties.BEFORE]!!) observeBefore()
-                                if (observingProperties[Properties.SUB_TASKS]!!) observeSubTasks()
+                                if (observingProperties[TIME]!!) observeTime()
+                                if (observingProperties[DURATION]!!) observeDuration()
+                                if (observingProperties[CHECKLIST]!!) observeChecklist()
+                                if (observingProperties[DEADLINE]!!) observeDeadline()
+                                if (observingProperties[BEFORE]!!) observeBefore()
+                                if (observingProperties[SUB_TASKS]!!) observeSubTasks()
                             }
 
                             override fun onError(e: Throwable) {
@@ -1493,24 +1514,24 @@ class Task(name: String = "") : Cacheable {
 
     private inline fun observingDone(property: Properties) {
         if (property !in observingProperties.keys)
-            throw IllegalArgumentException("$property doesn't exist in checking")
+            throw IllegalArgumentException("$property doesn't exist in observingProperties")
         observingProperties[property] = false
         update()
     }
 
     private inline fun observeTime() {
         when {
-            !this.time.isConstrained -> {
+            this.time.isNotConstrained -> {
                 makeNonFailableIfNoConstraints()
                 if (this.state == TaskState.SLEEPING) this.state = TaskState.EXISTING
-                observingDone(Properties.TIME)
+                observingDone(TIME)
             }
-            now.isAfter(this.time.value) -> {
+            this.time.value.isInThePast -> {
                 if (this.state == TaskState.SLEEPING) this.state = TaskState.EXISTING
-                if (this.time.isConstrained && !this.time.isMet) {
+                if (this.time.isConstrained && this.time.isUnMet) {
                     this.time.isMet = MET
                 }
-                observingDone(Properties.TIME)
+                observingDone(TIME)
             }
         }
     }
@@ -1519,16 +1540,16 @@ class Task(name: String = "") : Cacheable {
         when {
             !this.duration.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                observingDone(Properties.DURATION)
+                observingDone(DURATION)
             }
             this.timer.stopped -> {
-                observingDone(Properties.DURATION)
+                observingDone(DURATION)
             }
             timer.duration >= this.duration.value -> {
                 if (this.duration.isConstrained && !this.duration.isMet) {
                     this.duration.isMet = MET
                 }
-                observingDone(Properties.DURATION)
+                observingDone(DURATION)
             }
         }
     }
@@ -1537,13 +1558,13 @@ class Task(name: String = "") : Cacheable {
         when {
             !this.checklist.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                observingDone(Properties.CHECKLIST)
+                observingDone(CHECKLIST)
             }
             this.checklist.value.getAllUncheckedItems().isEmpty() -> {
                 if (this.checklist.isConstrained && this.checklist.isMet != MET) {
                     this.checklist.isMet = MET
                 }
-                observingDone(Properties.CHECKLIST)
+                observingDone(CHECKLIST)
             }
         }
     }
@@ -1553,14 +1574,14 @@ class Task(name: String = "") : Cacheable {
         when {
             !this.deadline.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                observingDone(Properties.DEADLINE)
+                observingDone(DEADLINE)
             }
             now.isAfter(deadlineWithGrace) -> {
                 if (canFail()) {
                     this.fail()
                     deadline.isMet = false
                 }
-                observingDone(Properties.DEADLINE)
+                observingDone(DEADLINE)
             }
         }
     }
@@ -1574,16 +1595,16 @@ class Task(name: String = "") : Cacheable {
             }
             !this.before.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                observingDone(Properties.BEFORE)
+                observingDone(BEFORE)
             }
             beforeTask.state == TaskState.KILLED -> {
                 this.before.isMet = true
-                observingDone(Properties.BEFORE)
+                observingDone(BEFORE)
             }
             beforeTask.state == TaskState.FAILED -> {
                 this.before.isMet = false
                 if (canFail()) fail()
-                observingDone(Properties.BEFORE)
+                observingDone(BEFORE)
             }
 
         }
@@ -1597,17 +1618,17 @@ class Task(name: String = "") : Cacheable {
             }
             !this.subTasks.isConstrained -> {
                 makeNonFailableIfNoConstraints()
-                observingDone(Properties.SUB_TASKS)
+                observingDone(SUB_TASKS)
             }
             this.subTasks.value.tasks.any { it.state == TaskState.FAILED } -> {
                 subTasks.isMet = false
                 if (canFail()) fail()
-                observingDone(Properties.SUB_TASKS)
+                observingDone(SUB_TASKS)
             }
             this.subTasks.value.tasks
                     .all { it.state == TaskState.KILLED } -> {
                 subTasks.isMet = true
-                observingDone(Properties.SUB_TASKS)
+                observingDone(SUB_TASKS)
             }
 
         }
@@ -1657,7 +1678,7 @@ class Task(name: String = "") : Cacheable {
      * @see Any.hashCode
      * @return the hash code of this Task
      */
-    override fun hashCode() = equalityBundle().hashCode()
+    override fun hashCode() = equalityBundle.hashCode()
 
     /**
      * Checks whether the given `other` is equal to this Task or not, if `other` is not a Task then returns false, then
@@ -1668,7 +1689,7 @@ class Task(name: String = "") : Cacheable {
      * @return true if `other` is a Task and its equalityBundle is equal to this Task's equalityBundle, false otherwise
      */
     override fun equals(other: Any?) =
-            other is Task && other.equalityBundle() == this.equalityBundle()
+            other is Task && other.equalityBundle == this.equalityBundle
 
     /**
      * Returns the String representation of this Task, depicted using Task Card syntax which appears as follows:
@@ -1687,6 +1708,7 @@ class Task(name: String = "") : Cacheable {
      * @return the String representation of this Task
      */
     override fun toString(): String {
+        //return Gson().toJson(this) // this is probably way better!
         val result = StringBuilder("$name\n")
         result.append("ID: $id isKillable: $isKillable isFailable: $isFailable state: $state\n")
 
