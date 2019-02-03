@@ -104,6 +104,12 @@ inline val Duration.millis: Long
 inline val Duration.secs: Double
     get() = (this.millis) / 1000.0
 
+inline val <D : ChronoLocalDate> ChronoLocalDateTime<D>.isInThePast: Boolean
+    get() = now isAfter this
+
+inline val <D : ChronoLocalDate> ChronoLocalDateTime<D>.isInTheFuture: Boolean
+    get() = now isBefore this
+
 //endregion Values
 
 //region Functions
@@ -116,10 +122,9 @@ inline fun time(year: Int, month: Month, dayOfMonth: Int,
                 hour: Int = 0, minute: Int = 0, second: Int = 0, nanoOfSecond: Int = 0) =
         Time.of(year, month, dayOfMonth, hour, minute, second, nanoOfSecond)!!
 
-inline fun time(hour: Number, minute: Number): Pair<Number, Number> = Pair(hour, minute)
+inline fun time(hour: Number, minute: Number) = Pair(hour, minute)
 
-inline fun time(hour: Number, minute: Number, second: Number): Triple<Number, Number, Number> =
-        Triple(hour, minute, second)
+inline fun time(hour: Number, minute: Number, second: Number) = Triple(hour, minute, second)
 
 inline infix fun Date.at(time: LocalTime): Time = this.atTime(time)
 
@@ -145,12 +150,6 @@ inline infix fun <D : ChronoLocalDate>
 
 inline infix fun <D : ChronoLocalDate>
         ChronoLocalDateTime<D>.isEqual(other: ChronoLocalDateTime<*>) = this.isEqual(other)
-
-inline val <D : ChronoLocalDate> ChronoLocalDateTime<D>.isInThePast: Boolean
-    get() = now isAfter this
-
-inline val <D : ChronoLocalDate> ChronoLocalDateTime<D>.isInTheFuture: Boolean
-    get() = now isBefore this
 
 inline fun coming(dayOfWeek: DayOfWeek) =
         Date.from(today.dayOfWeek + dayOfWeek.value.toLong())!!

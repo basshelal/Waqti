@@ -14,15 +14,15 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
-import uk.whitecrescent.waqti.android.hideSoftKeyboard
-import uk.whitecrescent.waqti.android.snackBar
 import uk.whitecrescent.waqti.formatted
+import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.DEFAULT_DEADLINE_PROPERTY
 import uk.whitecrescent.waqti.model.task.DEFAULT_DESCRIPTION_PROPERTY
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME_PROPERTY
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.shortSnackBar
 
 class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
@@ -90,7 +90,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                 // TODO: 31-Dec-18 Undo delete would be cool
                 // so a snackbar that says deleted task with a button to undo
                 Snackbar.make(it, "Deleted", Snackbar.LENGTH_LONG)
-                        .setAction("Undo", { it.snackBar("Not yet implemented") })
+                        .setAction("Undo", { it.shortSnackBar("Not yet implemented") })
                         .show()
             }
         }

@@ -8,15 +8,15 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
+import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.BOARD_LIST_NAME_PREFERENCES_KEY
 import uk.whitecrescent.waqti.android.CREATE_BOARD_FRAGMENT
-import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.recyclerviews.BoardListAdapter
 import uk.whitecrescent.waqti.android.fragments.create.CreateBoardFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
-import uk.whitecrescent.waqti.android.hideSoftKeyboard
-import uk.whitecrescent.waqti.android.mainActivity
+import uk.whitecrescent.waqti.hideSoftKeyboard
+import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.collections.BoardList
 import uk.whitecrescent.waqti.model.persistence.Caches
 

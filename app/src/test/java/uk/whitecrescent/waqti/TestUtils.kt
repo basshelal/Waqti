@@ -87,11 +87,6 @@ inline fun getLabels(amount: Int) = Array(amount) { Label("Label # ${it + 1}") }
 
 // Other
 
-fun after(duration: Duration, func: () -> Any) {
-    Thread.sleep(duration.toMillis())
-    func.invoke()
-}
-
 inline fun sleep(seconds: Int) = Thread.sleep((seconds) * 1000L)
 
 inline fun sleep(duration: Duration) = Thread.sleep(duration.toMillis())
@@ -122,6 +117,7 @@ inline fun <V> hiddenProperty(value: V): Property<V> {
     )
 }
 
+// This is slow because Reflection
 inline operator fun <reified T : Cacheable> Caches.get(id: ID): T {
     return when (T::class) {
         Task::class -> Caches.tasks[id] as T

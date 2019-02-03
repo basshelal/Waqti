@@ -19,14 +19,14 @@ import uk.whitecrescent.waqti.Time
 import uk.whitecrescent.waqti.UpdateDocumentation
 import uk.whitecrescent.waqti.UpdateTests
 import uk.whitecrescent.waqti.WaqtiVersion
+import uk.whitecrescent.waqti.debug
+import uk.whitecrescent.waqti.ids
 import uk.whitecrescent.waqti.isAfter
 import uk.whitecrescent.waqti.isBefore
 import uk.whitecrescent.waqti.isInThePast
+import uk.whitecrescent.waqti.isNotConstrained
+import uk.whitecrescent.waqti.isUnMet
 import uk.whitecrescent.waqti.model.Cacheable
-import uk.whitecrescent.waqti.model.debug
-import uk.whitecrescent.waqti.model.ids
-import uk.whitecrescent.waqti.model.isNotConstrained
-import uk.whitecrescent.waqti.model.isUnMet
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.Properties.BEFORE
 import uk.whitecrescent.waqti.model.task.Properties.CHECKLIST
@@ -38,9 +38,9 @@ import uk.whitecrescent.waqti.model.task.Properties.PRIORITY
 import uk.whitecrescent.waqti.model.task.Properties.SUB_TASKS
 import uk.whitecrescent.waqti.model.task.Properties.TARGET
 import uk.whitecrescent.waqti.model.task.Properties.TIME
-import uk.whitecrescent.waqti.model.tasks
-import uk.whitecrescent.waqti.model.toArrayList
 import uk.whitecrescent.waqti.now
+import uk.whitecrescent.waqti.tasks
+import uk.whitecrescent.waqti.toArrayList
 
 // TODO: 18-Jun-18 When done, make sure everything is tested and doc'd
 // TODO: 16-Nov-18 Update doc

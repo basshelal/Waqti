@@ -7,20 +7,20 @@ import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import uk.whitecrescent.waqti.FutureIdea
+import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialDateTimePickerDialog
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialEditTextDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
-import uk.whitecrescent.waqti.android.hideSoftKeyboard
-import uk.whitecrescent.waqti.android.openKeyboard
 import uk.whitecrescent.waqti.formatted
+import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.openKeyboard
 
 @Suppress("NOTHING_TO_INLINE")
 class CreateTaskFragment : WaqtiCreateFragment<Task>() {

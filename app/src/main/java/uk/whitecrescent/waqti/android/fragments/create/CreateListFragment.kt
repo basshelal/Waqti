@@ -5,15 +5,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.fragment_create_list.*
+import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
-import uk.whitecrescent.waqti.android.hideSoftKeyboard
-import uk.whitecrescent.waqti.android.openKeyboard
+import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
+import uk.whitecrescent.waqti.openKeyboard
 
 class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 

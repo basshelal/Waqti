@@ -3,8 +3,8 @@ package uk.whitecrescent.waqti.model.task
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
+import uk.whitecrescent.waqti.hash
 import uk.whitecrescent.waqti.model.Cacheable
-import uk.whitecrescent.waqti.model.hash
 import uk.whitecrescent.waqti.model.persistence.Caches
 
 // TODO: 19-May-18 Templates, PropertyBundles and that whole thing need to be tested and doc'd

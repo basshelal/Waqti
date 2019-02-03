@@ -3,9 +3,13 @@ package uk.whitecrescent.waqti.model.persistence
 import android.annotation.SuppressLint
 import io.objectbox.Box
 import io.reactivex.Observable
+import uk.whitecrescent.waqti.CACHE_CHECKING_PERIOD
+import uk.whitecrescent.waqti.CACHE_CHECKING_UNIT
+import uk.whitecrescent.waqti.ids
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.task.ID
+import uk.whitecrescent.waqti.size
 import java.util.concurrent.TimeUnit
 
 // TODO: 28-Jul-18 Test and doc

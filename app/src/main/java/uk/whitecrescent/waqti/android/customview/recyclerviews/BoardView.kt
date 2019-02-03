@@ -16,15 +16,15 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.FutureIdea
+import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
-import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewListFragment
-import uk.whitecrescent.waqti.android.mainActivity
+import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.ID

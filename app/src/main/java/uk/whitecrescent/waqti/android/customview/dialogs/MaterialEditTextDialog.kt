@@ -4,7 +4,7 @@ import android.text.SpannableStringBuilder
 import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.dialog_edit_text_material.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.hideSoftKeyboard
+import uk.whitecrescent.waqti.hideSoftKeyboard
 
 class MaterialEditTextDialog : WaqtiMaterialDialog() {
 

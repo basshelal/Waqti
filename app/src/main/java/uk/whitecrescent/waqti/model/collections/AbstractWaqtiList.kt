@@ -1,11 +1,12 @@
 package uk.whitecrescent.waqti.model.collections
 
 import io.objectbox.annotation.BaseEntity
+import uk.whitecrescent.waqti.ids
+import uk.whitecrescent.waqti.matchOrder
 import uk.whitecrescent.waqti.model.Cacheable
-import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.persistence.Cache
 import uk.whitecrescent.waqti.model.task.ID
-import uk.whitecrescent.waqti.model.toArrayList
+import uk.whitecrescent.waqti.toArrayList
 
 // Document this and check to see if this is thread safe or not
 @BaseEntity

@@ -3,7 +3,6 @@ package uk.whitecrescent.waqti.android.customview.recyclerviews
 import android.content.ClipData
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Point
 import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.DragEvent
@@ -15,12 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.Bug
+import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.view.ViewTaskFragment
-import uk.whitecrescent.waqti.android.mainActivity
+import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
@@ -58,7 +57,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         check(recyclerView is TaskListView)
-        taskListView = recyclerView as TaskListView
+        taskListView = recyclerView
 
         taskListView.setOnDragListener { v, event ->
             val draggingState = event.localState as DragEventLocalState
@@ -346,10 +345,6 @@ data class DragEventLocalState(
 }
 
 private class ShadowBuilder(view: View) : View.DragShadowBuilder(view) {
-
-    override fun onProvideShadowMetrics(outShadowSize: Point?, outShadowTouchPoint: Point?) {
-        super.onProvideShadowMetrics(outShadowSize, outShadowTouchPoint)
-    }
 
     override fun onDrawShadow(canvas: Canvas?) {
         super.onDrawShadow(canvas)

@@ -11,11 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.board_card.view.*
+import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.BOARD_FRAGMENT
-import uk.whitecrescent.waqti.android.GoToFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewBoardFragment
-import uk.whitecrescent.waqti.android.mainActivity
+import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.model.task.ID
