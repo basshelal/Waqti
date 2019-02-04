@@ -246,9 +246,29 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "17:6770749936014812299",
+      "lastPropertyId": "3:5670723765203866788",
+      "name": "BoardList",
+      "properties": [
+        {
+          "id": "1:3050711706325355629",
+          "name": "idList"
+        },
+        {
+          "id": "2:8468310790422254300",
+          "name": "id"
+        },
+        {
+          "id": "3:5670723765203866788",
+          "name": "name"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "16:5218369366415560706",
+  "lastEntityId": "17:6770749936014812299",
   "lastIndexId": "0:0",
   "lastRelationId": "3:8985201363338834308",
   "lastSequenceId": "0:0",

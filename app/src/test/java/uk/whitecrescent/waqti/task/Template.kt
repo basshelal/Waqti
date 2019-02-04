@@ -7,8 +7,8 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.at
 import uk.whitecrescent.waqti.hours
+import uk.whitecrescent.waqti.ids
 import uk.whitecrescent.waqti.minutes
-import uk.whitecrescent.waqti.model.ids
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.Checklist
 import uk.whitecrescent.waqti.model.task.DEFAULT_BEFORE_PROPERTY

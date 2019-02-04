@@ -22,34 +22,42 @@ import uk.whitecrescent.waqti.model.task.UNMET
 
 // Time
 
-val testTimePast: Time
+inline val testTimePast: Time
     get() = yesterday at 11
 
-val testTimeFuture: Time
+inline val testTimeFuture: Time
     get() = tomorrow at 11
+
+// Duration
+
+inline val testDuration: Duration
+    get() = 7.days
+
+inline val testTimeUnit: TimeUnit
+    get() = TimeUnit("DEFAULT", 10.minutes)
 
 // Task
 
-val testTask: Task
+inline val testTask: Task
     get() = Task("TestTask")
 
 // TaskList
 
-val testTaskListEmpty: TaskList
+inline val testTaskListEmpty: TaskList
     get() = TaskList("TestTaskList")
 
-val testTaskListFull: TaskList
+inline val testTaskListFull: TaskList
     get() = TaskList("TestTaskList", getTasks(10))
 
 // Board
 
-val testBoardEmpty: Board
+inline val testBoardEmpty: Board
     get() = Board("TestBoard")
 
-val testBoardFullOfEmptyLists: Board
+inline val testBoardFullOfEmptyLists: Board
     get() = Board("TestBoard", getEmptyTaskLists(10))
 
-val testBoardFullOfFullLists: Board
+inline val testBoardFullOfFullLists: Board
     get() = Board("TestBoard", getFilledTaskLists(10, 10))
 
 // Get Functions

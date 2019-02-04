@@ -33,6 +33,10 @@ class TimeUnit(name: String = "", duration: Duration = Duration.ZERO) : Cacheabl
         if (this.notDefault()) this.update()
     }
 
+    operator fun times(count: Int): Duration {
+        return this.duration.multipliedBy(count.toLong())
+    }
+
     override fun initialize() {
 
     }
@@ -58,6 +62,7 @@ class TimeUnit(name: String = "", duration: Duration = Duration.ZERO) : Cacheabl
 
     companion object {
 
+        @Deprecated("Use TimeUnit.times operator instead")
         fun toJavaDuration(timeUnit: TimeUnit, count: Int): Duration {
             return timeUnit.duration.multipliedBy(count.toLong())
         }

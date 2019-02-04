@@ -6,9 +6,9 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
+import uk.whitecrescent.waqti.isEmpty
 import uk.whitecrescent.waqti.model.persistence.Database
-import uk.whitecrescent.waqti.model.persistence.isEmpty
-import uk.whitecrescent.waqti.model.persistence.size
+import uk.whitecrescent.waqti.size
 import uk.whitecrescent.waqti.testTask
 import uk.whitecrescent.waqti.testTaskListEmpty
 import uk.whitecrescent.waqti.testTaskListFull

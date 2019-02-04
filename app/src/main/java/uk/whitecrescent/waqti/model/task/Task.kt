@@ -76,10 +76,10 @@ class Task(name: String = "") : Cacheable {
 
     /**
      * The [TaskState] is the state in which the task is in at this point in time.
-     * By default this is initialized to [TaskState.EXISTING].
+     * By default this is initialized to [TaskState.EXISTING], see [DEFAULT_TASK_STATE].
      *
      * The Task State changes according to Lifecycle changes made by [sleep], [kill] or [fail],
-     * such changes can also occur due to Constraints.
+     * such changes can also occur due to constrained Properties, see [backgroundObserver].
      *
      * @see TaskState
      * @see DEFAULT_TASK_STATE
@@ -119,16 +119,6 @@ class Task(name: String = "") : Cacheable {
             update()
         }
 
-    //                                       Missing Features and Unfinished stuff below
-    //=================================================================================================================
-    //=================================================================================================================
-
-    @MissingFeature
-    // TODO: 02-Feb-19 we haven't properly used this, should we keep it?
-    // A Task ages when it is failed
-    var age = 0
-        private set
-
     @MissingFeature
     // TODO: 02-Feb-19 we haven't properly used this, should we keep it?
     // The times a task has been failed
@@ -144,10 +134,6 @@ class Task(name: String = "") : Cacheable {
     @Transient
     private val timer = Timer()
 
-    //                                       Missing Features and Unfinished stuff above
-    //=================================================================================================================
-    //=================================================================================================================
-
     /**
      * Used to determine the overall state of this Task at this point in time.
      *
@@ -160,7 +146,6 @@ class Task(name: String = "") : Cacheable {
      * * [state]
      * * [isFailable]
      * * [isKillable]
-     * * [age]
      * * [failedTimes]
      * * [killedTime]
      * * [allProperties], the list of this Task's Properties.
@@ -183,7 +168,6 @@ class Task(name: String = "") : Cacheable {
             bundle["state"] = this.state
             bundle["isFailable"] = this.isFailable
             bundle["isKillable"] = this.isKillable
-            bundle["age"] = this.age
             bundle["failedTimes"] = this.failedTimes
             bundle["killedTime"] = this.killedTime
             bundle["properties"] = this.allProperties
@@ -229,13 +213,20 @@ class Task(name: String = "") : Cacheable {
      * The estimated amount of time that this Task will take, this can also be referred to as minimum duration.
      *
      * This is defined in any Time Measurement Unit, either as a standard Time Unit such as seconds or days etc or
-     * custom Time Units [TimeUnit]. This can also be referred to as minimum duration. If duration is a Constraint
-     * then the Task cannot be killed in the midst of the duration, it can be killed only after it has ended. If
-     * duration is a Property then it has no rules on killing the Task.
+     * custom Time Units [TimeUnit]. If duration is constrained then the Task cannot be killed in
+     * the midst of the duration, it can be killed only after it has ended.
+     *
+     * The Duration is started by a [timer], you must start this timer in order for the Duration
+     * to start decreasing, currently this is the only Property that requires and additional step
+     * to be done before observing is started in [observeDuration] which is only called in
+     * [startTimer]. The duration property does not decrease, rather the duration left in the
+     * timer does which can be queried using [timerDuration].
      *
      * @see Duration
      * @see TimeUnit
+     * @see Timer
      */
+    @TestedDocumentedAndFinalSince(WaqtiVersion.FEB_2019)
     @Convert(converter = DurationPropertyConverter::class, dbType = String::class)
     var duration: DurationProperty = DEFAULT_DURATION_PROPERTY
         private set
@@ -552,20 +543,23 @@ class Task(name: String = "") : Cacheable {
     //region Duration
 
     /**
-     * Sets this Task's duration Property, the passed in Property can be a Constraint.
+     * Sets this Task's duration Property, the passed in Property can be constrained.
      *
-     * Further changes will occur only if the passed in `durationProperty` is a Constraint.
+     * Further changes will occur only if the passed in `durationProperty` is constrained.
      *
-     * In the case that the passed in `durationProperty` is a Constraint, two things will happen:
+     * In the case that the passed in `durationProperty` is constrained, two things will happen:
      *
      * * This Task will become failable if it wasn't already
-     * * This Task will start checking the time and after the duration has passed will make the duration
-     * Constraint MET if it wasn't already see [durationConstraintTimeChecking]
+     * * This Task will be ready to start observing the duration passed since the timer has been
+     * started, but this must be done manually, the timer MUST be started for observing to
+     * actually start and is thus not done here, rather it is done in [startTimer]
      *
-     * If the passed in `durationProperty` is not a Constraint then the Task's state will remain the same.
-     *
-     * @see Task.durationConstraintTimeChecking
-     * @param durationProperty the `Property` of type `java.time.Duration` that this Task's duration will be set to
+     * @see startTimer
+     * @see observeDuration
+     * @see Timer
+     * @see timer
+     * @param durationProperty the [Property] of type [Duration] that this Task's duration will
+     * be set to
      * @return this Task after setting the Task's duration Property
      */
     fun setDurationProperty(durationProperty: Property<Duration>): Task {
@@ -575,83 +569,77 @@ class Task(name: String = "") : Cacheable {
         )
         if (durationProperty.isConstrained) {
             makeFailableIfConstraint(durationProperty)
-            //observingProperties[Properties.DURATION] = true
         }
         update()
         return this
     }
 
     /**
-     * Gets this Task's duration left until the duration Constraint will be met.
-     *
-     * This is not necessarily only used for Constraints but is more useful for when duration is a Constraint, since
-     * this will return the difference in time between now and the time the duration is due to finish, this does not
-     * require duration to be a Constraint but is of not much interest if duration is not a Constraint.
+     * Gets this Task's duration left until the set duration will be over or basically the
+     * difference in time between now and the time the duration is due to finish
      *
      * @return the Duration left until this Task's duration Constraint is met
-     * @throws TaskException if the Duration has not been set
+     * @throws TaskException if the Duration has not been set or is hidden meaning equal to
+     * [DEFAULT_DURATION_PROPERTY]
      */
-    fun getDurationLeft(): Duration {
-        if (duration.value == DEFAULT_DURATION) {
-            throw TaskException("Duration not set!")
-        } else {
-            return duration.value.minus(timer.duration)
-        }
-    }
+    val durationLeft: Duration
+        get() = (if (duration == DEFAULT_DURATION_PROPERTY) throw TaskException("Duration not set!")
+        else duration.value - timer.duration)
 
     /**
      * Sets this Task's duration Property with the given value and makes the Property showing.
      *
-     * This is a shorthand of writing `setDurationProperty(Property(SHOWING, myDuration))`.
+     * This is a shorthand of writing
+     * `setDurationProperty(Property(SHOWING, myDuration, NOT_CONSTRAINED, UNMET))`.
      *
      * @see Task.setDurationProperty
-     * @param duration the java.time.Duration value that this Task's duration value will be set to
+     * @param duration the [Duration] value that this Task's duration value will be set to
      * @return this Task after setting the Task's duration Property
      */
     fun setDurationPropertyValue(duration: Duration) =
-            setDurationProperty(Property(SHOWING, duration, false, false))
+            setDurationProperty(Property(SHOWING, duration, NOT_CONSTRAINED, UNMET))
 
     /**
-     * Sets this Task's duration Constraint with the given value and makes the Constraint showing and unmet.
+     * Sets this Task's duration Property with the given value and makes the Property showing,
+     * constrained and unmet.
      *
-     * This is a shorthand of writing `setDurationConstraint(Constraint(SHOWING, myDuration, UNMET))`.
+     * This is a shorthand of writing
+     * `setDurationProperty(Property(SHOWING, myDuration, CONSTRAINED, UNMET))`.
      *
      * @see Task.setDurationProperty
-     * @param duration the java.time.Duration value that this Task's duration value will be set to
-     * @return this Task after setting the Task's duration Constraint
+     * @param duration the [Duration] value that this Task's duration value will be set to
+     * @return this Task after setting the Task's duration Property
      */
     fun setDurationConstraintValue(duration: Duration) =
-            setDurationProperty(Property(SHOWING, duration, true, UNMET))
+            setDurationProperty(Property(SHOWING, duration, CONSTRAINED, UNMET))
 
     /**
      * Sets this Task's duration Property with the duration of the TimeUnit multiplied by the `count` as the Property's
-     * value and the `timeUnitProperty`'s `isVisible` value
+     * value
      *
-     * This allows to use Custom Time Units for setting the duration.
+     * This allows to use Custom Time Units for setting the duration Property
      *
      * @see Task.setDurationProperty
      * @see TimeUnit
      * @param timeUnitProperty the Property of type `TimeUnit` that will be used to set this Task's duration
-     * Property's visibility to and set the value to by multiplying by the `count`
+     * Property's value by multiplying by the `count`
      * @param count the number of times the `TimeUnit` occurs
      * @return this Task after setting the Task's duration Property
      */
-    fun setDurationPropertyTimeUnits(timeUnitProperty: Property<TimeUnit>, count: Int): Task {
-        val duration = TimeUnit.toJavaDuration(timeUnitProperty.value, count)
-        if (timeUnitProperty.isConstrained) {
-            setDurationProperty(Property(timeUnitProperty.isVisible, duration, true, UNMET))
-        } else {
-            setDurationProperty(Property(timeUnitProperty.isVisible, duration, false, UNMET))
-        }
-        return this
-    }
+    fun setDurationPropertyTimeUnits(timeUnitProperty: Property<TimeUnit>, count: Int) =
+            setDurationProperty(
+                    Property(isVisible = timeUnitProperty.isVisible,
+                            value = TimeUnit.toJavaDuration(timeUnitProperty.value, count),
+                            isConstrained = timeUnitProperty.isConstrained,
+                            isMet = timeUnitProperty.isMet)
+            )
 
     /**
      * Sets this Task's duration Property with the duration of the TimeUnit multiplied by the `count` as the Property's
      * value and makes the Property showing.
      *
      * This allows to use Custom Time Units for setting the duration and is shorthand for writing
-     * `setDurationPropertyTimeUnits(Property(SHOWING, myTimeUnit), myCount)`
+     * `setDurationPropertyTimeUnits(Property(SHOWING, myTimeUnit, NOT_CONSTRAINED, UNMET),myCount)`
      *
      * @see Task.setDurationProperty
      * @see TimeUnit
@@ -661,15 +649,14 @@ class Task(name: String = "") : Cacheable {
      * @return this Task after setting the Task's duration Property
      */
     fun setDurationPropertyTimeUnitsValue(timeUnit: TimeUnit, count: Int) =
-            setDurationProperty(
-                    Property(SHOWING, TimeUnit.toJavaDuration(timeUnit, count), false, UNMET))
+            setDurationPropertyValue(TimeUnit.toJavaDuration(timeUnit, count))
 
     /**
-     * Sets this Task's duration Constraint with the duration of the TimeUnit multiplied by the `count` as the
-     * Constraints's value and makes the Constraint showing and unmet.
+     * Sets this Task's duration Property with the duration of the TimeUnit multiplied by the
+     * `count` as the Property's value and makes the Property showing, constrained and unmet.
      *
      * This allows to use Custom Time Units for setting the duration and is shorthand for writing
-     * `setDurationConstraintTimeUnits(Constraint(SHOWING, myTimeUnit, UNMET), myCount)`
+     * `setDurationConstraintTimeUnits(Property(SHOWING, myTimeUnit, CONSTRAINED UNMET), myCount)`
      *
      * @see Task.setDurationProperty
      * @see TimeUnit
@@ -679,8 +666,7 @@ class Task(name: String = "") : Cacheable {
      * @return this Task after setting the Task's duration Constraint
      */
     fun setDurationConstraintTimeUnitsValue(timeUnit: TimeUnit, count: Int) =
-            setDurationProperty(
-                    Property(SHOWING, TimeUnit.toJavaDuration(timeUnit, count), CONSTRAINED, UNMET))
+            setDurationConstraintValue(TimeUnit.toJavaDuration(timeUnit, count))
 
     //endregion Duration
 
@@ -1247,24 +1233,31 @@ class Task(name: String = "") : Cacheable {
      * * Time is constrained but also met, [Property.isConstrained] is true AND
      * [Property.isMet] is true
      *
-     * We call this hiding because the user will see the Time property as hidden or gone because
-     * it resets to the default value.
-     *
      * @see Property
      * @throws CannotHidePropertyException if the above conditions are not met
      */
     fun hideTime() {
-        if (!time.isConstrained || (time.isConstrained && time.isMet)) {
+        if (time.isNotConstrained || (time.isConstrained && time.isMet)) {
             time = DEFAULT_TIME_PROPERTY
             update()
         } else throw CannotHidePropertyException("Cannot hide, time is an unmet Constraint: $time")
     }
 
+    /**
+     * Re-sets the Duration Property to the default Duration Property value
+     * [DEFAULT_DURATION_PROPERTY] if and only if either:
+     * * Duration id not constrained, [Property.isConstrained] is false
+     * * Duration is constrained but also met, [Property.isConstrained] is true AND
+     * [Property.isMet] is true
+     *
+     * @see Property
+     * @throws CannotHidePropertyException if the above conditions are not met
+     */
     fun hideDuration() {
-        if (!duration.isConstrained) {
+        if (duration.isNotConstrained || (duration.isConstrained && duration.isMet)) {
             duration = DEFAULT_DURATION_PROPERTY
             update()
-        } else throw TaskException("Cannot hide, duration is Constraint")
+        } else throw CannotHidePropertyException("Cannot hide, duration is an unmet Constraint: $duration")
     }
 
     fun hidePriority() {
@@ -1384,7 +1377,6 @@ class Task(name: String = "") : Cacheable {
             throw TaskStateException("Fail unsuccessful, ${this.name} is Killed!", this.state)
         } else if (canFail()) {
             state = TaskState.FAILED
-            age++
             failedTimes.add(now)
             update()
         } else {
@@ -1410,6 +1402,8 @@ class Task(name: String = "") : Cacheable {
     }
 
     fun kill() {
+        // TODO: 04-Feb-19 Should we block killed Tasks from having any of their Properties changed?
+        // definitely we should block any observing but even block Property changes??
         if (!isKillable) {
             throw TaskStateException("Kill unsuccessful, ${this.name} is not Killable", this.state)
         }
@@ -1465,13 +1459,13 @@ class Task(name: String = "") : Cacheable {
         return this
     }
 
-    fun timerDuration() = timer.duration
+    val timerDuration: Duration get() = timer.duration
 
-    fun timerIsRunning() = timer.running
+    val timerIsRunning: Boolean get() = timer.running
 
-    fun timerIsPaused() = timer.paused
+    val timerIsPaused: Boolean get() = timer.paused
 
-    fun timerIsStopped() = timer.stopped
+    val timerIsStopped: Boolean get() = timer.stopped
 
     //endregion Timers
 
@@ -1497,7 +1491,7 @@ class Task(name: String = "") : Cacheable {
                             }
 
                             override fun onError(e: Throwable) {
-                                e.printStackTrace()
+                                throw e
                             }
 
                             override fun onComplete() {
@@ -1538,15 +1532,15 @@ class Task(name: String = "") : Cacheable {
 
     private inline fun observeDuration() {
         when {
-            !this.duration.isConstrained -> {
+            duration.isNotConstrained -> {
                 makeNonFailableIfNoConstraints()
                 observingDone(DURATION)
             }
-            this.timer.stopped -> {
+            timer.stopped -> {
                 observingDone(DURATION)
             }
-            timer.duration >= this.duration.value -> {
-                if (this.duration.isConstrained && !this.duration.isMet) {
+            timer.duration >= duration.value -> {
+                if (duration.isConstrained && duration.isUnMet) {
                     this.duration.isMet = MET
                 }
                 observingDone(DURATION)

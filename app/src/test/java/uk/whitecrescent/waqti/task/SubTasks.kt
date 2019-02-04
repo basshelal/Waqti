@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.model.ids
+import uk.whitecrescent.waqti.ids
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.CONSTRAINED
 import uk.whitecrescent.waqti.model.task.DEFAULT_SUB_TASKS
@@ -20,11 +20,11 @@ import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.TaskState
 import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.model.task.UNMET
-import uk.whitecrescent.waqti.model.tasks
-import uk.whitecrescent.waqti.model.toArrayList
 import uk.whitecrescent.waqti.seconds
 import uk.whitecrescent.waqti.sleep
+import uk.whitecrescent.waqti.tasks
 import uk.whitecrescent.waqti.testTask
+import uk.whitecrescent.waqti.toArrayList
 
 @DisplayName("SubTasks Tests")
 class SubTasks : BaseTaskTest() {

@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.Time
-import uk.whitecrescent.waqti.model.ids
+import uk.whitecrescent.waqti.ids
 import uk.whitecrescent.waqti.model.task.Checklist
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.MANDATORY
@@ -122,8 +122,6 @@ class OtherTask : BaseTaskTest() {
 
         task1.fail()
 
-        assertTrue(task1.age == 1)
-        assertNotEquals(task1.age, task2.age)
         assertNotEquals(task1.failedTimes, task2.failedTimes)
 
         assertFalse(task1 == task2)

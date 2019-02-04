@@ -27,11 +27,6 @@ import uk.whitecrescent.waqti.simpleProperty
 import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTask
 
-/**
- *
- * Two "injected" properties, [BaseTaskTest.task] and [Before.beforeTask], they are reset after
- * each test and are initially just [testTask]
- */
 @DisplayName("Before Tests")
 class Before : BaseTaskTest() {
 

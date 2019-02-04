@@ -9,6 +9,7 @@ import uk.whitecrescent.waqti.constraintProperty
 import uk.whitecrescent.waqti.hiddenProperty
 import uk.whitecrescent.waqti.millis
 import uk.whitecrescent.waqti.model.task.CONSTRAINED
+import uk.whitecrescent.waqti.model.task.CannotHidePropertyException
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME_PROPERTY
 import uk.whitecrescent.waqti.model.task.MET
@@ -16,7 +17,6 @@ import uk.whitecrescent.waqti.model.task.NOT_CONSTRAINED
 import uk.whitecrescent.waqti.model.task.Properties.TIME
 import uk.whitecrescent.waqti.model.task.Property
 import uk.whitecrescent.waqti.model.task.SHOWING
-import uk.whitecrescent.waqti.model.task.TaskException
 import uk.whitecrescent.waqti.model.task.TaskState
 import uk.whitecrescent.waqti.model.task.TaskStateException
 import uk.whitecrescent.waqti.model.task.UNMET
@@ -37,7 +37,7 @@ import uk.whitecrescent.waqti.testTimePast
 /**
  *
  * @author Bassam Helal
- * @since 03-Feb-19
+ * @since 04-Feb-19
  */
 @FinalSince(WaqtiVersion.FEB_2019)
 @DisplayName("Time Tests")
@@ -47,9 +47,10 @@ class Time : BaseTaskTest() {
     @Test
     fun testTaskTimeDefaultValues() {
         on(task.time) {
-            isConstrained mustBe false
-            value mustEqual DEFAULT_TIME
             isVisible mustBe false
+            value mustEqual DEFAULT_TIME
+            isConstrained mustBe false
+            isMet mustBe false
             this mustEqual DEFAULT_TIME_PROPERTY
         }
 
@@ -105,7 +106,7 @@ class Time : BaseTaskTest() {
             this mustEqual constraintProperty(testTimeFuture)
         }
 
-        ({ task.hideTime() }) mustThrow TaskException::class
+        ({ task.hideTime() }) mustThrow CannotHidePropertyException::class
     }
 
     @DisplayName("Set Time Constraint Value")
@@ -121,7 +122,7 @@ class Time : BaseTaskTest() {
             this mustEqual constraintProperty(testTimeFuture)
         }
 
-        ({ task.hideTime() }) mustThrow TaskException::class
+        ({ task.hideTime() }) mustThrow CannotHidePropertyException::class
     }
 
     @DisplayName("Set Time Property before now")
@@ -204,7 +205,7 @@ class Time : BaseTaskTest() {
         on(task) {
             isFailable mustBe true
             state mustEqual TaskState.SLEEPING
-            ({ hideTime() }) mustThrow TaskException::class
+            ({ hideTime() }) mustThrow CannotHidePropertyException::class
         }
 
         after({ sleep(1.seconds) }) {
@@ -216,7 +217,7 @@ class Time : BaseTaskTest() {
                 isMet mustBe true
                 this mustEqual Property(SHOWING, time, CONSTRAINED, MET)
             }
-            ({ task.hideTime() }) mustNotThrow TaskException::class
+            ({ task.hideTime() }) mustNotThrow CannotHidePropertyException::class
         }
 
     }
