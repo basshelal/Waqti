@@ -1,6 +1,9 @@
 package uk.whitecrescent.waqti.model.persistence
 
 import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import com.google.gson.stream.JsonWriter
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
@@ -15,6 +18,7 @@ import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.Template
 import uk.whitecrescent.waqti.model.task.TimeUnit
 import java.io.File
+import java.io.FileWriter
 
 // A build function must be invoked before using anything else here! consider it the constructor
 // or init of this object
@@ -79,6 +83,26 @@ object Database {
                 allDBs.forEach { it.removeAll() }
             }
         }
+    }
+
+    fun export(exportedFile: File): File {
+        require(::store.isInitialized)
+        val gson = Gson()
+        val writer = JsonWriter(FileWriter(exportedFile))
+        val tasksType = object : TypeToken<MutableList<Task>>() {}.type
+
+        gson.toJson(tasks.all, tasksType, writer)
+        writer.close()
+        return exportedFile
+    }
+
+    fun import(file: File) {
+        // import from the massive JSON file
+        TODO()
+    }
+
+    fun repair(): Boolean {
+        TODO()
     }
 
 }
