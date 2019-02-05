@@ -164,7 +164,7 @@ inline fun last(dayOfWeek: DayOfWeek) =
 inline val Time.toEpoch: Long
     get() = this.toEpochSecond(ZoneOffset.UTC)
 
-inline val Time.formatted: String
+inline val Time.rfcFormatted: String
     get() = this.atOffset(ZoneOffset.UTC).format(DateTimeFormatter.RFC_1123_DATE_TIME)
 
 //endregion Other

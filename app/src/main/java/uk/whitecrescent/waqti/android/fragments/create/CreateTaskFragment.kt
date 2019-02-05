@@ -13,7 +13,6 @@ import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialDateTimePickerDialog
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialEditTextDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
-import uk.whitecrescent.waqti.formatted
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.DEFAULT_DESCRIPTION
@@ -21,6 +20,7 @@ import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.openKeyboard
+import uk.whitecrescent.waqti.rfcFormatted
 
 @Suppress("NOTHING_TO_INLINE")
 class CreateTaskFragment : WaqtiCreateFragment<Task>() {
@@ -84,7 +84,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     initialTime = this@CreateTaskFragment.viewModel.createdTaskTime
                     onConfirm = {
                         viewModel.createdTaskTime = it
-                        this@CreateTaskFragment.selectTime_textView.text = getString(R.string.timeColon) + it.formatted
+                        this@CreateTaskFragment.selectTime_textView.text = getString(R.string.timeColon) + it.rfcFormatted
                         dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
@@ -107,7 +107,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     initialTime = this@CreateTaskFragment.viewModel.createdTaskDeadline
                     onConfirm = {
                         viewModel.createdTaskDeadline = it
-                        this@CreateTaskFragment.selectDeadline_textView.text = getString(R.string.deadlineColon) + it.formatted
+                        this@CreateTaskFragment.selectDeadline_textView.text = getString(R.string.deadlineColon) + it.rfcFormatted
                         dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")

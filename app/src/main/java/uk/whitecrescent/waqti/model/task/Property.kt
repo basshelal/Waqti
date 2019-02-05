@@ -3,10 +3,10 @@ package uk.whitecrescent.waqti.model.task
 import uk.whitecrescent.waqti.hash
 
 //isMet doesn't mean anything if isConstrained is false!
-open class Property<V>(open var isVisible: Boolean = SHOWING,
-                       open var value: V,
-                       open var isConstrained: Boolean = NOT_CONSTRAINED,
-                       open var isMet: Boolean = UNMET) {
+open class Property<V>(@Transient open var isVisible: Boolean = SHOWING,
+                       @Transient open var value: V,
+                       @Transient open var isConstrained: Boolean = NOT_CONSTRAINED,
+                       @Transient open var isMet: Boolean = UNMET) {
 
     fun constrain(): Property<V> {
         this.isConstrained = true

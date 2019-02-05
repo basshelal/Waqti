@@ -7,17 +7,23 @@ import com.google.gson.stream.JsonWriter
 import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
+import uk.whitecrescent.waqti.ForLater
+import uk.whitecrescent.waqti.MissingFeature
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.MyObjectBox
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.collections.BoardList
 import uk.whitecrescent.waqti.model.collections.TaskList
+import uk.whitecrescent.waqti.model.persistence.Database.ImportMethod.ADD
+import uk.whitecrescent.waqti.model.persistence.Database.ImportMethod.MERGE
+import uk.whitecrescent.waqti.model.persistence.Database.ImportMethod.REPLACE
 import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.Template
 import uk.whitecrescent.waqti.model.task.TimeUnit
 import java.io.File
+import java.io.FileReader
 import java.io.FileWriter
 
 // A build function must be invoked before using anything else here! consider it the constructor
@@ -52,7 +58,6 @@ object Database {
     lateinit var boardLists: Box<BoardList>
         private set
 
-
     fun build(context: Context) {
         store = MyObjectBox.builder().androidContext(context.applicationContext).build()
         build()
@@ -85,24 +90,56 @@ object Database {
         }
     }
 
+    @MissingFeature
+    @ForLater
+    fun repair(): Boolean {
+        TODO()
+    }
+
+    enum class ImportMethod {
+        REPLACE, ADD, MERGE
+    }
+
+    class ImportException(message: String) : IllegalStateException(message)
+
+    @MissingFeature
+    @ForLater
     fun export(exportedFile: File): File {
         require(::store.isInitialized)
         val gson = Gson()
         val writer = JsonWriter(FileWriter(exportedFile))
-        val tasksType = object : TypeToken<MutableList<Task>>() {}.type
 
-        gson.toJson(tasks.all, tasksType, writer)
+        gson.toJson(boardLists.all.first(), object : TypeToken<BoardList>() {}.type,
+                writer)
+
         writer.close()
         return exportedFile
     }
 
-    fun import(file: File) {
-        // import from the massive JSON file
-        TODO()
-    }
+    @MissingFeature
+    @ForLater
+    fun import(importedFile: File, importMethod: ImportMethod) {
+        require(::store.isInitialized)
+        val gson = Gson()
+        val reader = FileReader(importedFile)
 
-    fun repair(): Boolean {
-        TODO()
+        val boardList = gson.fromJson<BoardList>(
+                reader, object : TypeToken<BoardList>() {}.type
+        )
+
+        when (importMethod) {
+            REPLACE -> {
+                Database.clearAllDBs().commit()
+                Database.boardLists.put(boardList)
+            }
+            ADD -> {
+
+            }
+            MERGE -> {
+
+            }
+        }
+        reader.close()
     }
 
 }

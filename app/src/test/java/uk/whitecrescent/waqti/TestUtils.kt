@@ -62,10 +62,16 @@ inline val testBoardFullOfFullLists: Board
 
 // Get Functions
 
+inline fun getFilledBoardList(amountOfBoards: Int, amountOfLists: Int, amountOfTasks: Int): BoardList {
+    val boardList = BoardList("TestBoardList")
+    boardList.addAll(getBoardsFullOfFullLists(amountOfBoards, amountOfLists, amountOfTasks)).update()
+    return boardList
+}
+
 inline fun getBoardsFullOfFullLists(amountOfBoards: Int, amountOfLists: Int, amountOfTasks: Int) =
         Array(amountOfBoards) {
             Board("TestBoard # ${it + 1}", getFilledTaskLists(amountOfLists, amountOfTasks))
-        }
+        }.asList()
 
 inline fun getBoardFullOfFullLists(amountOfLists: Int, amountOfTasks: Int) =
         Board("TestBoard", getFilledTaskLists(amountOfLists, amountOfTasks))
@@ -76,22 +82,22 @@ inline fun getBoardFullOfEmptyLists(amountOfLists: Int) =
 inline fun getBoardsFullOfEmptyLists(amountOfBoards: Int, amountOfLists: Int) =
         Array(amountOfBoards) {
             Board("TestBoard # ${it + 1}", getEmptyTaskLists(amountOfLists))
-        }.toList()
+        }.asList()
 
 inline fun getEmptyBoards(amount: Int) = Array(amount) { Board("TestBoard") }
 
 inline fun getEmptyTaskLists(amount: Int) =
-        Array(amount) { TaskList("TestTask # ${it + 1}") }.toList()
+        Array(amount) { TaskList("TestTask # ${it + 1}") }.asList()
 
 inline fun getFilledTaskList(amountOfTasks: Int) =
         TaskList("TestTaskList", getTasks(amountOfTasks))
 
 inline fun getFilledTaskLists(amountOfLists: Int, amountOfTasks: Int) =
-        Array(amountOfLists) { getFilledTaskList(amountOfTasks) }.toList()
+        Array(amountOfLists) { getFilledTaskList(amountOfTasks) }.asList()
 
-inline fun getTasks(amount: Int) = Array(amount) { Task("TestTask # ${it + 1}") }.toList()
+inline fun getTasks(amount: Int) = Array(amount) { Task("TestTask # ${it + 1}") }.asList()
 
-inline fun getLabels(amount: Int) = Array(amount) { Label("Label # ${it + 1}") }.toList()
+inline fun getLabels(amount: Int) = Array(amount) { Label("Label # ${it + 1}") }.asList()
 
 // Other
 
