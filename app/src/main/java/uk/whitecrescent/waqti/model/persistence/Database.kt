@@ -22,6 +22,8 @@ import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.model.task.Template
 import uk.whitecrescent.waqti.model.task.TimeUnit
+import uk.whitecrescent.waqti.now
+import uk.whitecrescent.waqti.size
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter
@@ -93,7 +95,45 @@ object Database {
     @MissingFeature
     @ForLater
     fun repair(): Boolean {
-        TODO()
+        if (boardLists.size < 1) {
+            BoardList("Default").addAll(boards.all).update()
+            return true
+        }
+        if (boardLists.size > 1) {
+            val boardList = boardLists.all.first()
+            val illegalBoardLists = boardLists.all.filter { it != boardList }
+            boardList.addAll(illegalBoardLists.flatMap { it.toList() }).update()
+            boardLists.remove(illegalBoardLists)
+            return true
+        }
+
+        val boardList = boardLists.all.first()
+        val illegalBoards = boards.all.filter { it !in boardList }
+        if (illegalBoards.isNotEmpty()) {
+            boardList.addAll(illegalBoards).update()
+            boards.remove(illegalBoards)
+            return true
+        }
+
+        val illegalTaskLists = taskLists.all.filter { it !in boards.all.flatMap { it.toList() } }
+        if (illegalTaskLists.isNotEmpty()) {
+            Board("Repair $now").addAll(illegalTaskLists).update()
+            taskLists.remove(illegalTaskLists)
+            return true
+        }
+
+        val illegalTasks = tasks.all.filter { it !in taskLists.all.flatMap { it.toList() } }
+        if (illegalTasks.isNotEmpty()) {
+            val repairBoard = Board("Repair $now")
+            val repairList = TaskList("Repair $now")
+            repairBoard.add(repairList).update()
+            repairList.addAll(illegalTasks).update()
+            tasks.remove(illegalTasks)
+            return true
+        }
+
+        // reached here then nothing was repaired
+        return false
     }
 
     enum class ImportMethod {
