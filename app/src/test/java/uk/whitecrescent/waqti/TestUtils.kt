@@ -33,6 +33,9 @@ inline val testTimeFuture: Time
 inline val testDuration: Duration
     get() = 7.days
 
+inline val testPriority: Priority
+    get() = Priority("Default", 0)
+
 inline val testTimeUnit: TimeUnit
     get() = TimeUnit("DEFAULT", 10.minutes)
 

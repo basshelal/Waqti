@@ -14,16 +14,21 @@ import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Property
 import uk.whitecrescent.waqti.model.task.SHOWING
 import uk.whitecrescent.waqti.model.task.UNMET
-import uk.whitecrescent.waqti.testTask
+import uk.whitecrescent.waqti.testPriority
 
 @DisplayName("Priority Tests")
 class Priority : BaseTaskTest() {
 
+    var priority: Priority = testPriority
+
+    override fun beforeEach() {
+        super.beforeEach()
+        priority = testPriority
+    }
+
     @DisplayName("Priority Default Values")
     @Test
     fun testTaskPriorityDefaultValues() {
-        val task = testTask
-
         assertFalse(task.priority.isConstrained)
         assertEquals(DEFAULT_PRIORITY, task.priority.value)
         assertFalse(task.priority.isVisible)
@@ -34,10 +39,9 @@ class Priority : BaseTaskTest() {
     @DisplayName("Set Priority Property using setPriorityProperty")
     @Test
     fun testTaskSetPriorityProperty() {
-        val priority = Priority("TestPriority", 69)
+        priority = Priority("TestPriority", 69)
 
-        val task = testTask
-                .setPriorityProperty(Property(SHOWING, priority, NOT_CONSTRAINED, UNMET))
+        task.setPriorityProperty(Property(SHOWING, priority, NOT_CONSTRAINED, UNMET))
 
         assertFalse(task.priority.isConstrained)
         assertEquals(priority, task.priority.value)
@@ -50,10 +54,9 @@ class Priority : BaseTaskTest() {
     @DisplayName("Set Priority Property using setPriorityValue")
     @Test
     fun testTaskSetPriorityValue() {
-        val priority = Priority("TestPriority", 69)
+        priority = Priority("TestPriority", 69)
 
-        val task = testTask
-                .setPriorityValue(priority)
+        task.setPriorityValue(priority)
 
         assertFalse(task.priority.isConstrained)
         assertEquals(priority, task.priority.value)
@@ -66,10 +69,9 @@ class Priority : BaseTaskTest() {
     @DisplayName("Set Priority Constraint")
     @Test
     fun testTaskSetPriorityConstraint() {
-        val priority = Priority("TestPriority", 69)
+        priority = Priority("TestPriority", 69)
 
-        val task = testTask
-                .setPriorityProperty(Property(SHOWING, priority, CONSTRAINED, UNMET))
+        task.setPriorityProperty(Property(SHOWING, priority, CONSTRAINED, UNMET))
 
         assertFalse(task.priority.isConstrained)
         assertTrue(task.allUnmetAndShowingConstraints.isEmpty())

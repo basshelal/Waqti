@@ -1347,7 +1347,6 @@ class Task(name: String = "") : Cacheable {
 
     //region Task lifecycle
 
-    // TODO: 05-Nov-18 needs to be put in way more places maybe?
     override fun update() {
         Caches.tasks.put(this)
     }
