@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentTransaction
+import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
@@ -44,6 +46,9 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
         require(Caches.boardLists.size <= 1)
         setUpViews(boardList)
+        menuIcon_imageView.setOnClickListener {
+            mainActivity.drawerLayout.openDrawer(GravityCompat.START)
+        }
     }
 
     override fun setUpViews(element: BoardList) {
