@@ -10,3 +10,4 @@ const val CREATE_BOARD_FRAGMENT = "CreateBoardFragment"
 
 const val WAQTI_SHARED_PREFERENCES = "WaqtiSharedPreferences"
 const val BOARD_LIST_NAME_PREFERENCES_KEY = "BoardListName"
+const val BOARD_LIST_VIEW_MODE_KEY = "BoardListViewMode"

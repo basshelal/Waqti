@@ -1,11 +1,13 @@
 package uk.whitecrescent.waqti.android.customview.recyclerviews
 
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.LinearSnapHelper
@@ -15,6 +17,7 @@ import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.BOARD_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.view.ViewBoardFragment
+import uk.whitecrescent.waqti.android.fragments.view.ViewMode
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
@@ -27,39 +30,23 @@ class BoardListView
 
     val boardListAdapter: BoardListAdapter
         get() = this.adapter as BoardListAdapter
-
-    init {
-        layoutManager = LinearLayoutManager(this.context, VERTICAL, false)
-    }
+    private val linearSnapHelper: LinearSnapHelper
+        get() = object : LinearSnapHelper() {
+            override fun findTargetSnapPosition(layoutManager: LayoutManager?, velocityX: Int, velocityY: Int): Int {
+                val currentPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
+                mainActivity.viewModel.boardListPosition = true to currentPos
+                return currentPos
+            }
+        }
 
     override fun setAdapter(_adapter: Adapter<*>?) {
-        super.setAdapter(_adapter)
-        require(this.adapter != null &&
-                this.adapter is BoardListAdapter
+        require(_adapter != null &&
+                _adapter is BoardListAdapter
         ) { "Adapter must be non null and a BoardListAdapter, passed in ${_adapter}" }
+        super.setAdapter(_adapter)
+        changeViewMode(_adapter.viewMode)
 
-        attachHelpers()
-    }
-
-    private fun attachHelpers() {
-        ItemTouchHelper(object : ItemTouchHelper.Callback() {
-
-            override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: ViewHolder): Int {
-                return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN
-                        or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0)
-            }
-
-            override fun isLongPressDragEnabled() = true
-
-            override fun isItemViewSwipeEnabled() = false
-
-            override fun onMove(recyclerView: RecyclerView, viewHolder: ViewHolder, target: ViewHolder): Boolean {
-                return true
-            }
-
-            override fun onSwiped(viewHolder: ViewHolder, direction: Int) {
-                /*This will never be called as we do not support swiping*/
-            }
+        ItemTouchHelper(object : SimpleItemTouchHelperCallback() {
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
@@ -86,28 +73,25 @@ class BoardListView
                 mainActivity.viewModel.boardListPosition = true to toPos
             }
 
-            override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int,
-                                                      viewSizeOutOfBounds: Int, totalSize: Int,
-                                                      msSinceStartScroll: Long): Int {
-                return super.interpolateOutOfBoundsScroll(
-                        recyclerView, viewSize, viewSizeOutOfBounds, totalSize, 1500)
-                // TODO: 13-Dec-18 Override this to make better when we drag outside the bounds
-            }
-
         }).attachToRecyclerView(this)
+    }
 
-        object : LinearSnapHelper() {
-            override fun findTargetSnapPosition(layoutManager: LayoutManager?, velocityX: Int, velocityY: Int): Int {
-                val currentPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
-                mainActivity.viewModel.boardListPosition = true to currentPos
-                return currentPos
+    fun changeViewMode(viewMode: ViewMode) {
+        boardListAdapter.viewMode = viewMode
+        when (viewMode) {
+            ViewMode.LIST_VERTICAL -> {
+                layoutManager = LinearLayoutManager(this.context, VERTICAL, false)
             }
-        }.attachToRecyclerView(this)
+            ViewMode.GRID_VERTICAL -> {
+                layoutManager = GridLayoutManager(this.context, 2, VERTICAL, false)
+            }
+        }
     }
 
 }
 
-class BoardListAdapter(val boardListID: ID) : RecyclerView.Adapter<BoardListViewHolder>() {
+class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LIST_VERTICAL)
+    : RecyclerView.Adapter<BoardListViewHolder>() {
 
     val boardList = Database.boardLists[boardListID] ?: throw ElementNotFoundException(boardListID)
 
@@ -129,7 +113,25 @@ class BoardListAdapter(val boardListID: ID) : RecyclerView.Adapter<BoardListView
     }
 
     override fun onBindViewHolder(holder: BoardListViewHolder, position: Int) {
-        holder.itemView.boardName_textView.text = boardList[position].name
+        holder.itemView.boardName_textView.apply {
+            text = boardList[position].name
+            if (viewMode == ViewMode.GRID_VERTICAL) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline5)
+                } else {
+                    @Suppress("DEPRECATION")
+                    setTextAppearance(this.context, R.style.TextAppearance_MaterialComponents_Headline5)
+                }
+            } else {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline3)
+                } else {
+                    @Suppress("DEPRECATION")
+                    setTextAppearance(this.context, R.style.TextAppearance_MaterialComponents_Headline3)
+                }
+            }
+        }
+
         holder.itemView.boardCard_cardView.setOnClickListener {
             @GoToFragment()
             it.mainActivity.supportFragmentManager.beginTransaction().apply {

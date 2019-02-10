@@ -167,10 +167,6 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                 else {
                     onDragInSameList(draggingState, holder)
 
-                    @Bug
-                    @Inconvenience
-                    // TODO: 29-Dec-18 When the bottom or top of the list fits perfectly into the list we cant scoll
-
                     // Scroll down
                     checkForScrollDown(draggingState, holder)
 
@@ -304,7 +300,6 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                         @Bug
                         // TODO: 29-Dec-18 Alpha changing only works with delay of around 450+,
                         // the view briefly appears
-                        // TODO: 04-Jan-19 Alpha still has loads of issues
 
                         val position = draggingState.adapterPosition
 

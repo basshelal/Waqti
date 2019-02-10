@@ -41,9 +41,6 @@ import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.tasks
 import uk.whitecrescent.waqti.toArrayList
 
-// TODO: 18-Jun-18 When done, make sure everything is tested and doc'd
-// TODO: 16-Nov-18 Update doc
-
 @UpdateTests // tests are old, update them
 @UpdateDocumentation // documentation is very old, update it
 @NonFinal

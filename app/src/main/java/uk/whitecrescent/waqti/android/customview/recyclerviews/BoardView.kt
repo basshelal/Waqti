@@ -54,27 +54,9 @@ class BoardView
 
     private fun attachHelpers() {
 
-        ItemTouchHelper(object : ItemTouchHelper.Callback() {
+        ItemTouchHelper(object : SimpleItemTouchHelperCallback() {
             // TODO: 24-Dec-18 remember to make the dragging only doable from the header, currently its from anywhere
             // so a very fast scroll or a hold on an empty list will trigger a drag
-
-            override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-                return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN
-                        or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0)
-            }
-
-            override fun isLongPressDragEnabled() = true
-
-            override fun isItemViewSwipeEnabled() = false
-
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-                                target: RecyclerView.ViewHolder): Boolean {
-                return true
-            }
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-                /*This will never be called as we do not support swiping*/
-            }
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
@@ -100,14 +82,6 @@ class BoardView
                     notifyItemMoved(fromPos, toPos)
                 }
                 mainActivity.viewModel.boardPosition = true to toPos
-            }
-
-            override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int,
-                                                      viewSizeOutOfBounds: Int, totalSize: Int,
-                                                      msSinceStartScroll: Long): Int {
-                return super.interpolateOutOfBoundsScroll(
-                        recyclerView, viewSize, viewSizeOutOfBounds, totalSize, 1500)
-                // TODO: 13-Dec-18 Override this to make better when we drag outside the bounds
             }
 
         }).attachToRecyclerView(this)

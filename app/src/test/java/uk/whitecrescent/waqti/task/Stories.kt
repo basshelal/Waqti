@@ -23,7 +23,6 @@
 //import uk.whitecrescent.waqti.getToday
 //import uk.whitecrescent.waqti.getTomorrow
 //
-//// TODO: 27-Mar-18 Finish this too
 //@DisplayName("Task Stories")
 //class Stories : BaseTaskTest() {
 //
