@@ -2,40 +2,17 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/taskList_linearLayout"
     android:layout_width="@dimen/taskListWidth"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <TextView
+        android:id="@+id/taskListHeader_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp">
-
-        <TextView
-            android:id="@+id/taskListHeader_textView"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="Header!"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/overflow_imageView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/overflow_imageView"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="8dp"
-            android:src="@drawable/overflow_icon"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_margin="8dp"
+        android:text="Header"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
 
     <uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListView
         android:id="@+id/taskList_recyclerView"
@@ -51,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:elevation="14dp"
-        android:text="Footer!"
+        android:text="Footer"
         app:cornerRadius="15dp"
         app:rippleColor="@color/primaryLightColor" />
 

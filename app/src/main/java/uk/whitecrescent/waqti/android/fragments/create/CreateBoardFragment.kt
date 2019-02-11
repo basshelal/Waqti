@@ -12,7 +12,7 @@ import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.persistence.Caches
-import uk.whitecrescent.waqti.openKeyboard
+import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 
 class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
@@ -35,7 +35,7 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
         mainActivity.supportActionBar?.title = "New Board"
 
-        boardName_editText.openKeyboard()
+        boardName_editText.requestFocusAndShowSoftKeyboard()
 
         boardName_editText.addAfterTextChangedListener {
             if (it != null) {

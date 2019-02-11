@@ -86,12 +86,12 @@ inline fun View.showSoftKeyboard() {
             .showSoftInput(this, 0)
 }
 
-inline fun View.openKeyboard() {
+inline fun View.requestFocusAndShowSoftKeyboard() {
     requestFocus()
     showSoftKeyboard()
 }
 
-inline fun View.closeKeyboard() {
+inline fun View.clearFocusAndHideSoftKeyboard() {
     clearFocus()
     hideSoftKeyboard()
 }

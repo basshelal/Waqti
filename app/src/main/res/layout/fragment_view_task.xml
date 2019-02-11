@@ -17,21 +17,35 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp">
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/menuIconTask_imageView"
+                android:layout_width="35dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:focusable="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/menu_icon"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/taskName_editTextView"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <uk.whitecrescent.waqti.android.customview.EditTextView
                 android:id="@+id/taskName_editTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
                 android:hint="@string/taskNameHint"
                 android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/deleteTask_imageButton"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintStart_toEndOf="@id/menuIconTask_imageView"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <ImageButton
@@ -81,16 +95,5 @@
         app:layout_constraintEnd_toEndOf="@+id/taskDeadline_textView"
         app:layout_constraintStart_toStartOf="@+id/taskDeadline_textView"
         app:layout_constraintTop_toBottomOf="@id/taskDeadline_textView" />
-
-
-    <Button
-        android:id="@+id/confirmEditTask_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/confirm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

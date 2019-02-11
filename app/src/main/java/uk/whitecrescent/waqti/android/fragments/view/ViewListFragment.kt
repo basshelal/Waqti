@@ -6,7 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.RecyclerView
+import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
@@ -16,6 +19,7 @@ import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListAdapter
 import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
+import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.collections.TaskList
@@ -46,28 +50,29 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     }
 
     override fun setUpViews(element: TaskList) {
-        mainActivity.supportActionBar?.title = "List"
-
-        listName_editTextView.text = SpannableStringBuilder(element.name)
-        listName_editTextView.addAfterTextChangedListener {
-            if (it != null) {
-                confirmEditList_button.isEnabled =
-                        !(it.isEmpty() || it.isBlank() || it.toString() == element.name)
-            }
+        menuIconList_imageView.setOnClickListener {
+            mainActivity.drawerLayout.openDrawer(GravityCompat.START)
         }
-        listName_editTextView.setOnEditorActionListener { textView, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (textView.text != null &&
-                        textView.text.isNotBlank() &&
-                        textView.text.isNotEmpty()) {
-                    if (textView.text != element.name) {
-                        Caches.taskLists[listID].name = listName_editTextView.text.toString()
+
+        listName_editTextView.apply {
+            fun update() {
+                Caches.taskLists[listID].name = text.toString()
+            }
+            text = SpannableStringBuilder(element.name)
+            addAfterTextChangedListener { update() }
+            setOnEditorActionListener { textView, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    if (textView.text != null &&
+                            textView.text.isNotBlank() &&
+                            textView.text.isNotEmpty()) {
+                        if (textView.text != element.name) {
+                            update()
+                        }
                     }
-                }
-                textView.clearFocus()
-                textView.hideSoftKeyboard()
-                true
-            } else false
+                    textView.clearFocusAndHideSoftKeyboard()
+                    true
+                } else false
+            }
         }
 
         deleteList_imageButton.setOnClickListener {
@@ -82,7 +87,20 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
             }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
         }
 
-        taskList_recyclerView.adapter = TaskListAdapter(listID)
+        taskList_recyclerView.apply {
+            adapter = TaskListAdapter(listID)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (dy > 0 && this@ViewListFragment.addTask_floatingButton.visibility
+                            == View.VISIBLE) {
+                        this@ViewListFragment.addTask_floatingButton.hide()
+                    } else if (dy < 0 && this@ViewListFragment.addTask_floatingButton.visibility != View.VISIBLE) {
+                        this@ViewListFragment.addTask_floatingButton.show()
+                    }
+                }
+            })
+        }
 
         addTask_floatingButton.setOnClickListener {
             @GoToFragment()
@@ -95,12 +113,6 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                 replace(R.id.fragmentContainer, CreateTaskFragment.newInstance(), CREATE_TASK_FRAGMENT)
                 addToBackStack("")
             }.commit()
-        }
-
-        confirmEditList_button.isEnabled = false
-        confirmEditList_button.setOnClickListener {
-            Caches.taskLists[listID].name = listName_editTextView.text.toString()
-            finish()
         }
     }
 

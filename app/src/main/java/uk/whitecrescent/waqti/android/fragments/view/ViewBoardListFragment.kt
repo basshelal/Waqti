@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
 import uk.whitecrescent.waqti.GoToFragment
@@ -15,10 +16,11 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.BOARD_LIST_NAME_PREFERENCES_KEY
 import uk.whitecrescent.waqti.android.BOARD_LIST_VIEW_MODE_KEY
 import uk.whitecrescent.waqti.android.CREATE_BOARD_FRAGMENT
+import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.recyclerviews.BoardListAdapter
 import uk.whitecrescent.waqti.android.fragments.create.CreateBoardFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
-import uk.whitecrescent.waqti.hideSoftKeyboard
+import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.collections.BoardList
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -51,34 +53,35 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
         require(Caches.boardLists.size <= 1)
         setUpViews(boardList)
-        menuIcon_imageView.setOnClickListener {
-            mainActivity.drawerLayout.openDrawer(GravityCompat.START)
-        }
     }
 
     override fun setUpViews(element: BoardList) {
-        mainActivity.supportActionBar?.title = "Boards"
+        menuIconBoardList_imageView.setOnClickListener {
+            mainActivity.drawerLayout.openDrawer(GravityCompat.START)
+        }
 
-        boardListName_editTextView.text = SpannableStringBuilder(
-                mainActivity.waqtiSharedPreferences
-                        .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards)))
-
-        boardListName_editTextView.setOnEditorActionListener { textView, actionId, event ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                if (textView.text != null &&
-                        textView.text.isNotBlank() &&
-                        textView.text.isNotEmpty()) {
-                    if (textView.text != mainActivity.waqtiSharedPreferences
+        boardListName_editTextView.apply {
+            fun update() {
+                if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
+                    if (text.toString() != mainActivity.waqtiSharedPreferences
                                     .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards))) {
                         mainActivity.waqtiSharedPreferences
-                                .edit().putString(BOARD_LIST_NAME_PREFERENCES_KEY, textView.text
-                                        .toString()).apply()
+                                .edit().putString(BOARD_LIST_NAME_PREFERENCES_KEY,
+                                        text.toString()).apply()
                     }
                 }
-                textView.clearFocus()
-                textView.hideSoftKeyboard()
-                true
-            } else false
+            }
+            text = SpannableStringBuilder(
+                    mainActivity.waqtiSharedPreferences
+                            .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards)))
+            addAfterTextChangedListener { update() }
+            setOnEditorActionListener { textView, actionId, event ->
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    update()
+                    textView.clearFocusAndHideSoftKeyboard()
+                    true
+                } else false
+            }
         }
 
         addBoard_FloatingButton.setOnClickListener {
@@ -93,15 +96,29 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
             }.commit()
         }
 
-        if (boardsList_recyclerView.boardListAdapter.itemCount > 0) {
-            boardsList_recyclerView.postDelayed(
-                    {
-                        viewModel.boardListPosition.apply {
-                            if (first) boardsList_recyclerView.smoothScrollToPosition(second)
-                        }
-                    },
-                    100L
-            )
+        boardsList_recyclerView.apply {
+            if (this.boardListAdapter.itemCount > 0) {
+                postDelayed(
+                        {
+                            viewModel.boardListPosition.apply {
+                                if (first) smoothScrollToPosition(second)
+                            }
+                        },
+                        100L
+                )
+            }
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (dy > 0 && this@ViewBoardListFragment.addBoard_FloatingButton.visibility
+                            == View.VISIBLE) {
+                        this@ViewBoardListFragment.addBoard_FloatingButton.hide()
+                    } else if (dy < 0 && this@ViewBoardListFragment.addBoard_FloatingButton
+                                    .visibility != View.VISIBLE) {
+                        this@ViewBoardListFragment.addBoard_FloatingButton.show()
+                    }
+                }
+            })
         }
 
         viewMode_imageView.apply {

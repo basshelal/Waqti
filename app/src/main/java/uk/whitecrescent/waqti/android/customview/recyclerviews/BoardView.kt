@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
-import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,7 +20,6 @@ import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.VIEW_LIST_FRAGMENT
-import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.mainActivity
@@ -185,40 +183,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 replace(R.id.fragmentContainer, CreateTaskFragment.newInstance(), CREATE_TASK_FRAGMENT)
                 addToBackStack("")
             }.commit()
-        }
-
-        holder.itemView.overflow_imageView.setOnClickListener {
-            PopupMenu(it.context, it).apply {
-                inflate(R.menu.menu_list)
-                setOnMenuItemClickListener {
-                    return@setOnMenuItemClickListener when (it.itemId) {
-                        R.id.deleteList_menuItem -> {
-
-                            if (holder.adapterPosition != -1) {
-                                MaterialConfirmDialog().apply {
-                                    title = boardView.mainActivity.getString(R.string.deleteListQuestion)
-                                    message = boardView.mainActivity.getString(R.string.deleteListDetails)
-                                    onConfirm = {
-                                        this.dismiss()
-                                        boardView.removeListAdapterIfExists(holder.list.listAdapter)
-                                        board.removeAt(holder.adapterPosition).update()
-                                        notifyDataSetChanged()
-                                    }
-                                }.show(boardView.mainActivity.supportFragmentManager, "MaterialConfirmDialog")
-                                true
-                            } else false
-
-                            /*if (holder.adapterPosition != -1) {
-                                boardView.removeListAdapterIfExists(holder.list.listAdapter)
-                                board.removeAt(holder.adapterPosition).update()
-                                notifyDataSetChanged()
-                                true
-                            } else false*/
-                        }
-                        else -> false
-                    }
-                }
-            }.show()
         }
 
         @Bug

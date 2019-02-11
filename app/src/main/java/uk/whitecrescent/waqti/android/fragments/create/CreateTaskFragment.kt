@@ -19,7 +19,7 @@ import uk.whitecrescent.waqti.model.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Task
-import uk.whitecrescent.waqti.openKeyboard
+import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 import uk.whitecrescent.waqti.rfcFormatted
 
 @Suppress("NOTHING_TO_INLINE")
@@ -51,7 +51,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     override fun setUpViews() {
 
         taskName_editText.apply {
-            openKeyboard()
+            requestFocusAndShowSoftKeyboard()
             addAfterTextChangedListener {
                 if (it != null) {
                     addTask_button.isEnabled = !(it.isEmpty() || it.isBlank())

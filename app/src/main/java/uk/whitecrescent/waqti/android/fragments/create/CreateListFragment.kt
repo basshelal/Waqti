@@ -13,7 +13,7 @@ import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.ID
-import uk.whitecrescent.waqti.openKeyboard
+import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 
 class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 
@@ -41,7 +41,7 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 
         mainActivity.supportActionBar?.title = "New List"
 
-        listName_editText.openKeyboard()
+        listName_editText.requestFocusAndShowSoftKeyboard()
 
         listName_editText.addAfterTextChangedListener {
             if (it != null) {

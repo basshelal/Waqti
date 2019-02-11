@@ -7,13 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.GravityCompat
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_view_task.*
 import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
+import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.DEFAULT_DEADLINE_PROPERTY
@@ -50,26 +53,26 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     @SuppressLint("SetTextI18n")
     override fun setUpViews(element: Task) {
+        menuIconTask_imageView.setOnClickListener {
+            mainActivity.drawerLayout.openDrawer(GravityCompat.START)
+        }
 
         taskName_editTextView.apply {
-            text = SpannableStringBuilder(element.name)
-            addAfterTextChangedListener {
-                if (it != null) {
-                    confirmEditTask_button.isEnabled =
-                            !(it.isEmpty() || it.isBlank() || it.toString() == element.name)
-                }
+            fun update() {
+                Caches.tasks[taskID].changeName(text.toString())
             }
+            text = SpannableStringBuilder(element.name)
+            addAfterTextChangedListener { update() }
             setOnEditorActionListener { textView, actionId, event ->
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
                     if (textView.text != null &&
                             textView.text.isNotBlank() &&
                             textView.text.isNotEmpty()) {
                         if (textView.text != element.name) {
-                            Caches.tasks[taskID].changeName(taskName_editTextView.text.toString())
+                            update()
                         }
                     }
-                    textView.clearFocus()
-                    textView.hideSoftKeyboard()
+                    textView.clearFocusAndHideSoftKeyboard()
                     true
                 } else false
             }
@@ -92,14 +95,6 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                 Snackbar.make(it, "Deleted", Snackbar.LENGTH_LONG)
                         .setAction("Undo", { it.shortSnackBar("Not yet implemented") })
                         .show()
-            }
-        }
-
-        confirmEditTask_button.apply {
-            isEnabled = false
-            setOnClickListener {
-                Caches.tasks[viewModel.taskID].changeName(taskName_editTextView.text.toString())
-                finish()
             }
         }
 
