@@ -6,11 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
+import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.BOARD_LIST_NAME_PREFERENCES_KEY
@@ -56,31 +55,52 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
     }
 
     override fun setUpViews(element: BoardList) {
-        menuIconBoardList_imageView.setOnClickListener {
-            mainActivity.drawerLayout.openDrawer(GravityCompat.START)
-        }
 
-        boardListName_editTextView.apply {
-            fun update() {
-                if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
-                    if (text.toString() != mainActivity.waqtiSharedPreferences
-                                    .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards))) {
-                        mainActivity.waqtiSharedPreferences
-                                .edit().putString(BOARD_LIST_NAME_PREFERENCES_KEY,
-                                        text.toString()).apply()
+        boardList_appBar.apply {
+            editTextView.apply {
+                fun update() {
+                    if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
+                        if (text.toString() != mainActivity.waqtiSharedPreferences
+                                        .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards))) {
+                            mainActivity.waqtiSharedPreferences
+                                    .edit().putString(BOARD_LIST_NAME_PREFERENCES_KEY,
+                                            text.toString()).apply()
+                        }
                     }
                 }
+                text = SpannableStringBuilder(
+                        mainActivity.waqtiSharedPreferences
+                                .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards)))
+                addAfterTextChangedListener { update() }
+                setOnEditorActionListener { textView, actionId, event ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        update()
+                        textView.clearFocusAndHideSoftKeyboard()
+                        true
+                    } else false
+                }
             }
-            text = SpannableStringBuilder(
+            rightImageView.apply {
+                fun update() {
+                    when (viewMode) {
+                        ViewMode.LIST_VERTICAL -> {
+                            setImageResource(R.drawable.grid_icon)
+                            boardsList_recyclerView.changeViewMode(ViewMode.LIST_VERTICAL)
+
+                        }
+                        ViewMode.GRID_VERTICAL -> {
+                            setImageResource(R.drawable.list_icon)
+                            boardsList_recyclerView.changeViewMode(ViewMode.GRID_VERTICAL)
+                        }
+                    }
                     mainActivity.waqtiSharedPreferences
-                            .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards)))
-            addAfterTextChangedListener { update() }
-            setOnEditorActionListener { textView, actionId, event ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                            .edit().putString(BOARD_LIST_VIEW_MODE_KEY, viewMode.name).apply()
+                }
+                update()
+                setOnClickListener {
+                    viewMode = viewMode.switch()
                     update()
-                    textView.clearFocusAndHideSoftKeyboard()
-                    true
-                } else false
+                }
             }
         }
 
@@ -119,29 +139,6 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                     }
                 }
             })
-        }
-
-        viewMode_imageView.apply {
-            fun update() {
-                when (viewMode) {
-                    ViewMode.LIST_VERTICAL -> {
-                        setImageResource(R.drawable.grid_icon)
-                        boardsList_recyclerView.changeViewMode(ViewMode.LIST_VERTICAL)
-
-                    }
-                    ViewMode.GRID_VERTICAL -> {
-                        setImageResource(R.drawable.list_icon)
-                        boardsList_recyclerView.changeViewMode(ViewMode.GRID_VERTICAL)
-                    }
-                }
-                mainActivity.waqtiSharedPreferences
-                        .edit().putString(BOARD_LIST_VIEW_MODE_KEY, viewMode.name).apply()
-            }
-            update()
-            setOnClickListener {
-                viewMode = viewMode.switch()
-                update()
-            }
         }
     }
 

@@ -42,6 +42,13 @@ class MainActivity : AppCompatActivity() {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }.commit()
 
+        addOnBackPressedCallback {
+            if (drawerLayout.isDrawerOpen(navigationView)) {
+                drawerLayout.closeDrawers()
+                true
+            } else false
+        }
+
         navigationView.setNavigationItemSelectedListener {
             it.isChecked = true
             drawerLayout.closeDrawers()

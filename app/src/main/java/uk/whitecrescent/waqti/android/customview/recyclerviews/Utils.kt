@@ -1,5 +1,6 @@
 package uk.whitecrescent.waqti.android.customview.recyclerviews
 
+import android.content.res.Resources
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.DOWN
 import androidx.recyclerview.widget.ItemTouchHelper.LEFT
@@ -33,4 +34,16 @@ open class SimpleItemTouchHelperCallback : ItemTouchHelper.Callback() {
                 recyclerView, viewSize, viewSizeOutOfBounds, totalSize, 1500)
     }
 
+}
+
+fun convertPixelsToDp(px: Float): Float {
+    val metrics = Resources.getSystem().displayMetrics
+    val dp = px / (metrics.densityDpi / 160f)
+    return Math.round(dp).toFloat()
+}
+
+fun convertDpToPixel(dp: Float): Float {
+    val metrics = Resources.getSystem().displayMetrics
+    val px = dp * (metrics.densityDpi / 160f)
+    return Math.round(px).toFloat()
 }
