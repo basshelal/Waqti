@@ -21,16 +21,22 @@ import com.google.android.material.snackbar.Snackbar
 import io.objectbox.Box
 import uk.whitecrescent.waqti.android.MainActivity
 import uk.whitecrescent.waqti.model.Cacheable
+import uk.whitecrescent.waqti.model.collections.Board
+import uk.whitecrescent.waqti.model.collections.BoardList
+import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.collections.Tuple
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.task.DEBUG
 import uk.whitecrescent.waqti.model.task.GRACE_PERIOD
 import uk.whitecrescent.waqti.model.task.ID
+import uk.whitecrescent.waqti.model.task.Label
+import uk.whitecrescent.waqti.model.task.Priority
 import uk.whitecrescent.waqti.model.task.Property
 import uk.whitecrescent.waqti.model.task.Task
+import uk.whitecrescent.waqti.model.task.Template
+import uk.whitecrescent.waqti.model.task.TimeUnit
 import java.util.Objects
-import java.util.concurrent.TimeUnit
 
 //region Debug Utils
 
@@ -133,7 +139,51 @@ fun <T> MutableList<T>.matchOrder(other: Collection<T>) {
 inline val <T> Box<T>.size: Int
     get() = this.count().toInt()
 
-inline fun <T> Box<T>.isEmpty() = this.count() == 0L
+// This is slow because Reflection
+inline operator fun <reified T : Cacheable> Caches.get(id: ID): T {
+    return when (T::class) {
+        Task::class -> Caches.tasks[id] as T
+        Template::class -> Caches.templates[id] as T
+        Label::class -> Caches.labels[id] as T
+        Priority::class -> Caches.priorities[id] as T
+        uk.whitecrescent.waqti.model.task.TimeUnit::class -> Caches.timeUnits[id] as T
+
+        TaskList::class -> Caches.taskLists[id] as T
+        Board::class -> Caches.boards[id] as T
+        BoardList::class -> Caches.boardLists[id] as T
+        else -> throw IllegalStateException("Couldn't find Cache of type ${T::class} in Caches")
+    }
+}
+
+inline fun <reified T : Cacheable> Caches.put(element: T) {
+    when (element) {
+        is Task -> Caches.tasks.put(element)
+        is Template -> Caches.templates.put(element)
+        is Label -> Caches.labels.put(element)
+        is Priority -> Caches.priorities.put(element)
+        is uk.whitecrescent.waqti.model.task.TimeUnit -> Caches.timeUnits.put(element)
+
+        is TaskList -> Caches.taskLists.put(element)
+        is Board -> Caches.boards.put(element)
+        is BoardList -> Caches.boardLists.put(element)
+        else -> throw IllegalStateException("Couldn't find Cache of type ${T::class} in Caches")
+    }
+}
+
+inline fun <reified T : Cacheable> Box<T>.archive(element: T) {
+    when (element) {
+        is Task -> Caches.tasks.put(element)
+        is Template -> Caches.templates.put(element)
+        is Label -> Caches.labels.put(element)
+        is Priority -> Caches.priorities.put(element)
+        is TimeUnit -> Caches.timeUnits.put(element)
+
+        is TaskList -> Caches.taskLists.put(element)
+        is Board -> Caches.boards.put(element)
+        is BoardList -> Caches.boardLists.put(element)
+        else -> throw IllegalStateException("Couldn't find Cache of type ${T::class} in Caches")
+    }
+}
 
 inline fun <T> Box<T>.forEach(action: (T) -> Unit) =
         this.all.forEach(action)
@@ -142,7 +192,7 @@ inline val <T : Cacheable> Box<T>.ids: List<ID>
     get() = this.all.map { it.id }
 
 const val CACHE_CHECKING_PERIOD = 10L
-val CACHE_CHECKING_UNIT = TimeUnit.SECONDS
+val CACHE_CHECKING_UNIT = java.util.concurrent.TimeUnit.SECONDS
 
 //endregion Persistence Utils
 

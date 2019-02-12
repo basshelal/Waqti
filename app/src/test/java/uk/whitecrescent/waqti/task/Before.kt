@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.get
 import uk.whitecrescent.waqti.getTasks
 import uk.whitecrescent.waqti.hiddenProperty
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -56,7 +55,7 @@ class Before : BaseTaskTest() {
 
             before.isConstrained mustBe false
             before.value mustEqual beforeTask.id
-            beforeTask mustEqual Caches[task.before.value]
+            beforeTask mustEqual Caches.tasks[task.before.value]
             before.isVisible mustBe true
 
             hideBefore()

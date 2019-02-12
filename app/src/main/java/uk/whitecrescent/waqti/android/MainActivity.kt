@@ -9,6 +9,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.blank_activity.*
+import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
@@ -27,6 +28,8 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 
+        @Bug
+        // TODO: 12-Feb-19 Rotating phone is a major bug!
         @Inconvenience
         // TODO: 26-Dec-18 Transitions for all Fragments are ugly!
 

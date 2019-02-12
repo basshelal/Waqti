@@ -52,6 +52,9 @@ object Database {
     lateinit var timeUnits: Box<TimeUnit>
         private set
 
+    lateinit var archivedTasks: Box<Task>
+        private set
+
     // Collections
 
     lateinit var taskLists: Box<TaskList>
