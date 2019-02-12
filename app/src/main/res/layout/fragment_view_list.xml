@@ -4,65 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/taskListName_cardView"
+    <uk.whitecrescent.waqti.android.customview.AppBar
+        android:id="@+id/taskList_appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/primaryColor"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="14dp"
+        app:hint="@string/listNameHint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/menuIconList_imageView"
-                android:layout_width="35dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/menu_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/listName_editTextView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <uk.whitecrescent.waqti.android.customview.EditTextView
-                android:id="@+id/listName_editTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:hint="@string/listNameHint"
-                android:imeOptions="actionDone"
-                android:inputType="textCapSentences|textAutoCorrect"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/deleteList_imageButton"
-                app:layout_constraintStart_toEndOf="@id/menuIconList_imageView"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/deleteList_imageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/primaryColor"
-                android:contentDescription="@string/deleteList"
-                android:src="@drawable/delete_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftClickOpensDrawer="true"
+        app:rightClickOpensMenu="@menu/menu_list" />
 
     <uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListView
         android:id="@+id/taskList_recyclerView"
@@ -72,7 +23,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/taskListName_cardView">
+        app:layout_constraintTop_toBottomOf="@id/taskList_appBar">
 
     </uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListView>
 

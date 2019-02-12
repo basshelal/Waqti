@@ -22,6 +22,7 @@ import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewListFragment
+import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
@@ -164,6 +165,8 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
                 it.mainActivity.viewModel.listID = board[holder.adapterPosition].id
 
+                it.clearFocusAndHideSoftKeyboard()
+
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")
                 replace(R.id.fragmentContainer, ViewListFragment.newInstance(), VIEW_LIST_FRAGMENT)
@@ -178,6 +181,8 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 it.mainActivity.viewModel.boardID = this@BoardAdapter.boardID
                 it.mainActivity.viewModel.listID = holder.list.listAdapter.taskListID
                 it.mainActivity.viewModel.createdTaskTime = DEFAULT_TIME
+
+                it.clearFocusAndHideSoftKeyboard()
 
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 replace(R.id.fragmentContainer, CreateTaskFragment.newInstance(), CREATE_TASK_FRAGMENT)

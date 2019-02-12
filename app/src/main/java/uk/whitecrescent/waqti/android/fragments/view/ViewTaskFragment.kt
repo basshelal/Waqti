@@ -7,10 +7,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.core.view.GravityCompat
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_view_task.*
+import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
@@ -53,48 +52,50 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     @SuppressLint("SetTextI18n")
     override fun setUpViews(element: Task) {
-        menuIconTask_imageView.setOnClickListener {
-            mainActivity.drawerLayout.openDrawer(GravityCompat.START)
-        }
 
-        taskName_editTextView.apply {
-            fun update() {
-                Caches.tasks[taskID].changeName(text.toString())
-            }
-            text = SpannableStringBuilder(element.name)
-            addAfterTextChangedListener { update() }
-            setOnEditorActionListener { textView, actionId, event ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (textView.text != null &&
-                            textView.text.isNotBlank() &&
-                            textView.text.isNotEmpty()) {
-                        if (textView.text != element.name) {
-                            update()
+        task_appBar.apply {
+            editTextView.apply {
+                fun update() {
+                    Caches.tasks[taskID].changeName(text.toString())
+                }
+                text = SpannableStringBuilder(element.name)
+                addAfterTextChangedListener { update() }
+                setOnEditorActionListener { textView, actionId, event ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        if (textView.text != null &&
+                                textView.text.isNotBlank() &&
+                                textView.text.isNotEmpty()) {
+                            if (textView.text != element.name) {
+                                update()
+                            }
                         }
-                    }
-                    textView.clearFocusAndHideSoftKeyboard()
-                    true
-                } else false
+                        textView.clearFocusAndHideSoftKeyboard()
+                        true
+                    } else false
+                }
             }
-        }
+            popupMenu.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.deleteTask_menuItem -> {
+                        MaterialConfirmDialog().apply {
+                            title = this@ViewTaskFragment.mainActivity.getString(R.string.deleteTaskQuestion)
+                            onConfirm = {
+                                this.dismiss()
+                                Caches.deleteTask(taskID, listID)
+                                finish()
+                            }
+                        }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
 
-        deleteTask_imageButton.apply {
-            setOnClickListener {
-                MaterialConfirmDialog().apply {
-                    title = this@ViewTaskFragment.mainActivity.getString(R.string.deleteTaskQuestion)
-                    onConfirm = {
-                        this.dismiss()
-                        Caches.deleteTask(taskID, listID)
-                        finish()
+                        @FutureIdea
+                        // TODO: 31-Dec-18 Undo delete would be cool
+                        // so a snackbar that says deleted task with a button to undo
+                        Snackbar.make(this, "Deleted", Snackbar.LENGTH_LONG)
+                                .setAction("Undo", { shortSnackBar("Not yet implemented") })
+                                .show()
+                        true
                     }
-                }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
-
-                @FutureIdea
-                // TODO: 31-Dec-18 Undo delete would be cool
-                // so a snackbar that says deleted task with a button to undo
-                Snackbar.make(it, "Deleted", Snackbar.LENGTH_LONG)
-                        .setAction("Undo", { it.shortSnackBar("Not yet implemented") })
-                        .show()
+                    else -> false
+                }
             }
         }
 
@@ -126,7 +127,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
     }
 
     override fun finish() {
-        taskName_editTextView.hideSoftKeyboard()
+        task_appBar.hideSoftKeyboard()
         mainActivity.supportFragmentManager.popBackStack()
     }
 }

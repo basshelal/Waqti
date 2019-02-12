@@ -19,6 +19,7 @@ import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.view.ViewTaskFragment
+import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -106,6 +107,8 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                 it.mainActivity.viewModel.taskID = holder.taskID
                 it.mainActivity.viewModel.listID = taskListID
 
+                it.clearFocusAndHideSoftKeyboard()
+
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")
                 replace(R.id.fragmentContainer, ViewTaskFragment.newInstance(), VIEW_TASK_FRAGMENT)
@@ -113,6 +116,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         }
 
         holder.itemView.setOnLongClickListener {
+            it.clearFocusAndHideSoftKeyboard()
             @Suppress("DEPRECATION")// using the updated requires minSDK >= 24, we are 21
             it.startDrag(
                     ClipData(

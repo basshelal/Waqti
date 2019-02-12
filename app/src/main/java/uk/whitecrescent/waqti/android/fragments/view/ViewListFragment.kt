@@ -6,11 +6,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_view_list.*
+import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
@@ -20,7 +19,6 @@ import uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListAdapter
 import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
-import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.collections.TaskList
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -50,41 +48,45 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     }
 
     override fun setUpViews(element: TaskList) {
-        menuIconList_imageView.setOnClickListener {
-            mainActivity.drawerLayout.openDrawer(GravityCompat.START)
-        }
 
-        listName_editTextView.apply {
-            fun update() {
-                Caches.taskLists[listID].name = text.toString()
-            }
-            text = SpannableStringBuilder(element.name)
-            addAfterTextChangedListener { update() }
-            setOnEditorActionListener { textView, actionId, event ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (textView.text != null &&
-                            textView.text.isNotBlank() &&
-                            textView.text.isNotEmpty()) {
-                        if (textView.text != element.name) {
-                            update()
-                        }
-                    }
-                    textView.clearFocusAndHideSoftKeyboard()
-                    true
-                } else false
-            }
-        }
-
-        deleteList_imageButton.setOnClickListener {
-            MaterialConfirmDialog().apply {
-                title = this@ViewListFragment.mainActivity.getString(R.string.deleteListQuestion)
-                message = this@ViewListFragment.mainActivity.getString(R.string.deleteListDetails)
-                onConfirm = {
-                    this.dismiss()
-                    Caches.deleteTaskList(listID, boardID)
-                    finish()
+        taskList_appBar.apply {
+            editTextView.apply {
+                fun update() {
+                    Caches.taskLists[listID].name = text.toString()
                 }
-            }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+                text = SpannableStringBuilder(element.name)
+                addAfterTextChangedListener { update() }
+                setOnEditorActionListener { textView, actionId, event ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        if (textView.text != null &&
+                                textView.text.isNotBlank() &&
+                                textView.text.isNotEmpty()) {
+                            if (textView.text != element.name) {
+                                update()
+                            }
+                        }
+                        textView.clearFocusAndHideSoftKeyboard()
+                        true
+                    } else false
+                }
+            }
+            popupMenu.setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.deleteList_menuItem -> {
+                        MaterialConfirmDialog().apply {
+                            title = this@ViewListFragment.mainActivity.getString(R.string.deleteListQuestion)
+                            message = this@ViewListFragment.mainActivity.getString(R.string.deleteListDetails)
+                            onConfirm = {
+                                this.dismiss()
+                                Caches.deleteTaskList(listID, boardID)
+                                finish()
+                            }
+                        }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+                        true
+                    }
+                    else -> false
+                }
+            }
         }
 
         taskList_recyclerView.apply {
@@ -109,6 +111,8 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                 it.mainActivity.viewModel.boardID = boardID
                 it.mainActivity.viewModel.listID = listID
 
+                it.clearFocusAndHideSoftKeyboard()
+
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 replace(R.id.fragmentContainer, CreateTaskFragment.newInstance(), CREATE_TASK_FRAGMENT)
                 addToBackStack("")
@@ -117,7 +121,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     }
 
     override fun finish() {
-        listName_editTextView.hideSoftKeyboard()
+        taskList_appBar.clearFocusAndHideSoftKeyboard()
         mainActivity.supportFragmentManager.popBackStack()
     }
 }

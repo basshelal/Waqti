@@ -110,6 +110,8 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
                 it.mainActivity.viewModel.boardListPosition = false to boardsList_recyclerView.boardListAdapter.itemCount - 1
 
+                it.clearFocusAndHideSoftKeyboard()
+
                 replace(R.id.fragmentContainer, CreateBoardFragment.newInstance(), CREATE_BOARD_FRAGMENT)
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")

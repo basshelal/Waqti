@@ -128,6 +128,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 it.mainActivity.viewModel.boardID = element.id
                 it.mainActivity.viewModel.boardPosition = false to boardView.boardAdapter.itemCount - 1
 
+                it.clearFocusAndHideSoftKeyboard()
+
                 replace(R.id.fragmentContainer, CreateListFragment.newInstance(), CREATE_LIST_FRAGMENT)
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")

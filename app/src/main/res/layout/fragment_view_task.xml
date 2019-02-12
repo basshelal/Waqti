@@ -4,64 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/toolbar_cardView"
+    <uk.whitecrescent.waqti.android.customview.AppBar
+        android:id="@+id/task_appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/primaryColor"
-        app:cardCornerRadius="0dp"
-        app:cardElevation="14dp"
+        app:hint="@string/taskNameHint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:id="@+id/menuIconTask_imageView"
-                android:layout_width="35dp"
-                android:layout_height="0dp"
-                android:layout_marginStart="8dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:clickable="true"
-                android:focusable="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/menu_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/taskName_editTextView"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <uk.whitecrescent.waqti.android.customview.EditTextView
-                android:id="@+id/taskName_editTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:hint="@string/taskNameHint"
-                android:inputType="textCapSentences|textAutoCorrect|textMultiLine"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/deleteTask_imageButton"
-                app:layout_constraintStart_toEndOf="@id/menuIconTask_imageView"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/deleteTask_imageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:backgroundTint="@color/primaryColor"
-                android:contentDescription="@string/deleteTask"
-                android:src="@drawable/delete_icon"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-    </androidx.cardview.widget.CardView>
+        app:layout_constraintTop_toTopOf="parent"
+        app:leftClickOpensDrawer="true"
+        app:rightClickOpensMenu="@menu/menu_task" />
 
     <TextView
         android:id="@+id/taskTime_textView"
@@ -70,9 +22,9 @@
         android:layout_margin="8dp"
         android:text="@string/defaultTime"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-        app:layout_constraintLeft_toLeftOf="@id/toolbar_cardView"
-        app:layout_constraintRight_toRightOf="@id/toolbar_cardView"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_cardView" />
+        app:layout_constraintLeft_toLeftOf="@id/task_appBar"
+        app:layout_constraintRight_toRightOf="@id/task_appBar"
+        app:layout_constraintTop_toBottomOf="@id/task_appBar" />
 
     <TextView
         android:id="@+id/taskDeadline_textView"
