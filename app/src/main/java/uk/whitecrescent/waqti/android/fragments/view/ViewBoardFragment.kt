@@ -11,11 +11,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.core.view.GravityCompat
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
+import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_LIST_FRAGMENT
@@ -53,41 +52,47 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     }
 
     override fun setUpViews(element: Board) {
-        menuIconBoard_imageView.setOnClickListener {
-            mainActivity.drawerLayout.openDrawer(GravityCompat.START)
-        }
 
-        boardName_editTextView.apply {
-            fun update() {
-                Caches.boards[boardID].name = text.toString()
-            }
-            text = SpannableStringBuilder(element.name)
-            addAfterTextChangedListener { update() }
-            setOnEditorActionListener { textView, actionId, event ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (textView.text != null &&
-                            textView.text.isNotBlank() &&
-                            textView.text.isNotEmpty()) {
-                        if (textView.text != element.name) {
-                            update()
-                        }
-                    }
-                    textView.clearFocusAndHideSoftKeyboard()
-                    true
-                } else false
-            }
-        }
-
-        deleteBoard_imageButton.setOnClickListener {
-            MaterialConfirmDialog().apply {
-                title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardQuestion)
-                message = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardDetails)
-                onConfirm = {
-                    this.dismiss()
-                    Caches.deleteBoard(boardID)
-                    finish()
+        board_appBar.apply {
+            editTextView.apply {
+                fun update() {
+                    Caches.boards[boardID].name = text.toString()
                 }
-            }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+                text = SpannableStringBuilder(element.name)
+                addAfterTextChangedListener { update() }
+                setOnEditorActionListener { textView, actionId, event ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        if (textView.text != null &&
+                                textView.text.isNotBlank() &&
+                                textView.text.isNotEmpty()) {
+                            if (textView.text != element.name) {
+                                update()
+                            }
+                        }
+                        textView.clearFocusAndHideSoftKeyboard()
+                        true
+                    } else false
+                }
+            }
+            popupMenu.apply {
+                setOnMenuItemClickListener {
+                    when (it.itemId) {
+                        R.id.deleteBoard_menuItem -> {
+                            MaterialConfirmDialog().apply {
+                                title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardQuestion)
+                                message = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardDetails)
+                                onConfirm = {
+                                    this.dismiss()
+                                    Caches.deleteBoard(boardID)
+                                    finish()
+                                }
+                            }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+                            true
+                        }
+                        else -> false
+                    }
+                }
+            }
         }
 
         boardView.apply {

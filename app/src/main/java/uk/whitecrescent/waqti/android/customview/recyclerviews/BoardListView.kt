@@ -18,6 +18,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.BOARD_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewMode
+import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.persistence.ElementNotFoundException
@@ -139,6 +140,8 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
                 it.mainActivity.viewModel.boardID = boardList[holder.adapterPosition].id
 
                 it.mainActivity.viewModel.boardListPosition = false to position
+
+                it.hideSoftKeyboard()
 
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 replace(R.id.fragmentContainer, ViewBoardFragment.newInstance(), BOARD_FRAGMENT)

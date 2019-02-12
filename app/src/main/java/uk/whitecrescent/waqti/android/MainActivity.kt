@@ -3,7 +3,9 @@ package uk.whitecrescent.waqti.android
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.blank_activity.*
@@ -12,6 +14,7 @@ import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.fragments.view.ViewBoardListFragment
+import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.shortSnackBar
 
 class MainActivity : AppCompatActivity() {
@@ -48,6 +51,12 @@ class MainActivity : AppCompatActivity() {
                 true
             } else false
         }
+
+        drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
+            override fun onDrawerOpened(drawerView: View) {
+                drawerLayout.hideSoftKeyboard()
+            }
+        })
 
         navigationView.setNavigationItemSelectedListener {
             it.isChecked = true

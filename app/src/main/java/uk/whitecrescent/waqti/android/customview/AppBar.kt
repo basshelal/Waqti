@@ -3,11 +3,13 @@ package uk.whitecrescent.waqti.android.customview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import androidx.cardview.widget.CardView
+import android.widget.PopupMenu
 import androidx.core.view.GravityCompat
+import com.github.florent37.shapeofview.shapes.RoundRectView
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 
 /**
@@ -26,7 +28,10 @@ import uk.whitecrescent.waqti.mainActivity
 class AppBar
 @JvmOverloads constructor(context: Context,
                           attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) : CardView(context, attributeSet, defStyle) {
+                          defStyle: Int = 0) : RoundRectView(context, attributeSet, defStyle) {
+
+    lateinit var popupMenu: PopupMenu
+        private set
 
     init {
 
@@ -37,11 +42,14 @@ class AppBar
         leftImageView.apply {
             attributes.getDrawable(R.styleable.AppBar_leftImage).apply {
                 if (this == null) setImageResource(R.drawable.menu_icon)
-                else setImageDrawable(attributes.getDrawable(R.styleable.AppBar_leftImage))
+                else setImageDrawable(this)
             }
             attributes.getBoolean(R.styleable.AppBar_leftClickOpensDrawer, true).apply {
                 if (this == true) setOnClickListener {
-                    mainActivity.drawerLayout.openDrawer(GravityCompat.START)
+                    mainActivity.drawerLayout.apply {
+                        hideSoftKeyboard()
+                        openDrawer(GravityCompat.START)
+                    }
                 }
             }
         }
@@ -54,13 +62,15 @@ class AppBar
         }
 
         rightImageView.apply {
-            attributes.getDrawable(R.styleable.AppBar_leftImage).apply {
+            attributes.getDrawable(R.styleable.AppBar_rightImage).apply {
                 if (this == null) setImageResource(R.drawable.overflow_icon)
-                else setImageDrawable(attributes.getDrawable(R.styleable.AppBar_rightImage))
+                else setImageDrawable(this)
             }
-            attributes.getResourceId(R.styleable.AppBar_rightClickOpensMenu, -1).apply {
-                if (this != -1) setOnClickListener {
-                    // TODO: 12-Feb-19 Inflate menu
+            attributes.getResourceId(R.styleable.AppBar_rightClickOpensMenu, Int.MIN_VALUE).apply {
+                if (this != Int.MIN_VALUE) {
+                    popupMenu = PopupMenu(context, rightImageView)
+                    popupMenu.inflate(this)
+                    setOnClickListener { popupMenu.show() }
                 }
             }
         }
