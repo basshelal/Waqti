@@ -13,9 +13,10 @@ import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.android.fragments.other.AboutFragment
+import uk.whitecrescent.waqti.android.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.hideSoftKeyboard
-import uk.whitecrescent.waqti.shortSnackBar
 
 class MainActivity : AppCompatActivity() {
 
@@ -35,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
         @GoToFragment
         supportFragmentManager.beginTransaction().apply {
-            add(R.id.fragmentContainer, ViewBoardListFragment.newInstance(), BOARD_LIST_FRAGMENT)
+            add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }.commit()
 
@@ -54,12 +55,39 @@ class MainActivity : AppCompatActivity() {
         }
 
         navigationView.setNavigationItemSelectedListener {
-            it.isChecked = true
+            when (it.itemId) {
+                R.id.allBoards_navDrawerItem -> {
+                    popAllFragmentsInBackStack()
+                }
+                R.id.about_navDrawerItem -> {
+                    @GoToFragment
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
+                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        addToBackStack("")
+                    }.commit()
+                }
+                R.id.settings_navDrawerItem -> {
+                    @GoToFragment
+                    supportFragmentManager.beginTransaction().apply {
+                        replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
+                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        addToBackStack("")
+                    }.commit()
+                }
+            }
             drawerLayout.closeDrawers()
-            navigationView.shortSnackBar("Clicked something")
             true
         }
 
+    }
+
+    fun popAllFragmentsInBackStack() {
+        supportFragmentManager.apply {
+            while (backStackEntryCount > 0) {
+                popBackStackImmediate()
+            }
+        }
     }
 
     inline val waqtiSharedPreferences: SharedPreferences

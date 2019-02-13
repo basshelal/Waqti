@@ -110,7 +110,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")
-                replace(R.id.fragmentContainer, ViewTaskFragment.newInstance(), VIEW_TASK_FRAGMENT)
+                replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
             }.commit()
         }
 

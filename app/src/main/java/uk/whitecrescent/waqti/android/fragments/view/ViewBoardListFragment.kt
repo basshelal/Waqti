@@ -27,10 +27,6 @@ import uk.whitecrescent.waqti.model.persistence.Caches
 
 class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
-    companion object {
-        fun newInstance() = ViewBoardListFragment()
-    }
-
     lateinit var viewMode: ViewMode
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -113,7 +109,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
                 it.clearFocusAndHideSoftKeyboard()
 
-                replace(R.id.fragmentContainer, CreateBoardFragment.newInstance(), CREATE_BOARD_FRAGMENT)
+                replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")
             }.commit()

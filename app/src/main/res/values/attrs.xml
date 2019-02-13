@@ -7,6 +7,10 @@
         <attr name="hint" format="string" />
         <attr name="leftClickOpensDrawer" format="boolean" />
         <attr name="rightClickOpensMenu" format="reference" />
+        <attr name="hasRightImage" format="boolean" />
+        <attr name="editable" format="boolean" />
+        <attr name="text" format="string" />
+        <attr name="isMultiLine" format="boolean" />
     </declare-styleable>
 
 </resources>

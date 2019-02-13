@@ -17,10 +17,6 @@ import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 
 class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
-    companion object {
-        fun newInstance() = CreateBoardFragment()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_create_board, container, false)

@@ -30,10 +30,6 @@ import uk.whitecrescent.waqti.rfcFormatted
 @Suppress("NOTHING_TO_INLINE")
 class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
-    companion object {
-        fun newInstance() = CreateTaskFragment()
-    }
-
     private lateinit var viewModel: CreateTaskFragmentViewModel
     private var boardID: ID = 0L
     private var listID: ID = 0L

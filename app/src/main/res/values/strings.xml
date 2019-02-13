@@ -24,6 +24,10 @@
     <string name="selectDeadlineProperty">Select Deadline Property</string>
     <string name="selectDescriptionProperty">Select Description Property</string>
 
+    <string name="settings">Settings</string>
+    <string name="about">About</string>
+    <string name="help">Help</string>
+
     <!--Modifications-->
     <string name="createTask">Create Task</string>
     <string name="addTask">Add Task</string>

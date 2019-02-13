@@ -2,17 +2,12 @@
 
 
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/boardCard_cardView"
     style="@style/CardView.Light"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="8dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginRight="8dp"
-    android:layout_marginBottom="8dp"
-    android:text="@string/boardNameHint"
+    android:layout_margin="8dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="14dp">
 
@@ -30,7 +25,8 @@
             android:layout_marginRight="8dp"
             android:text="@string/boardNameHint"
             android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3" />
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
+            android:textColor="@color/black" />
 
         <ImageView
             android:id="@+id/boardImage_imageView"

@@ -28,10 +28,6 @@ import uk.whitecrescent.waqti.shortSnackBar
 
 class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
-    companion object {
-        fun newInstance() = ViewTaskFragment()
-    }
-
     private var taskID: ID = 0L
     private var listID: ID = 0L
 

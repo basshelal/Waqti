@@ -27,10 +27,6 @@ import uk.whitecrescent.waqti.model.task.ID
 
 class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
-    companion object {
-        fun newInstance() = ViewListFragment()
-    }
-
     private var listID: ID = 0L
     private var boardID: ID = 0L
 
@@ -106,7 +102,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                 it.clearFocusAndHideSoftKeyboard()
 
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                replace(R.id.fragmentContainer, CreateTaskFragment.newInstance(), CREATE_TASK_FRAGMENT)
+                replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
                 addToBackStack("")
             }.commit()
         }

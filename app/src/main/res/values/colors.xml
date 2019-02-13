@@ -6,9 +6,8 @@
     <color name="secondaryColor">#1565c0</color>
     <color name="secondaryLightColor">#5e92f3</color>
     <color name="secondaryDarkColor">#003c8f</color>
-    <color name="primaryTextColor">#ffffff</color>
-    <color name="secondaryTextColor">#ffffff</color>
     <color name="taskCardBackgroundColor">#E0E0E0</color>
+    <color name="navDrawerBackgroundColor">#bdbdbd</color>
     <color name="developmentViewColor">#FF0000</color>
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>

@@ -170,7 +170,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
                     setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     addToBackStack("")
-                    replace(R.id.fragmentContainer, ViewListFragment.newInstance(), VIEW_LIST_FRAGMENT)
+                    replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
                 }.commit()
             }
         }
@@ -186,7 +186,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                     it.clearFocusAndHideSoftKeyboard()
 
                     setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    replace(R.id.fragmentContainer, CreateTaskFragment.newInstance(), CREATE_TASK_FRAGMENT)
+                    replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
                     addToBackStack("")
                 }.commit()
             }

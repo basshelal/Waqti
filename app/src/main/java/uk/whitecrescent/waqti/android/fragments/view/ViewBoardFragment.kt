@@ -121,7 +121,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
                 it.clearFocusAndHideSoftKeyboard()
 
-                replace(R.id.fragmentContainer, CreateListFragment.newInstance(), CREATE_LIST_FRAGMENT)
+                replace(R.id.fragmentContainer, CreateListFragment(), CREATE_LIST_FRAGMENT)
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")
             }.commit()

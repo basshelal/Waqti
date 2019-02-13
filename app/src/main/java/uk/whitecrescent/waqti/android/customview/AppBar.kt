@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.android.customview
 
 import android.content.Context
+import android.text.SpannableStringBuilder
 import android.util.AttributeSet
 import android.view.View
 import android.widget.PopupMenu
@@ -55,24 +56,40 @@ class AppBar
         }
 
         editTextView.apply {
+            attributes.getString(R.styleable.AppBar_text).apply {
+                if (this == null) text = SpannableStringBuilder("")
+                else text = SpannableStringBuilder(this)
+            }
             attributes.getString(R.styleable.AppBar_hint).apply {
                 if (this == null) hint = ""
                 else hint = this
             }
+            if (!attributes.getBoolean(R.styleable.AppBar_editable, true)) {
+                isEditable = false
+            }
+            if (attributes.getBoolean(R.styleable.AppBar_isMultiLine, false)) {
+                isMultiLine = true
+            }
         }
 
         rightImageView.apply {
-            attributes.getDrawable(R.styleable.AppBar_rightImage).apply {
-                if (this == null) setImageResource(R.drawable.overflow_icon)
-                else setImageDrawable(this)
-            }
-            attributes.getResourceId(R.styleable.AppBar_rightClickOpensMenu, Int.MIN_VALUE).apply {
-                if (this != Int.MIN_VALUE) {
-                    popupMenu = PopupMenu(context, rightImageView)
-                    popupMenu.inflate(this)
-                    setOnClickListener { popupMenu.show() }
+            if (attributes.getBoolean(R.styleable.AppBar_hasRightImage, true)) {
+                attributes.getDrawable(R.styleable.AppBar_rightImage).apply {
+                    if (this == null) setImageResource(R.drawable.overflow_icon)
+                    else setImageDrawable(this)
                 }
+                attributes.getResourceId(R.styleable.AppBar_rightClickOpensMenu, Int.MIN_VALUE).apply {
+                    if (this != Int.MIN_VALUE) {
+                        popupMenu = PopupMenu(context, rightImageView)
+                        popupMenu.inflate(this)
+                        setOnClickListener { popupMenu.show() }
+                    }
+                }
+            } else {
+                setImageDrawable(null)
+                background = null
             }
+
         }
 
         attributes.recycle()

@@ -2,9 +2,13 @@ package uk.whitecrescent.waqti.android.customview
 
 import android.content.Context
 import android.os.Build
+import android.text.InputType
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
+import org.jetbrains.anko.isSelectable
+import uk.whitecrescent.waqti.ForLater
+import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 
 /**
@@ -17,6 +21,29 @@ class EditTextView
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : AppCompatEditText(context, attributeSet, defStyle) {
 
+    var isEditable: Boolean = true
+        set(value) {
+            field = value
+            isLongClickable = value
+            isSelectable = value
+            isCursorVisible = value
+            showSoftInputOnFocus = value
+            isFocusableInTouchMode = value
+            isFocusable = value
+            isClickable = value
+        }
+    var isMultiLine: Boolean = false
+        set(value) {
+            field = value
+            if (value) {
+                // TODO: 13-Feb-19 This is so hard to make perfect ughhh
+                // we want a Multi-Line but with an IME done button, not a new line button
+                @ForLater
+                @Inconvenience
+                inputType = inputType or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+            }
+        }
+
     init {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline4)
@@ -27,8 +54,8 @@ class EditTextView
             @Suppress("DEPRECATION")
             setTextColor(resources.getColor(R.color.black))
         }
-        showSoftInputOnFocus = true
-        isFocusableInTouchMode = true
+        isEditable = true
+        isMultiLine = false
         textAlignment = View.TEXT_ALIGNMENT_CENTER
     }
 }

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group android:checkableBehavior="single">
+    <group>
         <item
-            android:id="@+id/nav_camera"
-            android:icon="@drawable/ic_clear"
-            android:title="Clear" />
+            android:id="@+id/allBoards_navDrawerItem"
+            android:icon="@android:drawable/ic_dialog_dialer"
+            android:title="@string/allBoards" />
         <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/add_icon"
-            android:title="Add" />
+            android:id="@+id/settings_navDrawerItem"
+            android:icon="@android:drawable/ic_menu_preferences"
+            android:title="@string/settings" />
         <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/done_icon"
-            android:title="Tick" />
+            android:id="@+id/about_navDrawerItem"
+            android:icon="@android:drawable/ic_menu_info_details"
+            android:title="@string/about" />
     </group>
 </menu>

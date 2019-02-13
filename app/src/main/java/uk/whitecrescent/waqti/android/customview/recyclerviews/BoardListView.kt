@@ -123,6 +123,8 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
                     setTextAppearance(this.context, R.style.TextAppearance_MaterialComponents_Headline3)
                 }
             }
+            @Suppress("DEPRECATION")
+            setTextColor(resources.getColor(R.color.black))
         }
 
         holder.itemView.boardCard_cardView.setOnClickListener {
