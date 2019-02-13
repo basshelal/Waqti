@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.board_card.view.*
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.android.BOARD_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewMode

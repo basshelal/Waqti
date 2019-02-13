@@ -12,10 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentTransaction
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
+import uk.whitecrescent.waqti.FABOnScrollListener
 import uk.whitecrescent.waqti.GoToFragment
+import uk.whitecrescent.waqti.Orientation
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
@@ -46,7 +47,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        boardID = viewModel.boardID
+        boardID = mainActivityViewModel.boardID
 
         setUpViews(Caches.boards[boardID])
     }
@@ -100,25 +101,15 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
             if (boardAdapter.itemCount > 0) {
                 postDelayed(
                         {
-                            viewModel.boardPosition.apply {
+                            mainActivityViewModel.boardPosition.apply {
                                 if (first) smoothScrollToPosition(second)
                             }
                         },
                         100L
                 )
             }
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (dx > 0 && this@ViewBoardFragment.addList_floatingButton.visibility
-                            == View.VISIBLE) {
-                        this@ViewBoardFragment.addList_floatingButton.hide()
-                    } else if (dx < 0 && this@ViewBoardFragment.addList_floatingButton.visibility
-                            != View.VISIBLE) {
-                        this@ViewBoardFragment.addList_floatingButton.show()
-                    }
-                }
-            })
+            addOnScrollListener(FABOnScrollListener(
+                    this@ViewBoardFragment.addList_floatingButton, Orientation.HORIZONTAL))
         }
 
         addList_floatingButton.setOnClickListener {

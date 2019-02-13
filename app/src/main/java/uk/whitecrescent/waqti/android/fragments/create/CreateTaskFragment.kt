@@ -5,15 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.lifecycle.ViewModel
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.Time
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialDateTimePickerDialog
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialEditTextDialog
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiCreateFragment
+import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.hideSoftKeyboard
+import uk.whitecrescent.waqti.isNotDefault
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
@@ -29,6 +34,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
         fun newInstance() = CreateTaskFragment()
     }
 
+    private lateinit var viewModel: CreateTaskFragmentViewModel
     private var boardID: ID = 0L
     private var listID: ID = 0L
 
@@ -40,8 +46,10 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        boardID = viewModel.boardID
-        listID = viewModel.listID
+        viewModel = getViewModel()
+
+        boardID = mainActivityViewModel.boardID
+        listID = mainActivityViewModel.listID
 
         setUpViews()
     }
@@ -54,13 +62,13 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
             requestFocusAndShowSoftKeyboard()
             addAfterTextChangedListener {
                 if (it != null) {
-                    addTask_button.isEnabled = !(it.isEmpty() || it.isBlank())
+                    addTask_button.isVisible = !(it.isEmpty() || it.isBlank())
                 }
             }
         }
 
         addTask_button.apply {
-            isEnabled = false
+            isVisible = false
             setOnClickListener {
                 Caches.boards[boardID][listID].add(createElement()).update()
                 finish()
@@ -81,9 +89,9 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
         taskTime_cardView.apply {
             setOnClickListener {
                 MaterialDateTimePickerDialog().apply {
-                    initialTime = this@CreateTaskFragment.viewModel.createdTaskTime
+                    initialTime = viewModel.taskTime
                     onConfirm = {
-                        viewModel.createdTaskTime = it
+                        viewModel.taskTime = it
                         this@CreateTaskFragment.selectTime_textView.text = getString(R.string.timeColon) + it.rfcFormatted
                         dismiss()
                     }
@@ -93,7 +101,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
         taskTimeClear_imageButton.apply {
             setOnClickListener {
-                viewModel.createdTaskTime = DEFAULT_TIME
+                viewModel.taskTime = DEFAULT_TIME
                 selectTime_textView.text = getString(R.string.selectTimeProperty)
             }
         }
@@ -104,9 +112,9 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
         taskDeadline_cardView.apply {
             setOnClickListener {
                 MaterialDateTimePickerDialog().apply {
-                    initialTime = this@CreateTaskFragment.viewModel.createdTaskDeadline
+                    initialTime = viewModel.taskDeadline
                     onConfirm = {
-                        viewModel.createdTaskDeadline = it
+                        viewModel.taskDeadline = it
                         this@CreateTaskFragment.selectDeadline_textView.text = getString(R.string.deadlineColon) + it.rfcFormatted
                         dismiss()
                     }
@@ -116,7 +124,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
         taskDeadlineClear_imageButton.apply {
             setOnClickListener {
-                viewModel.createdTaskDeadline = DEFAULT_TIME
+                viewModel.taskDeadline = DEFAULT_TIME
                 selectDeadline_textView.text = getString(R.string.selectDeadlineProperty)
             }
         }
@@ -128,9 +136,9 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                 MaterialEditTextDialog().apply {
                     title = this@CreateTaskFragment.getString(R.string.enterDescription)
                     hint = this@CreateTaskFragment.getString(R.string.enterDescription)
-                    initialText = this@CreateTaskFragment.viewModel.createdTaskDescription
+                    initialText = viewModel.taskDescription
                     onConfirm = {
-                        viewModel.createdTaskDescription = it
+                        viewModel.taskDescription = it
                         this@CreateTaskFragment.selectDescription_textView.text = it
                         dismiss()
                     }
@@ -140,7 +148,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
         taskDescriptionClear_imageButton.apply {
             setOnClickListener {
-                viewModel.createdTaskDescription = DEFAULT_DESCRIPTION
+                viewModel.taskDescription = DEFAULT_DESCRIPTION
                 selectDescription_textView.text = getString(R.string.selectDescriptionProperty)
             }
         }
@@ -155,22 +163,26 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     }
 
     private inline fun Task.setTime() {
-        if (viewModel.createdTaskTime != DEFAULT_TIME) {
-            if (taskTimeConstraint_checkBox.isChecked) setTimeConstraintValue(viewModel.createdTaskTime)
-            else setTimePropertyValue(viewModel.createdTaskTime)
+        viewModel.taskTime.also {
+            if (it.isNotDefault) {
+                if (taskTimeConstraint_checkBox.isChecked) setTimeConstraintValue(it)
+                else setTimePropertyValue(it)
+            }
         }
     }
 
     private inline fun Task.setDeadline() {
-        if (viewModel.createdTaskDeadline != DEFAULT_TIME) {
-            if (taskDeadlineConstraint_checkBox.isChecked) setDeadlineConstraintValue(viewModel.createdTaskDeadline)
-            else setDeadlinePropertyValue(viewModel.createdTaskDeadline)
+        viewModel.taskDeadline.also {
+            if (it.isNotDefault) {
+                if (taskDeadlineConstraint_checkBox.isChecked) setDeadlineConstraintValue(it)
+                else setDeadlinePropertyValue(it)
+            }
         }
     }
 
     private inline fun Task.setDescription() {
-        if (viewModel.createdTaskDescription != DEFAULT_DESCRIPTION) {
-            setDescriptionValue(viewModel.createdTaskDescription)
+        viewModel.taskDescription.also {
+            if (it.isNotDefault) setDescriptionValue(it)
         }
     }
 
@@ -179,5 +191,13 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }
+
+}
+
+class CreateTaskFragmentViewModel : ViewModel() {
+
+    var taskTime: Time = DEFAULT_TIME
+    var taskDeadline: Time = DEFAULT_TIME
+    var taskDescription: String = DEFAULT_DESCRIPTION
 
 }

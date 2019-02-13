@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?><!--This entire thing needs to be created programmatically!!-->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/taskListWidth"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/taskListHeader_textView"
@@ -12,24 +11,30 @@
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="Header"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListView
         android:id="@+id/taskList_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/taskListHeader_textView"
         tools:listitem="@layout/task_card" />
 
-    <Button
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/taskListFooter_textView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:elevation="14dp"
-        android:text="Footer"
-        app:cornerRadius="15dp"
-        app:rippleColor="@color/primaryLightColor" />
+        android:layout_marginBottom="8dp"
+        android:src="@drawable/add_icon"
+        app:backgroundTint="@color/primaryColor"
+        app:elevation="14dp"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.fragment_create_board.*
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
@@ -39,11 +40,11 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
         boardName_editText.addAfterTextChangedListener {
             if (it != null) {
-                addBoard_button.isEnabled = !(it.isEmpty() || it.isBlank())
+                addBoard_button.isVisible = !(it.isEmpty() || it.isBlank())
             }
         }
 
-        addBoard_button.isEnabled = false
+        addBoard_button.isVisible = false
         addBoard_button.setOnClickListener {
             Caches.boardLists.first().add(createElement()).update()
             finish()
@@ -56,7 +57,7 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
     override fun finish() {
         boardName_editText.hideSoftKeyboard()
-        viewModel.boardListPosition = true to viewModel.boardListPosition.second + 1
+        mainActivityViewModel.boardListPosition = true to mainActivityViewModel.boardListPosition.second + 1
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }

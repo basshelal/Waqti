@@ -8,12 +8,10 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import uk.whitecrescent.waqti.android.MainActivity
-import uk.whitecrescent.waqti.android.MainActivityViewModel
 
 abstract class WaqtiMaterialDialog : BottomSheetDialogFragment() {
 
     lateinit var mainActivity: MainActivity
-    lateinit var viewModel: MainActivityViewModel
 
     lateinit var dialog: BottomSheetDialog
     abstract val contentView: Int
@@ -35,6 +33,5 @@ abstract class WaqtiMaterialDialog : BottomSheetDialogFragment() {
         super.onActivityCreated(savedInstanceState)
 
         mainActivity = activity as MainActivity
-        viewModel = mainActivity.viewModel
     }
 }

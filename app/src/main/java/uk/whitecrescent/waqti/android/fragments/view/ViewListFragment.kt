@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentTransaction
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
+import uk.whitecrescent.waqti.FABOnScrollListener
 import uk.whitecrescent.waqti.GoToFragment
+import uk.whitecrescent.waqti.Orientation
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
@@ -41,8 +42,8 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        listID = viewModel.listID
-        boardID = viewModel.boardID
+        listID = mainActivityViewModel.listID
+        boardID = mainActivityViewModel.boardID
 
         setUpViews(Caches.taskLists[listID])
     }
@@ -91,17 +92,8 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
         taskList_recyclerView.apply {
             adapter = TaskListAdapter(listID)
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (dy > 0 && this@ViewListFragment.addTask_floatingButton.visibility
-                            == View.VISIBLE) {
-                        this@ViewListFragment.addTask_floatingButton.hide()
-                    } else if (dy < 0 && this@ViewListFragment.addTask_floatingButton.visibility != View.VISIBLE) {
-                        this@ViewListFragment.addTask_floatingButton.show()
-                    }
-                }
-            })
+            addOnScrollListener(FABOnScrollListener(
+                    this@ViewListFragment.addTask_floatingButton, Orientation.VERTICAL))
         }
 
         addTask_floatingButton.setOnClickListener {

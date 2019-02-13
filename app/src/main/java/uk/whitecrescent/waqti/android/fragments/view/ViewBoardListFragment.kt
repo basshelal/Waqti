@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentTransaction
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
+import uk.whitecrescent.waqti.FABOnScrollListener
 import uk.whitecrescent.waqti.GoToFragment
+import uk.whitecrescent.waqti.Orientation
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.BOARD_LIST_NAME_PREFERENCES_KEY
 import uk.whitecrescent.waqti.android.BOARD_LIST_VIEW_MODE_KEY
@@ -42,7 +43,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
         if (Caches.boardLists.isEmpty()) Caches.boardLists.put(BoardList("Default"))
 
-        viewModel.boardPosition = false to 0
+        mainActivityViewModel.boardPosition = false to 0
         viewMode = ViewMode.valueOf(mainActivity.waqtiSharedPreferences
                 .getString(BOARD_LIST_VIEW_MODE_KEY, ViewMode.LIST_VERTICAL.name)!!)
 
@@ -122,25 +123,15 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
             if (this.boardListAdapter.itemCount > 0) {
                 postDelayed(
                         {
-                            viewModel.boardListPosition.apply {
+                            mainActivityViewModel.boardListPosition.apply {
                                 if (first) smoothScrollToPosition(second)
                             }
                         },
                         100L
                 )
             }
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (dy > 0 && this@ViewBoardListFragment.addBoard_FloatingButton.visibility
-                            == View.VISIBLE) {
-                        this@ViewBoardListFragment.addBoard_FloatingButton.hide()
-                    } else if (dy < 0 && this@ViewBoardListFragment.addBoard_FloatingButton
-                                    .visibility != View.VISIBLE) {
-                        this@ViewBoardListFragment.addBoard_FloatingButton.show()
-                    }
-                }
-            })
+            addOnScrollListener(FABOnScrollListener(
+                    this@ViewBoardListFragment.addBoard_FloatingButton, Orientation.VERTICAL))
         }
     }
 

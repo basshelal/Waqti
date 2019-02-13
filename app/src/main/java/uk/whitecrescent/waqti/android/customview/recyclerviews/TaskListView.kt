@@ -29,8 +29,7 @@ import kotlin.math.roundToInt
 class TaskListView
 @JvmOverloads constructor(context: Context,
                           attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) :
-        RecyclerView(context, attributeSet, defStyle) {
+                          defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
 
     val listAdapter: TaskListAdapter
         get() = adapter as TaskListAdapter
@@ -38,7 +37,7 @@ class TaskListView
         get() = parent.parent as BoardView
 
     init {
-        layoutManager = LinearLayoutManager(getContext(), VERTICAL, false)
+        layoutManager = LinearLayoutManager(context, VERTICAL, false)
     }
 
 }

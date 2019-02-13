@@ -11,5 +11,6 @@
     <color name="taskCardBackgroundColor">#E0E0E0</color>
     <color name="developmentViewColor">#FF0000</color>
     <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
     <color name="errorColor">#B00020</color>
 </resources>

@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE", "UNUSED")
+@file:Suppress("NOTHING_TO_INLINE")
 
 package uk.whitecrescent.waqti
 
@@ -13,10 +13,13 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import io.objectbox.Box
 import uk.whitecrescent.waqti.android.MainActivity
@@ -28,6 +31,9 @@ import uk.whitecrescent.waqti.model.collections.Tuple
 import uk.whitecrescent.waqti.model.persistence.Caches
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.task.DEBUG
+import uk.whitecrescent.waqti.model.task.DEFAULT_DESCRIPTION
+import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
+import uk.whitecrescent.waqti.model.task.Description
 import uk.whitecrescent.waqti.model.task.GRACE_PERIOD
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.model.task.Label
@@ -146,7 +152,7 @@ inline operator fun <reified T : Cacheable> Caches.get(id: ID): T {
         Template::class -> Caches.templates[id] as T
         Label::class -> Caches.labels[id] as T
         Priority::class -> Caches.priorities[id] as T
-        uk.whitecrescent.waqti.model.task.TimeUnit::class -> Caches.timeUnits[id] as T
+        TimeUnit::class -> Caches.timeUnits[id] as T
 
         TaskList::class -> Caches.taskLists[id] as T
         Board::class -> Caches.boards[id] as T
@@ -161,7 +167,7 @@ inline fun <reified T : Cacheable> Caches.put(element: T) {
         is Template -> Caches.templates.put(element)
         is Label -> Caches.labels.put(element)
         is Priority -> Caches.priorities.put(element)
-        is uk.whitecrescent.waqti.model.task.TimeUnit -> Caches.timeUnits.put(element)
+        is TimeUnit -> Caches.timeUnits.put(element)
 
         is TaskList -> Caches.taskLists.put(element)
         is Board -> Caches.boards.put(element)
@@ -171,6 +177,21 @@ inline fun <reified T : Cacheable> Caches.put(element: T) {
 }
 
 inline fun <reified T : Cacheable> Box<T>.archive(element: T) {
+    when (element) {
+        is Task -> Caches.tasks.put(element)
+        is Template -> Caches.templates.put(element)
+        is Label -> Caches.labels.put(element)
+        is Priority -> Caches.priorities.put(element)
+        is TimeUnit -> Caches.timeUnits.put(element)
+
+        is TaskList -> Caches.taskLists.put(element)
+        is Board -> Caches.boards.put(element)
+        is BoardList -> Caches.boardLists.put(element)
+        else -> throw IllegalStateException("Couldn't find Cache of type ${T::class} in Caches")
+    }
+}
+
+inline fun <reified T : Cacheable> Box<T>.restore(element: T) {
     when (element) {
         is Task -> Caches.tasks.put(element)
         is Template -> Caches.templates.put(element)
@@ -239,5 +260,67 @@ inline val <T> Property<T>.isUnMet: Boolean
 inline val <T> Property<T>.isHidden: Boolean
     get() = !this.isVisible
 
+inline val Time.isDefault: Boolean
+    get() = this == DEFAULT_TIME
+
+inline val Time.isNotDefault: Boolean
+    get() = this != DEFAULT_TIME
+
+inline val Description.isDefault: Boolean
+    get() = this == DEFAULT_DESCRIPTION
+
+inline val Description.isNotDefault: Boolean
+    get() = this != DEFAULT_DESCRIPTION
+
 //endregion Model Utils
 
+open class SimpleItemTouchHelperCallback : ItemTouchHelper.Callback() {
+
+    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
+        return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0)
+    }
+
+    override fun isLongPressDragEnabled() = true
+
+    override fun isItemViewSwipeEnabled() = false
+
+    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
+                        target: RecyclerView.ViewHolder): Boolean {
+        return true
+    }
+
+    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+        /*This will never be called as we do not support swiping*/
+    }
+
+    override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int,
+                                              viewSizeOutOfBounds: Int, totalSize: Int,
+                                              msSinceStartScroll: Long): Int {
+        return super.interpolateOutOfBoundsScroll(
+                recyclerView, viewSize, viewSizeOutOfBounds, totalSize, 1500)
+    }
+
+}
+
+enum class Orientation {
+    HORIZONTAL, VERTICAL
+}
+
+class FABOnScrollListener(
+        val fab: FloatingActionButton,
+        val orientation: Orientation) : RecyclerView.OnScrollListener() {
+    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+        super.onScrolled(recyclerView, dx, dy)
+        when (orientation) {
+            Orientation.HORIZONTAL -> {
+                if (dx > 0 && fab.isVisible) fab.hide()
+                else if (dx < 0 && !fab.isVisible) fab.show()
+            }
+            Orientation.VERTICAL -> {
+                if (dy > 0 && fab.isVisible) fab.hide()
+                else if (dy < 0 && !fab.isVisible) fab.show()
+            }
+        }
+
+    }
+}

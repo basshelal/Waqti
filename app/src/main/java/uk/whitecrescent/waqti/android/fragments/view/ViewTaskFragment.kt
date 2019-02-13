@@ -43,8 +43,8 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        taskID = viewModel.taskID
-        listID = viewModel.listID
+        taskID = mainActivityViewModel.taskID
+        listID = mainActivityViewModel.listID
 
         setUpViews(Caches.tasks[taskID])
 

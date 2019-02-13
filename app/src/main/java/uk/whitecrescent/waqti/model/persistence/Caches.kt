@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.model.persistence
 
 import uk.whitecrescent.waqti.NeedsOptimization
@@ -84,17 +86,17 @@ object Caches {
         }
     }
 
-    fun deleteTask(taskID: ID, listID: ID) {
+    inline fun deleteTask(taskID: ID, listID: ID) {
         Caches.taskLists[listID].remove(taskID).update()
         Caches.tasks.remove(taskID)
     }
 
-    fun deleteTaskList(taskListID: ID, boardID: ID) {
+    inline fun deleteTaskList(taskListID: ID, boardID: ID) {
         Caches.taskLists[taskListID].clear().update()
         Caches.boards[boardID].remove(taskListID).update()
     }
 
-    fun deleteBoard(boardID: ID) {
+    inline fun deleteBoard(boardID: ID) {
         Caches.boards[boardID].clear().update()
         Caches.boardLists.first().remove(boardID).update()
     }

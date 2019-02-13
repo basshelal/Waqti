@@ -39,18 +39,19 @@ class MainActivity : AppCompatActivity() {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }.commit()
 
-        addOnBackPressedCallback {
-            if (drawerLayout.isDrawerOpen(navigationView)) {
-                drawerLayout.closeDrawers()
-                true
-            } else false
-        }
-
-        drawerLayout.addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
-            override fun onDrawerOpened(drawerView: View) {
-                drawerLayout.hideSoftKeyboard()
+        drawerLayout.apply {
+            addOnBackPressedCallback {
+                if (isDrawerOpen(navigationView)) {
+                    closeDrawers()
+                    true
+                } else false
             }
-        })
+            addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
+                override fun onDrawerOpened(drawerView: View) {
+                    hideSoftKeyboard()
+                }
+            })
+        }
 
         navigationView.setNavigationItemSelectedListener {
             it.isChecked = true
@@ -63,4 +64,16 @@ class MainActivity : AppCompatActivity() {
 
     inline val waqtiSharedPreferences: SharedPreferences
         get() = getSharedPreferences(WAQTI_SHARED_PREFERENCES, Context.MODE_PRIVATE)
+
+    /*override fun onStop() {
+        supportFragmentManager.beginTransaction().apply {
+            supportFragmentManager.apply {
+                while (backStackEntryCount > 0) {
+                    popBackStackImmediate()
+                }
+                fragments.onEach { remove(it) }
+            }
+        }.commitNowAllowingStateLoss()
+        super.onStop()
+    }*/
 }

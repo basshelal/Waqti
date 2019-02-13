@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.fragment_create_list.*
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
@@ -31,25 +32,22 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        boardID = viewModel.boardID
+        boardID = mainActivityViewModel.boardID
 
         setUpViews()
 
     }
 
     override fun setUpViews() {
-
-        mainActivity.supportActionBar?.title = "New List"
-
         listName_editText.requestFocusAndShowSoftKeyboard()
 
         listName_editText.addAfterTextChangedListener {
             if (it != null) {
-                addList_button.isEnabled = !(it.isEmpty() || it.isBlank())
+                addList_button.isVisible = !(it.isEmpty() || it.isBlank())
             }
         }
 
-        addList_button.isEnabled = false
+        addList_button.isVisible = false
         addList_button.setOnClickListener {
             Caches.boards[boardID].add(createElement()).update()
             finish()
@@ -62,7 +60,7 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 
     override fun finish() {
         listName_editText.hideSoftKeyboard()
-        viewModel.boardPosition = true to viewModel.boardPosition.second + 1
+        mainActivityViewModel.boardPosition = true to mainActivityViewModel.boardPosition.second + 1
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }

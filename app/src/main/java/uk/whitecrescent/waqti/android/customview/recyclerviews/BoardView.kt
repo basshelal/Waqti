@@ -5,19 +5,22 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.Bug
+import uk.whitecrescent.waqti.FABOnScrollListener
 import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.Inconvenience
+import uk.whitecrescent.waqti.Orientation
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
@@ -25,7 +28,6 @@ import uk.whitecrescent.waqti.android.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.persistence.Caches
-import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.model.task.ID
 
 class BoardView
@@ -156,39 +158,40 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
         matchOrder()
 
-        holder.header.text = board[position].name
-        holder.footer.text = boardView.mainActivity.getText(R.string.addTask)
+        holder.header.apply {
+            text = board[position].name
+            setOnClickListener {
+                @GoToFragment()
+                it.mainActivity.supportFragmentManager.beginTransaction().apply {
 
-        holder.header.setOnClickListener {
-            @GoToFragment()
-            it.mainActivity.supportFragmentManager.beginTransaction().apply {
+                    it.mainActivity.viewModel.listID = board[holder.adapterPosition].id
 
-                it.mainActivity.viewModel.listID = board[holder.adapterPosition].id
+                    it.clearFocusAndHideSoftKeyboard()
 
-                it.clearFocusAndHideSoftKeyboard()
-
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                addToBackStack("")
-                replace(R.id.fragmentContainer, ViewListFragment.newInstance(), VIEW_LIST_FRAGMENT)
-            }.commit()
+                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    addToBackStack("")
+                    replace(R.id.fragmentContainer, ViewListFragment.newInstance(), VIEW_LIST_FRAGMENT)
+                }.commit()
+            }
         }
+        holder.footer.apply {
+            setOnClickListener {
 
-        holder.footer.setOnClickListener {
+                @GoToFragment()
+                it.mainActivity.supportFragmentManager.beginTransaction().apply {
 
-            @GoToFragment()
-            it.mainActivity.supportFragmentManager.beginTransaction().apply {
+                    it.mainActivity.viewModel.boardID = this@BoardAdapter.boardID
+                    it.mainActivity.viewModel.listID = holder.list.listAdapter.taskListID
 
-                it.mainActivity.viewModel.boardID = this@BoardAdapter.boardID
-                it.mainActivity.viewModel.listID = holder.list.listAdapter.taskListID
-                it.mainActivity.viewModel.createdTaskTime = DEFAULT_TIME
+                    it.clearFocusAndHideSoftKeyboard()
 
-                it.clearFocusAndHideSoftKeyboard()
-
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                replace(R.id.fragmentContainer, CreateTaskFragment.newInstance(), CREATE_TASK_FRAGMENT)
-                addToBackStack("")
-            }.commit()
+                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    replace(R.id.fragmentContainer, CreateTaskFragment.newInstance(), CREATE_TASK_FRAGMENT)
+                    addToBackStack("")
+                }.commit()
+            }
         }
+        holder.list.addOnScrollListener(FABOnScrollListener(holder.footer, Orientation.VERTICAL))
 
         @Bug
         @Inconvenience
@@ -247,6 +250,6 @@ class BoardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         get() = itemView.taskListHeader_textView
     val list: TaskListView
         get() = itemView.taskList_recyclerView
-    val footer: Button
+    val footer: FloatingActionButton
         get() = itemView.taskListFooter_textView
 }
