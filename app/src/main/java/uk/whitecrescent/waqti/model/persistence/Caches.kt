@@ -2,7 +2,6 @@
 
 package uk.whitecrescent.waqti.model.persistence
 
-import uk.whitecrescent.waqti.NeedsOptimization
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.collections.BoardList
@@ -52,24 +51,20 @@ import uk.whitecrescent.waqti.model.task.TimeUnit
  * */
 object Caches {
 
-    val tasks: Cache<Task> = Cache(Database.tasks)
-    val templates: Cache<Template> = Cache(Database.templates)
-    val labels: Cache<Label> = Cache(Database.labels)
-    val priorities: Cache<Priority> = Cache(Database.priorities)
-    val timeUnits: Cache<TimeUnit> = Cache(Database.timeUnits)
+    val tasks: Cache<Task> = Cache(Database.tasks, TASKS_CACHE_SIZE)
+    val templates: Cache<Template> = Cache(Database.templates, TEMPLATES_CACHE_SIZE)
+    val labels: Cache<Label> = Cache(Database.labels, LABELS_CACHE_SIZE)
+    val priorities: Cache<Priority> = Cache(Database.priorities, PRIORITIES_CACHE_SIZE)
+    val timeUnits: Cache<TimeUnit> = Cache(Database.timeUnits, TIME_UNITS_CACHE_SIZE)
 
-    val taskLists: Cache<TaskList> = Cache(Database.taskLists)
-    val boards: Cache<Board> = Cache(Database.boards)
-    val boardLists: Cache<BoardList> = Cache(Database.boardLists)
+    val taskLists: Cache<TaskList> = Cache(Database.taskLists, TASK_LISTS_CACHE_SIZE)
+    val boards: Cache<Board> = Cache(Database.boards, BOARDS_CACHE_SIZE)
+    val boardLists: Cache<BoardList> = Cache(Database.boardLists, BOARD_LISTS_CACHE_SIZE)
 
     val allCaches = listOf(
             tasks, templates, labels, priorities, timeUnits, taskLists, boards, boardLists
     )
 
-    @NeedsOptimization
-    // TODO: 29-Dec-18 A little too slow initializing Caches and Building Database
-    // possible idea is to do it asynchronously but we have to be careful with that as many
-    // caches rely on one another
     fun initialize() {
         allCaches.forEach { it.initialize() }
     }
@@ -101,20 +96,20 @@ object Caches {
         Caches.boardLists.first().remove(boardID).update()
     }
 
-    fun seed() {
+    fun seed(boards: Int = 5, lists: Int = 5, tasks: Int = 10) {
         Caches.clearAllCaches().commit()
 
         Caches.boardLists.put(BoardList("Default"))
         require(Caches.boardLists.size == 1)
 
-        Caches.boardLists.first().addAll(Array(5) { Board("Board #$it") }.asList()).update()
+        Caches.boardLists.first().addAll(Array(boards) { Board("Board #$it") }.asList()).update()
 
         Caches.boards.forEach {
-            it.addAll(Array(5) { TaskList("TaskList #$it") }.asList()).update()
+            it.addAll(Array(lists) { TaskList("TaskList #$it") }.asList()).update()
         }
 
         Caches.taskLists.forEach {
-            it.addAll(Array(10) { Task("Task #$it") }.asList()).update()
+            it.addAll(Array(tasks) { Task("Task #$it") }.asList()).update()
         }
     }
 

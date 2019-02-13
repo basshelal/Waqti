@@ -83,6 +83,7 @@ object Database {
         allDBs = listOf(
                 tasks, templates, labels, priorities, timeUnits, taskLists, boards, boardLists
         )
+        Caches.initialize()
     }
 
     fun clearAllDBs(): Committable {

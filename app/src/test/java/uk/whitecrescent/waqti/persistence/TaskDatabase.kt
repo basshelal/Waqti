@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.forEach
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.isEmpty
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.size
@@ -80,7 +79,7 @@ class TaskDatabase : BasePersistenceTest() {
         Database.tasks.remove(task)
 
         assertNull(Database.tasks[task.id])
-        assertTrue(Database.tasks.isEmpty())
+        assertTrue(Database.tasks.isEmpty)
     }
 
     @DisplayName("Task Delete Many")
@@ -95,6 +94,6 @@ class TaskDatabase : BasePersistenceTest() {
         Database.tasks.remove(tasks)
 
         tasks.forEach { assertNull(Database.tasks[it.id]) }
-        assertTrue(Database.tasks.isEmpty())
+        assertTrue(Database.tasks.isEmpty)
     }
 }

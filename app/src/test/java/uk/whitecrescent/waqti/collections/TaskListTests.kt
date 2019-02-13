@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.isEmpty
 import uk.whitecrescent.waqti.model.persistence.Database
 import uk.whitecrescent.waqti.size
 import uk.whitecrescent.waqti.testTask
@@ -30,8 +29,8 @@ class TaskListTests : BaseCollectionsTest() {
         list.add(testTask)
         assertEquals(1, list.size)
 
-        assertFalse(Database.taskLists.isEmpty())
-        assertFalse(Database.tasks.isEmpty())
+        assertFalse(Database.taskLists.isEmpty)
+        assertFalse(Database.tasks.isEmpty)
         assertTrue(Database.taskLists[list.id].isEmpty())
 
         list.update()
@@ -46,8 +45,8 @@ class TaskListTests : BaseCollectionsTest() {
         list.addAll(getTasks(10))
         assertEquals(10, list.size)
 
-        assertFalse(Database.taskLists.isEmpty())
-        assertFalse(Database.tasks.isEmpty())
+        assertFalse(Database.taskLists.isEmpty)
+        assertFalse(Database.tasks.isEmpty)
 
         assertEquals(1, Database.taskLists.size)
         assertEquals(10, Database.tasks.size)

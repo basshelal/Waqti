@@ -3,6 +3,8 @@ package uk.whitecrescent.waqti.model.persistence
 import android.annotation.SuppressLint
 import io.objectbox.Box
 import io.reactivex.Observable
+import org.jetbrains.anko.doAsync
+import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.CACHE_CHECKING_PERIOD
 import uk.whitecrescent.waqti.CACHE_CHECKING_UNIT
 import uk.whitecrescent.waqti.ids
@@ -10,16 +12,18 @@ import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.task.ID
 import uk.whitecrescent.waqti.size
+import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
-// TODO: 28-Jul-18 Test and doc
-
-// TODO: 04-Dec-18 Make this thread safe!
+@Bug
+// TODO: 13-Feb-19 URGENT Having more Tasks than the Cache can handle causes freezing when loading the board!!!
+// If the DB has 1001 Tasks and Cache is only allowed 1000, then clicking on any Board will just
+// freeze!!!
 open class Cache<E : Cacheable>(
         private val db: Box<E>,
         var sizeLimit: Int = 1000) : Collection<E> {
 
-    private val map = LinkedHashMap<ID, E>(100, 0.75F, true)
+    private val map = LinkedHashMap<ID, E>(sizeLimit, 0.75F, true)
     private var isChecking = false
 
     val all: List<E>
@@ -32,45 +36,17 @@ open class Cache<E : Cacheable>(
     private val isInconsistent: Boolean
         get() = !map.all { it.key in db.ids }
 
-    @SuppressLint("CheckResult")
-    fun initialize() {
-
-        // TODO: 12-Dec-18 Cannot be async because of deadlock!
-        // some Caches require that other Caches be initialized first
-
-        println("Started initialization for Cache of ${db.entityInfo.dbName}")
-
-        db.all.take(sizeLimit).forEach {
-            it.initialize()
-            this.safeAdd(it)
+    fun initialize(): Future<Unit> {
+        return doAsync {
+            println("Started initialization for Cache of ${db.entityInfo.dbName}")
+            db.all.take(sizeLimit).forEach {
+                it.initialize()
+                safeAdd(it)
+            }
+            println("Completed initialization for Cache of ${db.entityInfo.dbName}")
+            println("Cache of ${db.entityInfo.dbName} is of size ${size}")
+            println("DB of ${db.entityInfo.dbName} is of size ${db.size}")
         }
-
-        println("Completed initialization for Cache of ${db.entityInfo.dbName}")
-        println("Cache of ${db.entityInfo.dbName} is of size ${this.size}")
-        println("DB of ${db.entityInfo.dbName} is of size ${db.size}")
-
-        /*Observable
-                .fromIterable(db.all)
-                .take(sizeLimit.toLong())
-                .observeOn(Schedulers.io())
-                .subscribe(
-                        {
-                            logE("$now")
-                            (it as? Task)?.backgroundObserver()
-                            this.safeAdd(it)
-                        },
-                        {
-
-                        },
-                        {
-                            println("Completed initialization for Cache of ${db.entityInfo.dbName}")
-                            println("Cache of ${db.entityInfo.dbName} is of size ${this.size}")
-                            println("DB of ${db.entityInfo.dbName} is of size ${db.size}")
-                        },
-                        {
-                            println("Started initialization for Cache of ${db.entityInfo.dbName}")
-                        }
-                )*/
     }
 
     //region Core Modification

@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.board_card.view.*
 import uk.whitecrescent.waqti.GoToFragment
@@ -32,14 +31,6 @@ class BoardListView
 
     val boardListAdapter: BoardListAdapter
         get() = this.adapter as BoardListAdapter
-    private val linearSnapHelper: LinearSnapHelper
-        get() = object : LinearSnapHelper() {
-            override fun findTargetSnapPosition(layoutManager: LayoutManager?, velocityX: Int, velocityY: Int): Int {
-                val currentPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
-                mainActivity.viewModel.boardListPosition = true to currentPos
-                return currentPos
-            }
-        }
 
     override fun setAdapter(_adapter: Adapter<*>?) {
         require(_adapter != null &&
