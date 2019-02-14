@@ -1,7 +1,6 @@
 package uk.whitecrescent.waqti.android.customview.recyclerviews
 
 import android.content.Context
-import android.os.Build
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -16,9 +15,10 @@ import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.android.BOARD_FRAGMENT
-import uk.whitecrescent.waqti.android.customview.toColor
 import uk.whitecrescent.waqti.android.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewMode
+import uk.whitecrescent.waqti.android.getColorCompat
+import uk.whitecrescent.waqti.android.setTextAppearanceCompat
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.persistence.Database
@@ -109,23 +109,15 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
     override fun onBindViewHolder(holder: BoardListViewHolder, position: Int) {
         holder.itemView.boardName_textView.apply {
             text = boardList[position].name
-            if (viewMode == ViewMode.GRID_VERTICAL) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline5)
-                } else {
-                    @Suppress("DEPRECATION")
-                    setTextAppearance(this.context, R.style.TextAppearance_MaterialComponents_Headline5)
+            when (viewMode) {
+                ViewMode.GRID_VERTICAL -> {
+                    setTextAppearanceCompat(R.style.TextAppearance_MaterialComponents_Headline5)
                 }
-            } else {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline3)
-                } else {
-                    @Suppress("DEPRECATION")
-                    setTextAppearance(this.context, R.style.TextAppearance_MaterialComponents_Headline3)
+                ViewMode.LIST_VERTICAL -> {
+                    setTextAppearanceCompat(R.style.TextAppearance_MaterialComponents_Headline3)
                 }
             }
-            @Suppress("DEPRECATION")
-            setTextColor(resources.getColor(R.color.black))
+            setTextColor(resources.getColorCompat(R.color.black))
         }
 
         holder.itemView.boardCard_cardView.apply {
@@ -147,7 +139,7 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
         }
 
         holder.itemView.boardImage_imageView.apply {
-            setImageDrawable(boardList[position].backgroundValue.toColor.toColorDrawable)
+            setImageDrawable(boardList[position].backgroundColor.toColorDrawable)
         }
     }
 

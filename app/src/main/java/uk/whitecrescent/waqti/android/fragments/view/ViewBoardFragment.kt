@@ -1,9 +1,7 @@
 package uk.whitecrescent.waqti.android.fragments.view
 
 import android.content.Context
-import android.os.Build
 import android.os.Bundle
-import android.os.VibrationEffect
 import android.os.Vibrator
 import android.text.SpannableStringBuilder
 import android.view.DragEvent
@@ -24,9 +22,9 @@ import uk.whitecrescent.waqti.android.customview.dialogs.MaterialColorPickerDial
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.android.customview.recyclerviews.DragEventLocalState
-import uk.whitecrescent.waqti.android.customview.toColor
 import uk.whitecrescent.waqti.android.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
+import uk.whitecrescent.waqti.android.vibrateCompat
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.collections.Board
@@ -95,17 +93,40 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                         R.id.changeBoardColor_menuItem -> {
                             MaterialColorPickerDialog().apply {
                                 title = this@ViewBoardFragment.getString(R.string.pickBoardColor)
-                                initialColor = Caches.boards[boardID].backgroundValue.toColor
+                                initialColor = Caches.boards[boardID].backgroundColor
                                 onClick = {
                                     this@ViewBoardFragment.boardView.background = it.toColorDrawable
                                 }
                                 onConfirm = {
-                                    Caches.boards[boardID].backgroundValue = it.value
+                                    Caches.boards[boardID].backgroundColor = it
                                     dismiss()
                                 }
                                 onCancel = View.OnClickListener {
-                                    Caches.boards[boardID].backgroundValue = initialColor.value
+                                    Caches.boards[boardID].backgroundColor = initialColor
                                     this@ViewBoardFragment.boardView.background = initialColor.toColorDrawable
+                                    dismiss()
+                                }
+                            }.show(mainActivity.supportFragmentManager, "MaterialColorPickerDialog")
+                            true
+                        }
+                        R.id.changeCardColor_menuItem -> {
+                            MaterialColorPickerDialog().apply {
+                                title = this@ViewBoardFragment.getString(R.string.pickCardColor)
+                                initialColor = Caches.boards[boardID].cardColor
+                                onClick = { color ->
+                                    this@ViewBoardFragment.boardView.allCards.forEach {
+                                        it.setCardBackgroundColor(color.toAndroidColor)
+                                    }
+                                }
+                                onConfirm = {
+                                    Caches.boards[boardID].cardColor = it
+                                    dismiss()
+                                }
+                                onCancel = View.OnClickListener {
+                                    Caches.boards[boardID].cardColor = initialColor
+                                    this@ViewBoardFragment.boardView.allCards.forEach {
+                                        it.setCardBackgroundColor(initialColor.toAndroidColor)
+                                    }
                                     dismiss()
                                 }
                             }.show(mainActivity.supportFragmentManager, "MaterialColorPickerDialog")
@@ -119,7 +140,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         boardView.apply {
             adapter = BoardAdapter(element.id)
-            background = element.backgroundValue.toColor.toColorDrawable
+            background = element.backgroundColor.toColorDrawable
             if (boardAdapter.itemCount > 0) {
                 postDelayed(
                         {
@@ -159,15 +180,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                             delete_floatingButton.alpha = 1F
                         }
                         DragEvent.ACTION_DRAG_ENTERED -> {
-                            val vibrator = mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                            if (Build.VERSION.SDK_INT >= 26) {
-                                vibrator.vibrate(VibrationEffect.createOneShot(
-                                        10,
-                                        VibrationEffect.DEFAULT_AMPLITUDE))
-                            } else {
-                                @Suppress("DEPRECATION")
-                                vibrator.vibrate(10)
-                            }
+                            (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrateCompat(50)
                         }
                         DragEvent.ACTION_DROP -> {
                             MaterialConfirmDialog().apply {

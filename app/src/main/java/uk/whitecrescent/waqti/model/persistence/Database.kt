@@ -10,6 +10,7 @@ import io.objectbox.kotlin.boxFor
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.MissingFeature
+import uk.whitecrescent.waqti.android.customview.WaqtiColor
 import uk.whitecrescent.waqti.forEach
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.MyObjectBox
@@ -97,8 +98,10 @@ object Database {
 
     fun applyMigration() {
         boards.forEach {
-            if (!it.backgroundValue.startsWith('#'))
-                it.backgroundValue = "#FFFFFF"
+            if (!it.backgroundColor.value.startsWith('#'))
+                it.backgroundColor = WaqtiColor.DEFAULT
+            if (!it.cardColor.value.startsWith('#'))
+                it.backgroundColor = WaqtiColor.CARD_DEFAULT
         }
     }
 

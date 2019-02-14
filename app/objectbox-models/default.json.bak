@@ -225,7 +225,7 @@
     },
     {
       "id": "15:1949109066510894095",
-      "lastPropertyId": "3:9040069583653683076",
+      "lastPropertyId": "5:3385215644163862340",
       "name": "Board",
       "properties": [
         {
@@ -239,6 +239,14 @@
         {
           "id": "3:9040069583653683076",
           "name": "name"
+        },
+        {
+          "id": "4:5101253552996229870",
+          "name": "backgroundValue"
+        },
+        {
+          "id": "5:3385215644163862340",
+          "name": "cardColorValue"
         }
       ],
       "relations": []

@@ -9,6 +9,8 @@ import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.cardview.widget.CardView
+import androidx.core.view.children
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +21,7 @@ import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.view.ViewTaskFragment
+import uk.whitecrescent.waqti.android.startDragCompat
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.collections.AbstractWaqtiList
@@ -99,6 +102,10 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         holder.taskID = taskList[position].id
         holder.taskListID = this.taskListID
 
+        (holder.itemView as CardView).apply {
+            setCardBackgroundColor(Caches.boards[mainActivity.viewModel.boardID].cardColor.toAndroidColor)
+        }
+
         holder.itemView.setOnClickListener {
             @GoToFragment()
             it.mainActivity.supportFragmentManager.beginTransaction().apply {
@@ -116,8 +123,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
         holder.itemView.setOnLongClickListener {
             it.clearFocusAndHideSoftKeyboard()
-            @Suppress("DEPRECATION")// using the updated requires minSDK >= 24, we are 21
-            it.startDrag(
+            it.startDragCompat(
                     ClipData(
                             ClipData.newPlainText("", "")
                     ),
@@ -315,6 +321,9 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
             )
         }
     }
+
+    val allCards: List<CardView>
+        get() = taskListView.children.map { it as CardView }.toList()
 }
 
 data class DragEventLocalState(

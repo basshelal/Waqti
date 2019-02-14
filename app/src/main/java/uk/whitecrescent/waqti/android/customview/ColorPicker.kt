@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import io.objectbox.converter.PropertyConverter
 import kotlinx.android.synthetic.main.color_circle.view.*
 import uk.whitecrescent.waqti.R
 
@@ -85,9 +86,25 @@ data class WaqtiColor(val value: String) {
     val toColorDrawable: ColorDrawable
         get() = ColorDrawable(Color.parseColor(value))
 
+    val toAndroidColor: Int
+        get() = Color.parseColor(value)
+
     companion object {
         val DEFAULT = WaqtiColor("#FFFFFF")
+        val CARD_DEFAULT = WaqtiColor("#E0E0E0")
     }
+}
+
+class WaqtiColorConverter : PropertyConverter<WaqtiColor, String> {
+
+    override fun convertToDatabaseValue(entityProperty: WaqtiColor?): String {
+        return entityProperty?.value ?: WaqtiColor.DEFAULT.value
+    }
+
+    override fun convertToEntityProperty(databaseValue: String?): WaqtiColor {
+        return if (databaseValue == null) WaqtiColor.DEFAULT else WaqtiColor(databaseValue)
+    }
+
 }
 
 inline val String.toColor: WaqtiColor

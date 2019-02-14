@@ -4,6 +4,8 @@ import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import io.objectbox.annotation.Transient
+import uk.whitecrescent.waqti.android.customview.WaqtiColor
+import uk.whitecrescent.waqti.android.customview.WaqtiColorConverter
 import uk.whitecrescent.waqti.model.Cacheable
 import uk.whitecrescent.waqti.model.persistence.Cache
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -28,7 +30,15 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
             update()
         }
 
-    var backgroundValue: String = "#FFFFFF"
+    @Convert(converter = WaqtiColorConverter::class, dbType = String::class)
+    var backgroundColor: WaqtiColor = WaqtiColor.DEFAULT
+        set(value) {
+            field = value
+            update()
+        }
+
+    @Convert(converter = WaqtiColorConverter::class, dbType = String::class)
+    var cardColor: WaqtiColor = WaqtiColor.CARD_DEFAULT
         set(value) {
             field = value
             update()

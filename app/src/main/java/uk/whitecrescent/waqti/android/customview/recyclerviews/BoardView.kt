@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -115,6 +116,9 @@ class BoardView
     fun adapterExists(taskListID: ID): Boolean {
         return taskListID in taskListAdapters.map { it.taskListID }
     }
+
+    val allCards: List<CardView>
+        get() = taskListAdapters.flatMap { it.allCards }
 }
 
 class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {

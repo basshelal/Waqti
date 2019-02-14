@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_view_task.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
@@ -30,6 +31,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     private var taskID: ID = 0L
     private var listID: ID = 0L
+    private var boardID: ID = 0L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -41,6 +43,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
         taskID = mainActivityViewModel.taskID
         listID = mainActivityViewModel.listID
+        boardID = mainActivityViewModel.boardID
 
         setUpViews(Caches.tasks[taskID])
 
@@ -93,6 +96,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                     else -> false
                 }
             }
+            (parent as ConstraintLayout).background = Caches.boards[boardID].cardColor.toColorDrawable
         }
 
         taskTime_textView.apply {

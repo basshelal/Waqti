@@ -17,7 +17,6 @@ import uk.whitecrescent.waqti.android.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListAdapter
-import uk.whitecrescent.waqti.android.customview.toColor
 import uk.whitecrescent.waqti.android.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
@@ -75,9 +74,21 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                             title = this@ViewListFragment.mainActivity.getString(R.string.deleteListQuestion)
                             message = this@ViewListFragment.mainActivity.getString(R.string.deleteListDetails)
                             onConfirm = {
-                                this.dismiss()
+                                dismiss()
                                 Caches.deleteTaskList(listID, boardID)
                                 finish()
+                            }
+                        }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
+                        true
+                    }
+                    R.id.clearList_menuItem -> {
+                        MaterialConfirmDialog().apply {
+                            title = this@ViewListFragment.mainActivity.getString(R.string.clearListQuestion)
+                            message = this@ViewListFragment.mainActivity.getString(R.string.clearListDetails)
+                            onConfirm = {
+                                dismiss()
+                                Caches.taskLists[listID].clear().update()
+                                this@ViewListFragment.taskList_recyclerView.listAdapter.notifyDataSetChanged()
                             }
                         }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
                         true
@@ -89,7 +100,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
         taskList_recyclerView.apply {
             adapter = TaskListAdapter(listID)
-            background = Caches.boards[boardID].backgroundValue.toColor.toColorDrawable
+            background = Caches.boards[boardID].backgroundColor.toColorDrawable
             addOnScrollListener(FABOnScrollListener(
                     this@ViewListFragment.addTask_floatingButton, Orientation.VERTICAL))
         }

@@ -1,7 +1,6 @@
 package uk.whitecrescent.waqti.android.customview
 
 import android.content.Context
-import android.os.Build
 import android.text.InputType
 import android.util.AttributeSet
 import android.view.View
@@ -10,6 +9,8 @@ import org.jetbrains.anko.isSelectable
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.android.getColorCompat
+import uk.whitecrescent.waqti.android.setTextAppearanceCompat
 
 /**
  * The most basic version of an Editable TextView, used across the app.
@@ -45,15 +46,8 @@ class EditTextView
         }
 
     init {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline4)
-            setTextColor(resources.getColor(R.color.black, null))
-        } else {
-            @Suppress("DEPRECATION")
-            setTextAppearance(context, R.style.TextAppearance_MaterialComponents_Headline4)
-            @Suppress("DEPRECATION")
-            setTextColor(resources.getColor(R.color.black))
-        }
+        setTextAppearanceCompat(R.style.TextAppearance_MaterialComponents_Headline4)
+        setTextColor(resources.getColorCompat(R.color.black))
         isEditable = true
         isMultiLine = false
         textAlignment = View.TEXT_ALIGNMENT_CENTER
