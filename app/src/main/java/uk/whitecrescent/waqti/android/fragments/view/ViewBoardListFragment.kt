@@ -69,10 +69,10 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                         mainActivity.waqtiSharedPreferences
                                 .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards)))
                 addAfterTextChangedListener { update() }
-                setOnEditorActionListener { textView, actionId, event ->
+                setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
-                        textView.clearFocusAndHideSoftKeyboard()
+                        clearFocusAndHideSoftKeyboard()
                         true
                     } else false
                 }

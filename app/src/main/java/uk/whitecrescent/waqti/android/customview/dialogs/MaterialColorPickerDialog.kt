@@ -3,14 +3,16 @@ package uk.whitecrescent.waqti.android.customview.dialogs
 import kotlinx.android.synthetic.main.dialog_colorpicker_material.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.customview.ColorPickerAdapter
+import uk.whitecrescent.waqti.android.customview.WaqtiColor
 
 class MaterialColorPickerDialog : WaqtiMaterialDialog() {
 
     override val contentView = R.layout.dialog_colorpicker_material
     var title = "Pick Color"
-    var onConfirm: (String) -> Unit = { }
-    var onClick: (String) -> Unit = { }
-    var pickedColor: String = "#FFFFFF"
+    var onConfirm: (WaqtiColor) -> Unit = { }
+    var onClick: (WaqtiColor) -> Unit = { }
+    var initialColor: WaqtiColor = WaqtiColor.DEFAULT
+    var pickedColor: WaqtiColor = WaqtiColor.DEFAULT
 
     override fun onResume() {
         super.onResume()
@@ -19,11 +21,14 @@ class MaterialColorPickerDialog : WaqtiMaterialDialog() {
             dialogTitle_textView.text = title
 
             colorPicker.apply {
-                adapter = ColorPickerAdapter(onClick)
+                adapter = ColorPickerAdapter(onClick, initialColor)
             }
 
             confirm_button.setOnClickListener {
-                onConfirm("")
+                val color = (colorPicker?.adapter as? ColorPickerAdapter)?.color
+                        ?: WaqtiColor.DEFAULT
+                pickedColor = color
+                onConfirm(color)
             }
 
             cancel_button.setOnClickListener(onCancel)

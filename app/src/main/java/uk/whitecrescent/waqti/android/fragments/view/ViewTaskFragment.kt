@@ -52,20 +52,20 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
         task_appBar.apply {
             editTextView.apply {
                 fun update() {
-                    Caches.tasks[taskID].changeName(text.toString())
+                    text.also {
+                        if (it != null &&
+                                it.isNotBlank() &&
+                                it.isNotEmpty() &&
+                                it.toString() != element.name)
+                            Caches.tasks[taskID].changeName(text.toString())
+                    }
                 }
                 text = SpannableStringBuilder(element.name)
                 addAfterTextChangedListener { update() }
-                setOnEditorActionListener { textView, actionId, event ->
+                setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        if (textView.text != null &&
-                                textView.text.isNotBlank() &&
-                                textView.text.isNotEmpty()) {
-                            if (textView.text != element.name) {
-                                update()
-                            }
-                        }
-                        textView.clearFocusAndHideSoftKeyboard()
+                        update()
+                        clearFocusAndHideSoftKeyboard()
                         true
                     } else false
                 }

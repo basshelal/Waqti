@@ -97,7 +97,7 @@ object Database {
 
     fun applyMigration() {
         boards.forEach {
-            if (it.backgroundValue != "#FFFFFF")
+            if (!it.backgroundValue.startsWith('#'))
                 it.backgroundValue = "#FFFFFF"
         }
     }

@@ -1,6 +1,8 @@
 package uk.whitecrescent.waqti.android.customview
 
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +12,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.color_circle.view.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.colorDrawable
 
 class ColorPicker
 @JvmOverloads constructor(context: Context,
@@ -23,9 +24,12 @@ class ColorPicker
 
 }
 
-class ColorPickerAdapter(val onClick: (String) -> Unit) : RecyclerView.Adapter<ColorViewHolder>() {
+class ColorPickerAdapter(val onClick: (WaqtiColor) -> Unit,
+                         var color: WaqtiColor = WaqtiColor.DEFAULT)
+    : RecyclerView.Adapter<ColorViewHolder>() {
 
-    val colors = COLORS.toList()
+    private val colors = COLORS_200.toList()
+    private var currentChecked: ColorViewHolder? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorViewHolder {
         return ColorViewHolder(LayoutInflater.from(parent.context)
@@ -35,9 +39,33 @@ class ColorPickerAdapter(val onClick: (String) -> Unit) : RecyclerView.Adapter<C
     override fun getItemCount() = colors.size
 
     override fun onBindViewHolder(holder: ColorViewHolder, position: Int) {
-        holder.image.setImageDrawable(colorDrawable(colors[position]))
-        holder.image.setOnClickListener {
-            onClick(colors[position])
+        holder.image.apply {
+            fun check() {
+                color = colors[position]
+                setImageResource(R.drawable.done_icon)
+                background = color.toColorDrawable
+            }
+
+            setImageDrawable(colors[position].toColorDrawable)
+
+            if (currentChecked == null && colors[position] == color) {
+                check()
+                currentChecked = holder
+            }
+
+            setOnClickListener {
+                check()
+
+                if (currentChecked != null && currentChecked != holder) {
+                    currentChecked?.image?.apply {
+                        setImageDrawable(null)
+                    }
+                }
+
+                currentChecked = holder
+
+                onClick(color)
+            }
         }
     }
 
@@ -48,10 +76,33 @@ class ColorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         get() = itemView.circle_imageView
 }
 
-// For now just random colors
-val COLORS = arrayOf<String>(
-        "#FFFFFF", "#000000", "#880E4F", "#1565C0", "#FFCC33",
-        "#660000", "#FF0066", "#333333", "#00CC00", "#663333",
-        "#339933", "#660000", "#FFCC66", "#999999", "#FF9900",
-        "#99CC66", "#9933FF", "#FF99FF", "#00FF99", "#FFCC66"
-)
+data class WaqtiColor(val value: String) {
+    init {
+        require(value.startsWith('#')) { "Color must start with #" }
+        require(value.length <= 9) { "Color value must be no longer than 9 characters (includes #)" }
+    }
+
+    val toColorDrawable: ColorDrawable
+        get() = ColorDrawable(Color.parseColor(value))
+
+    companion object {
+        val DEFAULT = WaqtiColor("#FFFFFF")
+    }
+}
+
+inline val String.toColor: WaqtiColor
+    get() = WaqtiColor(this)
+
+val COLORS_100 = listOf(
+        "#FFFFFF", "#ffcdd2", "#f8bbd0", "#e1bee7", "#d1c4e9",
+        "#c5cae9", "#bbdefb", "#b3e5fc", "#b2ebf2", "#b2dfdb",
+        "#c8e6c9", "#dcedc8", "#f0f4c3", "#fff9c4", "#ffecb3",
+        "#ffe0b2", "#ffccbc", "#d7ccc8", "#f5f5f5", "#cfd8dc"
+).map { it.toColor }
+
+val COLORS_200 = listOf(
+        "#FFFFFF", "#ef9a9a", "#f48fb1", "#ce93d8", "#b39ddb",
+        "#9fa8da", "#90caf9", "#81d4fa", "#80deea", "#80cbc4",
+        "#a5d6a7", "#c5e1a5", "#e6ee9c", "#fff59d", "#ffe082",
+        "#ffcc80", "#ffab91", "#bcaaa4", "#eeeeee", "#b0bec5"
+).map { it.toColor }

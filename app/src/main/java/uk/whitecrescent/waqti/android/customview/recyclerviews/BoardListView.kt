@@ -16,9 +16,9 @@ import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.android.BOARD_FRAGMENT
+import uk.whitecrescent.waqti.android.customview.toColor
 import uk.whitecrescent.waqti.android.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewMode
-import uk.whitecrescent.waqti.colorDrawable
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.persistence.Database
@@ -147,7 +147,7 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
         }
 
         holder.itemView.boardImage_imageView.apply {
-            setImageDrawable(colorDrawable(boardList[position].backgroundValue))
+            setImageDrawable(boardList[position].backgroundValue.toColor.toColorDrawable)
         }
     }
 
