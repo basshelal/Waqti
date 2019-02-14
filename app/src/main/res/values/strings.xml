@@ -39,6 +39,7 @@
     <string name="deleteList">Delete List</string>
     <string name="renameList">Rename List</string>
     <string name="addBoard">Add Board</string>
+    <string name="changeBoardColor">Change Board Color</string>
 
     <!--Dialogs-->
     <string name="confirm">Confirm</string>
@@ -53,12 +54,15 @@
         board</string>
     <string name="pickTimeDialog">Pick Time Dialog</string>
     <string name="pickTextDialog">Pick Text Dialog</string>
+    <string name="pickColorDialog">Pick Color Dialog</string>
 
     <string name="next">Next</string>
 
     <string name="selectDate">Select Date</string>
     <string name="selectTime">Select Time</string>
     <string name="enterDescription">Enter Description</string>
+
+    <string name="pickBoardColor">Pick Board Color</string>
 
     <string name="property">Property: </string>
     <string name="constraint">Constraint: </string>

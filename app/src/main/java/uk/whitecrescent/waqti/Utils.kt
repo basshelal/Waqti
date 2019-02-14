@@ -8,6 +8,7 @@ import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -324,3 +325,7 @@ class FABOnScrollListener(
 
     }
 }
+
+inline fun colorDrawable(value: String) = ColorDrawable(Color.parseColor(value))
+
+inline fun colorToHex(color: Int) = String.format("#%06X", 0xFFFFFF and color)

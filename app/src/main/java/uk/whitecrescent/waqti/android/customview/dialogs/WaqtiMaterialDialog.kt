@@ -11,10 +11,9 @@ import uk.whitecrescent.waqti.android.MainActivity
 
 abstract class WaqtiMaterialDialog : BottomSheetDialogFragment() {
 
-    lateinit var mainActivity: MainActivity
-
-    lateinit var dialog: BottomSheetDialog
     abstract val contentView: Int
+    lateinit var mainActivity: MainActivity
+    lateinit var dialog: BottomSheetDialog
     open var onCancel: View.OnClickListener = View.OnClickListener {
         this.dismiss()
     }

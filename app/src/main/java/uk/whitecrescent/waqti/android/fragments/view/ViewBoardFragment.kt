@@ -15,17 +15,20 @@ import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.FABOnScrollListener
+import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.GoToFragment
 import uk.whitecrescent.waqti.Orientation
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.android.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.android.customview.addAfterTextChangedListener
+import uk.whitecrescent.waqti.android.customview.dialogs.MaterialColorPickerDialog
 import uk.whitecrescent.waqti.android.customview.dialogs.MaterialConfirmDialog
 import uk.whitecrescent.waqti.android.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.android.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.android.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.android.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.colorDrawable
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.collections.Board
 import uk.whitecrescent.waqti.model.persistence.Caches
@@ -90,6 +93,21 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                             }.show(mainActivity.supportFragmentManager, "MaterialConfirmDialog")
                             true
                         }
+                        @ForLater
+                        // TODO: 14-Feb-19 Finish this properly
+                        R.id.changeBoardColor_menuItem -> {
+                            MaterialColorPickerDialog().apply {
+                                title = this@ViewBoardFragment.getString(R.string.pickBoardColor)
+                                onClick = {
+                                    Caches.boards[boardID].backgroundValue = it
+                                    this@ViewBoardFragment.boardView.background = colorDrawable(it)
+                                }
+                                onConfirm = {
+                                    dismiss()
+                                }
+                            }.show(mainActivity.supportFragmentManager, "")
+                            true
+                        }
                         else -> false
                     }
                 }
@@ -98,6 +116,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         boardView.apply {
             adapter = BoardAdapter(element.id)
+            background = colorDrawable(element.backgroundValue)
             if (boardAdapter.itemCount > 0) {
                 postDelayed(
                         {

@@ -28,6 +28,12 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
             update()
         }
 
+    var backgroundValue: String = "#FFFFFF"
+        set(value) {
+            field = value
+            update()
+        }
+
     init {
         if (this.notDefault()) {
             this.growTo(lists.size)

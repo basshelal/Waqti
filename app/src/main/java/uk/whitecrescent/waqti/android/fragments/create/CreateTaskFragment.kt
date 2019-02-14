@@ -130,7 +130,6 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
         taskDescription_cardView.apply {
             setOnClickListener {
                 MaterialEditTextDialog().apply {
-                    title = this@CreateTaskFragment.getString(R.string.enterDescription)
                     hint = this@CreateTaskFragment.getString(R.string.enterDescription)
                     initialText = viewModel.taskDescription
                     onConfirm = {

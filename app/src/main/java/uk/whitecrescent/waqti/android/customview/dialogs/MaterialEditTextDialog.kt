@@ -8,8 +8,7 @@ import uk.whitecrescent.waqti.hideSoftKeyboard
 
 class MaterialEditTextDialog : WaqtiMaterialDialog() {
 
-    var title = "Enter Text"
-    var hint = ""
+    var hint: String = ""
     var initialText: String = ""
     var onConfirm: (String) -> Unit = { }
     override val contentView = R.layout.dialog_edit_text_material
@@ -18,8 +17,6 @@ class MaterialEditTextDialog : WaqtiMaterialDialog() {
         super.onResume()
 
         dialog.apply {
-
-            dialogTitle_textView.text = title
 
             dialog_editTextView.hint = hint
 

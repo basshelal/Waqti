@@ -4,5 +4,8 @@
         android:id="@+id/deleteBoard_menuItem"
         android:icon="@drawable/delete_icon"
         android:title="@string/deleteBoard" />
+    <item
+        android:id="@+id/changeBoardColor_menuItem"
+        android:title="@string/changeBoardColor" />
 
 </menu>

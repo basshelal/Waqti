@@ -10,6 +10,7 @@ import io.objectbox.kotlin.boxFor
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.MissingFeature
+import uk.whitecrescent.waqti.forEach
 import uk.whitecrescent.waqti.model.Committable
 import uk.whitecrescent.waqti.model.MyObjectBox
 import uk.whitecrescent.waqti.model.collections.Board
@@ -91,6 +92,13 @@ object Database {
             override fun commit() {
                 allDBs.forEach { it.removeAll() }
             }
+        }
+    }
+
+    fun applyMigration() {
+        boards.forEach {
+            if (it.backgroundValue != "#FFFFFF")
+                it.backgroundValue = "#FFFFFF"
         }
     }
 

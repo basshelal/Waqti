@@ -18,6 +18,7 @@ import uk.whitecrescent.waqti.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.android.BOARD_FRAGMENT
 import uk.whitecrescent.waqti.android.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.android.fragments.view.ViewMode
+import uk.whitecrescent.waqti.colorDrawable
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.model.persistence.Database
@@ -127,20 +128,26 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
             setTextColor(resources.getColor(R.color.black))
         }
 
-        holder.itemView.boardCard_cardView.setOnClickListener {
-            @GoToFragment()
-            it.mainActivity.supportFragmentManager.beginTransaction().apply {
+        holder.itemView.boardCard_cardView.apply {
+            setOnClickListener {
+                @GoToFragment
+                it.mainActivity.supportFragmentManager.beginTransaction().apply {
 
-                it.mainActivity.viewModel.boardID = boardList[holder.adapterPosition].id
+                    it.mainActivity.viewModel.boardID = boardList[holder.adapterPosition].id
 
-                it.mainActivity.viewModel.boardListPosition = false to position
+                    it.mainActivity.viewModel.boardListPosition = false to position
 
-                it.hideSoftKeyboard()
+                    it.hideSoftKeyboard()
 
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                replace(R.id.fragmentContainer, ViewBoardFragment.newInstance(), BOARD_FRAGMENT)
-                addToBackStack("ViewBoardFragment")
-            }.commit()
+                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    replace(R.id.fragmentContainer, ViewBoardFragment.newInstance(), BOARD_FRAGMENT)
+                    addToBackStack("ViewBoardFragment")
+                }.commit()
+            }
+        }
+
+        holder.itemView.boardImage_imageView.apply {
+            setImageDrawable(colorDrawable(boardList[position].backgroundValue))
         }
     }
 

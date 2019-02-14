@@ -19,5 +19,6 @@ class App : Application() {
         AndroidThreeTen.init(this)
         Database.build(this)
         Caches.initialize()
+        Database.applyMigration()
     }
 }
