@@ -1,7 +1,7 @@
 package uk.whitecrescent.waqti.persistence
 
 import org.junit.jupiter.api.DisplayName
-import uk.whitecrescent.waqti.model.task.Label
+import uk.whitecrescent.waqti.backend.task.Label
 
 @DisplayName("Label Cache & Database Tests")
 class CacheLabel : BasePersistenceTest() {

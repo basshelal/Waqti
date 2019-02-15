@@ -20,7 +20,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <uk.whitecrescent.waqti.android.customview.ColorPicker
+    <uk.whitecrescent.waqti.frontend.customview.ColorPicker
         android:id="@+id/colorPicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

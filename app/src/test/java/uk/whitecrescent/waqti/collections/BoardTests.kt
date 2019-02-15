@@ -3,7 +3,7 @@ package uk.whitecrescent.waqti.collections
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.model.persistence.Database
+import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.size
 import uk.whitecrescent.waqti.testBoardFullOfFullLists
 

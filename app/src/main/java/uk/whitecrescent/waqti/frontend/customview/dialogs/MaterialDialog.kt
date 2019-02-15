@@ -1,0 +1,36 @@
+package uk.whitecrescent.waqti.frontend.customview.dialogs
+
+import android.app.Dialog
+import android.os.Bundle
+import android.view.View
+import android.widget.FrameLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import uk.whitecrescent.waqti.frontend.MainActivity
+
+abstract class MaterialDialog : BottomSheetDialogFragment() {
+
+    abstract val contentView: Int
+    lateinit var mainActivity: MainActivity
+    lateinit var dialog: BottomSheetDialog
+    open var onCancel: View.OnClickListener = View.OnClickListener {
+        this.dismiss()
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        dialog = BottomSheetDialog(activity!!)
+        dialog.setContentView(contentView)
+        dialog.setOnShowListener {
+            val bottomSheet = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            BottomSheetBehavior.from(bottomSheet!!).state = BottomSheetBehavior.STATE_EXPANDED
+        }
+        return dialog
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        mainActivity = activity as MainActivity
+    }
+}

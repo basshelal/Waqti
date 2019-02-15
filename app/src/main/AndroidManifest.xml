@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
-        android:name=".android.App"
+        android:name=".frontend.App"
         android:allowBackup="true"
         android:icon="@mipmap/waqti_icon"
         android:label="@string/waqti"
@@ -15,7 +15,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         tools:replace="android:label">
         <activity
-            android:name=".android.MainActivity"
+            android:name=".frontend.MainActivity"
             android:label="@string/waqti"
             android:theme="@style/AppTheme.Launcher">
             <intent-filter>

@@ -41,6 +41,8 @@
     <string name="addBoard">Add Board</string>
     <string name="changeBoardColor">Change Board Color</string>
     <string name="changeCardColor">Change Card Color</string>
+    <string name="changeAppBarColor">Change App Bar Color</string>
+    <string name="changeBoardImage">Change Board Image</string>
     <string name="clearList">Clear List</string>
 
     <!--Dialogs-->
@@ -70,6 +72,7 @@
 
     <string name="pickBoardColor">Pick Board Color</string>
     <string name="pickCardColor">Pick Card Color</string>
+    <string name="pickAppBarColor">Pick App Bar Color</string>
 
     <string name="property">Property: </string>
     <string name="constraint">Constraint: </string>

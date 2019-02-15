@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true">
 
-    <uk.whitecrescent.waqti.android.customview.AppBar
+    <uk.whitecrescent.waqti.frontend.customview.AppBar
         android:id="@+id/boardList_appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <uk.whitecrescent.waqti.android.customview.recyclerviews.BoardListView
+    <uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListView
         android:id="@+id/boardsList_recyclerView"
         android:layout_width="0dp"
         android:layout_height="0dp"

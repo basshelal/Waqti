@@ -6,8 +6,8 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
-import uk.whitecrescent.waqti.model.persistence.Caches
-import uk.whitecrescent.waqti.model.persistence.Database
+import uk.whitecrescent.waqti.backend.persistence.Caches
+import uk.whitecrescent.waqti.backend.persistence.Database
 import java.io.File
 
 abstract class BaseTest {
@@ -37,7 +37,7 @@ abstract class BaseTest {
         Database.clearAllDBs().commit()
         Caches.clearAllCaches().commit()
 
-        Database.allDBs.forEach { assertTrue(it.isEmpty()) }
+        Database.allDBs.forEach { assertTrue(it.isEmpty) }
         Caches.allCaches.forEach { assertTrue(it.isEmpty()) }
     }
 
@@ -47,7 +47,7 @@ abstract class BaseTest {
         Database.clearAllDBs().commit()
         Caches.clearAllCaches().commit()
 
-        Database.allDBs.forEach { assertTrue(it.isEmpty()) }
+        Database.allDBs.forEach { assertTrue(it.isEmpty) }
         Caches.allCaches.forEach { assertTrue(it.isEmpty()) }
     }
 }

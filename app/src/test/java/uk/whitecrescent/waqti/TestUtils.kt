@@ -2,19 +2,19 @@
 
 package uk.whitecrescent.waqti
 
-import uk.whitecrescent.waqti.model.collections.Board
-import uk.whitecrescent.waqti.model.collections.BoardList
-import uk.whitecrescent.waqti.model.collections.TaskList
-import uk.whitecrescent.waqti.model.task.CONSTRAINED
-import uk.whitecrescent.waqti.model.task.HIDDEN
-import uk.whitecrescent.waqti.model.task.Label
-import uk.whitecrescent.waqti.model.task.NOT_CONSTRAINED
-import uk.whitecrescent.waqti.model.task.Priority
-import uk.whitecrescent.waqti.model.task.Property
-import uk.whitecrescent.waqti.model.task.SHOWING
-import uk.whitecrescent.waqti.model.task.Task
-import uk.whitecrescent.waqti.model.task.TimeUnit
-import uk.whitecrescent.waqti.model.task.UNMET
+import uk.whitecrescent.waqti.backend.collections.Board
+import uk.whitecrescent.waqti.backend.collections.BoardList
+import uk.whitecrescent.waqti.backend.collections.TaskList
+import uk.whitecrescent.waqti.backend.task.CONSTRAINED
+import uk.whitecrescent.waqti.backend.task.HIDDEN
+import uk.whitecrescent.waqti.backend.task.Label
+import uk.whitecrescent.waqti.backend.task.NOT_CONSTRAINED
+import uk.whitecrescent.waqti.backend.task.Priority
+import uk.whitecrescent.waqti.backend.task.Property
+import uk.whitecrescent.waqti.backend.task.SHOWING
+import uk.whitecrescent.waqti.backend.task.Task
+import uk.whitecrescent.waqti.backend.task.TimeUnit
+import uk.whitecrescent.waqti.backend.task.UNMET
 
 // Time
 

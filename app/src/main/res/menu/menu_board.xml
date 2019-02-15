@@ -10,5 +10,11 @@
     <item
         android:id="@+id/changeCardColor_menuItem"
         android:title="@string/changeCardColor" />
+    <item
+        android:id="@+id/changeAppBarColor_menuItem"
+        android:title="@string/changeAppBarColor" />
+    <item
+        android:id="@+id/changeBoardPhoto"
+        android:title="@string/changeBoardImage" />
 
 </menu>

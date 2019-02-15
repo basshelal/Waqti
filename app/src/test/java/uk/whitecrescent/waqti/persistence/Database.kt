@@ -2,9 +2,9 @@ package uk.whitecrescent.waqti.persistence
 
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.whitecrescent.waqti.backend.persistence.Database
+import uk.whitecrescent.waqti.backend.task.DEBUG
 import uk.whitecrescent.waqti.getFilledBoardList
-import uk.whitecrescent.waqti.model.persistence.Database
-import uk.whitecrescent.waqti.model.task.DEBUG
 import uk.whitecrescent.waqti.mustEqual
 import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.rfcFormatted

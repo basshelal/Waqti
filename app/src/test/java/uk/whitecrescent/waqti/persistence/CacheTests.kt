@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.whitecrescent.waqti.backend.persistence.Caches
+import uk.whitecrescent.waqti.backend.persistence.Database
+import uk.whitecrescent.waqti.backend.task.Label
 import uk.whitecrescent.waqti.getLabels
 import uk.whitecrescent.waqti.ids
-import uk.whitecrescent.waqti.model.persistence.Caches
-import uk.whitecrescent.waqti.model.persistence.Database
-import uk.whitecrescent.waqti.model.task.Label
 import uk.whitecrescent.waqti.size
 import uk.whitecrescent.waqti.sleep
 import java.util.concurrent.TimeUnit

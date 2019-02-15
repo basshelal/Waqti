@@ -5,10 +5,10 @@ import org.junit.jupiter.api.Assertions.assertNull
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.whitecrescent.waqti.backend.persistence.Database
+import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.forEach
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.model.persistence.Database
-import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.size
 import uk.whitecrescent.waqti.testTask
 

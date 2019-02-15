@@ -8,4 +8,5 @@
 /build
 /captures
 .externalNativeBuild
-*.keys
+
+/app/src/main/java/uk/whitecrescent/waqti/keys/**

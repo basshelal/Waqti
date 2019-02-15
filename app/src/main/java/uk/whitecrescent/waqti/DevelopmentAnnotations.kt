@@ -5,111 +5,30 @@ package uk.whitecrescent.waqti
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class FinalSince(val waqtiVersion: WaqtiVersion)
 
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class TestedSince(val waqtiVersion: WaqtiVersion)
 
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class DocumentedSince(val waqtiVersion: WaqtiVersion)
 
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class TestedDocumentedAndFinalSince(val waqtiVersion: WaqtiVersion)
-
 
 /**
  * Is expected to change
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class NonFinal
 
 /**
@@ -117,23 +36,7 @@ annotation class NonFinal
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class Untested
 
 /**
@@ -141,23 +44,7 @@ annotation class Untested
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class UpdateTests
 
 /**
@@ -165,23 +52,7 @@ annotation class UpdateTests
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class UnDocumented
 
 /**
@@ -189,23 +60,7 @@ annotation class UnDocumented
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class UpdateDocumentation
 
 /**
@@ -213,23 +68,7 @@ annotation class UpdateDocumentation
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class ForLater
 
 /**
@@ -237,23 +76,7 @@ annotation class ForLater
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class FutureIdea
 
 /**
@@ -261,23 +84,7 @@ annotation class FutureIdea
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class MissingFeature
 
 /**
@@ -286,23 +93,7 @@ annotation class MissingFeature
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class Inconvenience
 
 /**
@@ -310,23 +101,7 @@ annotation class Inconvenience
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class Bug
 
 /**
@@ -334,23 +109,7 @@ annotation class Bug
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class NeedsChecking
 
 /**
@@ -358,23 +117,7 @@ annotation class NeedsChecking
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class NeedsOptimization
 
 /**
@@ -382,21 +125,5 @@ annotation class NeedsOptimization
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(
-        AnnotationTarget.CLASS,
-        AnnotationTarget.ANNOTATION_CLASS,
-        AnnotationTarget.TYPE_PARAMETER,
-        AnnotationTarget.PROPERTY,
-        AnnotationTarget.FIELD,
-        AnnotationTarget.LOCAL_VARIABLE,
-        AnnotationTarget.VALUE_PARAMETER,
-        AnnotationTarget.CONSTRUCTOR,
-        AnnotationTarget.FUNCTION,
-        AnnotationTarget.PROPERTY_GETTER,
-        AnnotationTarget.PROPERTY_SETTER,
-        AnnotationTarget.TYPE,
-        AnnotationTarget.EXPRESSION,
-        AnnotationTarget.FILE,
-        AnnotationTarget.TYPEALIAS
-)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class NeedsReOrganizing

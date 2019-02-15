@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <uk.whitecrescent.waqti.android.customview.AppBar
+    <uk.whitecrescent.waqti.frontend.customview.AppBar
         android:id="@+id/board_appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:rightClickOpensMenu="@menu/menu_board" />
 
-    <uk.whitecrescent.waqti.android.customview.recyclerviews.BoardView
+    <uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardView
         android:id="@+id/boardView"
         android:layout_width="0dp"
         android:layout_height="0dp"

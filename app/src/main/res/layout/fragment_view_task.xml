@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <uk.whitecrescent.waqti.android.customview.AppBar
+    <uk.whitecrescent.waqti.frontend.customview.AppBar
         android:id="@+id/task_appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

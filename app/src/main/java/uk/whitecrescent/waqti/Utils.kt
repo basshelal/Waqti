@@ -7,42 +7,40 @@ import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
-import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import io.objectbox.Box
-import uk.whitecrescent.waqti.android.MainActivity
-import uk.whitecrescent.waqti.model.Cacheable
-import uk.whitecrescent.waqti.model.collections.Board
-import uk.whitecrescent.waqti.model.collections.BoardList
-import uk.whitecrescent.waqti.model.collections.TaskList
-import uk.whitecrescent.waqti.model.collections.Tuple
-import uk.whitecrescent.waqti.model.persistence.Caches
-import uk.whitecrescent.waqti.model.persistence.Database
-import uk.whitecrescent.waqti.model.task.DEBUG
-import uk.whitecrescent.waqti.model.task.DEFAULT_DESCRIPTION
-import uk.whitecrescent.waqti.model.task.DEFAULT_TIME
-import uk.whitecrescent.waqti.model.task.Description
-import uk.whitecrescent.waqti.model.task.GRACE_PERIOD
-import uk.whitecrescent.waqti.model.task.ID
-import uk.whitecrescent.waqti.model.task.Label
-import uk.whitecrescent.waqti.model.task.Priority
-import uk.whitecrescent.waqti.model.task.Property
-import uk.whitecrescent.waqti.model.task.Task
-import uk.whitecrescent.waqti.model.task.Template
-import uk.whitecrescent.waqti.model.task.TimeUnit
+import uk.whitecrescent.waqti.backend.Cacheable
+import uk.whitecrescent.waqti.backend.collections.Board
+import uk.whitecrescent.waqti.backend.collections.BoardList
+import uk.whitecrescent.waqti.backend.collections.TaskList
+import uk.whitecrescent.waqti.backend.collections.Tuple
+import uk.whitecrescent.waqti.backend.persistence.Caches
+import uk.whitecrescent.waqti.backend.persistence.Database
+import uk.whitecrescent.waqti.backend.task.DEBUG
+import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION
+import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
+import uk.whitecrescent.waqti.backend.task.Description
+import uk.whitecrescent.waqti.backend.task.GRACE_PERIOD
+import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.backend.task.Label
+import uk.whitecrescent.waqti.backend.task.Priority
+import uk.whitecrescent.waqti.backend.task.Property
+import uk.whitecrescent.waqti.backend.task.Task
+import uk.whitecrescent.waqti.backend.task.Template
+import uk.whitecrescent.waqti.backend.task.TimeUnit
+import uk.whitecrescent.waqti.frontend.MainActivity
 import java.util.Objects
+
+// Everything here is mostly Extensions and Top Level Functions
 
 //region Debug Utils
 
@@ -54,8 +52,6 @@ inline fun logE(tag: String, any: Any?) {
     Log.e(tag, any.toString())
 }
 
-inline fun View.red() = setBackgroundColor(Color.RED)
-
 inline fun View.shortSnackBar(string: String) = Snackbar.make(this, string, Snackbar.LENGTH_SHORT).show()
 
 inline fun View.longSnackBar(string: String) = Snackbar.make(this, string, Snackbar.LENGTH_LONG).show()
@@ -65,13 +61,6 @@ inline fun View.infSnackBar(string: String) = Snackbar.make(this, string, Snackb
 //endregion Debug Utils
 
 //region Android Utils
-
-/**
- * Just a utility to show us where there are Fragment changes happening
- */
-@Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.EXPRESSION)
-annotation class GoToFragment
 
 inline fun Activity.checkWritePermission() {
     if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -273,56 +262,3 @@ inline val Description.isNotDefault: Boolean
     get() = this != DEFAULT_DESCRIPTION
 
 //endregion Model Utils
-
-open class SimpleItemTouchHelperCallback : ItemTouchHelper.Callback() {
-
-    override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-        return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN or ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT, 0)
-    }
-
-    override fun isLongPressDragEnabled() = true
-
-    override fun isItemViewSwipeEnabled() = false
-
-    override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
-                        target: RecyclerView.ViewHolder): Boolean {
-        return true
-    }
-
-    override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        /*This will never be called as we do not support swiping*/
-    }
-
-    override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int,
-                                              viewSizeOutOfBounds: Int, totalSize: Int,
-                                              msSinceStartScroll: Long): Int {
-        return super.interpolateOutOfBoundsScroll(
-                recyclerView, viewSize, viewSizeOutOfBounds, totalSize, 1500)
-    }
-
-}
-
-enum class Orientation {
-    HORIZONTAL, VERTICAL
-}
-
-class FABOnScrollListener(
-        val fab: FloatingActionButton,
-        val orientation: Orientation) : RecyclerView.OnScrollListener() {
-    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        super.onScrolled(recyclerView, dx, dy)
-        when (orientation) {
-            Orientation.HORIZONTAL -> {
-                if (dx > 0 && fab.isVisible) fab.hide()
-                else if (dx < 0 && !fab.isVisible) fab.show()
-            }
-            Orientation.VERTICAL -> {
-                if (dy > 0 && fab.isVisible) fab.hide()
-                else if (dy < 0 && !fab.isVisible) fab.show()
-            }
-        }
-
-    }
-}
-
-inline fun colorToHex(color: Int) = String.format("#%06X", 0xFFFFFF and color)

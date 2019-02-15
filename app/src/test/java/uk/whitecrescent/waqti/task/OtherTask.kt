@@ -8,13 +8,13 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.Time
+import uk.whitecrescent.waqti.backend.task.Checklist
+import uk.whitecrescent.waqti.backend.task.Label
+import uk.whitecrescent.waqti.backend.task.MANDATORY
+import uk.whitecrescent.waqti.backend.task.OPTIONAL
+import uk.whitecrescent.waqti.backend.task.Priority
+import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.ids
-import uk.whitecrescent.waqti.model.task.Checklist
-import uk.whitecrescent.waqti.model.task.Label
-import uk.whitecrescent.waqti.model.task.MANDATORY
-import uk.whitecrescent.waqti.model.task.OPTIONAL
-import uk.whitecrescent.waqti.model.task.Priority
-import uk.whitecrescent.waqti.model.task.Task
 import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.sleep
 

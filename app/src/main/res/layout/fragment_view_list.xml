@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <uk.whitecrescent.waqti.android.customview.AppBar
+    <uk.whitecrescent.waqti.frontend.customview.AppBar
         android:id="@+id/taskList_appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +15,7 @@
         app:leftClickOpensDrawer="true"
         app:rightClickOpensMenu="@menu/menu_list" />
 
-    <uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListView
+    <uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView
         android:id="@+id/taskList_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -25,7 +25,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/taskList_appBar">
 
-    </uk.whitecrescent.waqti.android.customview.recyclerviews.TaskListView>
+    </uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addTask_floatingButton"

@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <uk.whitecrescent.waqti.android.customview.DateTimePicker
+    <uk.whitecrescent.waqti.frontend.customview.DateTimePicker
         android:id="@+id/dateTimePicker"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,7 +29,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/dialogTitle_textView">
 
-    </uk.whitecrescent.waqti.android.customview.DateTimePicker>
+    </uk.whitecrescent.waqti.frontend.customview.DateTimePicker>
 
     <Button
         android:id="@+id/cancel_button"

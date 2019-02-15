@@ -5,8 +5,8 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.Time
-import uk.whitecrescent.waqti.model.task.TaskState
-import uk.whitecrescent.waqti.model.task.TaskStateException
+import uk.whitecrescent.waqti.backend.task.TaskState
+import uk.whitecrescent.waqti.backend.task.TaskStateException
 import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTask
