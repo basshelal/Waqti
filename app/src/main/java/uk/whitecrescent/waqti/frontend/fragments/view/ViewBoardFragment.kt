@@ -24,6 +24,7 @@ import uk.whitecrescent.waqti.frontend.Orientation
 import uk.whitecrescent.waqti.frontend.addAfterTextChangedListener
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ColorPickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
+import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateListFragment
@@ -153,6 +154,21 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                             true
                         }
                         R.id.changeBoardPhoto -> {
+                            PhotoPickerDialog().apply {
+                                title = this@ViewBoardFragment.getString(R.string.pickBoardBackground)
+                                initialPhoto = Caches.boards[boardID].backgroundPhoto
+                                onClick = { photo ->
+
+                                }
+                                onConfirm = {
+
+                                    dismiss()
+                                }
+                                onCancel = View.OnClickListener {
+
+                                    dismiss()
+                                }
+                            }.show(mainActivity.supportFragmentManager, "PhotoPickerDialog")
                             true
                         }
                         else -> false

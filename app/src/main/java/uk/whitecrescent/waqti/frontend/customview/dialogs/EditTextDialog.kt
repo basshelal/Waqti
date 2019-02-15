@@ -2,7 +2,7 @@ package uk.whitecrescent.waqti.frontend.customview.dialogs
 
 import android.text.SpannableStringBuilder
 import android.view.inputmethod.EditorInfo
-import kotlinx.android.synthetic.main.dialog_edit_text_material.*
+import kotlinx.android.synthetic.main.dialog_edit_text.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 
@@ -11,7 +11,7 @@ class EditTextDialog : MaterialDialog() {
     var hint: String = ""
     var initialText: String = ""
     var onConfirm: (String) -> Unit = { }
-    override val contentView = R.layout.dialog_edit_text_material
+    override val contentView = R.layout.dialog_edit_text
 
     override fun onResume() {
         super.onResume()

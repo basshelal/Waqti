@@ -1,6 +1,6 @@
 package uk.whitecrescent.waqti.frontend.customview.dialogs
 
-import kotlinx.android.synthetic.main.dialog_timepicker_material.*
+import kotlinx.android.synthetic.main.dialog_timepicker.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.Time
 import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
@@ -9,7 +9,7 @@ class DateTimePickerDialog : MaterialDialog() {
 
     var initialTime: Time = DEFAULT_TIME
     var onConfirm: (Time) -> Unit = { }
-    override val contentView = R.layout.dialog_timepicker_material
+    override val contentView = R.layout.dialog_timepicker
 
     override fun onResume() {
         super.onResume()

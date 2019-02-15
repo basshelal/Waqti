@@ -59,6 +59,7 @@
     <string name="pickTimeDialog">Pick Time Dialog</string>
     <string name="pickTextDialog">Pick Text Dialog</string>
     <string name="pickColorDialog">Pick Color Dialog</string>
+    <string name="pickPhotoDialog">Pick Photo Dialog</string>
 
     <string name="clearListQuestion">Clear List?</string>
     <string name="clearListDetails">This will delete all the tasks in this list but not this
@@ -71,6 +72,7 @@
     <string name="enterDescription">Enter Description</string>
 
     <string name="pickBoardColor">Pick Board Color</string>
+    <string name="pickBoardBackground">Pick Board Background Image</string>
     <string name="pickCardColor">Pick Card Color</string>
     <string name="pickAppBarColor">Pick App Bar Color</string>
 

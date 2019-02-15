@@ -1,7 +1,7 @@
 package uk.whitecrescent.waqti.frontend.customview.dialogs
 
 import android.view.View
-import kotlinx.android.synthetic.main.dialog_confirm_material.*
+import kotlinx.android.synthetic.main.dialog_confirm.*
 import uk.whitecrescent.waqti.R
 
 class ConfirmDialog : MaterialDialog() {
@@ -9,7 +9,7 @@ class ConfirmDialog : MaterialDialog() {
     var title = "Confirm Action"
     var message = ""
     var onConfirm: () -> Unit = { }
-    override val contentView = R.layout.dialog_confirm_material
+    override val contentView = R.layout.dialog_confirm
 
     override fun onResume() {
         super.onResume()

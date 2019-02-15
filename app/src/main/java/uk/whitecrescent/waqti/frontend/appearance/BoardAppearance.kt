@@ -12,7 +12,7 @@ class BoardAppearance {
 
     var barColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT
 
-    var backgroundPhoto: Photo = defaultPhoto
+    var backgroundPhoto: Photo = DEFAULT_PHOTO
 
     companion object {
         val DEFAULT = BoardAppearance()
@@ -32,4 +32,4 @@ class BoardAppearanceConverter : PropertyConverter<BoardAppearance, String> {
     }
 }
 
-val defaultPhoto: Photo = Photo()
+val DEFAULT_PHOTO: Photo = Photo()

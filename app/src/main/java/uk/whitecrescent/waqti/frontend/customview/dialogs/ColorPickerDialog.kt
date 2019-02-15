@@ -1,13 +1,13 @@
 package uk.whitecrescent.waqti.frontend.customview.dialogs
 
-import kotlinx.android.synthetic.main.dialog_colorpicker_material.*
+import kotlinx.android.synthetic.main.dialog_colorpicker.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.ColorPickerAdapter
 
 class ColorPickerDialog : MaterialDialog() {
 
-    override val contentView = R.layout.dialog_colorpicker_material
+    override val contentView = R.layout.dialog_colorpicker
     var title = "Pick Color"
     var onConfirm: (WaqtiColor) -> Unit = { }
     var onClick: (WaqtiColor) -> Unit = { }
