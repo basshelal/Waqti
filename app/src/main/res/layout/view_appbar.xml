@@ -1,62 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.github.florent37.shapeofview.shapes.RoundRectView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:elevation="14dp"
-    app:shape_roundRect_bottomLeftRadius="0dp"
-    app:shape_roundRect_bottomRightRadius="0dp"
-    app:shape_roundRect_topLeftRadius="0dp"
-    app:shape_roundRect_topRightRadius="0dp">
+    android:background="@color/primaryColor"
+    app:elevation="14dp">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/primaryColor">
+    <ImageView
+        android:id="@+id/leftImageView"
+        android:layout_width="35dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/menu_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/editTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/leftImageView"
-            android:layout_width="35dp"
-            android:layout_height="0dp"
-            android:layout_marginStart="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="fitCenter"
-            android:src="@drawable/menu_icon"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/editTextView"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <uk.whitecrescent.waqti.android.customview.EditTextView
+        android:id="@+id/editTextView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:imeOptions="actionDone"
+        android:inputType="textCapSentences|textAutoCorrect"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/rightImageView"
+        app:layout_constraintStart_toEndOf="@+id/leftImageView"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <uk.whitecrescent.waqti.android.customview.EditTextView
-            android:id="@+id/editTextView"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:imeOptions="actionDone"
-            android:inputType="textCapSentences|textAutoCorrect"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/rightImageView"
-            app:layout_constraintStart_toEndOf="@+id/leftImageView"
-            app:layout_constraintTop_toTopOf="parent" />
+    <ImageView
+        android:id="@+id/rightImageView"
+        android:layout_width="35dp"
+        android:layout_height="0dp"
+        android:layout_marginEnd="8dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:clickable="true"
+        android:focusable="true"
+        android:scaleType="fitCenter"
+        android:src="@drawable/overflow_icon"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/editTextView"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <ImageView
-            android:id="@+id/rightImageView"
-            android:layout_width="35dp"
-            android:layout_height="0dp"
-            android:layout_marginEnd="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:focusable="true"
-            android:scaleType="fitCenter"
-            android:src="@drawable/overflow_icon"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/editTextView"
-            app:layout_constraintTop_toTopOf="parent" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</com.github.florent37.shapeofview.shapes.RoundRectView>
+</androidx.constraintlayout.widget.ConstraintLayout>

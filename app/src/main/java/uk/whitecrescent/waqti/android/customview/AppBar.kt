@@ -5,8 +5,8 @@ import android.text.SpannableStringBuilder
 import android.util.AttributeSet
 import android.view.View
 import android.widget.PopupMenu
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
-import com.github.florent37.shapeofview.shapes.RoundRectView
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.R
@@ -29,7 +29,7 @@ import uk.whitecrescent.waqti.mainActivity
 class AppBar
 @JvmOverloads constructor(context: Context,
                           attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) : RoundRectView(context, attributeSet, defStyle) {
+                          defStyle: Int = 0) : ConstraintLayout(context, attributeSet, defStyle) {
 
     lateinit var popupMenu: PopupMenu
         private set

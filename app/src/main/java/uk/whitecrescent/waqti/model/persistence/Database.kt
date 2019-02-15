@@ -105,6 +105,16 @@ object Database {
         }
     }
 
+    fun needsRepair(): Boolean {
+        return when {
+            boardLists.size != 1 -> true
+            boards.all.filter { it !in boardLists.all.first() }.isNotEmpty() -> true
+            taskLists.all.filter { it !in boards.all.flatMap { it.toList() } }.isNotEmpty() -> true
+            tasks.all.filter { it !in taskLists.all.flatMap { it.toList() } }.isNotEmpty() -> true
+            else -> false
+        }
+    }
+
     @MissingFeature
     @ForLater
     fun repair(): Boolean {

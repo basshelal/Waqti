@@ -5,7 +5,6 @@ import android.text.InputType
 import android.util.AttributeSet
 import android.view.View
 import androidx.appcompat.widget.AppCompatEditText
-import org.jetbrains.anko.isSelectable
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
@@ -25,8 +24,6 @@ class EditTextView
     var isEditable: Boolean = true
         set(value) {
             field = value
-            isLongClickable = value
-            isSelectable = value
             isCursorVisible = value
             showSoftInputOnFocus = value
             isFocusableInTouchMode = value
@@ -46,10 +43,10 @@ class EditTextView
         }
 
     init {
-        setTextAppearanceCompat(R.style.TextAppearance_MaterialComponents_Headline4)
-        setTextColor(resources.getColorCompat(R.color.black))
         isEditable = true
         isMultiLine = false
+        setTextAppearanceCompat(R.style.TextAppearance_MaterialComponents_Headline4)
+        setTextColor(resources.getColorCompat(R.color.black))
         textAlignment = View.TEXT_ALIGNMENT_CENTER
     }
 }

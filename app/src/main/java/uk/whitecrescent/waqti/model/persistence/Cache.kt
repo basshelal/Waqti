@@ -36,6 +36,8 @@ open class Cache<E : Cacheable>(
     private val isInconsistent: Boolean
         get() = !map.all { it.key in db.ids }
 
+    private var lastRemoved: List<E> = emptyList()
+
     fun initialize(): Future<Unit> {
         return doAsync {
             println("Started initialization for Cache of ${db.entityInfo.dbName}")
@@ -100,6 +102,12 @@ open class Cache<E : Cacheable>(
     fun remove(id: ID) {
         db.remove(id)
         map.remove(id)
+    }
+
+    fun undoRemove() {
+        TODO("Not Yet implemented")
+        // put back whatever is in last removed, every time something is removed it gets added
+        // there, that list will be emptied periodically/eventually
     }
 
     //endregion Core Modification
