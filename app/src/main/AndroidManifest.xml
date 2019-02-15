@@ -12,7 +12,8 @@
         android:label="@string/waqti"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Launcher"
-        tools:ignore="GoogleAppIndexingWarning">
+        tools:ignore="GoogleAppIndexingWarning"
+        tools:replace="android:label">
         <activity
             android:name=".android.MainActivity"
             android:label="@string/waqti"
