@@ -3,6 +3,7 @@
 package uk.whitecrescent.waqti.frontend
 
 import android.content.ClipData
+import android.content.Context
 import android.content.res.Resources
 import android.os.Build
 import android.os.VibrationEffect
@@ -27,6 +28,10 @@ inline fun Resources.getColorCompat(colorRes: Int, theme: Resources.Theme? = nul
     } else {
         getColor(colorRes)
     }
+}
+
+inline fun Context.getColorCompat(resId: Int): Int {
+    return resources.getColorCompat(resId)
 }
 
 inline fun Vibrator.vibrateCompat(millis: Long) {

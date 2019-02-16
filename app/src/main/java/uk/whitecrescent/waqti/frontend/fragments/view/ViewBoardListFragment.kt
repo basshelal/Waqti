@@ -53,6 +53,8 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
     override fun setUpViews(element: BoardList) {
 
+        mainActivity.resetStatusBarColor()
+
         boardList_appBar.apply {
             editTextView.apply {
                 fun update() {
@@ -102,7 +104,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
         }
 
         addBoard_FloatingButton.setOnClickListener {
-            @GoToFragment()
+            @GoToFragment
             it.mainActivity.supportFragmentManager.beginTransaction().apply {
 
                 it.mainActivity.viewModel.boardListPosition = false to boardsList_recyclerView.boardListAdapter.itemCount - 1

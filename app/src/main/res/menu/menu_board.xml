@@ -16,5 +16,8 @@
     <item
         android:id="@+id/changeBoardPhoto"
         android:title="@string/changeBoardImage" />
+    <item
+        android:id="@+id/boardAppearance_menuItem"
+        android:title="@string/boardAppearance" />
 
 </menu>

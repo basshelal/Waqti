@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.color_circle.view.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.frontend.appearance.COLORS_200
+import uk.whitecrescent.waqti.frontend.appearance.MaterialColorLevel
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+import uk.whitecrescent.waqti.frontend.appearance.getMaterialColors
 
 class ColorPicker
 @JvmOverloads constructor(context: Context,
@@ -28,7 +29,7 @@ class ColorPickerAdapter(val onClick: (WaqtiColor) -> Unit,
                          var color: WaqtiColor = WaqtiColor.DEFAULT)
     : RecyclerView.Adapter<ColorViewHolder>() {
 
-    private val colors = COLORS_200.toList()
+    private val colors = getMaterialColors(MaterialColorLevel.TWO_HUNDRED).toList()
     private var currentChecked: ColorViewHolder? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorViewHolder {

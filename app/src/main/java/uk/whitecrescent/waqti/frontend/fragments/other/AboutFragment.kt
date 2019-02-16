@@ -13,6 +13,12 @@ class AboutFragment : WaqtiOtherFragment() {
         return inflater.inflate(R.layout.fragment_about, container, false)
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        mainActivity.resetStatusBarColor()
+    }
+
     override fun finish() {
 
     }

@@ -61,6 +61,8 @@
     <string name="pickColorDialog">Pick Color Dialog</string>
     <string name="pickPhotoDialog">Pick Photo Dialog</string>
 
+    <string name="boardAppearance">Board Appearance</string>
+
     <string name="clearListQuestion">Clear List?</string>
     <string name="clearListDetails">This will delete all the tasks in this list but not this
     list</string>

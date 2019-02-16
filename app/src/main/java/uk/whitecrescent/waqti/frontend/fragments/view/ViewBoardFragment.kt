@@ -31,6 +31,7 @@ import uk.whitecrescent.waqti.frontend.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.vibrateCompat
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.shortSnackBar
 
 class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
@@ -54,6 +55,9 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     }
 
     override fun setUpViews(element: Board) {
+
+        mainActivity.setNavigationBarColor(element.barColor)
+        mainActivity.setStatusBarColor(element.barColor)
 
         board_appBar.apply {
             setBackgroundColor(element.barColor)
@@ -140,6 +144,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 initialColor = Caches.boards[boardID].barColor
                                 onClick = { color ->
                                     this@ViewBoardFragment.board_appBar.setBackgroundColor(color)
+                                    mainActivity.setNavigationBarColor(color)
+                                    mainActivity.setStatusBarColor(color)
                                 }
                                 onConfirm = {
                                     Caches.boards[boardID].barColor = it
@@ -148,6 +154,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 onCancel = View.OnClickListener {
                                     Caches.boards[boardID].barColor = initialColor
                                     this@ViewBoardFragment.board_appBar.setBackgroundColor(initialColor)
+                                    mainActivity.setNavigationBarColor(initialColor)
+                                    mainActivity.setStatusBarColor(initialColor)
                                     dismiss()
                                 }
                             }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
@@ -160,6 +168,12 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 onClick = { photo ->
 
                                 }
+                                __onClick = {
+                                    this@ViewBoardFragment.boardView.background = it
+                                }
+                                __onConfirm = {
+                                    this@ViewBoardFragment.boardView.background = it
+                                }
                                 onConfirm = {
 
                                     dismiss()
@@ -169,6 +183,13 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                     dismiss()
                                 }
                             }.show(mainActivity.supportFragmentManager, "PhotoPickerDialog")
+                            true
+                        }
+                        R.id.boardAppearance_menuItem -> {
+                            // here we show a Dialog which allows user to pick which
+                            // customization option to change, when picked it will open a dialog
+                            // for that one
+                            shortSnackBar("Not yet implemented!")
                             true
                         }
                         else -> false

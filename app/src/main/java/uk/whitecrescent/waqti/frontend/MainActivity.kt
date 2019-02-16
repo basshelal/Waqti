@@ -11,11 +11,12 @@ import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.blank_activity.*
 import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.Inconvenience
-import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.hideSoftKeyboard
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,17 +27,16 @@ class MainActivity : AppCompatActivity() {
     @Inconvenience
     // TODO: 26-Dec-18 Transitions for all Fragments are ugly!
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
+        setTheme(uk.whitecrescent.waqti.R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.blank_activity)
+        setContentView(uk.whitecrescent.waqti.R.layout.blank_activity)
 
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 
 
-
         @GoToFragment
         supportFragmentManager.beginTransaction().apply {
-            add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
+            add(uk.whitecrescent.waqti.R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }.commit()
 
@@ -56,21 +56,21 @@ class MainActivity : AppCompatActivity() {
 
         navigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
-                R.id.allBoards_navDrawerItem -> {
+                uk.whitecrescent.waqti.R.id.allBoards_navDrawerItem -> {
                     popAllFragmentsInBackStack()
                 }
-                R.id.about_navDrawerItem -> {
+                uk.whitecrescent.waqti.R.id.about_navDrawerItem -> {
                     @GoToFragment
                     supportFragmentManager.beginTransaction().apply {
-                        replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
+                        replace(uk.whitecrescent.waqti.R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         addToBackStack("")
                     }.commit()
                 }
-                R.id.settings_navDrawerItem -> {
+                uk.whitecrescent.waqti.R.id.settings_navDrawerItem -> {
                     @GoToFragment
                     supportFragmentManager.beginTransaction().apply {
-                        replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
+                        replace(uk.whitecrescent.waqti.R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         addToBackStack("")
                     }.commit()
@@ -79,7 +79,20 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.closeDrawers()
             true
         }
+    }
 
+    fun setStatusBarColor(color: WaqtiColor) {
+        window.statusBarColor = color.toAndroidColor
+
+    }
+
+    fun setNavigationBarColor(color: WaqtiColor) {
+        window.navigationBarColor = color.toAndroidColor
+    }
+
+    fun resetStatusBarColor() {
+        setStatusBarColor(WaqtiColor("#560027"))
+        setNavigationBarColor(WaqtiColor.WAQTI_DEFAULT)
     }
 
     fun popAllFragmentsInBackStack() {

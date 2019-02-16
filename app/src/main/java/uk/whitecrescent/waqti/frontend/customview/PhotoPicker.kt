@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.frontend.customview
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import com.bumptech.glide.Glide
 import com.kc.unsplash.Unsplash
 import com.kc.unsplash.models.Photo
 import kotlinx.android.synthetic.main.unsplash_image.view.*
+import org.jetbrains.anko.image
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.DEFAULT_PHOTO
 import kotlin.random.Random
@@ -29,13 +31,12 @@ class PhotoPicker
 }
 
 class PhotoPickerAdapter(val onClick: (Photo) -> Unit,
-                         var photo: Photo = DEFAULT_PHOTO)
+                         var photo: Photo = DEFAULT_PHOTO,
+                         val __onClick: (Drawable) -> Unit)
     : RecyclerView.Adapter<PhotoViewHolder>() {
 
     lateinit var recyclerView: RecyclerView
-
-    init {
-    }
+    lateinit var __drawable: Drawable
 
     override fun onAttachedToRecyclerView(_recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(_recyclerView)
@@ -49,7 +50,7 @@ class PhotoPickerAdapter(val onClick: (Photo) -> Unit,
     }
 
     override fun getItemCount(): Int {
-        return 1000
+        return 100
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
@@ -58,6 +59,12 @@ class PhotoPickerAdapter(val onClick: (Photo) -> Unit,
                 .placeholder(R.drawable.waqti_icon)
                 .error(R.drawable.delete_icon)
                 .into(holder.image)
+
+        holder.image.setOnClickListener {
+            __drawable = holder.image.image!!
+            __onClick(__drawable)
+        }
+
     }
 
 }

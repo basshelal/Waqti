@@ -78,8 +78,6 @@ class FABOnScrollListener(
     }
 }
 
-inline fun colorToHex(color: Int) = String.format("#%06X", 0xFFFFFF and color)
-
 /**
  * Just a utility to show us where there are Fragment changes happening
  */

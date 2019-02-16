@@ -1,5 +1,6 @@
 package uk.whitecrescent.waqti.frontend.customview.dialogs
 
+import android.graphics.drawable.Drawable
 import com.kc.unsplash.models.Photo
 import kotlinx.android.synthetic.main.dialog_photopicker.*
 import uk.whitecrescent.waqti.R
@@ -15,6 +16,10 @@ class PhotoPickerDialog : MaterialDialog() {
     var initialPhoto: Photo = DEFAULT_PHOTO
     var pickedPhoto: Photo = DEFAULT_PHOTO
 
+    var __onConfirm: (Drawable) -> Unit = { }
+    var __onClick: (Drawable) -> Unit = { }
+    lateinit var __pickedDrawable: Drawable
+
     override fun onResume() {
         super.onResume()
 
@@ -22,10 +27,15 @@ class PhotoPickerDialog : MaterialDialog() {
             dialogTitle_textView.text = title
 
             photoPicker.apply {
-                adapter = PhotoPickerAdapter(onClick, initialPhoto)
+                adapter = PhotoPickerAdapter(onClick, initialPhoto, __onClick)
             }
 
             confirm_button.setOnClickListener {
+                val __drawable = (photoPicker?.adapter as? PhotoPickerAdapter)?.__drawable
+                __pickedDrawable = __drawable!!
+                __onConfirm(__drawable)
+
+
                 val photo = (photoPicker?.adapter as? PhotoPickerAdapter)?.photo
                         ?: DEFAULT_PHOTO
                 pickedPhoto = photo
