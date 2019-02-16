@@ -46,7 +46,11 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
     override fun setUpViews(element: TaskList) {
 
+        mainActivity.setNavigationBarColor(Caches.boards[boardID].barColor)
+        mainActivity.setStatusBarColor(Caches.boards[boardID].barColor)
+
         taskList_appBar.apply {
+            setBackgroundColor(Caches.boards[boardID].barColor)
             editTextView.apply {
                 fun update() {
                     text.also {

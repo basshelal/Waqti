@@ -8,7 +8,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModel
 import kotlinx.android.synthetic.main.fragment_create_task.*
-import uk.whitecrescent.waqti.FutureIdea
+import kotlinx.android.synthetic.main.property_card.*
+import kotlinx.android.synthetic.main.property_card.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.Time
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -50,8 +51,6 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
         setUpViews()
     }
 
-    @FutureIdea
-    // TODO: 16-Jan-19 Draggable Property Cards
     override fun setUpViews() {
 
         taskName_editText.apply {
@@ -81,70 +80,60 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
     @SuppressLint("SetTextI18n")
     private inline fun setUpTimeViews() {
-
-        taskTime_cardView.apply {
-            setOnClickListener {
+        taskTime_propertyCard.apply {
+            onClick {
                 DateTimePickerDialog().apply {
                     initialTime = viewModel.taskTime
                     onConfirm = {
                         viewModel.taskTime = it
-                        this@CreateTaskFragment.selectTime_textView.text = getString(R.string.timeColon) + it.rfcFormatted
+                        this@CreateTaskFragment.title_textView.text = getString(R.string.timeColon) + it.rfcFormatted
                         dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-        }
-
-        taskTimeClear_imageButton.apply {
-            setOnClickListener {
+            clear_imageButton.setOnClickListener {
                 viewModel.taskTime = DEFAULT_TIME
-                selectTime_textView.text = getString(R.string.selectTimeProperty)
+                this@CreateTaskFragment.title_textView.text = getString(R.string.selectTimeProperty)
             }
         }
     }
 
     @SuppressLint("SetTextI18n")
     private inline fun setUpDeadlineViews() {
-        taskDeadline_cardView.apply {
-            setOnClickListener {
+        taskDeadline_propertyCard.apply {
+            onClick {
                 DateTimePickerDialog().apply {
                     initialTime = viewModel.taskDeadline
                     onConfirm = {
                         viewModel.taskDeadline = it
-                        this@CreateTaskFragment.selectDeadline_textView.text = getString(R.string.deadlineColon) + it.rfcFormatted
+                        this@CreateTaskFragment.title_textView.text = getString(R.string.deadlineColon) + it.rfcFormatted
                         dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-        }
-
-        taskDeadlineClear_imageButton.apply {
-            setOnClickListener {
+            clear_imageButton.setOnClickListener {
                 viewModel.taskDeadline = DEFAULT_TIME
-                selectDeadline_textView.text = getString(R.string.selectDeadlineProperty)
+                this@CreateTaskFragment.title_textView.text = getString(R.string.selectDeadlineProperty)
             }
         }
     }
 
     private inline fun setUpDescriptionViews() {
-        taskDescription_cardView.apply {
-            setOnClickListener {
+        taskDescription_propertyCard.apply {
+            onClick {
                 EditTextDialog().apply {
                     hint = this@CreateTaskFragment.getString(R.string.enterDescription)
                     initialText = viewModel.taskDescription
                     onConfirm = {
                         viewModel.taskDescription = it
-                        this@CreateTaskFragment.selectDescription_textView.text = it
+                        this@CreateTaskFragment.title_textView.text = it
                         dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-        }
-
-        taskDescriptionClear_imageButton.apply {
-            setOnClickListener {
+            clear_imageButton.setOnClickListener {
                 viewModel.taskDescription = DEFAULT_DESCRIPTION
-                selectDescription_textView.text = getString(R.string.selectDescriptionProperty)
+                this@CreateTaskFragment.title_textView.text = getString(R.string.selectDescriptionProperty)
             }
         }
     }
@@ -160,7 +149,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     private inline fun Task.setTime() {
         viewModel.taskTime.also {
             if (it.isNotDefault) {
-                if (taskTimeConstraint_checkBox.isChecked) setTimeConstraintValue(it)
+                if (taskTime_propertyCard.constraint_checkBox.isChecked) setTimeConstraintValue(it)
                 else setTimePropertyValue(it)
             }
         }
@@ -169,7 +158,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     private inline fun Task.setDeadline() {
         viewModel.taskDeadline.also {
             if (it.isNotDefault) {
-                if (taskDeadlineConstraint_checkBox.isChecked) setDeadlineConstraintValue(it)
+                if (taskDeadline_propertyCard.constraint_checkBox.isChecked) setDeadlineConstraintValue(it)
                 else setDeadlinePropertyValue(it)
             }
         }

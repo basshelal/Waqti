@@ -16,37 +16,45 @@
         app:leftClickOpensDrawer="true"
         app:rightClickOpensMenu="@menu/menu_task" />
 
-    <TextView
-        android:id="@+id/taskTime_textView"
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_margin="8dp"
-        android:text="@string/defaultTime"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-        app:layout_constraintLeft_toLeftOf="@id/task_appBar"
-        app:layout_constraintRight_toRightOf="@id/task_appBar"
-        app:layout_constraintTop_toBottomOf="@id/task_appBar" />
+        android:scrollbars="vertical"
+        app:layout_constraintTop_toBottomOf="@id/task_appBar">
 
-    <TextView
-        android:id="@+id/taskDeadline_textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/defaultDeadline"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-        app:layout_constraintEnd_toEndOf="@+id/taskTime_textView"
-        app:layout_constraintStart_toStartOf="@+id/taskTime_textView"
-        app:layout_constraintTop_toBottomOf="@id/taskTime_textView" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/taskDescription_textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="@string/defaultDescription"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-        app:layout_constraintEnd_toEndOf="@+id/taskDeadline_textView"
-        app:layout_constraintStart_toStartOf="@+id/taskDeadline_textView"
-        app:layout_constraintTop_toBottomOf="@id/taskDeadline_textView" />
+            <TextView
+                android:id="@+id/taskTime_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/defaultTime"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+
+            <TextView
+                android:id="@+id/taskDeadline_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/defaultDeadline"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+
+            <TextView
+                android:id="@+id/taskDescription_textView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:text="@string/defaultDescription"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

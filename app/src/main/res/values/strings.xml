@@ -84,5 +84,9 @@
     <string name="timeColon">Time: </string>
     <string name="deadlineColon">Deadline: </string>
     <string name="descriptionColon">Description: </string>
+    <string name="selectProperty">Select Property</string>
+
+    <string name="openSourceLibraries">Open Source Libraries</string>
+    <string name="meetTheTeam">Meet the Team</string>
 
 </resources>

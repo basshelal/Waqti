@@ -5,6 +5,7 @@
     android:layout_height="match_parent">
 
     <uk.whitecrescent.waqti.frontend.customview.AppBar
+        android:id="@+id/about_appBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:editable="false"
@@ -12,5 +13,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:text="@string/about" />
+
+    <TextView
+        android:id="@+id/meetTheTeamHeading_textView"
+        style="@style/TextAppearance.MaterialComponents.Headline3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/meetTheTeam"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+        app:layout_constraintTop_toBottomOf="@id/about_appBar" />
+
+    <TextView
+        android:id="@+id/openSourceLibrariesHeading_textView"
+        style="@style/TextAppearance.MaterialComponents.Headline3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/openSourceLibraries"
+        android:textColor="@color/black"
+        android:textSize="40sp"
+        app:layout_constraintTop_toBottomOf="@id/meetTheTeamHeading_textView" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

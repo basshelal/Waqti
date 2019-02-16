@@ -13,4 +13,9 @@
         <attr name="isMultiLine" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="PropertyCard">
+        <attr name="title" format="string" />
+        <attr name="canConstrain" format="boolean" />
+    </declare-styleable>
+
 </resources>

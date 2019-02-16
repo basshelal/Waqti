@@ -83,7 +83,6 @@ class MainActivity : AppCompatActivity() {
 
     fun setStatusBarColor(color: WaqtiColor) {
         window.statusBarColor = color.toAndroidColor
-
     }
 
     fun setNavigationBarColor(color: WaqtiColor) {

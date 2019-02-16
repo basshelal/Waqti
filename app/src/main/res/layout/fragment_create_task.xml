@@ -30,167 +30,27 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/taskTime_cardView"
+            <uk.whitecrescent.waqti.frontend.customview.PropertyCard
+                android:id="@+id/taskTime_propertyCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/taskCardBackgroundColor"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="8dp">
+                android:layout_margin="8dp"
+                app:title="@string/selectTimeProperty" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/selectTime_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/selectTimeProperty"
-                        android:textAlignment="center"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <CheckBox
-                        android:id="@+id/taskTimeConstraint_checkBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="16dp"
-                        android:buttonTint="@color/secondaryColor"
-                        android:text="@string/constraintQuestion"
-                        android:textAppearance="@style/TextAppearance.Design.Hint"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/taskTimeClear_imageButton"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/selectTime_textView" />
-
-                    <ImageButton
-                        android:id="@+id/taskTimeClear_imageButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:backgroundTint="@color/errorColor"
-                        android:src="@drawable/ic_clear"
-                        android:tint="@color/black"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/taskTimeConstraint_checkBox"
-                        app:layout_constraintTop_toBottomOf="@id/selectTime_textView" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/taskDeadline_cardView"
+            <uk.whitecrescent.waqti.frontend.customview.PropertyCard
+                android:id="@+id/taskDeadline_propertyCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/taskCardBackgroundColor"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="8dp">
+                android:layout_margin="8dp"
+                app:title="@string/selectDeadlineProperty" />
 
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/selectDeadline_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/selectDeadlineProperty"
-                        android:textAlignment="center"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <CheckBox
-                        android:id="@+id/taskDeadlineConstraint_checkBox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginStart="16dp"
-                        android:buttonTint="@color/secondaryColor"
-                        android:text="@string/constraintQuestion"
-                        android:textAppearance="@style/TextAppearance.Design.Hint"
-                        android:textSize="16sp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/taskDeadlineClear_imageButton"
-                        app:layout_constraintHorizontal_chainStyle="spread_inside"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/selectDeadline_textView" />
-
-                    <ImageButton
-                        android:id="@+id/taskDeadlineClear_imageButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:backgroundTint="@color/errorColor"
-                        android:src="@drawable/ic_clear"
-                        android:tint="@color/black"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/taskDeadlineConstraint_checkBox"
-                        app:layout_constraintTop_toBottomOf="@id/selectDeadline_textView" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/taskDescription_cardView"
+            <uk.whitecrescent.waqti.frontend.customview.PropertyCard
+                android:id="@+id/taskDescription_propertyCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="@color/taskCardBackgroundColor"
-                android:clickable="true"
-                android:focusable="true"
-                android:foreground="?android:attr/selectableItemBackground"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="8dp">
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <TextView
-                        android:id="@+id/selectDescription_textView"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/selectDescriptionProperty"
-                        android:textAlignment="center"
-                        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <ImageButton
-                        android:id="@+id/taskDescriptionClear_imageButton"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="16dp"
-                        android:backgroundTint="@color/errorColor"
-                        android:src="@drawable/ic_clear"
-                        android:tint="@color/black"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="1.0"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/selectDescription_textView" />
-
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-            </androidx.cardview.widget.CardView>
+                android:layout_margin="8dp"
+                app:canConstrain="false"
+                app:title="@string/selectDescriptionProperty" />
 
         </LinearLayout>
 
