@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.frontend.customview
 
 import android.content.Context
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -14,8 +15,7 @@ import com.kc.unsplash.models.Photo
 import kotlinx.android.synthetic.main.unsplash_image.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.DEFAULT_PHOTO
-import uk.whitecrescent.waqti.keys.UNSPLASH_ACCESS_KEY
-import uk.whitecrescent.waqti.logE
+import kotlin.random.Random
 
 class PhotoPicker
 @JvmOverloads constructor(context: Context,
@@ -32,44 +32,53 @@ class PhotoPickerAdapter(val onClick: (Photo) -> Unit,
                          var photo: Photo = DEFAULT_PHOTO)
     : RecyclerView.Adapter<PhotoViewHolder>() {
 
+    lateinit var recyclerView: RecyclerView
+
+    init {
+    }
+
+    override fun onAttachedToRecyclerView(_recyclerView: RecyclerView) {
+        super.onAttachedToRecyclerView(_recyclerView)
+        recyclerView = _recyclerView
+    }
+
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
         return PhotoViewHolder(LayoutInflater.from(parent.context)
                 .inflate(R.layout.unsplash_image, parent, false))
     }
 
     override fun getItemCount(): Int {
-        return Int.MAX_VALUE
+        return 1000
     }
 
     override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
-        if (!holder.hasImage) {
-            Unsplash(UNSPLASH_ACCESS_KEY).getRandomPhoto(
-                    null, null, null, null, null, null, null,
-                    object : Unsplash.OnPhotoLoadedListener {
-                        override fun onComplete(photo: Photo?) {
-                            if (!holder.hasImage) {
-                                Glide.with(holder.image)
-                                        .load(photo?.urls?.small)
-                                        .into(holder.image)
-                                holder.hasImage = true
-                            }
-                        }
-
-                        override fun onError(error: String?) {
-                            logE(error)
-                        }
-
-                    }
-            )
-        }
-
-
+        Glide.with(recyclerView)
+                .load(Uri.parse(PICTURES[Random.nextInt(0, PICTURES.size)]))
+                .placeholder(R.drawable.waqti_icon)
+                .error(R.drawable.delete_icon)
+                .into(holder.image)
     }
 
 }
 
+@Suppress("NOTHING_TO_INLINE")
+inline fun Unsplash.randomPhoto(listener: Unsplash.OnPhotoLoadedListener) = getRandomPhoto(
+        null, null, null, null, null, null, null, listener)
+
 class PhotoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    var hasImage = false
     val image: ImageView
         get() = itemView.imageView
 }
+
+val TALL_PICTURE1 = "https://images.unsplash.com/photo-1548764959-bcab742d6724?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjF9"
+val TALL_PICTURE2 = "https://images.unsplash.com/photo-1549317935-48ecdbd71bd5?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjF9"
+val TALL_PICTURE3 = "https://images.unsplash.com/photo-1548722318-8537fb197868?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjF9"
+val TALL_PICTURE4 = "https://images.unsplash.com/photo-1548282638-266858867ed5?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjF9"
+val WIDE_PICTURE1 = "https://images.unsplash.com/photo-1548617335-c1b176388c65?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjF9"
+val WIDE_PICTURE2 = "https://images.unsplash.com/photo-1548440914-fcd7b0878ca0?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjF9"
+val WIDE_PICTURE3 = "https://images.unsplash.com/photo-1548165036-e241c64aa5b6?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjF9"
+val WIDE_PICTURE4 = "https://images.unsplash.com/photo-1549253924-6e94dc79ad0d?ixlib=rb-1.2.1&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max&ixid=eyJhcHBfaWQiOjF9"
+
+val PICTURES = listOf(TALL_PICTURE1, TALL_PICTURE2, TALL_PICTURE3, TALL_PICTURE4,
+        WIDE_PICTURE1, WIDE_PICTURE2, WIDE_PICTURE3, WIDE_PICTURE4)
