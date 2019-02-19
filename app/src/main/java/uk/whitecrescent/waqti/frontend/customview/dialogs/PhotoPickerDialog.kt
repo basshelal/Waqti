@@ -24,7 +24,6 @@ class PhotoPickerDialog : MaterialDialog() {
         super.onResume()
 
         dialog.apply {
-            dialogTitle_textView.text = title
 
             photoPicker.apply {
                 adapter = PhotoPickerAdapter(onClick, initialPhoto, __onClick)

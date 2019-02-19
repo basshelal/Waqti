@@ -44,12 +44,16 @@ import java.util.Objects
 
 //region Debug Utils
 
-inline fun logE(any: Any?) {
-    Log.e("DEFAULT", any.toString())
+inline fun logE(message: Any?, tag: String = "DEFAULT") {
+    Log.e(tag, message.toString())
 }
 
-inline fun logE(tag: String, any: Any?) {
-    Log.e(tag, any.toString())
+inline fun logD(message: Any?, tag: String = "DEFAULT") {
+    Log.d(tag, message.toString())
+}
+
+inline fun logI(message: Any?, tag: String = "DEFAULT") {
+    Log.i(tag, message.toString())
 }
 
 inline fun View.shortSnackBar(string: String) = Snackbar.make(this, string, Snackbar.LENGTH_SHORT).show()
@@ -208,8 +212,8 @@ val CACHE_CHECKING_UNIT = java.util.concurrent.TimeUnit.SECONDS
 
 //region Model Utils
 
-inline fun debug(string: String) {
-    if (DEBUG) println(string)
+inline fun debug(message: Any?, tag: String = "DEFAULT") {
+    if (DEBUG) logD(message, tag)
 }
 
 inline fun setGracePeriod(duration: Duration) {

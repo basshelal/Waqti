@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <uk.whitecrescent.waqti.frontend.customview.EditTextView
         android:id="@+id/dialogTitle_textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -13,7 +13,8 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        android:text="@string/pickPhotoDialog"
+        android:hint="Search Unsplash Images"
+        android:imeOptions="actionDone"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
         app:layout_constraintEnd_toEndOf="parent"

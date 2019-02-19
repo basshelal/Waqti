@@ -11,12 +11,12 @@ import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.blank_activity.*
 import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.Inconvenience
+import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.hideSoftKeyboard
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
     @Inconvenience
     // TODO: 26-Dec-18 Transitions for all Fragments are ugly!
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(uk.whitecrescent.waqti.R.style.AppTheme)
+        setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(uk.whitecrescent.waqti.R.layout.blank_activity)
 
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
 
         @GoToFragment
         supportFragmentManager.beginTransaction().apply {
-            add(uk.whitecrescent.waqti.R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
+            add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
         }.commit()
 
@@ -56,21 +56,21 @@ class MainActivity : AppCompatActivity() {
 
         navigationView.setNavigationItemSelectedListener {
             when (it.itemId) {
-                uk.whitecrescent.waqti.R.id.allBoards_navDrawerItem -> {
+                R.id.allBoards_navDrawerItem -> {
                     popAllFragmentsInBackStack()
                 }
-                uk.whitecrescent.waqti.R.id.about_navDrawerItem -> {
+                R.id.about_navDrawerItem -> {
                     @GoToFragment
                     supportFragmentManager.beginTransaction().apply {
-                        replace(uk.whitecrescent.waqti.R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
+                        replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         addToBackStack("")
                     }.commit()
                 }
-                uk.whitecrescent.waqti.R.id.settings_navDrawerItem -> {
+                R.id.settings_navDrawerItem -> {
                     @GoToFragment
                     supportFragmentManager.beginTransaction().apply {
-                        replace(uk.whitecrescent.waqti.R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
+                        replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         addToBackStack("")
                     }.commit()

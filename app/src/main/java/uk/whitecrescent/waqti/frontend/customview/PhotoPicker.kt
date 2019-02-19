@@ -11,12 +11,12 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.kc.unsplash.Unsplash
 import com.kc.unsplash.models.Photo
 import kotlinx.android.synthetic.main.unsplash_image.view.*
 import org.jetbrains.anko.image
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.DEFAULT_PHOTO
+import uk.whitecrescent.waqti.shortSnackBar
 import kotlin.random.Random
 
 class PhotoPicker
@@ -63,15 +63,12 @@ class PhotoPickerAdapter(val onClick: (Photo) -> Unit,
         holder.image.setOnClickListener {
             __drawable = holder.image.image!!
             __onClick(__drawable)
+            it.shortSnackBar("Background set")
         }
 
     }
 
 }
-
-@Suppress("NOTHING_TO_INLINE")
-inline fun Unsplash.randomPhoto(listener: Unsplash.OnPhotoLoadedListener) = getRandomPhoto(
-        null, null, null, null, null, null, null, listener)
 
 class PhotoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val image: ImageView

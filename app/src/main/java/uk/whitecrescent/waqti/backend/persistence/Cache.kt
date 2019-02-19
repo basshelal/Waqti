@@ -7,9 +7,11 @@ import org.jetbrains.anko.doAsync
 import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.CACHE_CHECKING_PERIOD
 import uk.whitecrescent.waqti.CACHE_CHECKING_UNIT
+import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.Committable
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.debug
 import uk.whitecrescent.waqti.ids
 import uk.whitecrescent.waqti.size
 import java.util.concurrent.Future
@@ -36,18 +38,22 @@ open class Cache<E : Cacheable>(
     private val isInconsistent: Boolean
         get() = !map.all { it.key in db.ids }
 
+    @ForLater
+    // TODO: 18-Feb-19 We'll use this to implement an Undo delete
     private var lastRemoved: List<E> = emptyList()
+
+    val type: String = db.entityInfo.dbName
 
     fun initialize(): Future<Unit> {
         return doAsync {
-            println("Started initialization for Cache of ${db.entityInfo.dbName}")
+            debug("Started initialization for Cache of $type")
             db.all.take(sizeLimit).forEach {
                 it.initialize()
                 safeAdd(it)
             }
-            println("Completed initialization for Cache of ${db.entityInfo.dbName}")
-            println("Cache of ${db.entityInfo.dbName} is of size ${size}")
-            println("DB of ${db.entityInfo.dbName} is of size ${db.size}")
+            debug("Completed initialization for Cache of $type")
+            debug("Cache of $type is of size ${size}")
+            debug("DB of $type is of size ${db.size}")
         }
     }
 
@@ -56,6 +62,8 @@ open class Cache<E : Cacheable>(
     @Throws(ElementNotFoundException::class)
     private fun safeGet(id: ID): E {
         val mapFound = map[id]
+
+        debug("Cache of $type has size $size", tag = "Cache")
 
         // below queries the DB, we want to reduce this as much as possible
         // we do this by making sure every update made to the db will also be done to the cache
@@ -66,17 +74,29 @@ open class Cache<E : Cacheable>(
             @QueriesDataBase
             mapFound == null -> {
                 val dbFound = db[id]
-                if (dbFound == null) throw ElementNotFoundException(id, cache = db.entityInfo.dbName)
+                if (dbFound == null) throw ElementNotFoundException(id, cache = type)
                 else {
                     safeAdd(dbFound)
                     dbFound
                 }
             }
-            @QueriesDataBase
-            map.size != db.size -> {
+            // TODO: 19-Feb-19 This entire class might need rethinking
+            // Cleaning and trimming only works under the assumption the user will never reach
+            // the sizeLimit, when they do this implementation almost fails drastically because
+            // the cache will pretty much always be inconsistent, and checking consistency is
+            // expensive as well, is this even worth it?
+            // What we can do is make this keep only the currently visible or "relevant" Tasks,
+            // the ones in the currently viewing Board, when we leave that Board we must empty
+            // the Cache so that we fill it up again when we visit a new Board, sizeLimit will
+            // then not apply at all
+
+
+            /*@QueriesDataBase
+            isInconsistent -> {
                 clean()
+                logE("Inconsistent Cache, retrying to get ${id} in Cache of ${type}")
                 safeGet(id)
-            }
+            }*/
             else -> mapFound
         }
     }
@@ -224,7 +244,6 @@ open class Cache<E : Cacheable>(
     fun trim() {
         if (size > sizeLimit) {
             map.keys.toList()
-                    //.reversed()
                     .filterIndexed { index, _ -> index < (size - sizeLimit) }
                     .forEach { map.remove(it) }
             check(map.size == sizeLimit)

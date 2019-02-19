@@ -42,14 +42,14 @@ class BoardView
     val taskListAdapters = ArrayList<TaskListAdapter>()
 
     init {
-        layoutManager = LinearLayoutManager(this.context, HORIZONTAL, false)
+        layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
     }
 
     override fun setAdapter(_adapter: Adapter<*>?) {
         super.setAdapter(_adapter)
-        require(this.adapter != null &&
-                this.adapter is BoardAdapter
-        ) { "Adapter must be non null and a BoardAdapter, passed in ${_adapter}" }
+        require(_adapter != null && _adapter is BoardAdapter) {
+            "Adapter must be non null and a BoardAdapter, passed in $_adapter"
+        }
 
         attachHelpers()
     }
@@ -132,7 +132,9 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
-        check(recyclerView is BoardView)
+        require(recyclerView is BoardView) {
+            "Recycler View attached to a BoardAdapter must be a BoardView"
+        }
         boardView = recyclerView
     }
 
