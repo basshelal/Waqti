@@ -66,7 +66,8 @@ object Caches {
     )
 
     fun initialize() {
-        allCaches.forEach { it.initialize() }
+        boardLists.initialize()
+        //allCaches.forEach { it.initialize() }
     }
 
     fun close() {

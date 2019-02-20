@@ -26,7 +26,7 @@
         android:src="@drawable/done_icon"
         app:backgroundTint="@color/secondaryColor"
         app:elevation="14dp"
-        app:fabSize="normal"
+        app:fabCustomSize="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

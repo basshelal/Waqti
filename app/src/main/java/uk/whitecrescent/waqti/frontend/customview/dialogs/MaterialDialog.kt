@@ -9,13 +9,24 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import uk.whitecrescent.waqti.frontend.MainActivity
 
+/**
+ * Parent of all Dialogs in Waqti.
+ * Basically this is just a [BottomSheetDialogFragment] that extends fully when initialized and
+ * has some commonly used behaviours already given, such as [mainActivity].
+ *
+ * Just provide the layout id by overriding [contentView] with the layout,
+ * eg `R.layout.dialog_confirm`.
+ *
+ * Most MaterialDialogs in Waqti should have a confirm and cancel button and should have
+ * callbacks in them so that the taken action can be determined at call site.
+ */
 abstract class MaterialDialog : BottomSheetDialogFragment() {
 
     abstract val contentView: Int
     lateinit var mainActivity: MainActivity
     lateinit var dialog: BottomSheetDialog
     open var onCancel: View.OnClickListener = View.OnClickListener {
-        this.dismiss()
+        dismiss()
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {

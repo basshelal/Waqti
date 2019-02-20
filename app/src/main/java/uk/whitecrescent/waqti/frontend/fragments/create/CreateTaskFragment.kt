@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModel
 import kotlinx.android.synthetic.main.fragment_create_task.*
-import kotlinx.android.synthetic.main.property_card.*
 import kotlinx.android.synthetic.main.property_card.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.Time
@@ -82,18 +81,18 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     private inline fun setUpTimeViews() {
         taskTime_propertyCard.apply {
             onClick {
-                DateTimePickerDialog().apply {
-                    initialTime = viewModel.taskTime
-                    onConfirm = {
-                        viewModel.taskTime = it
-                        this@CreateTaskFragment.title_textView.text = getString(R.string.timeColon) + it.rfcFormatted
-                        dismiss()
+                DateTimePickerDialog().also {
+                    it.initialTime = viewModel.taskTime
+                    it.onConfirm = { time ->
+                        viewModel.taskTime = time
+                        this@apply.title_textView.text = getString(R.string.timeColon) + time.rfcFormatted
+                        it.dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
             clear_imageButton.setOnClickListener {
                 viewModel.taskTime = DEFAULT_TIME
-                this@CreateTaskFragment.title_textView.text = getString(R.string.selectTimeProperty)
+                this@apply.title_textView.text = getString(R.string.selectTimeProperty)
             }
         }
     }
@@ -102,18 +101,18 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     private inline fun setUpDeadlineViews() {
         taskDeadline_propertyCard.apply {
             onClick {
-                DateTimePickerDialog().apply {
-                    initialTime = viewModel.taskDeadline
-                    onConfirm = {
-                        viewModel.taskDeadline = it
-                        this@CreateTaskFragment.title_textView.text = getString(R.string.deadlineColon) + it.rfcFormatted
-                        dismiss()
+                DateTimePickerDialog().also {
+                    it.initialTime = viewModel.taskDeadline
+                    it.onConfirm = { time ->
+                        viewModel.taskDeadline = time
+                        this@apply.title_textView.text = getString(R.string.deadlineColon) + time.rfcFormatted
+                        it.dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
             clear_imageButton.setOnClickListener {
                 viewModel.taskDeadline = DEFAULT_TIME
-                this@CreateTaskFragment.title_textView.text = getString(R.string.selectDeadlineProperty)
+                this@apply.title_textView.text = getString(R.string.selectDeadlineProperty)
             }
         }
     }
@@ -121,19 +120,19 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     private inline fun setUpDescriptionViews() {
         taskDescription_propertyCard.apply {
             onClick {
-                EditTextDialog().apply {
-                    hint = this@CreateTaskFragment.getString(R.string.enterDescription)
-                    initialText = viewModel.taskDescription
-                    onConfirm = {
-                        viewModel.taskDescription = it
-                        this@CreateTaskFragment.title_textView.text = it
-                        dismiss()
+                EditTextDialog().also {
+                    it.hint = this@CreateTaskFragment.getString(R.string.enterDescription)
+                    it.initialText = viewModel.taskDescription
+                    it.onConfirm = { s ->
+                        viewModel.taskDescription = s
+                        this@apply.title_textView.text = s
+                        it.dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
             clear_imageButton.setOnClickListener {
                 viewModel.taskDescription = DEFAULT_DESCRIPTION
-                this@CreateTaskFragment.title_textView.text = getString(R.string.selectDescriptionProperty)
+                this@apply.title_textView.text = getString(R.string.selectDescriptionProperty)
             }
         }
     }

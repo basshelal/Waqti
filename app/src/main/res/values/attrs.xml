@@ -18,4 +18,9 @@
         <attr name="canConstrain" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="EditTextView">
+        <attr name="isEditable" format="boolean" />
+        <attr name="isMultiline" format="boolean" />
+    </declare-styleable>
+
 </resources>

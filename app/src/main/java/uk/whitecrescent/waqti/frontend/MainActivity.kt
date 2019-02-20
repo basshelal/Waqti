@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
-        setContentView(uk.whitecrescent.waqti.R.layout.blank_activity)
+        setContentView(R.layout.blank_activity)
 
         viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
 

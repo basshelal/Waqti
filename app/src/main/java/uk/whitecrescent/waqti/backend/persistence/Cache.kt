@@ -28,15 +28,12 @@ open class Cache<E : Cacheable>(
     private val map = LinkedHashMap<ID, E>(sizeLimit, 0.75F, true)
     private var isChecking = false
 
-    val all: List<E>
-        get() = db.all
-
     override val size: Int
         get() = map.size
 
     @QueriesDataBase
     private val isInconsistent: Boolean
-        get() = !map.all { it.key in db.ids }
+        get() = map.asSequence().any { it.key !in db.ids }
 
     @ForLater
     // TODO: 18-Feb-19 We'll use this to implement an Undo delete
@@ -47,7 +44,7 @@ open class Cache<E : Cacheable>(
     fun initialize(): Future<Unit> {
         return doAsync {
             debug("Started initialization for Cache of $type")
-            db.all.take(sizeLimit).forEach {
+            db.all.asSequence().take(sizeLimit).forEach {
                 it.initialize()
                 safeAdd(it)
             }
@@ -62,8 +59,6 @@ open class Cache<E : Cacheable>(
     @Throws(ElementNotFoundException::class)
     private fun safeGet(id: ID): E {
         val mapFound = map[id]
-
-        debug("Cache of $type has size $size", tag = "Cache")
 
         // below queries the DB, we want to reduce this as much as possible
         // we do this by making sure every update made to the db will also be done to the cache

@@ -43,10 +43,21 @@ class EditTextView
         }
 
     init {
-        isEditable = true
-        isMultiLine = false
+
+        val attributes = context.obtainStyledAttributes(attributeSet, R.styleable.EditTextView)
+
+        attributes.getBoolean(R.styleable.EditTextView_isEditable, true).apply {
+            isEditable = this
+        }
+
+        attributes.getBoolean(R.styleable.EditTextView_isMultiline, false).apply {
+            isMultiLine = this
+        }
+
         setTextAppearanceCompat(R.style.TextAppearance_MaterialComponents_Headline4)
         setTextColor(resources.getColorCompat(R.color.black))
         textAlignment = View.TEXT_ALIGNMENT_CENTER
+
+        attributes.recycle()
     }
 }
