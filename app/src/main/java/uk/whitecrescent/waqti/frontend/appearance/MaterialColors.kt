@@ -11,8 +11,6 @@ class MaterialColor(value: String,
 
     companion object {
 
-        val red50 = MaterialColor("#FFEBEE", Color.RED, Level.FIFTY, "#FFFFFF".c, "#CCB9BC".c)
-
         fun getMaterialColors(color: Color): List<WaqtiColor> {
             return when (color) {
                 Color.RED -> listOf("#FFEBEE", "#FFCDD2", "#EF9A9A", "#E57373", "#EF5350", "#F44336", "#E53935", "#D32F2F", "#C62828", "#B71C1C").map { it.toColor }

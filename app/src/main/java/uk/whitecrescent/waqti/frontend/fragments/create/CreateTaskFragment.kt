@@ -69,11 +69,14 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
             }
         }
 
+        // TODO: 23-Feb-19 Uncomment these to enable Task Properties
         setUpTimeViews()
 
         setUpDeadlineViews()
 
         setUpDescriptionViews()
+
+        hideProperties()
 
     }
 
@@ -167,6 +170,12 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
         viewModel.taskDescription.also {
             if (it.isNotDefault) setDescriptionValue(it)
         }
+    }
+
+    private inline fun hideProperties() {
+        taskTime_propertyCard.isVisible = false
+        taskDeadline_propertyCard.isVisible = false
+        taskDescription_propertyCard.isVisible = false
     }
 
     override fun finish() {

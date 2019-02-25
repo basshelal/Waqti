@@ -118,9 +118,8 @@ inline fun RecyclerView.scrollToStart() {
     }
 }
 
-inline fun <reified T : ViewModel> Fragment.getViewModel(): T {
-    return ViewModelProviders.of(this).get(T::class.java)
-}
+inline fun <reified T : ViewModel> Fragment.getViewModel(): T =
+        ViewModelProviders.of(this).get(T::class.java)
 
 //endregion Android Utils
 

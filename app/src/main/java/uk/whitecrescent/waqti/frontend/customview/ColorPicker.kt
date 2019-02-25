@@ -6,12 +6,32 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import kotlinx.android.synthetic.main.color_circle.view.*
+import org.jetbrains.anko.image
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.MaterialColor
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+
+class PagedColorPicker
+@JvmOverloads constructor(context: Context,
+                          attributeSet: AttributeSet? = null) : ViewPager(context, attributeSet)
+
+/*class PagedColorPickerAdapter(fragmentManager: FragmentManager) : FragmentStatePagerAdapter(fragmentManager) {
+
+    override fun getItem(position: Int): Fragment {
+
+    }
+
+    override fun getCount(): Int {
+
+    }
+
+
+}*/
 
 class ColorPicker
 @JvmOverloads constructor(context: Context,
@@ -28,7 +48,7 @@ class ColorPickerAdapter(val onClick: (WaqtiColor) -> Unit,
                          var color: WaqtiColor = WaqtiColor.DEFAULT)
     : RecyclerView.Adapter<ColorViewHolder>() {
 
-    private val colors = MaterialColor.getMaterialColors(MaterialColor.Level.TWO_HUNDRED).toList()
+    private val colors = MaterialColor.getAllMaterialColors()
     private var currentChecked: ColorViewHolder? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorViewHolder {
@@ -46,11 +66,11 @@ class ColorPickerAdapter(val onClick: (WaqtiColor) -> Unit,
                 background = color.toColorDrawable
             }
 
-            setImageDrawable(colors[position].toColorDrawable)
+            image = colors[position].toColorDrawable
 
-            if (currentChecked == null && colors[position] == color) {
+            if (colors[position] == color) {
                 check()
-                currentChecked = holder
+                if (currentChecked == null) currentChecked = holder
             }
 
             setOnClickListener {
@@ -67,6 +87,9 @@ class ColorPickerAdapter(val onClick: (WaqtiColor) -> Unit,
                 onClick(color)
             }
         }
+        holder.name.apply {
+            text = colors[position].value
+        }
     }
 
 }
@@ -74,4 +97,6 @@ class ColorPickerAdapter(val onClick: (WaqtiColor) -> Unit,
 class ColorViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val image: ImageView
         get() = itemView.circle_imageView
+    val name: TextView
+        get() = itemView.colorName_textView
 }

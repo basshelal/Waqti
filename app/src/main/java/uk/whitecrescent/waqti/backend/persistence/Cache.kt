@@ -199,7 +199,7 @@ open class Cache<E : Cacheable>(
 
     //region Dangerous Bulk Removes
 
-    fun clearMap() = this.map.clear()
+    fun clearMap() = doAsync { map.clear() }
 
     fun clearDB() = object : Committable {
         override fun commit() {

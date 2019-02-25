@@ -12,6 +12,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
+import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -22,16 +23,13 @@ import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.Orientation
 import uk.whitecrescent.waqti.frontend.addAfterTextChangedListener
-import uk.whitecrescent.waqti.frontend.customview.dialogs.ColorPickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
-import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.vibrateCompat
 import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.shortSnackBar
 
 class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
@@ -81,6 +79,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     } else false
                 }
             }
+            @ForLater
+            // TODO: 25-Feb-19 Board appearance stuff for later
             popupMenu.apply {
                 setOnMenuItemClickListener {
                     when (it.itemId) {
@@ -96,7 +96,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                             }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
                             true
                         }
-                        R.id.changeBoardColor_menuItem -> {
+                        /*R.id.changeBoardColor_menuItem -> {
                             ColorPickerDialog().apply {
                                 title = this@ViewBoardFragment.getString(R.string.pickBoardColor)
                                 initialColor = Caches.boards[boardID].backgroundColor
@@ -114,8 +114,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 }
                             }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
                             true
-                        }
-                        R.id.changeCardColor_menuItem -> {
+                        }*/
+                        /*R.id.changeCardColor_menuItem -> {
                             ColorPickerDialog().apply {
                                 title = this@ViewBoardFragment.getString(R.string.pickCardColor)
                                 initialColor = Caches.boards[boardID].cardColor
@@ -137,8 +137,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 }
                             }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
                             true
-                        }
-                        R.id.changeAppBarColor_menuItem -> {
+                        }*/
+                        /*R.id.changeAppBarColor_menuItem -> {
                             ColorPickerDialog().apply {
                                 title = this@ViewBoardFragment.getString(R.string.pickAppBarColor)
                                 initialColor = Caches.boards[boardID].barColor
@@ -160,8 +160,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 }
                             }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
                             true
-                        }
-                        R.id.changeBoardPhoto -> {
+                        }*/
+                        /*R.id.changeBoardPhoto -> {
                             PhotoPickerDialog().apply {
                                 title = this@ViewBoardFragment.getString(R.string.pickBoardBackground)
                                 initialPhoto = Caches.boards[boardID].backgroundPhoto
@@ -184,14 +184,14 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 }
                             }.show(mainActivity.supportFragmentManager, "PhotoPickerDialog")
                             true
-                        }
-                        R.id.boardAppearance_menuItem -> {
+                        }*/
+                        /*R.id.boardAppearance_menuItem -> {
                             // here we show a Dialog which allows user to pick which
                             // customization option to change, when picked it will open a dialog
                             // for that one
                             shortSnackBar("Not yet implemented!")
                             true
-                        }
+                        }*/
                         else -> false
                     }
                 }
@@ -216,7 +216,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         }
 
         addList_floatingButton.setOnClickListener {
-            @GoToFragment()
+            @GoToFragment
             it.mainActivity.supportFragmentManager.beginTransaction().apply {
 
                 it.mainActivity.viewModel.boardID = element.id
@@ -260,6 +260,11 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 true
             }
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Caches.boards.clearMap()
     }
 
     override fun finish() {

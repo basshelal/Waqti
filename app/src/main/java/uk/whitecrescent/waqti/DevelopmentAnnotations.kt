@@ -68,7 +68,8 @@ annotation class UpdateDocumentation
  */
 @Repeatable
 @Retention(AnnotationRetention.SOURCE)
-@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD,
+        AnnotationTarget.FUNCTION, AnnotationTarget.FILE, AnnotationTarget.EXPRESSION)
 annotation class ForLater
 
 /**

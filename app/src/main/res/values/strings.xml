@@ -89,5 +89,21 @@
     <string name="openSourceLibraries">Open Source Libraries</string>
     <string name="meetTheTeam">Meet the Team</string>
     <string name="faq">Frequently Asked Questions</string>
+    <string name="specialThanks">Special Thanks</string>
+
+    <string name="openSourceLibrariesText">This application would not be possible without
+        the following amazing libraries</string>
+
+    <string name="specialThanksText">Special Thanks to</string>
+
+    <string name="meetTheTeamText">Meet the team text</string>
+
+    <string name="faqText">Faq text</string>
+
+    <string name="waqtiBetaText">Waqti is currently in beta, updates will continue to roll
+        out with many exciting features</string>
+
+    <string name="waqtiOpenSource">Waqti is free and open source, the code can be found on
+        GitHub by searching \"Waqti-Android\"</string>
 
 </resources>

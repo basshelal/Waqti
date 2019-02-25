@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
+    <!--<item
         android:id="@+id/changeBoardColor_menuItem"
         android:title="@string/changeBoardColor" />
     <item
@@ -15,7 +15,7 @@
         android:title="@string/changeBoardImage" />
     <item
         android:id="@+id/boardAppearance_menuItem"
-        android:title="@string/boardAppearance" />
+        android:title="@string/boardAppearance" />-->
 
     <item
         android:id="@+id/deleteBoard_menuItem"
