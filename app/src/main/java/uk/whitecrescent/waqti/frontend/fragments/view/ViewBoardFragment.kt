@@ -71,7 +71,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 }
                 text = SpannableStringBuilder(element.name)
                 addAfterTextChangedListener { update() }
-                setOnEditorActionListener { textView, actionId, event ->
+                setOnEditorActionListener { textView, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
                         textView.clearFocusAndHideSoftKeyboard()
@@ -89,7 +89,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardQuestion)
                                 message = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardDetails)
                                 onConfirm = {
-                                    this.dismiss()
+                                    dismiss()
                                     Caches.deleteBoard(boardID)
                                     finish()
                                 }

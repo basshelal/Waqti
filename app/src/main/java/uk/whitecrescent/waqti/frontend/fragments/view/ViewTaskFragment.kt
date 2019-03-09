@@ -92,7 +92,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                         }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
 
                         Snackbar.make(this, "Deleted", Snackbar.LENGTH_LONG)
-                                .setAction("Undo", { shortSnackBar("Not yet implemented") })
+                                .setAction("Undo") { shortSnackBar("Not yet implemented") }
                                 .show()
                         true
                     }

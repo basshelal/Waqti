@@ -21,7 +21,7 @@ const val BOARD_LISTS_CACHE_SIZE = 1
  *      try {
  *          Caches.tasks[x]
  *      } catch(exception: ElementNotFoundException) {
- *          if(exception.elementID == x.id()) //something
+ *          if(exception.elementID == x.id) //something
  *      }
  *
  * Which creates safety with specificity, just be sure to catch the exception
@@ -29,9 +29,7 @@ const val BOARD_LISTS_CACHE_SIZE = 1
  *
  */
 class ElementNotFoundException(elementID: ID = 0, element: Any = "", cache: Any = "") :
-        NoSuchElementException(
-                "Element $element of ID $elementID not found in this Cache $cache"
-        )
+        NoSuchElementException("Element $element of ID $elementID not found in this Cache $cache")
 
 /**
  * Shows that this queries the Database, useful if database queries are expensive.
