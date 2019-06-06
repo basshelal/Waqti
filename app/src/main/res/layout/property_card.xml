@@ -16,46 +16,42 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/title_textView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/selectProperty"
-            android:textAlignment="center"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
-            app:layout_constraintEnd_toEndOf="parent"
+        <ImageView
+            android:id="@+id/propertyIcon_imageView"
+            android:layout_width="35dp"
+            android:layout_height="0dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/waqti_icon"
+            app:layout_constraintBottom_toBottomOf="@id/title_textView"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <CheckBox
-            android:id="@+id/constraint_checkBox"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginStart="16dp"
-            android:buttonTint="@color/secondaryColor"
-            android:text="@string/constraintQuestion"
-            android:textAppearance="@style/TextAppearance.Design.Hint"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/clear_imageButton"
-            app:layout_constraintHorizontal_chainStyle="spread_inside"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/title_textView" />
-
-        <ImageButton
-            android:id="@+id/clear_imageButton"
+        <TextView
+            android:id="@+id/title_textView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="@color/errorColor"
-            android:src="@drawable/ic_clear"
-            android:tint="@color/black"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintDimensionRatio="w, 2"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:padding="8dp"
+            android:text="@string/selectProperty"
+            android:textAlignment="center"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+            app:layout_constraintEnd_toStartOf="@+id/overflow_imageButton"
+            app:layout_constraintStart_toEndOf="@+id/propertyIcon_imageView"
+            app:layout_constraintTop_toTopOf="@id/propertyIcon_imageView" />
+
+        <ImageButton
+            android:id="@+id/overflow_imageButton"
+            android:layout_width="35dp"
+            android:layout_height="0dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/overflow_icon"
+            app:layout_constraintBottom_toBottomOf="@+id/title_textView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/constraint_checkBox"
-            app:layout_constraintTop_toBottomOf="@id/title_textView" />
+            app:layout_constraintTop_toTopOf="@id/title_textView" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

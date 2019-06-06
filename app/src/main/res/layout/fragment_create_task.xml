@@ -46,7 +46,6 @@
                 android:id="@+id/taskDescription_propertyCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:canConstrain="false"
                 app:title="@string/selectDescriptionProperty" />
 
         </LinearLayout>

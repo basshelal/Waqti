@@ -5,7 +5,6 @@ import android.text.SpannableStringBuilder
 import android.util.AttributeSet
 import android.view.View
 import androidx.cardview.widget.CardView
-import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.property_card.view.*
 import uk.whitecrescent.waqti.R
 
@@ -25,11 +24,6 @@ class PropertyCard
                 if (this == null) text = SpannableStringBuilder("")
                 else text = SpannableStringBuilder(this)
             }
-        }
-
-        constraint_checkBox.apply {
-            if (!attributes.getBoolean(R.styleable.PropertyCard_canConstrain, true))
-                isVisible = false
         }
 
         attributes.recycle()

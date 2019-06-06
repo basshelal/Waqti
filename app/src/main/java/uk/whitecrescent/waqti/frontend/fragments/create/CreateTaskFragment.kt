@@ -93,10 +93,10 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-            clear_imageButton.setOnClickListener {
+            /*clear_imageButton.setOnClickListener {
                 viewModel.taskTime = DEFAULT_TIME
                 this@apply.title_textView.text = getString(R.string.selectTimeProperty)
-            }
+            }*/
         }
     }
 
@@ -113,10 +113,10 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-            clear_imageButton.setOnClickListener {
+            /*clear_imageButton.setOnClickListener {
                 viewModel.taskDeadline = DEFAULT_TIME
                 this@apply.title_textView.text = getString(R.string.selectDeadlineProperty)
-            }
+            }*/
         }
     }
 
@@ -133,10 +133,10 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-            clear_imageButton.setOnClickListener {
+            /*clear_imageButton.setOnClickListener {
                 viewModel.taskDescription = DEFAULT_DESCRIPTION
                 this@apply.title_textView.text = getString(R.string.selectDescriptionProperty)
-            }
+            }*/
         }
     }
 
@@ -150,19 +150,19 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
     private inline fun Task.setTime() {
         viewModel.taskTime.also {
-            if (it.isNotDefault) {
+            /*if (it.isNotDefault) {
                 if (taskTime_propertyCard.constraint_checkBox.isChecked) setTimeConstraintValue(it)
                 else setTimePropertyValue(it)
-            }
+            }*/
         }
     }
 
     private inline fun Task.setDeadline() {
         viewModel.taskDeadline.also {
-            if (it.isNotDefault) {
+            /*if (it.isNotDefault) {
                 if (taskDeadline_propertyCard.constraint_checkBox.isChecked) setDeadlineConstraintValue(it)
                 else setDeadlinePropertyValue(it)
-            }
+            }*/
         }
     }
 
