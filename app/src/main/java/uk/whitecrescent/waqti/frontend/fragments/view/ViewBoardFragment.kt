@@ -18,6 +18,7 @@ import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.GoToFragment
@@ -215,19 +216,21 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     this@ViewBoardFragment.addList_floatingButton, Orientation.HORIZONTAL))
         }
 
-        addList_floatingButton.setOnClickListener {
-            @GoToFragment
-            it.mainActivity.supportFragmentManager.beginTransaction().apply {
+        addList_floatingButton.apply {
+            setOnClickListener {
+                @GoToFragment
+                it.mainActivity.supportFragmentManager.commitTransaction {
 
-                it.mainActivity.viewModel.boardID = element.id
-                it.mainActivity.viewModel.boardPosition = false to boardView.boardAdapter.itemCount - 1
+                    it.mainActivity.viewModel.boardID = element.id
+                    it.mainActivity.viewModel.boardPosition = false to boardView.boardAdapter.itemCount - 1
 
-                it.clearFocusAndHideSoftKeyboard()
+                    it.clearFocusAndHideSoftKeyboard()
 
-                replace(R.id.fragmentContainer, CreateListFragment(), CREATE_LIST_FRAGMENT)
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                addToBackStack("")
-            }.commit()
+                    replace(R.id.fragmentContainer, CreateListFragment(), CREATE_LIST_FRAGMENT)
+                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    addToBackStack("")
+                }
+            }
         }
 
         delete_floatingButton.apply {

@@ -14,6 +14,7 @@ import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.GoToFragment
@@ -110,8 +111,8 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
         }
 
         addTask_floatingButton.setOnClickListener {
-            @GoToFragment()
-            it.mainActivity.supportFragmentManager.beginTransaction().apply {
+            @GoToFragment
+            it.mainActivity.supportFragmentManager.commitTransaction {
 
                 it.mainActivity.viewModel.boardID = boardID
                 it.mainActivity.viewModel.listID = listID
@@ -121,7 +122,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
                 addToBackStack("")
-            }.commit()
+            }
         }
     }
 

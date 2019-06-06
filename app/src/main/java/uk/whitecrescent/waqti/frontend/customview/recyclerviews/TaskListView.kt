@@ -22,6 +22,7 @@ import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
@@ -107,8 +108,8 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         }
 
         holder.itemView.setOnClickListener {
-            @GoToFragment()
-            it.mainActivity.supportFragmentManager.beginTransaction().apply {
+            @GoToFragment
+            it.mainActivity.supportFragmentManager.commitTransaction {
 
                 it.mainActivity.viewModel.taskID = holder.taskID
                 it.mainActivity.viewModel.listID = taskListID
@@ -118,7 +119,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")
                 replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
-            }.commit()
+            }
         }
 
         holder.itemView.setOnLongClickListener {

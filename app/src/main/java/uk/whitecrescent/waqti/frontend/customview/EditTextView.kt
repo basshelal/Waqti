@@ -21,6 +21,8 @@ class EditTextView
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : AppCompatEditText(context, attributeSet, defStyle) {
 
+    // TODO: 06-Jun-19 Make it lose focus when we touch outside it
+
     var isEditable: Boolean = true
         set(value) {
             field = value

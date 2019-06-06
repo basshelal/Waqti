@@ -21,6 +21,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.GoToFragment
@@ -186,7 +187,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             text = board[position].name
             setOnClickListener {
                 @GoToFragment
-                it.mainActivity.supportFragmentManager.beginTransaction().apply {
+                it.mainActivity.supportFragmentManager.commitTransaction {
 
                     it.mainActivity.viewModel.listID = board[holder.adapterPosition].id
 
@@ -195,14 +196,14 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                     setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     addToBackStack("")
                     replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
-                }.commit()
+                }
             }
         }
         holder.footer.apply {
             setOnClickListener {
 
                 @GoToFragment
-                it.mainActivity.supportFragmentManager.beginTransaction().apply {
+                it.mainActivity.supportFragmentManager.commitTransaction {
 
                     it.mainActivity.viewModel.boardID = this@BoardAdapter.boardID
                     it.mainActivity.viewModel.listID = holder.list.listAdapter.taskListID
@@ -212,7 +213,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                     setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
                     addToBackStack("")
-                }.commit()
+                }
             }
         }
         holder.list.addOnScrollListener(FABOnScrollListener(holder.footer, Orientation.VERTICAL))

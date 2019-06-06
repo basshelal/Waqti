@@ -13,6 +13,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.BOARD_LIST_NAME_PREFERENCES_KEY
 import uk.whitecrescent.waqti.frontend.BOARD_LIST_VIEW_MODE_KEY
 import uk.whitecrescent.waqti.frontend.CREATE_BOARD_FRAGMENT
@@ -105,7 +106,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
         addBoard_FloatingButton.setOnClickListener {
             @GoToFragment
-            it.mainActivity.supportFragmentManager.beginTransaction().apply {
+            it.mainActivity.supportFragmentManager.commitTransaction {
 
                 it.mainActivity.viewModel.boardListPosition = false to boardsList_recyclerView.boardListAdapter.itemCount - 1
 
@@ -114,7 +115,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                 replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
                 setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")
-            }.commit()
+            }
         }
 
         boardsList_recyclerView.apply {

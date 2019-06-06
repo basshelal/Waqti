@@ -15,6 +15,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.backend.persistence.ElementNotFoundException
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
@@ -123,7 +124,7 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
         holder.itemView.boardCard_cardView.apply {
             setOnClickListener {
                 @GoToFragment
-                it.mainActivity.supportFragmentManager.beginTransaction().apply {
+                it.mainActivity.supportFragmentManager.commitTransaction {
 
                     it.mainActivity.viewModel.boardID = boardList[holder.adapterPosition].id
 
@@ -134,7 +135,7 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
                     setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     replace(R.id.fragmentContainer, ViewBoardFragment.newInstance(), BOARD_FRAGMENT)
                     addToBackStack("ViewBoardFragment")
-                }.commit()
+                }
             }
         }
 

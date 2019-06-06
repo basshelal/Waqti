@@ -7,15 +7,16 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.blank_activity.*
 import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
+import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.hideSoftKeyboard
 
 class MainActivity : AppCompatActivity() {
@@ -31,14 +32,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.blank_activity)
 
-        viewModel = ViewModelProviders.of(this).get(MainActivityViewModel::class.java)
+        viewModel = getViewModel()
 
 
         @GoToFragment
-        supportFragmentManager.beginTransaction().apply {
+        supportFragmentManager.commitTransaction {
             add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-        }.commit()
+        }
 
         drawerLayout.apply {
             addOnBackPressedCallback {
@@ -48,9 +49,7 @@ class MainActivity : AppCompatActivity() {
                 } else false
             }
             addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
-                override fun onDrawerOpened(drawerView: View) {
-                    hideSoftKeyboard()
-                }
+                override fun onDrawerOpened(drawerView: View) = hideSoftKeyboard()
             })
         }
 
@@ -61,19 +60,19 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.about_navDrawerItem -> {
                     @GoToFragment
-                    supportFragmentManager.beginTransaction().apply {
+                    supportFragmentManager.commitTransaction {
                         replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         addToBackStack("")
-                    }.commit()
+                    }
                 }
                 R.id.settings_navDrawerItem -> {
                     @GoToFragment
-                    supportFragmentManager.beginTransaction().apply {
+                    supportFragmentManager.commitTransaction {
                         replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
                         setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         addToBackStack("")
-                    }.commit()
+                    }
                 }
             }
             drawerLayout.closeDrawers()

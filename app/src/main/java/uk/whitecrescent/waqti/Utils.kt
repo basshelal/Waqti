@@ -13,6 +13,9 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -118,8 +121,19 @@ inline fun RecyclerView.scrollToStart() {
     }
 }
 
+inline fun <reified T : ViewModel> FragmentActivity.getViewModel(): T =
+        ViewModelProviders.of(this).get(T::class.java)
+
 inline fun <reified T : ViewModel> Fragment.getViewModel(): T =
         ViewModelProviders.of(this).get(T::class.java)
+
+inline fun FragmentManager.commitTransaction(block: FragmentTransaction.() -> Unit) {
+    this.beginTransaction().apply(block).commit()
+}
+
+inline operator fun <reified V : View> V.invoke(block: V.() -> Unit) {
+    this.apply(block)
+}
 
 //endregion Android Utils
 

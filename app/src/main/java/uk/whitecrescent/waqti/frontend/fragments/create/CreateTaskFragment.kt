@@ -69,14 +69,14 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
             }
         }
 
-        // TODO: 23-Feb-19 Uncomment these to enable Task Properties
+
         setUpTimeViews()
 
         setUpDeadlineViews()
 
         setUpDescriptionViews()
 
-        hideProperties()
+        //hideProperties()
 
     }
 
