@@ -2,43 +2,55 @@
 
     <string name="waqti">Waqti</string>
 
-    <!--Defaults-->
+    <!--Defaults, these are placeholders-->
     <string name="defaultTask">Default Task</string>
     <string name="defaultTaskName">Default Task Name</string>
     <string name="defaultTime">Default Time</string>
-    <string name="defaultDeadline">Default Deadline</string>
+    <string name="defaultDuration">Default Duration</string>
+    <string name="defaultPriority">Default Priority</string>
+    <string name="defaultLabels">Default Labels</string>
+    <string name="defaultOptional">Default Optional</string>
     <string name="defaultDescription">Default Description</string>
+    <string name="defaultChecklist">Default Checklist</string>
+    <string name="defaultDeadline">Default Deadline</string>
+    <string name="defaultTarget">Default Target</string>
+    <string name="defaultBefore">Default Before</string>
+    <string name="defaultSubTasks">Default SubTasks</string>
     <string name="defaultList">Default List</string>
+    <string name="defaultBoard">Default Board</string>
 
-    <!--Hints-->
+    <!--Hints, telling the user what to do-->
     <string name="enterTextHint">Enter Text</string>
     <string name="taskNameHint">Task Name</string>
     <string name="boardNameHint">Board Name</string>
     <string name="listNameHint">List Name</string>
     <string name="allBoards">All Boards</string>
-    <string name="constraintQuestion">Constraint?</string>
     <string name="constrainedHint">Constrained</string>
     <string name="unconstrainedHint">Unconstrained</string>
-
     <string name="selectTimeProperty">Select Time Property</string>
-    <string name="selectDeadlineProperty">Select Deadline Property</string>
+    <string name="selectDurationProperty">Select Duration Property</string>
+    <string name="selectPriorityProperty">Select Priority Priority</string>
+    <string name="selectLabelsProperty">Select Labels Property</string>
+    <string name="selectOptionalProperty">Select Optional Property</string>
     <string name="selectDescriptionProperty">Select Description Property</string>
+    <string name="selectChecklistProperty">Select Checklist Property</string>
+    <string name="selectDeadlineProperty">Select Deadline Property</string>
+    <string name="selectTargetProperty">Select Target Property</string>
+    <string name="selectBeforeProperty">Select Before Property</string>
+    <string name="selectSubTasksProperty">Select SubTasks Property</string>
 
+    <!--Navigation, go to parts of the app-->
     <string name="settings">Settings</string>
     <string name="about">About</string>
     <string name="help">Help</string>
 
     <!--Modifications-->
-    <string name="createTask">Create Task</string>
     <string name="addTask">Add Task</string>
     <string name="addList">Add List</string>
-    <string name="renameTask">Rename Task</string>
-    <string name="renameBoard">Rename Board</string>
-    <string name="deleteBoard">Delete Board</string>
+    <string name="addBoard">Add Board</string>
     <string name="deleteTask">Delete Task</string>
     <string name="deleteList">Delete List</string>
-    <string name="renameList">Rename List</string>
-    <string name="addBoard">Add Board</string>
+    <string name="deleteBoard">Delete Board</string>
     <string name="changeBoardColor">Change Board Color</string>
     <string name="changeCardColor">Change Card Color</string>
     <string name="changeAppBarColor">Change App Bar Color</string>
@@ -48,6 +60,7 @@
     <!--Dialogs-->
     <string name="confirm">Confirm</string>
     <string name="cancel">Cancel</string>
+    <string name="next">Next</string>
     <string name="confirmDialog">Confirm Dialog</string>
     <string name="confirmDialogMessage">Confirm Dialog Message</string>
     <string name="deleteTaskQuestion">Delete Task?</string>
@@ -67,8 +80,6 @@
     <string name="clearListDetails">This will delete all the tasks in this list but not this
     list</string>
 
-    <string name="next">Next</string>
-
     <string name="selectDate">Select Date</string>
     <string name="selectTime">Select Time</string>
     <string name="enterDescription">Enter Description</string>
@@ -85,6 +96,8 @@
     <string name="deadlineColon">Deadline: </string>
     <string name="descriptionColon">Description: </string>
     <string name="selectProperty">Select Property</string>
+
+    <!--About Page-->
 
     <string name="openSourceLibraries">Open Source Libraries</string>
     <string name="meetTheTeam">Meet the Team</string>
