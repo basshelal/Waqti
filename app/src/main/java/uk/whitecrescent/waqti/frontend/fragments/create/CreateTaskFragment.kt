@@ -52,23 +52,9 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
     override fun setUpViews() {
 
-        taskName_editText.apply {
-            requestFocusAndShowSoftKeyboard()
-            addAfterTextChangedListener {
-                if (it != null) {
-                    addTask_button.isVisible = !(it.isEmpty() || it.isBlank())
-                }
-            }
-        }
+        setUpAppBar()
 
-        addTask_button.apply {
-            isVisible = false
-            setOnClickListener {
-                Caches.boards[boardID][listID].add(createElement()).update()
-                finish()
-            }
-        }
-
+        setUpButton()
 
         setUpTimeViews()
 
@@ -78,6 +64,27 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
         //hideProperties()
 
+    }
+
+    private inline fun setUpAppBar() {
+        taskName_editText.apply {
+            requestFocusAndShowSoftKeyboard()
+            addAfterTextChangedListener {
+                if (it != null) {
+                    addTask_button.isVisible = !(it.isEmpty() || it.isBlank())
+                }
+            }
+        }
+    }
+
+    private inline fun setUpButton() {
+        addTask_button.apply {
+            isVisible = false
+            setOnClickListener {
+                Caches.boards[boardID][listID].add(createElement()).update()
+                finish()
+            }
+        }
     }
 
     @SuppressLint("SetTextI18n")
@@ -151,30 +158,6 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
         }
     }
 
-    private inline fun Task.setTime() {
-        viewModel.taskTime.also {
-            /*if (it.isNotDefault) {
-                if (taskTime_propertyCard.constraint_checkBox.isChecked) setTimeConstraintValue(it)
-                else setTimePropertyValue(it)
-            }*/
-        }
-    }
-
-    private inline fun Task.setDeadline() {
-        viewModel.taskDeadline.also {
-            /*if (it.isNotDefault) {
-                if (taskDeadline_propertyCard.constraint_checkBox.isChecked) setDeadlineConstraintValue(it)
-                else setDeadlinePropertyValue(it)
-            }*/
-        }
-    }
-
-    private inline fun Task.setDescription() {
-        viewModel.taskDescription.also {
-            if (it.isNotDefault) setDescriptionValue(it)
-        }
-    }
-
     private inline fun hideProperties() {
         taskTime_propertyCard.isVisible = false
         taskDeadline_propertyCard.isVisible = false
@@ -185,6 +168,30 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
         taskName_editText.hideSoftKeyboard()
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
+    }
+
+    private inline fun Task.setTime() {
+        viewModel.taskTime.also {
+            if (it.isNotDefault) {
+                //if (taskTime_propertyCard.constraint_checkBox.isChecked) setTimeConstraintValue (it) else
+                setTimePropertyValue(it)
+            }
+        }
+    }
+
+    private inline fun Task.setDeadline() {
+        viewModel.taskDeadline.also {
+            if (it.isNotDefault) {
+                //if (taskDeadline_propertyCard.constraint_checkBox.isChecked) setDeadlineConstraintValue(it) else
+                setDeadlinePropertyValue(it)
+            }
+        }
+    }
+
+    private inline fun Task.setDescription() {
+        viewModel.taskDescription.also {
+            if (it.isNotDefault) setDescriptionValue(it)
+        }
     }
 
 }

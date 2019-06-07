@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.annotation.SuppressLint
@@ -20,6 +22,7 @@ import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME_PROPERTY
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.addAfterTextChangedListener
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
@@ -57,6 +60,18 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
         mainActivity.setNavigationBarColor(Caches.boards[boardID].barColor)
         mainActivity.setStatusBarColor(Caches.boards[boardID].barColor)
 
+        setUpAppBar(element)
+
+        setUpTimeViews(element)
+
+        setUpDeadlineViews(element)
+
+        setUpDescriptionViews(element)
+
+    }
+
+
+    private fun setUpAppBar(task: Task) {
         task_appBar.apply {
             setBackgroundColor(Caches.boards[boardID].barColor)
             editTextView.apply {
@@ -65,11 +80,11 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                         if (it != null &&
                                 it.isNotBlank() &&
                                 it.isNotEmpty() &&
-                                it.toString() != element.name)
+                                it.toString() != task.name)
                             Caches.tasks[taskID].changeName(text.toString())
                     }
                 }
-                text = SpannableStringBuilder(element.name)
+                text = SpannableStringBuilder(task.name)
                 addAfterTextChangedListener { update() }
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -101,9 +116,12 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
             }
             (parent as ConstraintLayout).background = Caches.boards[boardID].cardColor.toColorDrawable
         }
+    }
 
+    @SuppressLint("SetTextI18n")
+    private inline fun setUpTimeViews(task: Task) {
         taskTime_textView.apply {
-            element.time.let {
+            task.time.let {
                 if (it != DEFAULT_TIME_PROPERTY) {
                     if (it.isConstrained) text = getString(R.string.timeColon) + getString(R.string.constraint) + it.value.rfcFormatted
                     else text = getString(R.string.timeColon) + getString(R.string.property) + it.value.rfcFormatted
@@ -112,18 +130,21 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
             setOnClickListener {
                 DateTimePickerDialog().apply {
-                    initialTime = element.time.value
+                    initialTime = task.time.value
                     onConfirm = {
-                        element.time.value = it
+                        task.time.value = it
                         text = getString(R.string.timeColon) + it.rfcFormatted
                         dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
         }
+    }
 
+    @SuppressLint("SetTextI18n")
+    private inline fun setUpDeadlineViews(task: Task) {
         taskDeadline_textView.apply {
-            element.deadline.let {
+            task.deadline.let {
                 if (it != DEFAULT_DEADLINE_PROPERTY) {
                     if (it.isConstrained) text = getString(R.string.deadlineColon) + getString(R.string.constraint) + it.value.rfcFormatted
                     else text = getString(R.string.deadlineColon) + getString(R.string.property) + it.value.rfcFormatted
@@ -131,9 +152,9 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
             }
             setOnClickListener {
                 DateTimePickerDialog().apply {
-                    initialTime = element.deadline.value
+                    initialTime = task.deadline.value
                     onConfirm = {
-                        element.deadline.value = it
+                        task.deadline.value = it
                         text = getString(R.string.deadlineColon) + it.rfcFormatted
                         dismiss()
                     }
@@ -141,9 +162,12 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
             }
 
         }
+    }
 
+    @SuppressLint("SetTextI18n")
+    private inline fun setUpDescriptionViews(task: Task) {
         taskDescription_textView.apply {
-            element.description.let {
+            task.description.let {
                 if (it != DEFAULT_DESCRIPTION_PROPERTY) {
                     text = getString(R.string.descriptionColon) + it.value
                 } else isVisible = false
@@ -152,9 +176,9 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
             setOnClickListener {
                 EditTextDialog().apply {
                     hint = this@ViewTaskFragment.getString(R.string.enterDescription)
-                    initialText = element.description.value
+                    initialText = task.description.value
                     onConfirm = {
-                        element.description.value = it
+                        task.description.value = it
                         text = it
                         dismiss()
                     }
@@ -165,6 +189,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     override fun finish() {
         task_appBar.hideSoftKeyboard()
+        @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }
 }
