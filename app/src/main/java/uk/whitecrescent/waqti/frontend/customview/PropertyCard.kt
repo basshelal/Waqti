@@ -17,6 +17,7 @@ class PropertyCard
 
     lateinit var popupMenu: PopupMenu
         private set
+
     var text: CharSequence
         set(value) {
             title_textView.text = value
@@ -55,7 +56,7 @@ class PropertyCard
         }
     }
 
-    fun onOptionsClicked(onClick: (MenuItem) -> Boolean) {
+    fun popupMenuOnItemClicked(onClick: (MenuItem) -> Boolean) {
         popupMenu.setOnMenuItemClickListener(onClick)
     }
 

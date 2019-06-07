@@ -82,119 +82,117 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
             }
             @ForLater
             // TODO: 25-Feb-19 Board appearance stuff for later
-            popupMenu.apply {
-                setOnMenuItemClickListener {
-                    when (it.itemId) {
-                        R.id.deleteBoard_menuItem -> {
-                            ConfirmDialog().apply {
-                                title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardQuestion)
-                                message = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardDetails)
-                                onConfirm = {
-                                    dismiss()
-                                    Caches.deleteBoard(boardID)
-                                    finish()
-                                }
-                            }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
-                            true
-                        }
-                        /*R.id.changeBoardColor_menuItem -> {
-                            ColorPickerDialog().apply {
-                                title = this@ViewBoardFragment.getString(R.string.pickBoardColor)
-                                initialColor = Caches.boards[boardID].backgroundColor
-                                onClick = {
-                                    this@ViewBoardFragment.boardView.background = it.toColorDrawable
-                                }
-                                onConfirm = {
-                                    Caches.boards[boardID].backgroundColor = it
-                                    dismiss()
-                                }
-                                onCancel = View.OnClickListener {
-                                    Caches.boards[boardID].backgroundColor = initialColor
-                                    this@ViewBoardFragment.boardView.background = initialColor.toColorDrawable
-                                    dismiss()
-                                }
-                            }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
-                            true
-                        }*/
-                        /*R.id.changeCardColor_menuItem -> {
-                            ColorPickerDialog().apply {
-                                title = this@ViewBoardFragment.getString(R.string.pickCardColor)
-                                initialColor = Caches.boards[boardID].cardColor
-                                onClick = { color ->
-                                    this@ViewBoardFragment.boardView.allCards.forEach {
-                                        it.setCardBackgroundColor(color.toAndroidColor)
-                                    }
-                                }
-                                onConfirm = {
-                                    Caches.boards[boardID].cardColor = it
-                                    dismiss()
-                                }
-                                onCancel = View.OnClickListener {
-                                    Caches.boards[boardID].cardColor = initialColor
-                                    this@ViewBoardFragment.boardView.allCards.forEach {
-                                        it.setCardBackgroundColor(initialColor.toAndroidColor)
-                                    }
-                                    dismiss()
-                                }
-                            }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
-                            true
-                        }*/
-                        /*R.id.changeAppBarColor_menuItem -> {
-                            ColorPickerDialog().apply {
-                                title = this@ViewBoardFragment.getString(R.string.pickAppBarColor)
-                                initialColor = Caches.boards[boardID].barColor
-                                onClick = { color ->
-                                    this@ViewBoardFragment.board_appBar.setBackgroundColor(color)
-                                    mainActivity.setNavigationBarColor(color)
-                                    mainActivity.setStatusBarColor(color)
-                                }
-                                onConfirm = {
-                                    Caches.boards[boardID].barColor = it
-                                    dismiss()
-                                }
-                                onCancel = View.OnClickListener {
-                                    Caches.boards[boardID].barColor = initialColor
-                                    this@ViewBoardFragment.board_appBar.setBackgroundColor(initialColor)
-                                    mainActivity.setNavigationBarColor(initialColor)
-                                    mainActivity.setStatusBarColor(initialColor)
-                                    dismiss()
-                                }
-                            }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
-                            true
-                        }*/
-                        /*R.id.changeBoardPhoto -> {
-                            PhotoPickerDialog().apply {
-                                title = this@ViewBoardFragment.getString(R.string.pickBoardBackground)
-                                initialPhoto = Caches.boards[boardID].backgroundPhoto
-                                onClick = { photo ->
-
-                                }
-                                __onClick = {
-                                    this@ViewBoardFragment.boardView.background = it
-                                }
-                                __onConfirm = {
-                                    this@ViewBoardFragment.boardView.background = it
-                                }
-                                onConfirm = {
-
-                                    dismiss()
-                                }
-                                onCancel = View.OnClickListener {
-
-                                    dismiss()
-                                }
-                            }.show(mainActivity.supportFragmentManager, "PhotoPickerDialog")
-                            true
-                        }*/
-                        /*R.id.boardAppearance_menuItem -> {
-                            // here we show a Dialog which allows user to pick which
-                            // customization option to change, when picked it will open a dialog
-                            // for that one
-                            shortSnackBar("Not yet implemented!")
-                            true
-                        }*/
-                        else -> false
+            popupMenuOnItemClicked {
+                when (it.itemId) {
+                    R.id.deleteBoard_menuItem -> {
+                        ConfirmDialog().apply {
+                            title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardQuestion)
+                            message = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardDetails)
+                            onConfirm = {
+                                dismiss()
+                                Caches.deleteBoard(boardID)
+                                finish()
+                            }
+                        }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+                        true
                     }
+                    /*R.id.changeBoardColor_menuItem -> {
+                        ColorPickerDialog().apply {
+                            title = this@ViewBoardFragment.getString(R.string.pickBoardColor)
+                            initialColor = Caches.boards[boardID].backgroundColor
+                            onClick = {
+                                this@ViewBoardFragment.boardView.background = it.toColorDrawable
+                            }
+                            onConfirm = {
+                                Caches.boards[boardID].backgroundColor = it
+                                dismiss()
+                            }
+                            onCancel = View.OnClickListener {
+                                Caches.boards[boardID].backgroundColor = initialColor
+                                this@ViewBoardFragment.boardView.background = initialColor.toColorDrawable
+                                dismiss()
+                            }
+                        }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
+                        true
+                    }*/
+                    /*R.id.changeCardColor_menuItem -> {
+                        ColorPickerDialog().apply {
+                            title = this@ViewBoardFragment.getString(R.string.pickCardColor)
+                            initialColor = Caches.boards[boardID].cardColor
+                            onClick = { color ->
+                                this@ViewBoardFragment.boardView.allCards.forEach {
+                                    it.setCardBackgroundColor(color.toAndroidColor)
+                                }
+                            }
+                            onConfirm = {
+                                Caches.boards[boardID].cardColor = it
+                                dismiss()
+                            }
+                            onCancel = View.OnClickListener {
+                                Caches.boards[boardID].cardColor = initialColor
+                                this@ViewBoardFragment.boardView.allCards.forEach {
+                                    it.setCardBackgroundColor(initialColor.toAndroidColor)
+                                }
+                                dismiss()
+                            }
+                        }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
+                        true
+                    }*/
+                    /*R.id.changeAppBarColor_menuItem -> {
+                        ColorPickerDialog().apply {
+                            title = this@ViewBoardFragment.getString(R.string.pickAppBarColor)
+                            initialColor = Caches.boards[boardID].barColor
+                            onClick = { color ->
+                                this@ViewBoardFragment.board_appBar.setBackgroundColor(color)
+                                mainActivity.setNavigationBarColor(color)
+                                mainActivity.setStatusBarColor(color)
+                            }
+                            onConfirm = {
+                                Caches.boards[boardID].barColor = it
+                                dismiss()
+                            }
+                            onCancel = View.OnClickListener {
+                                Caches.boards[boardID].barColor = initialColor
+                                this@ViewBoardFragment.board_appBar.setBackgroundColor(initialColor)
+                                mainActivity.setNavigationBarColor(initialColor)
+                                mainActivity.setStatusBarColor(initialColor)
+                                dismiss()
+                            }
+                        }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
+                        true
+                    }*/
+                    /*R.id.changeBoardPhoto -> {
+                        PhotoPickerDialog().apply {
+                            title = this@ViewBoardFragment.getString(R.string.pickBoardBackground)
+                            initialPhoto = Caches.boards[boardID].backgroundPhoto
+                            onClick = { photo ->
+
+                            }
+                            __onClick = {
+                                this@ViewBoardFragment.boardView.background = it
+                            }
+                            __onConfirm = {
+                                this@ViewBoardFragment.boardView.background = it
+                            }
+                            onConfirm = {
+
+                                dismiss()
+                            }
+                            onCancel = View.OnClickListener {
+
+                                dismiss()
+                            }
+                        }.show(mainActivity.supportFragmentManager, "PhotoPickerDialog")
+                        true
+                    }*/
+                    /*R.id.boardAppearance_menuItem -> {
+                        // here we show a Dialog which allows user to pick which
+                        // customization option to change, when picked it will open a dialog
+                        // for that one
+                        shortSnackBar("Not yet implemented!")
+                        true
+                    }*/
+                    else -> false
                 }
             }
         }

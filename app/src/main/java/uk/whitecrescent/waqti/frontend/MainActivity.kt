@@ -88,7 +88,7 @@ class MainActivity : AppCompatActivity() {
         window.navigationBarColor = color.toAndroidColor
     }
 
-    fun resetStatusBarColor() {
+    fun resetNavBarStatusBarColor() {
         setStatusBarColor(WaqtiColor("#560027"))
         setNavigationBarColor(WaqtiColor.WAQTI_DEFAULT)
     }
@@ -104,15 +104,4 @@ class MainActivity : AppCompatActivity() {
     inline val waqtiSharedPreferences: SharedPreferences
         get() = getSharedPreferences(WAQTI_SHARED_PREFERENCES, Context.MODE_PRIVATE)
 
-    /*override fun onStop() {
-        supportFragmentManager.beginTransaction().apply {
-            supportFragmentManager.apply {
-                while (backStackEntryCount > 0) {
-                    popBackStackImmediate()
-                }
-                fragments.onEach { remove(it) }
-            }
-        }.commitNowAllowingStateLoss()
-        super.onStop()
-    }*/
 }

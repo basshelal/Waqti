@@ -98,7 +98,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                     } else false
                 }
             }
-            popupMenu.setOnMenuItemClickListener {
+            popupMenuOnItemClicked {
                 when (it.itemId) {
                     R.id.deleteTask_menuItem -> {
                         ConfirmDialog().apply {

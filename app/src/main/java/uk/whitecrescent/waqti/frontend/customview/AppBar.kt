@@ -3,6 +3,7 @@ package uk.whitecrescent.waqti.frontend.customview
 import android.content.Context
 import android.text.SpannableStringBuilder
 import android.util.AttributeSet
+import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -94,6 +95,10 @@ class AppBar
         }
 
         attributes.recycle()
+    }
+
+    fun popupMenuOnItemClicked(onClick: (MenuItem) -> Boolean) {
+        popupMenu.setOnMenuItemClickListener(onClick)
     }
 
     fun setBackgroundColor(color: WaqtiColor) {

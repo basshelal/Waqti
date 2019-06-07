@@ -100,7 +100,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-            onOptionsClicked {
+            popupMenuOnItemClicked {
                 viewModel.taskTime = DEFAULT_TIME
                 this@apply.title_textView.text = getString(R.string.selectTimeProperty)
                 true
@@ -121,7 +121,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-            onOptionsClicked {
+            popupMenuOnItemClicked {
                 viewModel.taskDeadline = DEFAULT_TIME
                 this@apply.title_textView.text = getString(R.string.selectDeadlineProperty)
                 true
@@ -142,7 +142,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-            onOptionsClicked {
+            popupMenuOnItemClicked {
                 viewModel.taskDescription = DEFAULT_DESCRIPTION
                 this@apply.title_textView.text = getString(R.string.selectDescriptionProperty)
                 true

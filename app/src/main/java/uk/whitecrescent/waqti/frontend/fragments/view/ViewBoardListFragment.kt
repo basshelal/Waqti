@@ -54,7 +54,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
     override fun setUpViews(element: BoardList) {
 
-        mainActivity.resetStatusBarColor()
+        mainActivity.resetNavBarStatusBarColor()
 
         boardList_appBar.apply {
             editTextView.apply {

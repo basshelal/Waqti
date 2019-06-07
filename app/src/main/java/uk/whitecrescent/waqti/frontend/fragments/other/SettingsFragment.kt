@@ -16,7 +16,7 @@ class SettingsFragment : WaqtiOtherFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        mainActivity.resetStatusBarColor()
+        mainActivity.resetNavBarStatusBarColor()
     }
 
     override fun finish() {
