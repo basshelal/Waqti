@@ -61,6 +61,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         board_appBar.apply {
             setBackgroundColor(element.barColor)
             editTextView.apply {
+                mainActivity.hideableEditTextView = this
                 fun update() {
                     text.also {
                         if (it != null &&

@@ -29,6 +29,7 @@ import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.hideSoftKeyboard
+import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.rfcFormatted
 import uk.whitecrescent.waqti.shortSnackBar
 
@@ -79,6 +80,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
         task_appBar.apply {
             setBackgroundColor(Caches.boards[boardID].barColor)
             editTextView.apply {
+                mainActivity.hideableEditTextView = this
                 fun update() {
                     text.also {
                         if (it != null &&

@@ -24,6 +24,7 @@ import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.isNotDefault
+import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 import uk.whitecrescent.waqti.rfcFormatted
 
@@ -69,6 +70,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     private inline fun setUpAppBar() {
         taskName_editText.apply {
             requestFocusAndShowSoftKeyboard()
+            mainActivity.hideableEditTextView = this
             addAfterTextChangedListener {
                 if (it != null) {
                     addTask_button.isVisible = !(it.isEmpty() || it.isBlank())

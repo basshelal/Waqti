@@ -61,6 +61,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
         boardList_appBar.apply {
             editTextView.apply {
+                mainActivity.hideableEditTextView = this
                 fun update() {
                     if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
                         if (text.toString() != mainActivity.waqtiSharedPreferences
@@ -152,7 +153,7 @@ enum class ViewMode {
     LIST_VERTICAL, GRID_VERTICAL;
 
     fun switch(): ViewMode {
-        return if (ordinal + 1 >= ViewMode.values().size) ViewMode.values()[0]
-        else ViewMode.values()[ordinal + 1]
+        return if (ordinal + 1 >= values().size) values()[0]
+        else values()[ordinal + 1]
     }
 }

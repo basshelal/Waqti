@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.fragments.create
 
 import android.os.Bundle
@@ -13,6 +15,7 @@ import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.addAfterTextChangedListener
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.hideSoftKeyboard
+import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 
 class CreateBoardFragment : WaqtiCreateFragment<Board>() {
@@ -30,20 +33,31 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
     override fun setUpViews() {
 
-        mainActivity.supportActionBar?.title = "New Board"
+        setUpButton()
 
-        boardName_editText.requestFocusAndShowSoftKeyboard()
+        setUpAppBar()
 
-        boardName_editText.addAfterTextChangedListener {
-            if (it != null) {
-                addBoard_button.isVisible = !(it.isEmpty() || it.isBlank())
+    }
+
+    private inline fun setUpAppBar() {
+        boardName_editText.apply {
+            requestFocusAndShowSoftKeyboard()
+            mainActivity.hideableEditTextView = this
+            addAfterTextChangedListener {
+                if (it != null) {
+                    addBoard_button.isVisible = !(it.isEmpty() || it.isBlank())
+                }
             }
         }
+    }
 
-        addBoard_button.isVisible = false
-        addBoard_button.setOnClickListener {
-            Caches.boardLists.first().add(createElement()).update()
-            finish()
+    private inline fun setUpButton() {
+        addBoard_button.apply {
+            isVisible = false
+            setOnClickListener {
+                Caches.boardLists.first().add(createElement()).update()
+                finish()
+            }
         }
     }
 

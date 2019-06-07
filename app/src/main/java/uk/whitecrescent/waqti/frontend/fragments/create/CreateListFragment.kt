@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.fragments.create
 
 import android.os.Bundle
@@ -35,18 +37,32 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
     }
 
     override fun setUpViews() {
-        listName_editText.requestFocusAndShowSoftKeyboard()
 
-        listName_editText.addAfterTextChangedListener {
-            if (it != null) {
-                addList_button.isVisible = !(it.isEmpty() || it.isBlank())
+        setUpAppBar()
+
+        setUpButton()
+
+    }
+
+    private inline fun setUpAppBar() {
+        listName_editText.apply {
+            requestFocusAndShowSoftKeyboard()
+            mainActivity.hideableEditTextView = this
+            addAfterTextChangedListener {
+                if (it != null) {
+                    addList_button.isVisible = !(it.isEmpty() || it.isBlank())
+                }
             }
         }
+    }
 
-        addList_button.isVisible = false
-        addList_button.setOnClickListener {
-            Caches.boards[boardID].add(createElement()).update()
-            finish()
+    private inline fun setUpButton() {
+        addList_button.apply {
+            isVisible = false
+            setOnClickListener {
+                Caches.boards[boardID].add(createElement()).update()
+                finish()
+            }
         }
     }
 

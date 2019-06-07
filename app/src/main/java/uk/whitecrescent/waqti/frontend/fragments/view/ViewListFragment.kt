@@ -53,6 +53,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
         taskList_appBar.apply {
             setBackgroundColor(Caches.boards[boardID].barColor)
             editTextView.apply {
+                mainActivity.hideableEditTextView = this
                 fun update() {
                     text.also {
                         if (it != null &&
