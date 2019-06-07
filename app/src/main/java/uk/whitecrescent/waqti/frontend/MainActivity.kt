@@ -8,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.blank_activity.*
-import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.commitTransaction
@@ -23,8 +22,6 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel: MainActivityViewModel
 
-    @Bug
-    // TODO: 12-Feb-19 Rotating phone is a major bug!
     @Inconvenience
     // TODO: 26-Dec-18 Transitions for all Fragments are ugly!
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,11 +31,12 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = getViewModel()
 
-
-        @GoToFragment
-        supportFragmentManager.commitTransaction {
-            add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
-            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+        if (supportFragmentManager.fragments.size == 0) {
+            @GoToFragment
+            supportFragmentManager.commitTransaction {
+                add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
+                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+            }
         }
 
         drawerLayout.apply {
@@ -78,6 +76,8 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.closeDrawers()
             true
         }
+
+        navigationView.menu.removeItem(R.id.settings_navDrawerItem)
     }
 
     fun setStatusBarColor(color: WaqtiColor) {

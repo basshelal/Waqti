@@ -34,7 +34,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="url" value="jar:file:/D:/Programs/Android/AndroidStudio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_view_day_black_24dp.xml" />
+                                                <entry key="url" value="jar:file:/D:/Programs/Android/AndroidStudio/plugins/android/lib/android.jar!/images/material_design_icons/action/ic_info_black_24dp.xml" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -66,7 +66,7 @@
                                   </option>
                                   <option name="values">
                                     <map>
-                                      <entry key="outputName" value="list_icon" />
+                                      <entry key="outputName" value="info_icon" />
                                       <entry key="theme" value="CUSTOM" />
                                       <entry key="themeColor" value="000000" />
                                     </map>

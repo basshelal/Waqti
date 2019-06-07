@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.fragment.app.FragmentTransaction
+import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.R
@@ -41,14 +42,16 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
         if (Caches.boardLists.isEmpty()) Caches.boardLists.put(BoardList("Default"))
 
         mainActivityViewModel.boardPosition = false to 0
+
         viewMode = ViewMode.valueOf(mainActivity.waqtiSharedPreferences
                 .getString(BOARD_LIST_VIEW_MODE_KEY, ViewMode.LIST_VERTICAL.name)!!)
+
+        require(Caches.boardLists.size <= 1)
 
         val boardList = Caches.boardLists.first()
 
         boardsList_recyclerView.adapter = BoardListAdapter(boardList.id, viewMode)
 
-        require(Caches.boardLists.size <= 1)
         setUpViews(boardList)
     }
 
@@ -87,10 +90,16 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                             setImageResource(R.drawable.grid_icon)
                             boardsList_recyclerView.changeViewMode(ViewMode.LIST_VERTICAL)
 
+                            mainActivity.navigationView.menu
+                                    .findItem(R.id.allBoards_navDrawerItem)
+                                    .setIcon(R.drawable.list_icon)
                         }
                         ViewMode.GRID_VERTICAL -> {
                             setImageResource(R.drawable.list_icon)
                             boardsList_recyclerView.changeViewMode(ViewMode.GRID_VERTICAL)
+                            mainActivity.navigationView.menu
+                                    .findItem(R.id.allBoards_navDrawerItem)
+                                    .setIcon(R.drawable.grid_icon)
                         }
                     }
                     mainActivity.waqtiSharedPreferences
