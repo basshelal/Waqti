@@ -93,10 +93,11 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-            /*clear_imageButton.setOnClickListener {
+            onOptionsClicked {
                 viewModel.taskTime = DEFAULT_TIME
                 this@apply.title_textView.text = getString(R.string.selectTimeProperty)
-            }*/
+                true
+            }
         }
     }
 
@@ -113,10 +114,11 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-            /*clear_imageButton.setOnClickListener {
+            onOptionsClicked {
                 viewModel.taskDeadline = DEFAULT_TIME
                 this@apply.title_textView.text = getString(R.string.selectDeadlineProperty)
-            }*/
+                true
+            }
         }
     }
 
@@ -133,10 +135,11 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                     }
                 }.show(mainActivity.supportFragmentManager, "")
             }
-            /*clear_imageButton.setOnClickListener {
+            onOptionsClicked {
                 viewModel.taskDescription = DEFAULT_DESCRIPTION
                 this@apply.title_textView.text = getString(R.string.selectDescriptionProperty)
-            }*/
+                true
+            }
         }
     }
 

@@ -34,18 +34,21 @@
                 android:id="@+id/taskTime_propertyCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:optionsMenu="@menu/menu_property_card"
                 app:title="@string/selectTimeProperty" />
 
             <uk.whitecrescent.waqti.frontend.customview.PropertyCard
                 android:id="@+id/taskDeadline_propertyCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:optionsMenu="@menu/menu_property_card"
                 app:title="@string/selectDeadlineProperty" />
 
             <uk.whitecrescent.waqti.frontend.customview.PropertyCard
                 android:id="@+id/taskDescription_propertyCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:optionsMenu="@menu/menu_property_card"
                 app:title="@string/selectDescriptionProperty" />
 
         </LinearLayout>

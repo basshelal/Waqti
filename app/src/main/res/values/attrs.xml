@@ -15,6 +15,7 @@
 
     <declare-styleable name="PropertyCard">
         <attr name="title" format="string" />
+        <attr name="optionsMenu" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="EditTextView">

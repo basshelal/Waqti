@@ -3,7 +3,9 @@ package uk.whitecrescent.waqti.frontend.customview
 import android.content.Context
 import android.text.SpannableStringBuilder
 import android.util.AttributeSet
+import android.view.MenuItem
 import android.view.View
+import android.widget.PopupMenu
 import androidx.cardview.widget.CardView
 import kotlinx.android.synthetic.main.property_card.view.*
 import uk.whitecrescent.waqti.R
@@ -12,6 +14,9 @@ class PropertyCard
 @JvmOverloads constructor(context: Context,
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : CardView(context, attributeSet, defStyle) {
+
+    lateinit var popupMenu: PopupMenu
+        private set
 
     init {
 
@@ -26,6 +31,16 @@ class PropertyCard
             }
         }
 
+        overflow_imageButton.apply {
+            attributes.getResourceId(R.styleable.PropertyCard_optionsMenu, Int.MIN_VALUE).apply {
+                if (this != Int.MIN_VALUE) {
+                    popupMenu = PopupMenu(context, overflow_imageButton)
+                    popupMenu.inflate(this)
+                    overflow_imageButton.setOnClickListener { popupMenu.show() }
+                }
+            }
+        }
+
         attributes.recycle()
     }
 
@@ -33,6 +48,10 @@ class PropertyCard
         root_cardView.setOnClickListener {
             onClick()
         }
+    }
+
+    fun onOptionsClicked(onClick: (MenuItem) -> Boolean) {
+        popupMenu.setOnMenuItemClickListener(onClick)
     }
 
 }
