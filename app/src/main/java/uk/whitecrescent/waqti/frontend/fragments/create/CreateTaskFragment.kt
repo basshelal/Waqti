@@ -63,7 +63,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
         setUpDescriptionViews()
 
-        //hideProperties()
+        hideProperties()
 
     }
 

@@ -42,6 +42,8 @@ class BoardView
 
     val taskListAdapters = ArrayList<TaskListAdapter>()
 
+    lateinit var itemTouchHelper: ItemTouchHelper
+
     init {
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
     }
@@ -57,9 +59,9 @@ class BoardView
 
     private fun attachHelpers() {
 
-        ItemTouchHelper(object : SimpleItemTouchHelperCallback() {
-            // TODO: 24-Dec-18 remember to make the dragging only doable from the header, currently its from anywhere
-            // so a very fast scroll or a hold on an empty list will trigger a drag
+        itemTouchHelper = ItemTouchHelper(object : SimpleItemTouchHelperCallback() {
+
+            override fun isLongPressDragEnabled() = false
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
@@ -75,8 +77,8 @@ class BoardView
                 }
             }
 
-            override fun onMoved(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, fromPos: Int,
-                                 target: RecyclerView.ViewHolder, toPos: Int, x: Int, y: Int) {
+            override fun onMoved(recyclerView: RecyclerView, viewHolder: ViewHolder, fromPos: Int,
+                                 target: ViewHolder, toPos: Int, x: Int, y: Int) {
                 super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
 
                 boardAdapter.apply {
@@ -87,7 +89,8 @@ class BoardView
                 mainActivity.viewModel.boardPosition = true to toPos
             }
 
-        }).attachToRecyclerView(this)
+        })
+        itemTouchHelper.attachToRecyclerView(this)
 
         object : PagerSnapHelper() {
             override fun findTargetSnapPosition(layoutManager: LayoutManager?, velocityX: Int, velocityY: Int): Int {
@@ -184,6 +187,10 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         matchOrder()
 
         holder.header.apply {
+            setOnLongClickListener {
+                boardView.itemTouchHelper.startDrag(holder)
+                true
+            }
             text = board[position].name
             setOnClickListener {
                 @GoToFragment
