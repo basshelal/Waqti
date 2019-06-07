@@ -17,6 +17,11 @@ class PropertyCard
 
     lateinit var popupMenu: PopupMenu
         private set
+    var text: CharSequence
+        set(value) {
+            title_textView.text = value
+        }
+        get() = title_textView.text
 
     init {
 

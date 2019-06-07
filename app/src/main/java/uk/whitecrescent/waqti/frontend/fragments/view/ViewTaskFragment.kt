@@ -62,6 +62,10 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
         setUpAppBar(element)
 
+        // TODO: 07-Jun-19 Make background color of the linearLayout be same as Task color
+        nestedScrollView.setBackgroundColor(Caches.boards[boardID].cardColor.toAndroidColor)
+        linearLayout.setBackgroundColor(Caches.boards[boardID].cardColor.toAndroidColor)
+
         setUpTimeViews(element)
 
         setUpDeadlineViews(element)
@@ -120,7 +124,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     @SuppressLint("SetTextI18n")
     private inline fun setUpTimeViews(task: Task) {
-        taskTime_textView.apply {
+        taskTime_propertyCard.apply {
             task.time.let {
                 if (it != DEFAULT_TIME_PROPERTY) {
                     if (it.isConstrained) text = getString(R.string.timeColon) + getString(R.string.constraint) + it.value.rfcFormatted
@@ -128,7 +132,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                 } else isVisible = false
             }
 
-            setOnClickListener {
+            onClick {
                 DateTimePickerDialog().apply {
                     initialTime = task.time.value
                     onConfirm = {
@@ -143,14 +147,14 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     @SuppressLint("SetTextI18n")
     private inline fun setUpDeadlineViews(task: Task) {
-        taskDeadline_textView.apply {
+        taskDeadline_propertyCard.apply {
             task.deadline.let {
                 if (it != DEFAULT_DEADLINE_PROPERTY) {
                     if (it.isConstrained) text = getString(R.string.deadlineColon) + getString(R.string.constraint) + it.value.rfcFormatted
                     else text = getString(R.string.deadlineColon) + getString(R.string.property) + it.value.rfcFormatted
                 } else isVisible = false
             }
-            setOnClickListener {
+            onClick {
                 DateTimePickerDialog().apply {
                     initialTime = task.deadline.value
                     onConfirm = {
@@ -166,14 +170,14 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     @SuppressLint("SetTextI18n")
     private inline fun setUpDescriptionViews(task: Task) {
-        taskDescription_textView.apply {
+        taskDescription_propertyCard.apply {
             task.description.let {
                 if (it != DEFAULT_DESCRIPTION_PROPERTY) {
                     text = getString(R.string.descriptionColon) + it.value
                 } else isVisible = false
             }
 
-            setOnClickListener {
+            onClick {
                 EditTextDialog().apply {
                     hint = this@ViewTaskFragment.getString(R.string.enterDescription)
                     initialText = task.description.value

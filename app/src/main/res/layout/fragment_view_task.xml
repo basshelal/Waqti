@@ -17,6 +17,7 @@
         app:rightClickOpensMenu="@menu/menu_task" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="8dp"
@@ -24,33 +25,28 @@
         app:layout_constraintTop_toBottomOf="@id/task_appBar">
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/taskTime_textView"
+            <uk.whitecrescent.waqti.frontend.customview.PropertyCard
+                android:id="@+id/taskTime_propertyCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="@string/defaultTime"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+                app:title="@string/defaultTime" />
 
-            <TextView
-                android:id="@+id/taskDeadline_textView"
+            <uk.whitecrescent.waqti.frontend.customview.PropertyCard
+                android:id="@+id/taskDeadline_propertyCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="@string/defaultDeadline"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+                app:title="@string/defaultDeadline" />
 
-            <TextView
-                android:id="@+id/taskDescription_textView"
+            <uk.whitecrescent.waqti.frontend.customview.PropertyCard
+                android:id="@+id/taskDescription_propertyCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
-                android:text="@string/defaultDescription"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
+                app:title="@string/defaultDescription" />
 
         </LinearLayout>
 
