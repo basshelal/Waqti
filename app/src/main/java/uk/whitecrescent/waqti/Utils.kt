@@ -7,6 +7,9 @@ import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -133,6 +136,15 @@ inline fun FragmentManager.commitTransaction(block: FragmentTransaction.() -> Un
 
 inline operator fun <reified V : View> V.invoke(block: V.() -> Unit) {
     this.apply(block)
+}
+
+fun View.createBitmap(): Bitmap {
+    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    Canvas(bitmap).apply {
+        background?.draw(this) ?: this.drawColor(Color.BLACK)
+        draw(this)
+    }
+    return bitmap
 }
 
 //endregion Android Utils

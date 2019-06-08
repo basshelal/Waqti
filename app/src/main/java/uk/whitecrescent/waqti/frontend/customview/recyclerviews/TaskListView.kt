@@ -227,7 +227,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                 val scrollBy = (holder.itemView.height * 1.25).roundToInt()
                                 taskListView.smoothScrollBy(0, scrollBy)
                             },
-                            600L
+                            450L
                     )
                 }
             }
@@ -245,7 +245,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                                 val scrollBy = (holder.itemView.height * -1.25).roundToInt()
                                 taskListView.smoothScrollBy(0, scrollBy)
                             },
-                            600L
+                            450L
                     )
                 }
             }
@@ -308,6 +308,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                     450L
             )
 
+            // Above Bug is here not up there
             postDelayed(
                     {
 
