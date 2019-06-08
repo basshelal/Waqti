@@ -7,9 +7,7 @@ import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.Color
+import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -138,13 +136,26 @@ inline operator fun <reified V : View> V.invoke(block: V.() -> Unit) {
     this.apply(block)
 }
 
-fun View.createBitmap(): Bitmap {
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    Canvas(bitmap).apply {
-        background?.draw(this) ?: this.drawColor(Color.BLACK)
-        draw(this)
-    }
-    return bitmap
+/**
+ * This method converts dp unit to equivalent pixels, depending on device density.
+ *
+ * @param dp A value in dp (density independent pixels) unit. Which we need to convert into pixels
+ * @param context Context to get resources and device specific display metrics
+ * @return A float value to represent px equivalent to dp depending on device density
+ */
+fun convertDpToPx(dp: Float, context: Context): Float {
+    return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+}
+
+/**
+ * This method converts device specific pixels to density independent pixels.
+ *
+ * @param px A value in px (pixels) unit. Which we need to convert into db
+ * @param context Context to get resources and device specific display metrics
+ * @return A float value to represent dp equivalent to px value
+ */
+fun convertPxToDp(px: Float, context: Context): Float {
+    return px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
 }
 
 //endregion Android Utils

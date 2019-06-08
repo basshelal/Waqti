@@ -45,7 +45,8 @@ class BoardView
     lateinit var itemTouchHelper: ItemTouchHelper
 
     init {
-        layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
+        layoutManager = PreCachingLayoutManager(context, HORIZONTAL, false,
+                resources.getDimensionPixelSize(R.dimen.taskListWidth) * 2)
     }
 
     override fun setAdapter(_adapter: Adapter<*>?) {
@@ -264,4 +265,15 @@ class BoardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         get() = itemView.taskList_recyclerView
     val footer: FloatingActionButton
         get() = itemView.taskListFooter_textView
+}
+
+class PreCachingLayoutManager(private val context: Context,
+                              orientation: Int = HORIZONTAL,
+                              reverseLayout: Boolean = false,
+                              private val extraLayoutSpace: Int = 600) :
+        LinearLayoutManager(context, orientation, reverseLayout) {
+
+    override fun getExtraLayoutSpace(state: RecyclerView.State): Int {
+        return extraLayoutSpace//convertDpToPx(extraLayoutSpaceDp.toFloat(), context).toInt()
+    }
 }

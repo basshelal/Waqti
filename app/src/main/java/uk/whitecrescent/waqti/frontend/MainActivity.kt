@@ -11,8 +11,12 @@ import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.blank_activity.*
+import org.jetbrains.anko.displayMetrics
+import uk.whitecrescent.waqti.BuildConfig
 import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.backend.persistence.Caches
+import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
@@ -22,6 +26,7 @@ import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.getViewModel
+import uk.whitecrescent.waqti.size
 
 class MainActivity : AppCompatActivity() {
 
@@ -89,6 +94,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         navigationView.menu.removeItem(R.id.settings_navDrawerItem)
+
+        if (BuildConfig.DEBUG && Database.tasks.size < 100) {
+            Caches.seed(5, 10, 20)
+        }
     }
 
     fun setStatusBarColor(color: WaqtiColor) {
@@ -128,4 +137,7 @@ class MainActivity : AppCompatActivity() {
     inline val waqtiSharedPreferences: SharedPreferences
         get() = getSharedPreferences(WAQTI_SHARED_PREFERENCES, Context.MODE_PRIVATE)
 
+    inline val dimensions: Pair<Int, Int>
+        get() = this.resources
+                .let { displayMetrics.widthPixels to displayMetrics.heightPixels }
 }

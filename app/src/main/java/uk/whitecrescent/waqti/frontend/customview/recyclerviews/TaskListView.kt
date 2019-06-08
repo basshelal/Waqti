@@ -11,12 +11,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.core.view.children
+import androidx.core.view.postDelayed
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_card.view.*
-import uk.whitecrescent.waqti.Bug
-import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -29,6 +28,8 @@ import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.frontend.startDragCompat
 import uk.whitecrescent.waqti.mainActivity
 import kotlin.math.roundToInt
+
+private const val animationDuration = 450L
 
 class TaskListView
 @JvmOverloads constructor(context: Context,
@@ -222,13 +223,10 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                     linearLayoutManager.findLastVisibleItemPosition()) {
                 if (draggingState.adapterPosition != itemCount - 1 ||
                         linearLayoutManager.findLastCompletelyVisibleItemPosition() != itemCount - 1) {
-                    taskListView.postDelayed(
-                            {
+                    taskListView.postDelayed(animationDuration) {
                                 val scrollBy = (holder.itemView.height * 1.25).roundToInt()
                                 taskListView.smoothScrollBy(0, scrollBy)
-                            },
-                            450L
-                    )
+                    }
                 }
             }
         }
@@ -240,13 +238,10 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                     linearLayoutManager.findFirstVisibleItemPosition()) {
                 if (draggingState.adapterPosition != 0 ||
                         linearLayoutManager.findFirstCompletelyVisibleItemPosition() != 0) {
-                    taskListView.postDelayed(
-                            {
+                    taskListView.postDelayed(animationDuration) {
                                 val scrollBy = (holder.itemView.height * -1.25).roundToInt()
                                 taskListView.smoothScrollBy(0, scrollBy)
-                            },
-                            450L
-                    )
+                    }
                 }
             }
         }
@@ -289,39 +284,22 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         otherAdapter.notifyDataSetChanged()
     }
 
-    @Inconvenience
-    @Bug
-    // TODO: 29-Dec-18 Alpha changing only works with delay of around 450+,
-    // the view briefly appears
     private fun dragAcrossLists(draggingState: DragEventLocalState) {
 
         taskListView.boardView.apply {
 
-            postDelayed(
-                    {
+            postDelayed(animationDuration) {
 
-                        val pos = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
-                        smoothScrollToPosition(pos)
-                        mainActivity.viewModel.boardPosition = true to pos
+                // The list that we will be scrolling to
+                val boardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
 
-                    },
-                    450L
-            )
+                this@TaskListAdapter.taskListView
+                        .findViewHolderForAdapterPosition(draggingState.adapterPosition)
+                        ?.itemView?.alpha = 0.25F
 
-            // Above Bug is here not up there
-            postDelayed(
-                    {
-
-
-                        val position = draggingState.adapterPosition
-
-                        this@TaskListAdapter.taskListView
-                                .findViewHolderForAdapterPosition(position)
-                                ?.itemView?.alpha = 0.25F
-
-                    },
-                    450L
-            )
+                smoothScrollToPosition(boardPosition)
+                mainActivity.viewModel.boardPosition = true to boardPosition
+            }
         }
     }
 

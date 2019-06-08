@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.postDelayed
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
@@ -130,14 +131,11 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
         boardsList_recyclerView.apply {
             if (this.boardListAdapter.itemCount > 0) {
-                postDelayed(
-                        {
-                            mainActivityViewModel.boardListPosition.apply {
-                                if (first) smoothScrollToPosition(second)
-                            }
-                        },
-                        100L
-                )
+                postDelayed(100L) {
+                    mainActivityViewModel.boardListPosition.apply {
+                        if (first) smoothScrollToPosition(second)
+                    }
+                }
             }
             addOnScrollListener(FABOnScrollListener(
                     this@ViewBoardListFragment.addBoard_FloatingButton, Orientation.VERTICAL))

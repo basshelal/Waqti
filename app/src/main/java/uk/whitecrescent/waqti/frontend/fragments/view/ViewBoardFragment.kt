@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.postDelayed
 import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
@@ -202,14 +203,11 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
             adapter = BoardAdapter(element.id)
             background = element.backgroundColor.toColorDrawable
             if (boardAdapter.itemCount > 0) {
-                postDelayed(
-                        {
+                postDelayed(100L) {
                             mainActivityViewModel.boardPosition.apply {
                                 if (first) smoothScrollToPosition(second)
                             }
-                        },
-                        100L
-                )
+                }
             }
             addOnScrollListener(FABOnScrollListener(
                     this@ViewBoardFragment.addList_floatingButton, Orientation.HORIZONTAL))
