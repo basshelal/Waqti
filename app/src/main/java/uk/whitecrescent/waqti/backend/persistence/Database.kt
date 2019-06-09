@@ -17,6 +17,7 @@ import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Database.ImportMethod.ADD
 import uk.whitecrescent.waqti.backend.persistence.Database.ImportMethod.MERGE
+import uk.whitecrescent.waqti.backend.persistence.Database.ImportMethod.OVERRIDE
 import uk.whitecrescent.waqti.backend.persistence.Database.ImportMethod.REPLACE
 import uk.whitecrescent.waqti.backend.task.Label
 import uk.whitecrescent.waqti.backend.task.Priority
@@ -160,7 +161,7 @@ object Database {
     }
 
     enum class ImportMethod {
-        REPLACE, ADD, MERGE
+        REPLACE, ADD, MERGE, OVERRIDE
     }
 
     class ImportException(message: String) : IllegalStateException(message)
@@ -207,6 +208,9 @@ object Database {
 
             }
             MERGE -> {
+
+            }
+            OVERRIDE -> {
 
             }
         }

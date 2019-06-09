@@ -50,6 +50,7 @@ class AboutFragment : WaqtiOtherFragment() {
                         .addLibrary("JetBrains/kotlin", "Kotlin")
                         .addLibrary("objectbox/objectbox-java", "ObjectBox")
                         .addLibrary("ReactiveX/RxJava", "RxJava")
+                        .addLibrary("ReactiveX/RxAndroid", "RxAndroid")
                         .addLibrary("junit-team/junit5", "JUnit5")
                         .addLibrary("JakeWharton/ThreeTenABP", "ThreeTenABP")
                         .addLibrary("google/gson", "Gson")
