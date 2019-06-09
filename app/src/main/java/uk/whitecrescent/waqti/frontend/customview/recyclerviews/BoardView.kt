@@ -267,13 +267,13 @@ class BoardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         get() = itemView.taskListFooter_textView
 }
 
-class PreCachingLayoutManager(private val context: Context,
+class PreCachingLayoutManager(context: Context,
                               orientation: Int = HORIZONTAL,
                               reverseLayout: Boolean = false,
-                              private val extraLayoutSpace: Int = 600) :
+                              private val extraLayoutSpacePx: Int = 600) :
         LinearLayoutManager(context, orientation, reverseLayout) {
 
     override fun getExtraLayoutSpace(state: RecyclerView.State): Int {
-        return extraLayoutSpace//convertDpToPx(extraLayoutSpaceDp.toFloat(), context).toInt()
+        return extraLayoutSpacePx
     }
 }

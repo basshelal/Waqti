@@ -20,96 +20,10 @@
         app:layout_constraintTop_toBottomOf="@id/about_appBar">
 
         <LinearLayout
+            android:id="@+id/about_linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/waqtiBetaText"
-                android:textColor="@color/black"
-                android:textSize="30sp" />
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:text="@string/waqtiOpenSource"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <!--<TextView
-                android:id="@+id/faqHeading_textView"
-                style="@style/TextAppearance.MaterialComponents.Headline3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/faq"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="40sp" />
-
-            <TextView
-                android:id="@+id/faqText_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/faqText"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/meetTheTeamHeading_textView"
-                style="@style/TextAppearance.MaterialComponents.Headline3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/meetTheTeam"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="40sp" />
-
-            <TextView
-                android:id="@+id/meetTheTeamText_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/meetTheTeamText"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/openSourceLibrariesHeading_textView"
-                style="@style/TextAppearance.MaterialComponents.Headline3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/openSourceLibraries"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="40sp" />
-
-            <TextView
-                android:id="@+id/openSourceLibrariesText_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/openSourceLibrariesText"
-                android:textColor="@color/black"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/specialThanksHeading_textView"
-                style="@style/TextAppearance.MaterialComponents.Headline3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/specialThanks"
-                android:textAlignment="center"
-                android:textColor="@color/black"
-                android:textSize="40sp" />
-
-            <TextView
-                android:id="@+id/specialThanksText_textView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/specialThanksText"
-                android:textColor="@color/black"
-                android:textSize="20sp" />-->
 
         </LinearLayout>
 
