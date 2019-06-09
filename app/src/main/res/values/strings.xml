@@ -99,13 +99,16 @@
 
     <!--About Page-->
 
-    <string name="waqtiDescription">Description here</string>
+    <string name="waqtiDescription">Waqti is a Kanban based time management system with rich
+        features that help you understand and control your day to day life.</string>
 
-    <string name="waqtiBetaText">Waqti is currently in beta, updates will continue to roll
-        out with many exciting features</string>
+    <string name="waqtiBetaText">Waqti is currently in beta, updates
+        will continue to roll out with exciting and rich features.</string>
 
     <string name="openSourceLibraries">Open Source Libraries Used</string>
 
-    <string name="waqtiOpenSource">Waqti is free and open source</string>
+    <string name="waqtiOpenSource">Waqti is free and open source!</string>
+
+    <string name="aboutTheDeveloper">About the Developer</string>
 
 </resources>

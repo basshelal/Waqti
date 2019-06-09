@@ -32,14 +32,39 @@ class AboutFragment : WaqtiOtherFragment() {
         about_linearLayout.addView(
                 AboutPage(mainActivity)
                         .isRTL(false)
+
+                        // Image and Description
                         .setImage(R.drawable.waqti_icon)
-                        .setDescription(getString(R.string.waqtiDescription))
-                        .addParagraph(getString(R.string.waqtiBetaText))
+                        .setDescription(getString(R.string.waqtiDescription) +
+                                "\n\n" + getString(R.string.waqtiBetaText))
+                        //.addParagraph(getString(R.string.waqtiBetaText))
+
+                        // Waqti is free and open source
                         .addHeading(getString(R.string.waqtiOpenSource))
-                        .addGitHub("basshelal/Waqti-Android", "Waqti on GitHub")
+                        .addGitHub("basshelal/Waqti-Android", "Fork Waqti on GitHub")
+                        .addLink("MIT License",
+                                "https://github.com/basshelal/Waqti-Android/blob/master/LICENSE")
+
+                        // Open Source Libraries Used
                         .addHeading(getString(R.string.openSourceLibraries))
-                        .addGitHub("objectbox/objectbox-java", "ObjectBox")
-                        .addHeading("About the Developer")
+                        .addLibrary("JetBrains/kotlin", "Kotlin")
+                        .addLibrary("junit-team/junit5", "JUnit5")
+                        .addLibrary("objectbox/objectbox-java", "ObjectBox")
+                        .addLibrary("ReactiveX/RxJava", "RxJava")
+                        .addLibrary("JakeWharton/ThreeTenABP", "ThreeTenABP")
+                        .addLibrary("google/gson", "Gson")
+                        .addLibrary("florent37/ShapeOfView", "ShapeOfView")
+                        .addLibrary("Kotlin/anko", "Anko")
+                        .addLibrary("square/leakcanary", "LeakCanary")
+                        .addLibrary("material-components/material-components-android", "Material Components for Android")
+                        .addLibrary("lopspower/CircularImageView", "CircularImageView")
+                        .addLibrary("square/retrofit", "Retrofit")
+                        .addLibrary("bumptech/glide", "Glide")
+                        .addLibrary("KeenenCharles/AndroidUnplash", "Android Unsplash")
+                        .addLibrary("medyo/android-about-page", "Android About Page")
+
+                        // About the Developer
+                        .addHeading(getString(R.string.aboutTheDeveloper))
                         .addGitHub("basshelal", "Bassam Helal on GitHub")
                         .addLinkedIn("bassamhelal", "Bassam Helal on LinkedIn")
                         .create()
@@ -51,7 +76,23 @@ class AboutFragment : WaqtiOtherFragment() {
     }
 }
 
-inline fun AboutPage.addHeading(title: String) = addGroup(title)
+inline fun AboutPage.addHeading(title: String) = addGroup("$title")
+
+inline fun AboutPage.addLink(title: String, url: String): AboutPage {
+    return addItem(Element().apply {
+        this.title = title
+        iconDrawable = null
+        iconTint = null
+        value = url
+        intent = Intent().apply {
+            action = Intent.ACTION_VIEW
+            addCategory(Intent.CATEGORY_BROWSABLE)
+            data = Uri.parse(url)
+        }
+    })
+}
+
+inline fun AboutPage.addLibrary(id: String, title: String) = addGitHub(id, title)
 
 inline fun AboutPage.addParagraph(text: String): AboutPage {
     return addItem(Element().apply {
