@@ -105,10 +105,10 @@ enum class Level {
     SEVEN_HUNDRED, EIGHT_HUNDRED, NINE_HUNDRED
 }
 
-class ColorLevel(val color: Color, val level: Level)
+data class ColorLevel(val color: Color, val level: Level)
 
-class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
-                  val dark: WaqtiColor, text: WaqtiColor = BLACK)
+data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
+                       val dark: WaqtiColor, val text: WaqtiColor = BLACK)
 
 fun getColorScheme(colorLevel: ColorLevel): ColorScheme {
     when (colorLevel.color) {
@@ -201,26 +201,26 @@ fun getColorScheme(colorLevel: ColorLevel): ColorScheme {
                     dark = "#000063".c, text = WHITE)
         }
         INDIGO -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c,
-                    dark = "".c, text = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                    dark = "".c, text = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                    dark = "".c, text = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                    dark = "".c, text = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                    dark = "".c, text = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                    dark = "".c, text = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                    dark = "".c, text = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                    dark = "".c, text = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                    dark = "".c, text = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                    dark = "".c, text = "".c)
+            FIFTY -> ColorScheme(light = "#FFFFFF".c, main = "#E8EAF6".c,
+                    dark = "#B6B8C3".c, text = BLACK)
+            ONE_HUNDRED -> ColorScheme(light = "#F8FDFF".c, main = "#C5CAE9".c,
+                    dark = "#9499B7".c, text = BLACK)
+            TWO_HUNDRED -> ColorScheme(light = "#D1D9FF".c, main = "#9FA8DA".c,
+                    dark = "#6F79A8".c, text = BLACK)
+            THREE_HUNDRED -> ColorScheme(light = "#AAB6FE".c, main = "#7986CB".c,
+                    dark = "#49599A".c, text = BLACK)
+            FOUR_HUNDRED -> ColorScheme(light = "#8E99F3".c, main = "#5C6BC0".c,
+                    dark = "#26418F".c, text = WHITE)
+            FIVE_HUNDRED -> ColorScheme(light = "#757DE8".c, main = "#3F51B5".c,
+                    dark = "#002984".c, text = WHITE)
+            SIX_HUNDRED -> ColorScheme(light = "#6F74DD".c, main = "#3949AB".c,
+                    dark = "#00227B".c, text = WHITE)
+            SEVEN_HUNDRED -> ColorScheme(light = "#666AD1".c, main = "#303F9F".c,
+                    dark = "#001970".c, text = WHITE)
+            EIGHT_HUNDRED -> ColorScheme(light = "#5F5FC4".c, main = "#283593".c,
+                    dark = "#001064".c, text = WHITE)
+            NINE_HUNDRED -> ColorScheme(light = "#534BAE".c, main = "#1A237E".c,
+                    dark = "#000051".c, text = WHITE)
         }
         BLUE -> return when (colorLevel.level) {
             FIFTY -> ColorScheme(light = "".c, main = "".c,
