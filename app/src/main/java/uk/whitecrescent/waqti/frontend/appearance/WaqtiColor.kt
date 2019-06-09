@@ -5,8 +5,14 @@ import android.graphics.drawable.ColorDrawable
 
 open class WaqtiColor(val value: String) {
     init {
-        require(value.startsWith('#')) { "Color must start with #" }
-        require(value.length <= 9) { "Color value must be no longer than 9 characters (includes #)" }
+        require(value.startsWith('#')) { "$value is invalid, Color must start with #" }
+        require(value.length != 9) {
+            "$value is invalid, Color must be exactly 9 characters (includes #)"
+        }
+        require(value.filterNot { it.isHexChar }.isEmpty()) {
+            "$value is invalid, contains illegal characters," +
+                    " allowed characters are 0-9, a-f (upper and lowercase) and #"
+        }
     }
 
     val toColorDrawable: ColorDrawable
@@ -22,9 +28,11 @@ open class WaqtiColor(val value: String) {
     override fun toString() = value
 
     companion object {
-        val DEFAULT = WaqtiColor("#FFFFFF")
+        val BLACK = WaqtiColor("#000000")
+        val WHITE = WaqtiColor("#FFFFFF")
         val CARD_DEFAULT = WaqtiColor("#E0E0E0")
         val WAQTI_DEFAULT = WaqtiColor("#880E4F")
+        val DEFAULT = WHITE
     }
 }
 
@@ -36,3 +44,13 @@ inline val String.toColor: WaqtiColor
 
 inline val Int.toColor: WaqtiColor
     get() = WaqtiColor(colorToHex(this))
+
+inline val Char.isHexChar: Boolean
+    get() = (isDigit()
+            || toLowerCase() == 'a'
+            || toLowerCase() == 'b'
+            || toLowerCase() == 'c'
+            || toLowerCase() == 'd'
+            || toLowerCase() == 'e'
+            || toLowerCase() == 'f'
+            || toLowerCase() == '#')
