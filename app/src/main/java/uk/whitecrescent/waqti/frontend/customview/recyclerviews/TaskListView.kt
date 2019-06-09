@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.ClipData
@@ -166,7 +168,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         }
     }
 
-    private fun onDrag(draggingState: DragEventLocalState, holder: TaskViewHolder): Boolean {
+    private inline fun onDrag(draggingState: DragEventLocalState, holder: TaskViewHolder): Boolean {
         return when {
 
             draggingState.taskListID == holder.taskListID -> {
@@ -210,46 +212,46 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         }
     }
 
-    private fun onDragInSameList(draggingState: DragEventLocalState, holder: TaskViewHolder) {
+    private inline fun onDragInSameList(draggingState: DragEventLocalState, holder: TaskViewHolder) {
         val newDragPos = holder.adapterPosition
         taskList.swap(draggingState.adapterPosition, newDragPos).update()
         draggingState.adapterPosition = newDragPos
         notifyDataSetChanged()
     }
 
-    private fun checkForScrollDown(draggingState: DragEventLocalState, holder: TaskViewHolder) {
+    private inline fun checkForScrollDown(draggingState: DragEventLocalState, holder: TaskViewHolder) {
         if (draggingState.adapterPosition <= itemCount - 1) {
             if (draggingState.adapterPosition >=
                     linearLayoutManager.findLastVisibleItemPosition()) {
                 if (draggingState.adapterPosition != itemCount - 1 ||
                         linearLayoutManager.findLastCompletelyVisibleItemPosition() != itemCount - 1) {
                     taskListView.postDelayed(animationDuration) {
-                                val scrollBy = (holder.itemView.height * 1.25).roundToInt()
-                                taskListView.smoothScrollBy(0, scrollBy)
+                        val scrollBy = (holder.itemView.height * 1.25).roundToInt()
+                        taskListView.smoothScrollBy(0, scrollBy)
                     }
                 }
             }
         }
     }
 
-    private fun checkForScrollUp(draggingState: DragEventLocalState, holder: TaskViewHolder) {
+    private inline fun checkForScrollUp(draggingState: DragEventLocalState, holder: TaskViewHolder) {
         if (draggingState.adapterPosition >= 0) {
             if (draggingState.adapterPosition <=
                     linearLayoutManager.findFirstVisibleItemPosition()) {
                 if (draggingState.adapterPosition != 0 ||
                         linearLayoutManager.findFirstCompletelyVisibleItemPosition() != 0) {
                     taskListView.postDelayed(animationDuration) {
-                                val scrollBy = (holder.itemView.height * -1.25).roundToInt()
-                                taskListView.smoothScrollBy(0, scrollBy)
+                        val scrollBy = (holder.itemView.height * -1.25).roundToInt()
+                        taskListView.smoothScrollBy(0, scrollBy)
                     }
                 }
             }
         }
     }
 
-    private fun onDragInDifferentLists(draggingState: DragEventLocalState,
-                                       holder: TaskViewHolder,
-                                       otherAdapter: TaskListAdapter) {
+    private inline fun onDragInDifferentLists(draggingState: DragEventLocalState,
+                                              holder: TaskViewHolder,
+                                              otherAdapter: TaskListAdapter) {
 
         val otherTaskList = otherAdapter.taskList
         val task = otherTaskList[draggingState.taskID]
@@ -267,7 +269,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         otherAdapter.notifyDataSetChanged()
     }
 
-    private fun onDragInDifferentLists(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
+    private inline fun onDragInDifferentLists(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
         val otherTaskList = otherAdapter.taskList
         val task = otherTaskList[draggingState.taskID]
         val newDragPos = this.taskList.nextIndex
@@ -284,7 +286,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         otherAdapter.notifyDataSetChanged()
     }
 
-    private fun dragAcrossLists(draggingState: DragEventLocalState) {
+    private inline fun dragAcrossLists(draggingState: DragEventLocalState) {
 
         taskListView.boardView.apply {
 
@@ -303,7 +305,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         }
     }
 
-    val allCards: List<CardView>
+    inline val allCards: List<CardView>
         get() = taskListView.children.map { it as CardView }.toList()
 }
 
@@ -312,19 +314,19 @@ data class DragEventLocalState(
         var taskListID: ID,
         var adapterPosition: Int) {
 
-    fun updateToMatch(viewHolder: TaskViewHolder) {
+    inline fun updateToMatch(viewHolder: TaskViewHolder) {
         this.taskID = viewHolder.taskID
         this.taskListID = viewHolder.taskListID
         this.adapterPosition = viewHolder.adapterPosition
     }
 
-    infix fun doesNotMatch(viewHolder: TaskViewHolder): Boolean {
+    inline infix fun doesNotMatch(viewHolder: TaskViewHolder): Boolean {
         return this.taskID != viewHolder.taskID ||
                 this.taskListID != viewHolder.taskListID ||
                 this.adapterPosition != viewHolder.adapterPosition
     }
 
-    infix fun matches(viewHolder: TaskViewHolder): Boolean {
+    inline infix fun matches(viewHolder: TaskViewHolder): Boolean {
         return this.taskID == viewHolder.taskID &&
                 this.taskListID == viewHolder.taskListID &&
                 this.adapterPosition == viewHolder.adapterPosition
