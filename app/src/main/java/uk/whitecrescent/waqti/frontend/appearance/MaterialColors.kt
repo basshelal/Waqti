@@ -108,7 +108,7 @@ enum class Level {
 class ColorLevel(val color: Color, val level: Level)
 
 class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
-                  val dark: WaqtiColor, text: WaqtiColor = "#FFFFFF".c)
+                  val dark: WaqtiColor, text: WaqtiColor = BLACK)
 
 fun getColorScheme(colorLevel: ColorLevel): ColorScheme {
     when (colorLevel.color) {
@@ -135,220 +135,400 @@ fun getColorScheme(colorLevel: ColorLevel): ColorScheme {
                     dark = "#7F0000".c, text = WHITE)
         }
         PINK -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "#FFFFFF".c, main = "#FCE4EC".c,
+                    dark = "#C9B2BA".c, text = BLACK)
+            ONE_HUNDRED -> ColorScheme(light = "#FFEEFF".c, main = "#F8BBD0".c,
+                    dark = "#C48B9F".c, text = BLACK)
+            TWO_HUNDRED -> ColorScheme(light = "#FFC1E3".c, main = "#F48FB1".c,
+                    dark = "#BF5F82".c, text = BLACK)
+            THREE_HUNDRED -> ColorScheme(light = "#FF94C2".c, main = "#F06292".c,
+                    dark = "#BA2D65".c, text = BLACK)
+            FOUR_HUNDRED -> ColorScheme(light = "#FF77A9".c, main = "#EC407A".c,
+                    dark = "#B4004E".c, text = BLACK)
+            FIVE_HUNDRED -> ColorScheme(light = "#FF6090".c, main = "#E91E63".c,
+                    dark = "#B0003A".c, text = BLACK)
+            SIX_HUNDRED -> ColorScheme(light = "#FF5C8D".c, main = "#D81B60".c,
+                    dark = "#A00037".c, text = WHITE)
+            SEVEN_HUNDRED -> ColorScheme(light = "#FA5788".c, main = "#C2185B".c,
+                    dark = "#8C0032".c, text = WHITE)
+            EIGHT_HUNDRED -> ColorScheme(light = "#E35183".c, main = "#AD1457".c,
+                    dark = "#78002E".c, text = WHITE)
+            NINE_HUNDRED -> ColorScheme(light = "#BC477B".c, main = "#880E4F".c,
+                    dark = "#560027".c, text = WHITE)
         }
         PURPLE -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         DEEP_PURPLE -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         INDIGO -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         BLUE -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         LIGHT_BLUE -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         CYAN -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         TEAL -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         GREEN -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         LIGHT_GREEN -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         LIME -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         YELLOW -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         AMBER -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         ORANGE -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         DEEP_ORANGE -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         BROWN -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         GREY -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
         BLUE_GREY -> return when (colorLevel.level) {
-            FIFTY -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
-            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c, dark = "".c)
+            FIFTY -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
+            NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
+                    dark = "".c, text = "".c)
         }
     }
 }
