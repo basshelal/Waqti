@@ -48,19 +48,19 @@ class AboutFragment : WaqtiOtherFragment() {
                         // Open Source Libraries Used
                         .addHeading(getString(R.string.openSourceLibraries))
                         .addLibrary("JetBrains/kotlin", "Kotlin")
-                        .addLibrary("junit-team/junit5", "JUnit5")
                         .addLibrary("objectbox/objectbox-java", "ObjectBox")
                         .addLibrary("ReactiveX/RxJava", "RxJava")
+                        .addLibrary("junit-team/junit5", "JUnit5")
                         .addLibrary("JakeWharton/ThreeTenABP", "ThreeTenABP")
                         .addLibrary("google/gson", "Gson")
+                        .addLibrary("material-components/material-components-android", "Material Components for Android")
                         .addLibrary("florent37/ShapeOfView", "ShapeOfView")
                         .addLibrary("Kotlin/anko", "Anko")
                         .addLibrary("square/leakcanary", "LeakCanary")
-                        .addLibrary("material-components/material-components-android", "Material Components for Android")
+                        .addLibrary("KeenenCharles/AndroidUnplash", "Android Unsplash")
                         .addLibrary("lopspower/CircularImageView", "CircularImageView")
                         .addLibrary("square/retrofit", "Retrofit")
                         .addLibrary("bumptech/glide", "Glide")
-                        .addLibrary("KeenenCharles/AndroidUnplash", "Android Unsplash")
                         .addLibrary("medyo/android-about-page", "Android About Page")
 
                         // About the Developer
