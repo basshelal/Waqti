@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.R
@@ -120,7 +119,6 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
                 it.clearFocusAndHideSoftKeyboard()
 
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
                 addToBackStack("")
             }

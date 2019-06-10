@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.postDelayed
-import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.ForLater
@@ -204,9 +203,9 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
             background = element.backgroundColor.toColorDrawable
             if (boardAdapter.itemCount > 0) {
                 postDelayed(100L) {
-                            mainActivityViewModel.boardPosition.apply {
-                                if (first) smoothScrollToPosition(second)
-                            }
+                    mainActivityViewModel.boardPosition.apply {
+                        if (first) smoothScrollToPosition(second)
+                    }
                 }
             }
             addOnScrollListener(FABOnScrollListener(
@@ -224,7 +223,6 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     it.clearFocusAndHideSoftKeyboard()
 
                     replace(R.id.fragmentContainer, CreateListFragment(), CREATE_LIST_FRAGMENT)
-                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     addToBackStack("")
                 }
             }

@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -132,7 +131,6 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
 
                     it.hideSoftKeyboard()
 
-                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     replace(R.id.fragmentContainer, ViewBoardFragment.newInstance(), BOARD_FRAGMENT)
                     addToBackStack("ViewBoardFragment")
                 }

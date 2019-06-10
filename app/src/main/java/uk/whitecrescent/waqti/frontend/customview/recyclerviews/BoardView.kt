@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.updateLayoutParams
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
@@ -207,7 +206,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
                     it.clearFocusAndHideSoftKeyboard()
 
-                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     addToBackStack("")
                     replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
                 }
@@ -224,7 +222,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
                     it.clearFocusAndHideSoftKeyboard()
 
-                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
                     addToBackStack("")
                 }

@@ -10,7 +10,6 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.blank_activity.*
 import org.jetbrains.anko.displayMetrics
 import uk.whitecrescent.waqti.BuildConfig
@@ -54,7 +53,6 @@ class MainActivity : AppCompatActivity() {
             @GoToFragment
             supportFragmentManager.commitTransaction {
                 add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
             }
         }
 
@@ -79,7 +77,6 @@ class MainActivity : AppCompatActivity() {
                     @GoToFragment
                     supportFragmentManager.commitTransaction {
                         replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
-                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         addToBackStack("")
                     }
                 }
@@ -87,7 +84,6 @@ class MainActivity : AppCompatActivity() {
                     @GoToFragment
                     supportFragmentManager.commitTransaction {
                         replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
-                        setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                         addToBackStack("")
                     }
                 }

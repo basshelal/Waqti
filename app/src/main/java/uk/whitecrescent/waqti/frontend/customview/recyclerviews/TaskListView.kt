@@ -16,7 +16,6 @@ import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.core.view.children
 import androidx.core.view.postDelayed
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_card.view.*
@@ -119,7 +118,6 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                     it.clearFocusAndHideSoftKeyboard()
 
-                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                     addToBackStack("")
                     replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
                 }

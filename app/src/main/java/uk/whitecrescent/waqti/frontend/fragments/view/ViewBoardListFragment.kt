@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.postDelayed
-import androidx.fragment.app.FragmentTransaction
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
@@ -124,7 +123,6 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                 it.clearFocusAndHideSoftKeyboard()
 
                 replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
-                setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
                 addToBackStack("")
             }
         }
