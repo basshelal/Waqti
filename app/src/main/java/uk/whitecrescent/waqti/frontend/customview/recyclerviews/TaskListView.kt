@@ -215,34 +215,28 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
     private inline fun checkForScrollDown(draggingState: DragEventLocalState, holder: TaskViewHolder) {
 
-        draggingState.adapterPosition.apply {
-            if (this < lastPosition &&
-                    this >= linearLayoutManager.findLastVisibleItemPosition() &&
-                    this >= linearLayoutManager.findLastCompletelyVisibleItemPosition()) {
+        if (draggingState.adapterPosition >= linearLayoutManager.findLastCompletelyVisibleItemPosition()) {
 
-                taskListView.postDelayed(animationDuration) {
-                    val scrollBy = (holder.itemView.height * 1.25).roundToInt()
-                    taskListView.smoothScrollBy(0, scrollBy)
-                }
-
+            taskListView.postDelayed(animationDuration) {
+                val scrollBy = (holder.itemView.height * 1.5).roundToInt()
+                taskListView.smoothScrollBy(0, scrollBy)
             }
+
         }
+
     }
 
     private inline fun checkForScrollUp(draggingState: DragEventLocalState, holder: TaskViewHolder) {
 
-        draggingState.adapterPosition.apply {
-            if (this >= 0 &&
-                    this <= linearLayoutManager.findFirstVisibleItemPosition() &&
-                    this <= linearLayoutManager.findFirstCompletelyVisibleItemPosition()) {
+        if (draggingState.adapterPosition <= linearLayoutManager.findFirstCompletelyVisibleItemPosition()) {
 
-                taskListView.postDelayed(animationDuration) {
-                    val scrollBy = (holder.itemView.height * -1.25).roundToInt()
-                    taskListView.smoothScrollBy(0, scrollBy)
-                }
-
+            taskListView.postDelayed(animationDuration) {
+                val scrollBy = (holder.itemView.height * -1.5).roundToInt()
+                taskListView.smoothScrollBy(0, scrollBy)
             }
+
         }
+
     }
 
     private inline fun onDragInDifferentLists(draggingState: DragEventLocalState,

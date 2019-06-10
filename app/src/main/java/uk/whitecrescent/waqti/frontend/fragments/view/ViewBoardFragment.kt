@@ -244,9 +244,14 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                             ConfirmDialog().apply {
                                 title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteTaskQuestion)
                                 onConfirm = {
-                                    this.dismiss()
                                     Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
-                                    this@ViewBoardFragment.boardView.boardAdapter.notifyDataSetChanged()
+                                    this@ViewBoardFragment.boardView
+                                            .getListAdapter(draggingState.taskListID)?.apply {
+                                                notifyItemRemoved(taskListView
+                                                        .findViewHolderForItemId(draggingState.taskID)
+                                                        .adapterPosition)
+                                            }
+                                    this.dismiss()
                                 }
                             }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
                         }
