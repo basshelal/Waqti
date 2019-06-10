@@ -92,8 +92,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        navigationView.menu.removeItem(R.id.settings_navDrawerItem)
-
         if (BuildConfig.DEBUG && Database.tasks.size < 100) {
             Caches.seed(5, 10, 20)
         }

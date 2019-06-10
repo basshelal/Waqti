@@ -24,8 +24,6 @@ import uk.whitecrescent.waqti.backend.task.Priority
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.backend.task.Template
 import uk.whitecrescent.waqti.backend.task.TimeUnit
-import uk.whitecrescent.waqti.forEach
-import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.size
 import java.io.File
@@ -97,13 +95,7 @@ object Database {
     }
 
     fun applyMigration() {
-        boards.forEach {
-            if (!it.backgroundColor.value.startsWith('#'))
-                it.backgroundColor = WaqtiColor.DEFAULT
-            if (!it.cardColor.value.startsWith('#'))
-                it.backgroundColor = WaqtiColor.CARD_DEFAULT
 
-        }
     }
 
     fun needsRepair(): Boolean {
