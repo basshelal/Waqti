@@ -17,6 +17,7 @@
     <string name="defaultBefore">Default Before</string>
     <string name="defaultSubTasks">Default SubTasks</string>
     <string name="defaultList">Default List</string>
+    <string name="defaultListName">Default List Name</string>
     <string name="defaultBoard">Default Board</string>
 
     <!--Hints, telling the user what to do-->

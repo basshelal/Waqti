@@ -298,14 +298,18 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
         taskListView.boardView.apply {
 
-            postDelayed(animationDuration) {
+            this@TaskListAdapter.taskListView
+                    .findViewHolderForAdapterPosition(draggingState.adapterPosition)
+                    ?.itemView?.alpha = draggingViewAlpha
 
-                // The list that we will be scrolling to
-                val boardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
+            postDelayed(animationDuration) {
 
                 this@TaskListAdapter.taskListView
                         .findViewHolderForAdapterPosition(draggingState.adapterPosition)
                         ?.itemView?.alpha = draggingViewAlpha
+
+                // The list that we will be scrolling to
+                val boardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
 
                 smoothScrollToPosition(boardPosition)
                 mainActivity.viewModel.boardPosition = true to boardPosition
