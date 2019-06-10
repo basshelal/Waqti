@@ -37,6 +37,7 @@ import uk.whitecrescent.waqti.notifySwapped
 import kotlin.math.roundToInt
 
 private const val animationDuration = 450L
+private const val draggingViewAlpha = 0F
 
 class TaskListView
 @JvmOverloads constructor(context: Context,
@@ -131,7 +132,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                         DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
                         DRAG_FLAG_OPAQUE
                 )
-                it.visibility = View.INVISIBLE
+                it.alpha = draggingViewAlpha
                 return@setOnLongClickListener true
             }
 
@@ -151,8 +152,8 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                     }
                     DragEvent.ACTION_DRAG_ENDED -> {
                         taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)
-                                ?.itemView?.visibility = View.VISIBLE
-                        v.visibility = View.VISIBLE
+                                ?.itemView?.alpha = 1F
+                        v.alpha = 1F
                     }
                 }
                 return@setOnDragListener true
@@ -304,7 +305,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                 this@TaskListAdapter.taskListView
                         .findViewHolderForAdapterPosition(draggingState.adapterPosition)
-                        ?.itemView?.visibility = View.INVISIBLE
+                        ?.itemView?.alpha = draggingViewAlpha
 
                 smoothScrollToPosition(boardPosition)
                 mainActivity.viewModel.boardPosition = true to boardPosition
