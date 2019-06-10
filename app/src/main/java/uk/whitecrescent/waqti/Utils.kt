@@ -7,6 +7,7 @@ import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Point
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -43,6 +44,7 @@ import uk.whitecrescent.waqti.backend.task.Template
 import uk.whitecrescent.waqti.backend.task.TimeUnit
 import uk.whitecrescent.waqti.frontend.MainActivity
 import java.util.Objects
+import kotlin.math.roundToInt
 
 // Everything here is mostly Extensions and Top Level Functions
 
@@ -147,6 +149,14 @@ inline operator fun <reified V : View> V.invoke(block: V.() -> Unit) {
     this.apply(block)
 }
 
+inline val View.locationOnScreen: Point
+    get() {
+        val point = IntArray(2).also {
+            this.getLocationOnScreen(it)
+        }
+        return Point(point[0], point[1])
+    }
+
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.
  *
@@ -154,8 +164,9 @@ inline operator fun <reified V : View> V.invoke(block: V.() -> Unit) {
  * @param context Context to get resources and device specific display metrics
  * @return A float value to represent px equivalent to dp depending on device density
  */
-fun convertDpToPx(dp: Float, context: Context): Float {
-    return dp * (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+fun convertDpToPx(dp: Float, context: Context): Int {
+    return (dp * (context.resources.displayMetrics.densityDpi.toFloat() /
+            DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 }
 
 /**
@@ -165,8 +176,9 @@ fun convertDpToPx(dp: Float, context: Context): Float {
  * @param context Context to get resources and device specific display metrics
  * @return A float value to represent dp equivalent to px value
  */
-fun convertPxToDp(px: Float, context: Context): Float {
-    return px / (context.resources.displayMetrics.densityDpi.toFloat() / DisplayMetrics.DENSITY_DEFAULT)
+fun convertPxToDp(px: Float, context: Context): Int {
+    return (px / (context.resources.displayMetrics.densityDpi.toFloat() /
+            DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 }
 
 //endregion Android Utils

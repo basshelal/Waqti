@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -31,6 +32,7 @@ import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.mainActivity
+import kotlin.math.roundToInt
 
 class BoardView
 @JvmOverloads constructor(context: Context,
@@ -186,6 +188,10 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         boardView.addListAdapterIfNotExists(taskListAdapter)
 
         matchOrder()
+
+        holder.itemView.taskList_rootView.updateLayoutParams {
+            width = (boardView.mainActivity.dimensions.first.toFloat() * 0.7F).roundToInt()
+        }
 
         holder.header.apply {
             setOnLongClickListener {

@@ -1,5 +1,3 @@
 <resources>
-    <!--TODO 29-Dec-18 there has to be a better way of defining the taskListWidth
-        make it based on screen width but this will need to be decided at runtime possibly-->
     <dimen name="taskListWidth">300dp</dimen>
 </resources>

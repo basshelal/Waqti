@@ -11,6 +11,7 @@ import android.util.AttributeSet
 import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.DRAG_FLAG_OPAQUE
 import android.view.ViewGroup
 import androidx.cardview.widget.CardView
 import androidx.core.view.children
@@ -30,12 +31,12 @@ import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.frontend.startDragCompat
 import uk.whitecrescent.waqti.lastPosition
+import uk.whitecrescent.waqti.locationOnScreen
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.notifySwapped
 import kotlin.math.roundToInt
 
 private const val animationDuration = 450L
-private const val draggingViewAlpha = 0.25F
 
 class TaskListView
 @JvmOverloads constructor(context: Context,
@@ -128,10 +129,9 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                         ClipData(ClipData.newPlainText("", "")),
                         ShadowBuilder(it.task_materialCardView),
                         DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
-                        0
+                        DRAG_FLAG_OPAQUE
                 )
-                it.alpha = draggingViewAlpha
-                //it.visibility = View.INVISIBLE
+                it.visibility = View.INVISIBLE
                 return@setOnLongClickListener true
             }
 
@@ -151,8 +151,8 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                     }
                     DragEvent.ACTION_DRAG_ENDED -> {
                         taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)
-                                ?.itemView?.alpha = 1F
-                        v.alpha = 1F
+                                ?.itemView?.visibility = View.VISIBLE
+                        v.visibility = View.VISIBLE
                     }
                 }
                 return@setOnDragListener true
@@ -259,8 +259,13 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                 element = task, toIndex = newDragPos
         )
 
-        this.notifyItemInserted(newDragPos)
-        otherAdapter.notifyItemRemoved(draggingState.adapterPosition)
+        if (newDragPos == 0 || draggingState.adapterPosition == 0) {
+            this.notifyDataSetChanged()
+            otherAdapter.notifyDataSetChanged()
+        } else {
+            this.notifyItemInserted(newDragPos)
+            otherAdapter.notifyItemRemoved(draggingState.adapterPosition)
+        }
 
         draggingState.taskListID = holder.taskListID
         draggingState.adapterPosition = newDragPos
@@ -276,8 +281,13 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                 element = task, toIndex = newDragPos
         )
 
-        this.notifyItemInserted(newDragPos)
-        otherAdapter.notifyItemRemoved(draggingState.adapterPosition)
+        if (newDragPos == 0 || draggingState.adapterPosition == 0) {
+            this.notifyDataSetChanged()
+            otherAdapter.notifyDataSetChanged()
+        } else {
+            this.notifyItemInserted(newDragPos)
+            otherAdapter.notifyItemRemoved(draggingState.adapterPosition)
+        }
 
         draggingState.taskListID = this.taskListID
         draggingState.adapterPosition = newDragPos
@@ -294,7 +304,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                 this@TaskListAdapter.taskListView
                         .findViewHolderForAdapterPosition(draggingState.adapterPosition)
-                        ?.itemView?.alpha = draggingViewAlpha
+                        ?.itemView?.visibility = View.INVISIBLE
 
                 smoothScrollToPosition(boardPosition)
                 mainActivity.viewModel.boardPosition = true to boardPosition
@@ -336,11 +346,7 @@ private class ShadowBuilder(view: View) : View.DragShadowBuilder(view) {
     override fun onProvideShadowMetrics(outShadowSize: Point?, outShadowTouchPoint: Point?) {
         super.onProvideShadowMetrics(outShadowSize, outShadowTouchPoint)
 
-        val point = IntArray(2).also {
-            view.getLocationOnScreen(it)
-        }
-
-        val viewPoint = Point(point[0], point[1])
+        val viewPoint = view.locationOnScreen
 
         val x = view.mainActivity.currentTouchPoint.x - viewPoint.x
         val y = view.mainActivity.currentTouchPoint.y - viewPoint.y
