@@ -13,7 +13,6 @@ import androidx.drawerlayout.widget.DrawerLayout
 import kotlinx.android.synthetic.main.blank_activity.*
 import org.jetbrains.anko.displayMetrics
 import uk.whitecrescent.waqti.BuildConfig
-import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.Database
@@ -40,8 +39,6 @@ class MainActivity : AppCompatActivity() {
 
     val currentTouchPoint = Point()
 
-    @Inconvenience
-    // TODO: 26-Dec-18 Transitions for all Fragments are ugly!
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
