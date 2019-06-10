@@ -2,6 +2,7 @@ package uk.whitecrescent.waqti.frontend
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Point
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
@@ -37,6 +38,8 @@ class MainActivity : AppCompatActivity() {
      * this is the [EditTextView] of the [AppBar]
      */
     lateinit var hideableEditTextView: EditTextView
+
+    val currentTouchPoint = Point()
 
     @Inconvenience
     // TODO: 26-Dec-18 Transitions for all Fragments are ugly!
@@ -122,6 +125,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        currentTouchPoint.set(event.rawX.toInt(), event.rawY.toInt())
         if (event.action == MotionEvent.ACTION_DOWN) {
             if (hideableEditTextView.isVisible) {
                 val viewRect = Rect()

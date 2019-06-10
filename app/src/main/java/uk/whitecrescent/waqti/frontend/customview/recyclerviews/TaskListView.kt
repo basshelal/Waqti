@@ -5,6 +5,7 @@ package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 import android.content.ClipData
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Point
 import android.graphics.PorterDuff
 import android.util.AttributeSet
 import android.view.DragEvent
@@ -34,6 +35,7 @@ import uk.whitecrescent.waqti.notifySwapped
 import kotlin.math.roundToInt
 
 private const val animationDuration = 450L
+private const val draggingViewAlpha = 0.25F
 
 class TaskListView
 @JvmOverloads constructor(context: Context,
@@ -123,14 +125,12 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
             setOnLongClickListener {
                 it.clearFocusAndHideSoftKeyboard()
                 it.startDragCompat(
-                        ClipData(
-                                ClipData.newPlainText("", "")
-                        ),
+                        ClipData(ClipData.newPlainText("", "")),
                         ShadowBuilder(it.task_materialCardView),
                         DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
                         0
                 )
-                it.alpha = 0.2F
+                it.alpha = draggingViewAlpha
                 //it.visibility = View.INVISIBLE
                 return@setOnLongClickListener true
             }
@@ -294,7 +294,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
                 this@TaskListAdapter.taskListView
                         .findViewHolderForAdapterPosition(draggingState.adapterPosition)
-                        ?.itemView?.alpha = 0.25F
+                        ?.itemView?.alpha = draggingViewAlpha
 
                 smoothScrollToPosition(boardPosition)
                 mainActivity.viewModel.boardPosition = true to boardPosition
@@ -332,6 +332,20 @@ data class DragEventLocalState(
 }
 
 private class ShadowBuilder(view: View) : View.DragShadowBuilder(view) {
+
+    override fun onProvideShadowMetrics(outShadowSize: Point?, outShadowTouchPoint: Point?) {
+        super.onProvideShadowMetrics(outShadowSize, outShadowTouchPoint)
+
+        val point = IntArray(2).also {
+            view.getLocationOnScreen(it)
+        }
+
+        val viewPoint = Point(point[0], point[1])
+
+        val x = view.mainActivity.currentTouchPoint.x - viewPoint.x
+        val y = view.mainActivity.currentTouchPoint.y - viewPoint.y
+        outShadowTouchPoint?.set(x, y)
+    }
 
     override fun onDrawShadow(canvas: Canvas?) {
         super.onDrawShadow(canvas)
