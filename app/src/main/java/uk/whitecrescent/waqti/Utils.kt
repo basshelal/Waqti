@@ -122,6 +122,17 @@ inline fun RecyclerView.scrollToStart() {
     }
 }
 
+
+inline val RecyclerView.Adapter<*>.lastPosition: Int
+    get() = this.itemCount - 1
+
+inline fun RecyclerView.Adapter<*>.notifySwapped(fromPosition: Int, toPosition: Int) {
+    notifyItemRemoved(fromPosition)
+    notifyItemInserted(fromPosition)
+    notifyItemRemoved(toPosition)
+    notifyItemInserted(toPosition)
+}
+
 inline fun <reified T : ViewModel> FragmentActivity.getViewModel(): T =
         ViewModelProviders.of(this).get(T::class.java)
 
