@@ -12,6 +12,8 @@ import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import androidx.activity.ComponentActivity
+import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -147,6 +149,12 @@ inline fun FragmentManager.commitTransaction(block: FragmentTransaction.() -> Un
 
 inline operator fun <reified V : View> V.invoke(block: V.() -> Unit) {
     this.apply(block)
+}
+
+inline fun ComponentActivity.addOnBackPressedCallback(crossinline onBackPressed: () -> Unit) {
+    onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() = onBackPressed()
+    })
 }
 
 inline val View.locationOnScreen: Point

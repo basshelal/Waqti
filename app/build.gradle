@@ -37,8 +37,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
     /*================================= AndroidX ================================*/
     implementation 'androidx.core:core-ktx:1.2.0-alpha01'
-    implementation 'androidx.appcompat:appcompat:1.1.0-alpha02'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'androidx.appcompat:appcompat:1.1.0-beta01'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
     /*================================= Testing =================================*/
@@ -57,7 +57,7 @@ dependencies {
     implementation 'org.jetbrains.anko:anko:0.10.8'
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
-    implementation 'com.google.android.material:material:1.1.0-alpha04'
+    implementation 'com.google.android.material:material:1.1.0-alpha07'
     implementation 'com.mikhaellopez:circularimageview:3.2.0'
     implementation 'com.squareup.retrofit2:retrofit:2.5.0'
     implementation 'com.github.bumptech.glide:glide:4.9.0'

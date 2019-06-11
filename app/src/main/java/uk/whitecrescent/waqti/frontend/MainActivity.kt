@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.blank_activity.*
 import org.jetbrains.anko.displayMetrics
 import uk.whitecrescent.waqti.BuildConfig
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.addOnBackPressedCallback
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
@@ -57,8 +58,11 @@ class MainActivity : AppCompatActivity() {
             addOnBackPressedCallback {
                 if (isDrawerOpen(navigationView)) {
                     closeDrawers()
-                    true
-                } else false
+                    return@addOnBackPressedCallback
+                }
+                if (supportFragmentManager.backStackEntryCount > 0) {
+                    supportFragmentManager.popBackStack()
+                } else this@MainActivity.finish()
             }
             addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
                 override fun onDrawerOpened(drawerView: View) = clearFocusAndHideSoftKeyboard()

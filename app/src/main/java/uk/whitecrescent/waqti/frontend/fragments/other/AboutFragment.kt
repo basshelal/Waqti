@@ -12,9 +12,9 @@ import kotlinx.android.synthetic.main.fragment_about.*
 import mehdi.sakout.aboutpage.AboutPage
 import mehdi.sakout.aboutpage.Element
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiOtherFragment
+import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 
-class AboutFragment : WaqtiOtherFragment() {
+class AboutFragment : WaqtiFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_about, container, false)
