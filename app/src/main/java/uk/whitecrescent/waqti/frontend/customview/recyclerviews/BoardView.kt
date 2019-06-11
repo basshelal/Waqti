@@ -23,14 +23,13 @@ import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
-import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.GoToFragment
-import uk.whitecrescent.waqti.frontend.Orientation
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
 class BoardView
@@ -227,7 +226,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 }
             }
         }
-        holder.list.addOnScrollListener(FABOnScrollListener(holder.footer, Orientation.VERTICAL))
+        holder.list.addOnScrollListener(holder.footer.verticalFABOnScrollListener)
 
 
     }

@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
@@ -18,14 +19,12 @@ import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.BOARD_LIST_NAME_PREFERENCES_KEY
 import uk.whitecrescent.waqti.frontend.BOARD_LIST_VIEW_MODE_KEY
 import uk.whitecrescent.waqti.frontend.CREATE_BOARD_FRAGMENT
-import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.GoToFragment
-import uk.whitecrescent.waqti.frontend.Orientation
-import uk.whitecrescent.waqti.frontend.addAfterTextChangedListener
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
 class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
@@ -135,8 +134,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                     }
                 }
             }
-            addOnScrollListener(FABOnScrollListener(
-                    this@ViewBoardListFragment.addBoard_FloatingButton, Orientation.VERTICAL))
+            addOnScrollListener(this@ViewBoardListFragment.addBoard_FloatingButton.verticalFABOnScrollListener)
         }
     }
 

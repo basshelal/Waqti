@@ -11,13 +11,13 @@ import kotlinx.android.synthetic.main.fragment_create_task.*
 import kotlinx.android.synthetic.main.property_card.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.Time
+import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.frontend.GoToFragment
-import uk.whitecrescent.waqti.frontend.addAfterTextChangedListener
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment

@@ -8,10 +8,12 @@ import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Point
+import android.text.Editable
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
@@ -23,6 +25,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import io.objectbox.Box
 import uk.whitecrescent.waqti.backend.Cacheable
@@ -44,7 +47,9 @@ import uk.whitecrescent.waqti.backend.task.Property
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.backend.task.Template
 import uk.whitecrescent.waqti.backend.task.TimeUnit
+import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.MainActivity
+import uk.whitecrescent.waqti.frontend.SimpleTextWatcher
 import java.util.Objects
 import kotlin.math.roundToInt
 
@@ -126,6 +131,19 @@ inline fun RecyclerView.scrollToStart() {
     }
 }
 
+inline val FloatingActionButton.verticalFABOnScrollListener: FABOnScrollListener
+    get() = FABOnScrollListener(this, FABOnScrollListener.Orientation.VERTICAL)
+
+inline val FloatingActionButton.horizontalFABOnScrollListener: FABOnScrollListener
+    get() = FABOnScrollListener(this, FABOnScrollListener.Orientation.HORIZONTAL)
+
+inline fun TextView.addAfterTextChangedListener(crossinline func: (Editable?) -> Unit) {
+    this.addTextChangedListener(object : SimpleTextWatcher() {
+        override fun afterTextChanged(editable: Editable?) {
+            func(editable)
+        }
+    })
+}
 
 inline val RecyclerView.Adapter<*>.lastPosition: Int
     get() = this.itemCount - 1

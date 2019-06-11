@@ -2,6 +2,8 @@
 
 package uk.whitecrescent.waqti
 
+import kotlin.random.Random
+
 //region TypeAliases
 
 //region Root
@@ -110,6 +112,19 @@ inline val <D : ChronoLocalDate> ChronoLocalDateTime<D>.isInThePast: Boolean
 inline val <D : ChronoLocalDate> ChronoLocalDateTime<D>.isInTheFuture: Boolean
     get() = now isBefore this
 
+inline val randomDuration: Duration
+    get() = Duration.of(Random.nextLong(), ChronoUnit.MILLIS)
+
+inline val randomTime: Time
+    get() = time(
+            year = Random.nextInt(Year.MIN_VALUE, Year.MAX_VALUE),
+            month = Random.nextInt(1, 13),
+            dayOfMonth = Random.nextInt(1, 32),
+            hour = Random.nextInt(0, 24),
+            minute = Random.nextInt(0, 60),
+            second = Random.nextInt(0, 60),
+            nanoOfSecond = Random.nextInt(0, 1_000_000_000))
+
 //endregion Values
 
 //region Functions
@@ -156,6 +171,24 @@ inline fun coming(dayOfWeek: DayOfWeek) =
 
 inline fun last(dayOfWeek: DayOfWeek) =
         Date.from(today.dayOfWeek - dayOfWeek.value.toLong())!!
+
+inline fun randomTimeInFuture(from: Time = now): Time = from + randomDuration
+
+inline fun randomTimeInPast(from: Time = now): Time = from - randomDuration
+
+inline fun randomTimeBetween(from: Time, to: Time): Time {
+    if (from.isEqual(to)) return from
+    val before = if (from.isBefore(to)) from else to
+    val after = if (from.isAfter(to)) from else to
+
+    var result = after
+
+    while (result.isAfter(after) && result.isBefore(before)) {
+        if (result.isBefore(before)) result = randomTimeInFuture(before)
+        if (result.isAfter(after)) result = randomTimeInPast(after)
+    }
+    return result
+}
 
 //endregion Functions
 

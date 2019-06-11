@@ -4,7 +4,6 @@ package uk.whitecrescent.waqti.frontend
 
 import android.text.Editable
 import android.text.TextWatcher
-import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -17,14 +16,6 @@ open class SimpleTextWatcher : TextWatcher {
     override fun beforeTextChanged(string: CharSequence?, start: Int, count: Int, after: Int) {}
 
     override fun onTextChanged(string: CharSequence?, start: Int, before: Int, count: Int) {}
-}
-
-inline fun TextView.addAfterTextChangedListener(crossinline func: (Editable?) -> Unit) {
-    this.addTextChangedListener(object : SimpleTextWatcher() {
-        override fun afterTextChanged(editable: Editable?) {
-            func(editable)
-        }
-    })
 }
 
 open class SimpleItemTouchHelperCallback : ItemTouchHelper.Callback() {
@@ -55,13 +46,9 @@ open class SimpleItemTouchHelperCallback : ItemTouchHelper.Callback() {
 
 }
 
-enum class Orientation {
-    HORIZONTAL, VERTICAL
-}
+open class FABOnScrollListener(val fab: FloatingActionButton, val orientation: Orientation)
+    : RecyclerView.OnScrollListener() {
 
-class FABOnScrollListener(
-        val fab: FloatingActionButton,
-        val orientation: Orientation) : RecyclerView.OnScrollListener() {
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         super.onScrolled(recyclerView, dx, dy)
         when (orientation) {
@@ -75,6 +62,10 @@ class FABOnScrollListener(
             }
         }
 
+    }
+
+    enum class Orientation {
+        HORIZONTAL, VERTICAL
     }
 }
 

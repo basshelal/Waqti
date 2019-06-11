@@ -9,21 +9,20 @@ import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
-import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.GoToFragment
-import uk.whitecrescent.waqti.frontend.Orientation
-import uk.whitecrescent.waqti.frontend.addAfterTextChangedListener
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListAdapter
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
 class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
@@ -106,8 +105,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
         taskList_recyclerView.apply {
             adapter = TaskListAdapter(listID)
             background = Caches.boards[boardID].backgroundColor.toColorDrawable
-            addOnScrollListener(FABOnScrollListener(
-                    this@ViewListFragment.addTask_floatingButton, Orientation.VERTICAL))
+            addOnScrollListener(this@ViewListFragment.addTask_floatingButton.verticalFABOnScrollListener)
         }
 
         addTask_floatingButton.setOnClickListener {

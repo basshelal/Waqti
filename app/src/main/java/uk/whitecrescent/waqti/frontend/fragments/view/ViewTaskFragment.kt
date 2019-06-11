@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_view_task.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DEADLINE_PROPERTY
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION_PROPERTY
@@ -23,7 +24,6 @@ import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.frontend.GoToFragment
-import uk.whitecrescent.waqti.frontend.addAfterTextChangedListener
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
