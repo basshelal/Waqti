@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.content.edit
 import androidx.core.view.postDelayed
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
@@ -65,9 +66,9 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                     if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
                         if (text.toString() != mainActivity.waqtiSharedPreferences
                                         .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards))) {
-                            mainActivity.waqtiSharedPreferences
-                                    .edit().putString(BOARD_LIST_NAME_PREFERENCES_KEY,
-                                            text.toString()).apply()
+                            mainActivity.waqtiSharedPreferences.edit {
+                                putString(BOARD_LIST_NAME_PREFERENCES_KEY, text.toString())
+                            }
                         }
                     }
                 }
@@ -102,8 +103,9 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                                     .setIcon(R.drawable.grid_icon)
                         }
                     }
-                    mainActivity.waqtiSharedPreferences
-                            .edit().putString(BOARD_LIST_VIEW_MODE_KEY, viewMode.name).apply()
+                    mainActivity.waqtiSharedPreferences.edit {
+                        putString(BOARD_LIST_VIEW_MODE_KEY, viewMode.name)
+                    }
                 }
                 update()
                 setOnClickListener {

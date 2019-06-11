@@ -25,6 +25,7 @@ import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
+import uk.whitecrescent.waqti.frontend.TASK_LIST_WIDTH_KEY
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
@@ -188,7 +189,12 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         matchOrder()
 
         holder.itemView.taskList_rootView.updateLayoutParams {
-            width = (boardView.mainActivity.dimensions.first.toFloat() * 0.7F).roundToInt()
+            val percent = (boardView.mainActivity
+                    .waqtiSharedPreferences
+                    .getInt(TASK_LIST_WIDTH_KEY, 70) / 100.0)
+
+            width = (boardView.mainActivity.dimensions.first.toFloat() * percent).roundToInt()
+
         }
 
         holder.header.apply {

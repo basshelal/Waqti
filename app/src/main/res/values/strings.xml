@@ -112,4 +112,7 @@
 
     <string name="aboutTheDeveloper">About the Developer</string>
 
+
+    <string name="taskListWidth">Task List Width: </string>
+
 </resources>
