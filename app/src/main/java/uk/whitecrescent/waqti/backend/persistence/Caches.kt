@@ -2,6 +2,7 @@
 
 package uk.whitecrescent.waqti.backend.persistence
 
+import org.jetbrains.anko.doAsync
 import uk.whitecrescent.waqti.backend.Committable
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.BoardList
@@ -66,7 +67,9 @@ object Caches {
     )
 
     fun initialize() {
-        boardLists.initialize()
+        doAsync {
+            allCaches.forEach { it.initialize() }
+        }
     }
 
     fun close() {

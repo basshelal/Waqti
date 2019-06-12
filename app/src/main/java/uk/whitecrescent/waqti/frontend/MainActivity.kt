@@ -94,7 +94,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (BuildConfig.DEBUG && Database.tasks.size < 100) {
-            Caches.seed(5, 10, 20)
+            Caches.seed(5, 20, 100)
         }
     }
 

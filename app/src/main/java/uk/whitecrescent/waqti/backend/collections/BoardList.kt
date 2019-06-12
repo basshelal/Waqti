@@ -55,7 +55,7 @@ class BoardList(name: String = "") : AbstractWaqtiList<Board>() {
     }
 
     override fun notDefault(): Boolean {
-        return id != 0L || name != ""
+        return this.name != "" || this.id != 0L || this.idList.isNotEmpty()
     }
 
     override fun update() {

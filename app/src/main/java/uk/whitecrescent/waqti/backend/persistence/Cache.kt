@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import io.objectbox.Box
 import io.reactivex.Observable
 import org.jetbrains.anko.doAsync
-import uk.whitecrescent.waqti.Bug
 import uk.whitecrescent.waqti.CACHE_CHECKING_PERIOD
 import uk.whitecrescent.waqti.CACHE_CHECKING_UNIT
 import uk.whitecrescent.waqti.ForLater
@@ -17,10 +16,6 @@ import uk.whitecrescent.waqti.size
 import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
-@Bug
-// TODO: 13-Feb-19 URGENT Having more Tasks than the Cache can handle causes freezing when loading the board!!!
-// If the DB has 1001 Tasks and Cache is only allowed 1000, then clicking on any Board will just
-// freeze!!!
 open class Cache<E : Cacheable>(
         private val db: Box<E>,
         var sizeLimit: Int = 1000) : Collection<E> {
@@ -75,23 +70,6 @@ open class Cache<E : Cacheable>(
                     dbFound
                 }
             }
-            // TODO: 19-Feb-19 This entire class might need rethinking
-            // Cleaning and trimming only works under the assumption the user will never reach
-            // the sizeLimit, when they do this implementation almost fails drastically because
-            // the cache will pretty much always be inconsistent, and checking consistency is
-            // expensive as well, is this even worth it?
-            // What we can do is make this keep only the currently visible or "relevant" Tasks,
-            // the ones in the currently viewing Board, when we leave that Board we must empty
-            // the Cache so that we fill it up again when we visit a new Board, sizeLimit will
-            // then not apply at all
-
-
-            /*@QueriesDataBase
-            isInconsistent -> {
-                clean()
-                logE("Inconsistent Cache, retrying to get ${id} in Cache of ${type}")
-                safeGet(id)
-            }*/
             else -> mapFound
         }
     }

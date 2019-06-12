@@ -8,7 +8,6 @@ import io.objectbox.Box
 import io.objectbox.BoxStore
 import io.objectbox.kotlin.boxFor
 import uk.whitecrescent.waqti.ForLater
-import uk.whitecrescent.waqti.FutureIdea
 import uk.whitecrescent.waqti.MissingFeature
 import uk.whitecrescent.waqti.backend.Committable
 import uk.whitecrescent.waqti.backend.MyObjectBox
@@ -157,14 +156,6 @@ object Database {
     }
 
     class ImportException(message: String) : IllegalStateException(message)
-
-    @FutureIdea
-    // TODO: 04-Feb-19 Import and export Database like what Nova Launcher does
-    // you can export the Database to be shared to something like email, drive etc and thus
-    // you can also import a Database, doing so will probably delete all current data but we
-    // might be able to allow a merge like what Chrome does when importing bookmarks, just
-    // adds them to what's already existing, options for which one the user would like is
-    // probably the way to go
 
     @MissingFeature
     @ForLater

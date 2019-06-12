@@ -14,7 +14,7 @@ import mehdi.sakout.aboutpage.Element
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 
-class AboutFragment : WaqtiFragment(false) {
+class AboutFragment : WaqtiFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_about, container, false)

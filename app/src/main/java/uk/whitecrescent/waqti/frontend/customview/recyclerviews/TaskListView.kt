@@ -270,6 +270,8 @@ class TaskListAdapter(var taskListID: ID,
 
     }
 
+    // TODO: 12-Jun-19 Look into using a custom ItemAnimator to solve the inserted item alpha problem
+
     private inline fun onDragAcrossFilledList(draggingState: DragEventLocalState,
                                               holder: TaskViewHolder,
                                               otherAdapter: TaskListAdapter) {

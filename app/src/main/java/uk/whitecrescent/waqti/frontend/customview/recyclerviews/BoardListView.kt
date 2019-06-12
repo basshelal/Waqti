@@ -11,8 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.board_card.view.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.backend.persistence.Database
-import uk.whitecrescent.waqti.backend.persistence.ElementNotFoundException
+import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.BOARD_FRAGMENT
@@ -87,7 +86,7 @@ class BoardListView
 class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LIST_VERTICAL)
     : RecyclerView.Adapter<BoardListViewHolder>() {
 
-    val boardList = Database.boardLists[boardListID] ?: throw ElementNotFoundException(boardListID)
+    val boardList = Caches.boardLists[boardListID]
 
     init {
         this.setHasStableIds(true)
