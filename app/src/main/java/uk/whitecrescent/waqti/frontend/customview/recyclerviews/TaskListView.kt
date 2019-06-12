@@ -38,7 +38,7 @@ import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.notifySwapped
 import kotlin.math.roundToInt
 
-private const val animationDuration = 450L
+private const val animationDuration = 500L
 private const val draggingViewAlpha = 0F
 
 class TaskListView
@@ -46,9 +46,10 @@ class TaskListView
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
 
-    val listAdapter: TaskListAdapter
+    inline val listAdapter: TaskListAdapter
         get() = adapter as TaskListAdapter
-    val boardView: BoardView
+
+    inline val boardView: BoardView
         get() = parent.parent as BoardView
 
     init {
@@ -65,7 +66,7 @@ class TaskListAdapter(var taskListID: ID,
 
     lateinit var taskListView: TaskListView
 
-    val linearLayoutManager: LinearLayoutManager
+    inline val linearLayoutManager: LinearLayoutManager
         get() = taskListView.layoutManager as LinearLayoutManager
 
     init {

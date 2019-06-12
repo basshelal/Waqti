@@ -12,11 +12,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import kotlinx.android.synthetic.main.fragment_board_view.view.*
 import kotlinx.android.synthetic.main.task_list.view.*
-import uk.whitecrescent.waqti.Bug
-import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.NewAPI
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -40,7 +38,7 @@ class BoardView
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
 
-    val boardAdapter: BoardAdapter
+    inline val boardAdapter: BoardAdapter
         get() = this.adapter as BoardAdapter
 
     val taskListAdapters = ArrayList<TaskListAdapter>()
@@ -51,8 +49,7 @@ class BoardView
         get() = boardAdapter.boardViewCallBack
 
     init {
-        layoutManager = PreCachingLayoutManager(context, HORIZONTAL, false,
-                resources.getDimensionPixelSize(R.dimen.taskListWidth) * 2)
+        layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
     }
 
     override fun setAdapter(_adapter: Adapter<*>?) {
@@ -187,14 +184,6 @@ class BoardAdapter(val boardID: ID, val boardViewCallBack: BoardViewCallBack? = 
         )
     }
 
-    @Bug
-    @Inconvenience
-    // TODO: 01-Feb-19 Scrolling while dragging across on Nexus 5 doesn't trigger an onBindViewHolder
-    // meaning that we end up dragging from list 0 to list 1 and then no more because for
-    // some reason the next list isn't being bound, this isn't an issue on Pixel API 28 but
-    // is on Nexus 5 API 21 and API 23, it also seems like this has nothing to do with width,
-    // as we tried to do it with lower width lists and still the issue remained, we'd have to
-    // do a manual bind or something like that
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
 
         boardViewCallBack.ifNotNull {
@@ -221,7 +210,7 @@ class BoardAdapter(val boardID: ID, val boardViewCallBack: BoardViewCallBack? = 
 
         holder.header.apply {
             setOnLongClickListener {
-                boardView.itemTouchHelper.startDrag(holder)
+                this@BoardAdapter.boardView.itemTouchHelper.startDrag(holder)
                 true
             }
             text = board[position].name
@@ -288,7 +277,7 @@ class BoardAdapter(val boardID: ID, val boardViewCallBack: BoardViewCallBack? = 
 }
 
 
-class BoardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+class BoardViewHolder(view: View) : ViewHolder(view) {
     val header: TextView
         get() = itemView.taskListHeader_textView
     val taskListView: TaskListView
@@ -297,30 +286,19 @@ class BoardViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         get() = itemView.taskListFooter_textView
 }
 
-class PreCachingLayoutManager(context: Context,
-                              orientation: Int = HORIZONTAL,
-                              reverseLayout: Boolean = false,
-                              private val extraLayoutSpacePx: Int = 600) :
-        LinearLayoutManager(context, orientation, reverseLayout) {
-
-    override fun getExtraLayoutSpace(state: RecyclerView.State): Int {
-        return extraLayoutSpacePx
-    }
-}
-
 // TODO: 11-Jun-19 The callback should be used to keep any UI code in the views and any back end code in the callback
 @NewAPI
 abstract class BoardViewCallBack {
 
-    open fun onMovedList(viewHolder: RecyclerView.ViewHolder,
+    open fun onMovedList(viewHolder: ViewHolder,
                          fromPos: Int,
-                         target: RecyclerView.ViewHolder,
+                         target: ViewHolder,
                          toPos: Int, x: Int, y: Int) {
     }
 
-    open fun onStartDragList(viewHolder: RecyclerView.ViewHolder?) {}
+    open fun onStartDragList(viewHolder: ViewHolder?) {}
 
-    open fun onEndDragList(viewHolder: RecyclerView.ViewHolder) {}
+    open fun onEndDragList(viewHolder: ViewHolder) {}
 
     open fun onScrollListAcross() {}
 
