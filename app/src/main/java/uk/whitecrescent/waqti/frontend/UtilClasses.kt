@@ -6,8 +6,10 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import uk.whitecrescent.waqti.lastPosition
 
 open class SimpleTextWatcher : TextWatcher {
 
@@ -50,7 +52,12 @@ open class FABOnScrollListener(val fab: FloatingActionButton, val orientation: O
     : RecyclerView.OnScrollListener() {
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-        super.onScrolled(recyclerView, dx, dy)
+
+        val lastItemPos = recyclerView.adapter?.lastPosition
+        val lastVisiblePos = (recyclerView.layoutManager as LinearLayoutManager)
+                .findLastVisibleItemPosition()
+
+
         when (orientation) {
             Orientation.HORIZONTAL -> {
                 if (dx > 0 && fab.isVisible) fab.hide()
@@ -61,7 +68,6 @@ open class FABOnScrollListener(val fab: FloatingActionButton, val orientation: O
                 else if (dy < 0 && !fab.isVisible) fab.show()
             }
         }
-
     }
 
     enum class Orientation {

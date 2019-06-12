@@ -74,17 +74,17 @@ class MainActivity : AppCompatActivity() {
                 R.id.allBoards_navDrawerItem -> {
                     popAllFragmentsInBackStack()
                 }
-                R.id.about_navDrawerItem -> {
-                    @GoToFragment
-                    supportFragmentManager.commitTransaction {
-                        replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
-                        addToBackStack("")
-                    }
-                }
                 R.id.settings_navDrawerItem -> {
                     @GoToFragment
                     supportFragmentManager.commitTransaction {
                         replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
+                        addToBackStack("")
+                    }
+                }
+                R.id.about_navDrawerItem -> {
+                    @GoToFragment
+                    supportFragmentManager.commitTransaction {
+                        replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
                         addToBackStack("")
                     }
                 }

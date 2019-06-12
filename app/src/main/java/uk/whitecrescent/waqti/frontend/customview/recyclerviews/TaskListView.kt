@@ -282,6 +282,9 @@ class TaskListAdapter(var taskListID: ID,
             onDragTaskAcrossFilledList(draggedViewHolder, holder, otherAdapter, this@TaskListAdapter)
         }
 
+        // TODO: 12-Jun-19 Bug probably here, drag from a list on the right to the middle list
+        // you might end up with Task duplicates, one in both
+
         val otherTaskList = otherAdapter.taskList
         val task = otherTaskList[draggingState.taskID]
         val newDragPos = holder.adapterPosition

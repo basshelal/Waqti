@@ -11,7 +11,7 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "uk.whitecrescent.waqti"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 28
         multiDexEnabled true
         versionCode 1

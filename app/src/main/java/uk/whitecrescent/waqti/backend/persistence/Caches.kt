@@ -105,14 +105,26 @@ object Caches {
         Caches.boardLists.put(BoardList("Default"))
         require(Caches.boardLists.size == 1)
 
-        Caches.boardLists.first().addAll(Array(boards) { Board("Board #$it") }.asList()).update()
+        Caches.boardLists.first().addAll(Array(boards) {
+            Board("Board").apply {
+                name = "Board $id"
+            }
+        }.asList()).update()
 
         Caches.boards.forEach {
-            it.addAll(Array(lists) { TaskList("TaskList #$it") }.asList()).update()
+            it.addAll(Array(lists) {
+                TaskList("TaskList").apply {
+                    name = "TaskList $id"
+                }
+            }.asList()).update()
         }
 
         Caches.taskLists.forEach {
-            it.addAll(Array(tasks) { Task("Task #$it") }.asList()).update()
+            it.addAll(Array(tasks) {
+                Task("Task").apply {
+                    changeName("Task $id")
+                }
+            }.asList()).update()
         }
     }
 
