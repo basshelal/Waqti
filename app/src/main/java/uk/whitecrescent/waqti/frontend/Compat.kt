@@ -15,19 +15,11 @@ import android.widget.TimePicker
 // Extensions for compatibility so that we don't have to write these guards every time
 
 inline fun TextView.setTextAppearanceCompat(resId: Int) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        setTextAppearance(resId)
-    } else {
-        setTextAppearance(this.context, resId)
-    }
+    setTextAppearance(resId)
 }
 
 inline fun Resources.getColorCompat(colorRes: Int, theme: Resources.Theme? = null): Int {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        getColor(colorRes, theme)
-    } else {
-        getColor(colorRes)
-    }
+    return getColor(colorRes, theme)
 }
 
 inline fun Context.getColorCompat(resId: Int): Int {
@@ -52,25 +44,13 @@ inline fun View.startDragCompat(data: ClipData?, shadowBuilder: View.DragShadowB
 }
 
 inline var TimePicker.hourCompat: Int
-    set(value) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    set(value) {
         hour = value
-    } else {
-        currentHour = value
     }
-    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        hour
-    } else {
-        currentHour
-    }
+    get() = hour
 
 inline var TimePicker.minuteCompat: Int
-    set(value) = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    set(value) {
         minute = value
-    } else {
-        currentMinute = value
     }
-    get() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        minute
-    } else {
-        currentMinute
-    }
+    get() = minute
