@@ -2,4 +2,4 @@
 
 <fade xmlns:android="http://schemas.android.com/apk/res/android"
     android:duration="300"
-    android:transitionOrdering="together" />
+    android:transitionOrdering="sequential" />
