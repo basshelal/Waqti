@@ -7,6 +7,8 @@ import uk.whitecrescent.waqti.Time
 
 //region Properties
 
+// TODO: 11-Jun-19 Small optimization, use smaller SerializedNames using @SerializedName
+
 class TimeProperty(
         override var isVisible: Boolean = false,
         override var value: Time = DEFAULT_TIME,

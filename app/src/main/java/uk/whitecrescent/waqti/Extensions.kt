@@ -207,6 +207,11 @@ fun convertPxToDp(px: Float, context: Context): Int {
             DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 }
 
+inline fun <T> T?.ifNotNull(func: T.() -> Unit): T? {
+    if (this != null) this.apply(func)
+    return this
+}
+
 //endregion Android Utils
 
 //region Collections Utils

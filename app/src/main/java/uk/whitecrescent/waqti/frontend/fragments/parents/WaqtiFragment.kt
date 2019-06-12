@@ -7,7 +7,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.MainActivityViewModel
 
-abstract class WaqtiFragment : Fragment() {
+abstract class WaqtiFragment(val animate: Boolean = true) : Fragment() {
 
     protected lateinit var mainActivityViewModel: MainActivityViewModel
     protected lateinit var mainActivity: MainActivity
@@ -15,15 +15,17 @@ abstract class WaqtiFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        sharedElementEnterTransition = TransitionInflater.from(context)
-                .inflateTransition(R.transition.fade_transit)
-        enterTransition = TransitionInflater.from(context)
-                .inflateTransition(R.transition.fade_transit)
+        if (animate) {
+            sharedElementEnterTransition = TransitionInflater.from(context)
+                    .inflateTransition(R.transition.fade_transit)
+            enterTransition = TransitionInflater.from(context)
+                    .inflateTransition(R.transition.fade_transit)
 
-        sharedElementReturnTransition = TransitionInflater.from(context)
-                .inflateTransition(R.transition.fade_transit)
-        exitTransition = TransitionInflater.from(context)
-                .inflateTransition(R.transition.fade_transit)
+            sharedElementReturnTransition = TransitionInflater.from(context)
+                    .inflateTransition(R.transition.fade_transit)
+            exitTransition = TransitionInflater.from(context)
+                    .inflateTransition(R.transition.fade_transit)
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

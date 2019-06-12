@@ -2,7 +2,6 @@
 
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
-import android.content.ClipData
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Point
@@ -18,6 +17,9 @@ import androidx.core.view.children
 import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.Adapter
+import androidx.recyclerview.widget.RecyclerView.NO_POSITION
+import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
@@ -29,6 +31,7 @@ import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.frontend.startDragCompat
+import uk.whitecrescent.waqti.ifNotNull
 import uk.whitecrescent.waqti.lastPosition
 import uk.whitecrescent.waqti.locationOnScreen
 import uk.whitecrescent.waqti.mainActivity
@@ -54,7 +57,9 @@ class TaskListView
 
 }
 
-class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>() {
+class TaskListAdapter(var taskListID: ID,
+                      val boardViewCallBack: BoardViewCallBack? = null) :
+        Adapter<TaskViewHolder>() {
 
     val taskList = Caches.taskLists[taskListID]
 
@@ -79,8 +84,8 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                             draggingState.adapterPosition > lastPosition) {
                         val otherAdapter = taskListView.boardView.getListAdapter(draggingState.taskListID)
                         if (otherAdapter != null) {
-                            onDragInDifferentLists(draggingState, otherAdapter)
-                            dragAcrossLists(draggingState)
+                            onDragAcrossEmptyList(draggingState, otherAdapter)
+                            onScrollAcrossEmptyList(draggingState, otherAdapter)
                         }
                     }
 
@@ -101,6 +106,10 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
             )
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+
+        boardViewCallBack.ifNotNull {
+            onBindTaskViewHolder(holder, position)
+        }
 
         holder.taskID = taskList[position].id
         holder.taskListID = this.taskListID
@@ -125,23 +134,27 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
             setOnLongClickListener {
                 it.clearFocusAndHideSoftKeyboard()
                 it.startDragCompat(
-                        ClipData(ClipData.newPlainText("", "")),
+                        null,
                         ShadowBuilder(it.task_materialCardView),
                         DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
                         DRAG_FLAG_OPAQUE
                 )
-                it.alpha = draggingViewAlpha
                 return@setOnLongClickListener true
             }
 
             // onDragListener is basically like, do this when someone is dragging on top of you
             setOnDragListener { v, event ->
                 val draggingState = event.localState as DragEventLocalState
+                val draggingView = taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)?.itemView
                 when (event.action) {
                     DragEvent.ACTION_DRAG_ENTERED -> {
-                        if (holder.adapterPosition != -1) {
+                        if (holder.adapterPosition != NO_POSITION) {
                             onDrag(draggingState, holder)
                         }
+                    }
+                    DragEvent.ACTION_DRAG_LOCATION -> {
+                        if (draggingView?.alpha != draggingViewAlpha)
+                            draggingView?.alpha = draggingViewAlpha
                     }
                     DragEvent.ACTION_DRAG_EXITED -> {
                     }
@@ -149,9 +162,7 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                         draggingState.updateToMatch(holder)
                     }
                     DragEvent.ACTION_DRAG_ENDED -> {
-                        taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)
-                                ?.itemView?.alpha = 1F
-                        v.alpha = 1F
+                        draggingView?.alpha = 1F
                     }
                 }
                 return@setOnDragListener true
@@ -187,9 +198,9 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
                 val otherAdapter = taskListView.boardView.getListAdapter(draggingState.taskListID)
                 if (otherAdapter != null) {
 
-                    onDragInDifferentLists(draggingState, holder, otherAdapter)
+                    onDragAcrossFilledList(draggingState, holder, otherAdapter)
 
-                    dragAcrossLists(draggingState)
+                    onScrollAcrossFilledList(draggingState, holder, otherAdapter)
 
                     true
                 } else false
@@ -207,6 +218,11 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         val newDragPos = holder.adapterPosition
         val oldDragPos = draggingState.adapterPosition
 
+        boardViewCallBack.ifNotNull {
+            val oldTaskViewHolder = taskListView.findViewHolderForAdapterPosition(oldDragPos) as TaskViewHolder
+            onDragTaskInSameList(oldTaskViewHolder, holder)
+        }
+
         taskList.swap(oldDragPos, newDragPos).update()
         notifySwapped(oldDragPos, newDragPos)
 
@@ -214,6 +230,13 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
     }
 
     private inline fun checkForScrollDown(draggingState: DragEventLocalState, holder: TaskViewHolder) {
+
+        boardViewCallBack.ifNotNull {
+            val draggedViewHolder = taskListView
+                    .findViewHolderForAdapterPosition(draggingState.adapterPosition) as TaskViewHolder
+
+            onTaskScrollDown(draggedViewHolder, holder, taskListView)
+        }
 
         if (draggingState.adapterPosition >= linearLayoutManager.findLastCompletelyVisibleItemPosition()) {
 
@@ -228,6 +251,13 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
     private inline fun checkForScrollUp(draggingState: DragEventLocalState, holder: TaskViewHolder) {
 
+        boardViewCallBack.ifNotNull {
+            val draggedViewHolder = taskListView
+                    .findViewHolderForAdapterPosition(draggingState.adapterPosition) as TaskViewHolder
+
+            onTaskScrollUp(draggedViewHolder, holder, taskListView)
+        }
+
         if (draggingState.adapterPosition <= linearLayoutManager.findFirstCompletelyVisibleItemPosition()) {
 
             taskListView.postDelayed(animationDuration) {
@@ -239,9 +269,15 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
 
     }
 
-    private inline fun onDragInDifferentLists(draggingState: DragEventLocalState,
+    private inline fun onDragAcrossFilledList(draggingState: DragEventLocalState,
                                               holder: TaskViewHolder,
                                               otherAdapter: TaskListAdapter) {
+
+        boardViewCallBack.ifNotNull {
+            val draggedViewHolder = taskListView
+                    .findViewHolderForAdapterPosition(draggingState.adapterPosition) as TaskViewHolder
+            onDragTaskAcrossFilledList(draggedViewHolder, holder, otherAdapter, this@TaskListAdapter)
+        }
 
         val otherTaskList = otherAdapter.taskList
         val task = otherTaskList[draggingState.taskID]
@@ -264,7 +300,39 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         draggingState.adapterPosition = newDragPos
     }
 
-    private inline fun onDragInDifferentLists(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
+    private inline fun onScrollAcrossFilledList(draggingState: DragEventLocalState,
+                                                holder: TaskViewHolder,
+                                                otherAdapter: TaskListAdapter) {
+
+        boardViewCallBack.ifNotNull {
+            val draggedViewHolder = taskListView
+                    .findViewHolderForAdapterPosition(draggingState.adapterPosition) as TaskViewHolder
+            onScrollTaskAcrossFilledList(draggedViewHolder, holder, otherAdapter, this@TaskListAdapter)
+        }
+
+        taskListView.boardView.apply {
+
+            postDelayed(animationDuration) {
+
+                // The list that we will be scrolling to
+                val boardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
+
+
+                // TODO: 11-Jun-19 Bug here with custom widths, possibly better to explicitly tell it how much to scroll
+                smoothScrollToPosition(boardPosition)
+                mainActivity.viewModel.boardPosition = true to boardPosition
+            }
+        }
+    }
+
+    private inline fun onDragAcrossEmptyList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
+
+        boardViewCallBack.ifNotNull {
+            val draggedViewHolder = taskListView
+                    .findViewHolderForAdapterPosition(draggingState.adapterPosition) as TaskViewHolder
+            onDragTaskAcrossEmptyList(draggedViewHolder, otherAdapter, this@TaskListAdapter)
+        }
+
         val otherTaskList = otherAdapter.taskList
         val task = otherTaskList[draggingState.taskID]
         val newDragPos = this.taskList.nextIndex
@@ -286,23 +354,23 @@ class TaskListAdapter(var taskListID: ID) : RecyclerView.Adapter<TaskViewHolder>
         draggingState.adapterPosition = newDragPos
     }
 
-    private inline fun dragAcrossLists(draggingState: DragEventLocalState) {
+    private inline fun onScrollAcrossEmptyList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
+
+        boardViewCallBack.ifNotNull {
+            val draggedViewHolder = taskListView
+                    .findViewHolderForAdapterPosition(draggingState.adapterPosition) as TaskViewHolder
+            onScrollTaskAcrossEmptyList(draggedViewHolder, otherAdapter, this@TaskListAdapter)
+        }
 
         taskListView.boardView.apply {
 
-            this@TaskListAdapter.taskListView
-                    .findViewHolderForAdapterPosition(draggingState.adapterPosition)
-                    ?.itemView?.alpha = draggingViewAlpha
-
             postDelayed(animationDuration) {
-
-                this@TaskListAdapter.taskListView
-                        .findViewHolderForAdapterPosition(draggingState.adapterPosition)
-                        ?.itemView?.alpha = draggingViewAlpha
 
                 // The list that we will be scrolling to
                 val boardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
 
+
+                // TODO: 11-Jun-19 Bug here with custom widths, possibly better to explicitly tell it how much to scroll
                 smoothScrollToPosition(boardPosition)
                 mainActivity.viewModel.boardPosition = true to boardPosition
             }
@@ -357,8 +425,7 @@ private class ShadowBuilder(view: View) : View.DragShadowBuilder(view) {
 
 }
 
-class TaskViewHolder(view: View)
-    : RecyclerView.ViewHolder(view) {
+class TaskViewHolder(view: View) : ViewHolder(view) {
 
     //the ID of the Task that this ViewHolder contains
     var taskID: ID = 0L

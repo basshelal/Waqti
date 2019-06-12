@@ -125,11 +125,12 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
                 @GoToFragment
                 it.mainActivity.supportFragmentManager.commitTransaction {
 
-                    it.mainActivity.viewModel.boardID = boardList[holder.adapterPosition].id
-
-                    it.mainActivity.viewModel.boardListPosition = false to position
-
                     it.hideSoftKeyboard()
+
+                    it.mainActivity.viewModel.apply {
+                        boardID = boardList[holder.adapterPosition].id
+                        boardListPosition = false to position
+                    }
 
                     replace(R.id.fragmentContainer, ViewBoardFragment.newInstance(), BOARD_FRAGMENT)
                     addToBackStack("ViewBoardFragment")

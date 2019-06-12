@@ -1,5 +1,6 @@
 package uk.whitecrescent.waqti.frontend.fragments.other
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -25,6 +26,7 @@ class SettingsFragment : WaqtiFragment() {
         setUpViews()
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setUpViews() {
         taskListWidthSetting_seekBar.apply {
             progress = mainActivity.waqtiSharedPreferences.getInt(TASK_LIST_WIDTH_KEY, 70)

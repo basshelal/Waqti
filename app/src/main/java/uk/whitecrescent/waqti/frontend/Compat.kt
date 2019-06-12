@@ -42,7 +42,7 @@ inline fun Vibrator.vibrateCompat(millis: Long) {
     }
 }
 
-inline fun View.startDragCompat(data: ClipData, shadowBuilder: View.DragShadowBuilder,
+inline fun View.startDragCompat(data: ClipData?, shadowBuilder: View.DragShadowBuilder,
                                 myLocalState: Any?, flags: Int): Boolean {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         startDragAndDrop(data, shadowBuilder, myLocalState, flags)

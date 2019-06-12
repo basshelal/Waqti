@@ -128,3 +128,11 @@ annotation class NeedsOptimization
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
 annotation class NeedsReOrganizing
+
+/**
+ * A new API that is still being worked on, is untested, and may eventually not even be used
+ */
+@Repeatable
+@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.CLASS, AnnotationTarget.PROPERTY, AnnotationTarget.FIELD, AnnotationTarget.FUNCTION, AnnotationTarget.FILE)
+annotation class NewAPI
