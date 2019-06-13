@@ -12,9 +12,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.DRAG_FLAG_OPAQUE
 import android.view.ViewGroup
+import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.cardview.widget.CardView
 import androidx.core.view.children
 import androidx.core.view.postDelayed
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
@@ -39,7 +41,8 @@ import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.notifySwapped
 import kotlin.math.roundToInt
 
-private const val animationDuration = 500L
+private const val animationDuration = 250L
+private const val scrollAmount = 1.718281828459045 // E - 1
 private const val draggingViewAlpha = 0F
 
 class TaskListView
@@ -55,6 +58,7 @@ class TaskListView
 
     init {
         layoutManager = LinearLayoutManager(context, VERTICAL, false)
+        itemAnimator = TaskListItemAnimator()
     }
 
 }
@@ -69,6 +73,8 @@ class TaskListAdapter(var taskListID: ID,
 
     inline val linearLayoutManager: LinearLayoutManager
         get() = taskListView.layoutManager as LinearLayoutManager
+
+    private val defaultInterpolator = AccelerateDecelerateInterpolator()
 
     init {
         this.setHasStableIds(true)
@@ -207,6 +213,12 @@ class TaskListAdapter(var taskListID: ID,
 
                     onScrollAcrossFilledList(draggingState, holder, otherAdapter)
 
+                    // Scroll down
+                    checkForScrollDown(draggingState, holder)
+
+                    // Scroll up
+                    checkForScrollUp(draggingState, holder)
+
                     true
                 } else false
             }
@@ -246,8 +258,8 @@ class TaskListAdapter(var taskListID: ID,
         if (draggingState.adapterPosition >= linearLayoutManager.findLastCompletelyVisibleItemPosition()) {
 
             taskListView.postDelayed(animationDuration) {
-                val scrollBy = (holder.itemView.height * 1.5).roundToInt()
-                taskListView.smoothScrollBy(0, scrollBy)
+                val scrollBy = (holder.itemView.height * scrollAmount).roundToInt()
+                taskListView.smoothScrollBy(0, scrollBy, defaultInterpolator)
             }
 
         }
@@ -266,15 +278,13 @@ class TaskListAdapter(var taskListID: ID,
         if (draggingState.adapterPosition <= linearLayoutManager.findFirstCompletelyVisibleItemPosition()) {
 
             taskListView.postDelayed(animationDuration) {
-                val scrollBy = (holder.itemView.height * -1.5).roundToInt()
-                taskListView.smoothScrollBy(0, scrollBy)
+                val scrollBy = (holder.itemView.height * -scrollAmount).roundToInt()
+                taskListView.smoothScrollBy(0, scrollBy, defaultInterpolator)
             }
 
         }
 
     }
-
-    // TODO: 12-Jun-19 Look into using a custom ItemAnimator to solve the inserted item alpha problem
 
     private inline fun onDragAcrossFilledList(draggingState: DragEventLocalState,
                                               holder: TaskViewHolder,
@@ -286,8 +296,8 @@ class TaskListAdapter(var taskListID: ID,
             onDragTaskAcrossFilledList(draggedViewHolder, holder, otherAdapter, this@TaskListAdapter)
         }
 
-        // TODO: 12-Jun-19 Bug probably here, drag from a list on the right to the middle list
-        // you might end up with Task duplicates, one in both
+        // TODO: 12-Jun-19 Bug probably here, drag from left list to right many times,
+        //  then without letting go all the way back to left, you'll notice duplicates appearing
 
         val otherTaskList = otherAdapter.taskList
         val task = otherTaskList[draggingState.taskID]
@@ -298,41 +308,16 @@ class TaskListAdapter(var taskListID: ID,
                 element = task, toIndex = newDragPos
         )
 
-        if (newDragPos == 0 || draggingState.adapterPosition == 0) {
-            this.notifyDataSetChanged()
-            otherAdapter.notifyDataSetChanged()
-        } else {
-            this.notifyItemInserted(newDragPos)
-            otherAdapter.notifyItemRemoved(draggingState.adapterPosition)
-        }
+        this.notifyItemInserted(newDragPos)
+        otherAdapter.notifyItemRemoved(draggingState.adapterPosition)
 
         draggingState.taskListID = holder.taskListID
         draggingState.adapterPosition = newDragPos
-    }
 
-    private inline fun onScrollAcrossFilledList(draggingState: DragEventLocalState,
-                                                holder: TaskViewHolder,
-                                                otherAdapter: TaskListAdapter) {
-
-        boardViewCallBack.ifNotNull {
-            val draggedViewHolder = taskListView
-                    .findViewHolderForAdapterPosition(draggingState.adapterPosition) as TaskViewHolder
-            onScrollTaskAcrossFilledList(draggedViewHolder, holder, otherAdapter, this@TaskListAdapter)
-        }
-
-        taskListView.boardView.apply {
-
-            postDelayed(animationDuration) {
-
-                // The list that we will be scrolling to
-                val boardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
-
-
-                // TODO: 11-Jun-19 Bug here with custom widths, possibly better to explicitly tell it how much to scroll
-                smoothScrollToPosition(boardPosition)
-                mainActivity.viewModel.boardPosition = true to boardPosition
-            }
-        }
+        // TODO: 13-Jun-19 Add an onDragListener to the list
+        //  so that when you're dragging a task over into the white part of the list
+        //  it will still react, we'd need to know the point we're dragging over
+        //  and what is the holder that is closest to it so that we act accordingly
     }
 
     private inline fun onDragAcrossEmptyList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
@@ -352,16 +337,46 @@ class TaskListAdapter(var taskListID: ID,
                 element = task, toIndex = newDragPos
         )
 
-        if (newDragPos == 0 || draggingState.adapterPosition == 0) {
-            this.notifyDataSetChanged()
-            otherAdapter.notifyDataSetChanged()
-        } else {
-            this.notifyItemInserted(newDragPos)
-            otherAdapter.notifyItemRemoved(draggingState.adapterPosition)
-        }
+        this.notifyItemInserted(newDragPos)
+        otherAdapter.notifyItemRemoved(draggingState.adapterPosition)
 
         draggingState.taskListID = this.taskListID
         draggingState.adapterPosition = newDragPos
+    }
+
+    private inline fun onScrollAcrossFilledList(draggingState: DragEventLocalState,
+                                                holder: TaskViewHolder,
+                                                otherAdapter: TaskListAdapter) {
+
+        boardViewCallBack.ifNotNull {
+            val draggedViewHolder = taskListView
+                    .findViewHolderForAdapterPosition(draggingState.adapterPosition) as TaskViewHolder
+            onScrollTaskAcrossFilledList(draggedViewHolder, holder, otherAdapter, this@TaskListAdapter)
+        }
+
+        taskListView.boardView.apply {
+
+            postDelayed(animationDuration * 2) {
+
+                // The list that we will be scrolling to
+                val boardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
+
+                // TODO: 11-Jun-19 Bug here with custom widths, possibly better to explicitly tell it how much to scroll
+                //  and use the same properties we use for scrolling up and down
+
+                // draft code below
+                /*val percent = (mainActivity
+                        .waqtiSharedPreferences
+                        .getInt(TASK_LIST_WIDTH_KEY, 66) / 100.0)
+
+                val width = (boardView.mainActivity.dimensions.first.toFloat() * percent).roundToInt()
+
+                smoothScrollBy(width, 0, defaultInterpolator)*/
+
+                smoothScrollToPosition(boardPosition)
+                mainActivity.viewModel.boardPosition = true to boardPosition
+            }
+        }
     }
 
     private inline fun onScrollAcrossEmptyList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
@@ -374,7 +389,7 @@ class TaskListAdapter(var taskListID: ID,
 
         taskListView.boardView.apply {
 
-            postDelayed(animationDuration) {
+            postDelayed(animationDuration * 2) {
 
                 // The list that we will be scrolling to
                 val boardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
@@ -442,4 +457,13 @@ class TaskViewHolder(view: View) : ViewHolder(view) {
 
     //the ID of the TaskList that this ViewHolder's Task is in
     var taskListID: ID = 0L
+}
+
+class TaskListItemAnimator : DefaultItemAnimator() {
+
+    override fun animateAdd(holder: ViewHolder?): Boolean {
+        holder?.itemView?.alpha = draggingViewAlpha
+        dispatchAddFinished(holder)
+        return true
+    }
 }

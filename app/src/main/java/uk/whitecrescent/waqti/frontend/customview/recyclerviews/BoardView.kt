@@ -202,7 +202,7 @@ class BoardAdapter(val boardID: ID, val boardViewCallBack: BoardViewCallBack? = 
         holder.itemView.taskList_rootView.updateLayoutParams {
             val percent = (boardView.mainActivity
                     .waqtiSharedPreferences
-                    .getInt(TASK_LIST_WIDTH_KEY, 70) / 100.0)
+                    .getInt(TASK_LIST_WIDTH_KEY, 66) / 100.0)
 
             width = (boardView.mainActivity.dimensions.first.toFloat() * percent).roundToInt()
 

@@ -26,6 +26,7 @@ import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.getViewModel
+import uk.whitecrescent.waqti.longSnackBar
 import uk.whitecrescent.waqti.size
 
 class MainActivity : AppCompatActivity() {
@@ -94,6 +95,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         if (BuildConfig.DEBUG && Database.tasks.size < 100) {
+            fragmentContainer.longSnackBar(
+                    "Seeding database with 10,000 tasks , " +
+                            "this may take a few minutes")
             Caches.seed(5, 20, 100)
         }
     }
