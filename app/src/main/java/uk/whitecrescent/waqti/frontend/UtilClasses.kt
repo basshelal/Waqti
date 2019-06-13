@@ -6,10 +6,9 @@ import android.text.Editable
 import android.text.TextWatcher
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import uk.whitecrescent.waqti.lastPosition
+
 
 open class SimpleTextWatcher : TextWatcher {
 
@@ -53,10 +52,15 @@ open class FABOnScrollListener(val fab: FloatingActionButton, val orientation: O
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 
-        val lastItemPos = recyclerView.adapter?.lastPosition
-        val lastVisiblePos = (recyclerView.layoutManager as LinearLayoutManager)
-                .findLastVisibleItemPosition()
+        /*val lastItemPos = recyclerView.adapter?.lastPosition
+        val lastVisiblePos = (recyclerView.layoutManager as LinearLayoutManager?)
+                ?.findLastCompletelyVisibleItemPosition()*/
 
+        // TODO: 12-Jun-19  Issue #57,
+        //  The hiding FABs need to be always showing when the list is not exceeding the size
+        //  limit required to scroll
+        // so something like make sure the last item in the list is fully visible and
+        // is not below the bottom of the list so that a scroll is needed
 
         when (orientation) {
             Orientation.HORIZONTAL -> {

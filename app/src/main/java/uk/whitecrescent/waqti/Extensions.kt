@@ -207,6 +207,14 @@ fun convertPxToDp(px: Float, context: Context): Int {
             DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 }
 
+inline fun Pair<Int, Int>.getValue(percent: Int): Int {
+    return ((percent.toDouble() / 100.0) * (second - first).toDouble()).roundToInt() + first
+}
+
+inline fun Pair<Int, Int>.getPercent(value: Int): Int {
+    return (((value - first).toDouble() / (second - first).toDouble()) * 100.0).roundToInt()
+}
+
 inline fun <T> T?.ifNotNull(func: T.() -> Unit): T? {
     if (this != null) this.apply(func)
     return this

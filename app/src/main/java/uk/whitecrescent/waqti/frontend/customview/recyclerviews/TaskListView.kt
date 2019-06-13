@@ -28,6 +28,7 @@ import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.TASK_CARD_TEXT_SIZE
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.frontend.startDragCompat
@@ -117,6 +118,9 @@ class TaskListAdapter(var taskListID: ID,
 
         holder.itemView.apply {
             task_textView.text = taskList[position].name
+            task_textView.textSize =
+                    mainActivity.waqtiSharedPreferences
+                            .getInt(TASK_CARD_TEXT_SIZE, 18).toFloat()
             if (this is CardView)
                 setCardBackgroundColor(Caches.boards[mainActivity.viewModel.boardID].cardColor.toAndroidColor)
             setOnClickListener {

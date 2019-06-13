@@ -54,8 +54,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
     override fun setUpViews(element: Board) {
 
-        mainActivity.setNavigationBarColor(element.barColor)
-        mainActivity.setStatusBarColor(element.barColor)
+//        mainActivity.setNavigationBarColor(element.barColor)
+//        mainActivity.setStatusBarColor(element.barColor)
 
         board_appBar.apply {
             setBackgroundColor(element.barColor)

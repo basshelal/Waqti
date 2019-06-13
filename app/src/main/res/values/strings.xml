@@ -113,6 +113,10 @@
     <string name="aboutTheDeveloper">About the Developer</string>
 
 
-    <string name="taskListWidth">Task List Width: </string>
+    <string name="taskListWidth">Task List Width:</string>
+    <string name="taskCardTextSize">Task Card Text Size:</string>
+    <string name="resetToDefaults">Reset to defaults</string>
+    <string name="resetToDefaultsQuestion">Are you sure you want to reset settings to
+        defaults?</string>
 
 </resources>
