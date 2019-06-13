@@ -1,66 +1,101 @@
 package uk.whitecrescent.waqti.backend.task
 
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import io.objectbox.converter.PropertyConverter
 import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.Time
 
 //region Properties
 
-// TODO: 11-Jun-19 Small optimization, use smaller SerializedNames using @SerializedName
-
 class TimeProperty(
+        @SerializedName("V")
         override var isVisible: Boolean = false,
+        @SerializedName("v")
         override var value: Time = DEFAULT_TIME,
+        @SerializedName("C")
         override var isConstrained: Boolean = false,
+        @SerializedName("M")
         override var isMet: Boolean = false) : Property<Time>(isVisible, value, isConstrained, isMet)
 
 class DurationProperty(
+        @SerializedName("V")
         override var isVisible: Boolean = false,
+        @SerializedName("v")
         override var value: Duration = DEFAULT_DURATION,
+        @SerializedName("C")
         override var isConstrained: Boolean = false,
+        @SerializedName("M")
         override var isMet: Boolean = false) : Property<Duration>(isVisible, value, isConstrained, isMet)
 
 class PriorityProperty(
+        @SerializedName("V")
         override var isVisible: Boolean = false,
+        @SerializedName("v")
         override var value: Priority = DEFAULT_PRIORITY,
+        @SerializedName("C")
         override var isConstrained: Boolean = false,
+        @SerializedName("M")
         override var isMet: Boolean = false) : Property<Priority>(isVisible, value, isConstrained, isMet)
 
 class LabelArrayListProperty(
+        @SerializedName("V")
         override var isVisible: Boolean = false,
+        @SerializedName("v")
         override var value: ArrayList<Label> = DEFAULT_LABELS_LIST,
+        @SerializedName("C")
         override var isConstrained: Boolean = false,
+        @SerializedName("M")
         override var isMet: Boolean = false) : Property<ArrayList<Label>>(isVisible, value, isConstrained, isMet)
 
 class BooleanProperty(
+        @SerializedName("V")
         override var isVisible: Boolean = false,
+        @SerializedName("v")
         override var value: Boolean = false,
+        @SerializedName("C")
         override var isConstrained: Boolean = false,
+        @SerializedName("M")
         override var isMet: Boolean = false) : Property<Boolean>(isVisible, value, isConstrained, isMet)
 
 class StringProperty(
+        @SerializedName("V")
         override var isVisible: Boolean = false,
+        @SerializedName("v")
         override var value: String = "",
+        @SerializedName("C")
         override var isConstrained: Boolean = false,
+        @SerializedName("M")
         override var isMet: Boolean = false) : Property<String>(isVisible, value, isConstrained, isMet)
 
 class ChecklistProperty(
+        @SerializedName("V")
         override var isVisible: Boolean = false,
+        @SerializedName("v")
         override var value: Checklist = DEFAULT_CHECKLIST,
+        @SerializedName("C")
         override var isConstrained: Boolean = false,
+        @SerializedName("M")
         override var isMet: Boolean = false) : Property<Checklist>(isVisible, value, isConstrained, isMet)
 
 class LongProperty(
+        @SerializedName("V")
         override var isVisible: Boolean = false,
+        @SerializedName("v")
         override var value: Long = 0L,
+        @SerializedName("C")
         override var isConstrained: Boolean = false,
+        @SerializedName("M")
         override var isMet: Boolean = false) : Property<Long>(isVisible, value, isConstrained, isMet)
 
 class LongArrayListProperty(
+        @SerializedName("V")
         override var isVisible: Boolean = false,
+        @SerializedName("v")
         override var value: ArrayList<Long> = arrayListOf(),
+        @SerializedName("C")
         override var isConstrained: Boolean = false,
+        @SerializedName("M")
         override var isMet: Boolean = false) : Property<ArrayList<Long>>(isVisible, value, isConstrained, isMet)
 
 //endregion Properties
