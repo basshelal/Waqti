@@ -70,6 +70,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         navigationView.setNavigationItemSelectedListener {
+            drawerLayout.closeDrawers()
             when (it.itemId) {
                 R.id.allBoards_navDrawerItem -> {
                     popAllFragmentsInBackStack()
@@ -89,7 +90,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-            drawerLayout.closeDrawers()
             true
         }
 

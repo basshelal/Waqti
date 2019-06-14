@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.fragment_view_task.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.R
@@ -31,7 +30,6 @@ import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.rfcFormatted
-import uk.whitecrescent.waqti.shortSnackBar
 
 class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
@@ -108,13 +106,19 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                             onConfirm = {
                                 this.dismiss()
                                 Caches.deleteTask(taskID, listID)
+                                // TODO: 14-Jun-19 Undo delete
+                                /*Snackbar.make(this@ViewTaskFragment.task_appBar,
+                                        "Deleted", Snackbar.LENGTH_LONG)
+                                        .setAction("Undo") {
+                                            mainActivity.fragmentContainer
+                                                    .shortSnackBar("Not yet implemented")
+                                        }
+                                        .show()*/
                                 finish()
                             }
                         }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
 
-                        Snackbar.make(this, "Deleted", Snackbar.LENGTH_LONG)
-                                .setAction("Undo") { shortSnackBar("Not yet implemented") }
-                                .show()
+
                         true
                     }
                     else -> false

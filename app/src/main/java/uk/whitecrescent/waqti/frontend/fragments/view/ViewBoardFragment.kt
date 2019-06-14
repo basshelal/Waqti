@@ -56,6 +56,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
 //        mainActivity.setNavigationBarColor(element.barColor)
 //        mainActivity.setStatusBarColor(element.barColor)
+        mainActivity.resetNavBarStatusBarColor()
 
         board_appBar.apply {
             setBackgroundColor(element.barColor)

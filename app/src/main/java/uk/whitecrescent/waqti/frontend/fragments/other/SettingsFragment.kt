@@ -37,7 +37,7 @@ class SettingsFragment : WaqtiFragment() {
     private inline fun setUpViews() {
         taskListWidthSetting_seekBar.apply {
 
-            val range = 20 to 100
+            val range = 20 to 80
 
             val fromPreferences = mainActivity.waqtiSharedPreferences.getInt(TASK_LIST_WIDTH_KEY, 66)
 
