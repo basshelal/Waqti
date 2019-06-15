@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
-import uk.whitecrescent.waqti.NewAPI
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
@@ -27,12 +26,11 @@ import uk.whitecrescent.waqti.frontend.TASK_LIST_WIDTH_KEY
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
-import uk.whitecrescent.waqti.ifNotNull
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
-class BoardView
+open class BoardView
 @JvmOverloads constructor(context: Context,
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
@@ -44,9 +42,6 @@ class BoardView
 
     lateinit var itemTouchHelper: ItemTouchHelper
     lateinit var pagerSnapHelper: PagerSnapHelper
-
-    private inline val boardViewCallBack: BoardViewCallBack?
-        get() = boardAdapter.boardViewCallBack
 
     init {
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
@@ -69,9 +64,6 @@ class BoardView
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
-                boardViewCallBack.ifNotNull {
-                    onEndDragList(viewHolder)
-                }
                 if (viewHolder is BoardViewHolder) {
                     viewHolder.itemView.alpha = 1F
                 }
@@ -79,9 +71,6 @@ class BoardView
 
             override fun onSelectedChanged(viewHolder: ViewHolder?, actionState: Int) {
                 super.onSelectedChanged(viewHolder, actionState)
-                boardViewCallBack.ifNotNull {
-                    onStartDragList(viewHolder)
-                }
                 if (viewHolder != null && viewHolder is BoardViewHolder) {
                     viewHolder.itemView.alpha = 0.7F
                 }
@@ -91,10 +80,6 @@ class BoardView
                                  target: ViewHolder, toPos: Int, x: Int, y: Int) {
                 super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
 
-                boardViewCallBack.ifNotNull {
-                    onMovedList(viewHolder, fromPos, target, toPos, x, y)
-                }
-
                 boardAdapter.apply {
                     board.move(fromPos, toPos).update()
                     matchOrder()
@@ -103,24 +88,12 @@ class BoardView
                 mainActivity.viewModel.boardPosition = true to toPos
             }
 
-            override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int,
-                                                      viewSizeOutOfBounds: Int, totalSize: Int,
-                                                      msSinceStartScroll: Long): Int {
-                boardViewCallBack.ifNotNull {
-                    onScrollListAcross()
-                }
-                return super.interpolateOutOfBoundsScroll(recyclerView, viewSize,
-                        viewSizeOutOfBounds, totalSize, msSinceStartScroll)
-            }
         })
         itemTouchHelper.attachToRecyclerView(this)
 
         pagerSnapHelper = object : PagerSnapHelper() {
             override fun findTargetSnapPosition(layoutManager: LayoutManager?, velocityX: Int, velocityY: Int): Int {
                 val currentBoardPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
-                boardViewCallBack.ifNotNull {
-                    onSnapScrollToList(currentBoardPos)
-                }
                 mainActivity.viewModel.boardPosition = true to currentBoardPos
                 return currentBoardPos
             }
@@ -149,15 +122,12 @@ class BoardView
     }
 
     fun getOrCreateListAdapter(taskListID: ID): TaskListAdapter {
-        return getListAdapter(taskListID) ?: TaskListAdapter(taskListID, boardViewCallBack)
+        return getListAdapter(taskListID) ?: TaskListAdapter(taskListID)
     }
 
-    /*val allCards: List<CardView>
-        get() = taskListAdapters.flatMap { it.allCards }*/
 }
 
-class BoardAdapter(val boardID: ID, val boardViewCallBack: BoardViewCallBack? = null) :
-        RecyclerView.Adapter<BoardViewHolder>() {
+class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     val board = Caches.boards[boardID]
 
@@ -190,10 +160,6 @@ class BoardAdapter(val boardID: ID, val boardViewCallBack: BoardViewCallBack? = 
     }
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
-
-        boardViewCallBack.ifNotNull {
-            onBindBoardViewHolder(holder, position)
-        }
 
         // Adapters get created and destroyed because their associated views do too, actually
         // more specifically, they get recycled
@@ -284,64 +250,4 @@ class BoardViewHolder(view: View) : ViewHolder(view) {
         get() = itemView.taskList_recyclerView
     val addButton: FloatingActionButton
         get() = itemView.taskListFooter_textView
-}
-
-// TODO: 11-Jun-19 The callback should be used to keep any UI code in the views and any back end code in the callback
-@NewAPI
-abstract class BoardViewCallBack {
-
-    open fun onMovedList(viewHolder: ViewHolder,
-                         fromPos: Int,
-                         target: ViewHolder,
-                         toPos: Int, x: Int, y: Int) {
-    }
-
-    open fun onStartDragList(viewHolder: ViewHolder?) {}
-
-    open fun onEndDragList(viewHolder: ViewHolder) {}
-
-    open fun onScrollListAcross() {}
-
-    open fun onSnapScrollToList(newPosition: Int) {}
-
-    open fun onBindBoardViewHolder(holder: BoardViewHolder, position: Int) {}
-
-    open fun onBindTaskViewHolder(holder: TaskViewHolder, position: Int) {}
-
-    open fun onDragTaskInSameList(oldTaskViewHolder: TaskViewHolder,
-                                  newTaskViewHolder: TaskViewHolder) {
-    }
-
-    open fun onTaskScrollDown(draggedViewHolder: TaskViewHolder,
-                              draggingOverViewHolder: TaskViewHolder,
-                              taskListView: TaskListView) {
-    }
-
-    open fun onTaskScrollUp(draggedViewHolder: TaskViewHolder,
-                            draggingOverViewHolder: TaskViewHolder,
-                            taskListView: TaskListView) {
-    }
-
-    open fun onDragTaskAcrossFilledList(draggedViewHolder: TaskViewHolder,
-                                        draggingOverViewHolder: TaskViewHolder,
-                                        oldTaskListAdapter: TaskListAdapter,
-                                        draggingOverTaskListAdapter: TaskListAdapter) {
-    }
-
-    open fun onScrollTaskAcrossFilledList(draggedViewHolder: TaskViewHolder,
-                                          draggingOverViewHolder: TaskViewHolder,
-                                          oldTaskListAdapter: TaskListAdapter,
-                                          draggingOverTaskListAdapter: TaskListAdapter) {
-    }
-
-    open fun onDragTaskAcrossEmptyList(draggedViewHolder: TaskViewHolder,
-                                       oldTaskListAdapter: TaskListAdapter,
-                                       draggingOverTaskListAdapter: TaskListAdapter) {
-    }
-
-    open fun onScrollTaskAcrossEmptyList(draggedViewHolder: TaskViewHolder,
-                                         oldTaskListAdapter: TaskListAdapter,
-                                         draggingOverTaskListAdapter: TaskListAdapter) {
-    }
-
 }
