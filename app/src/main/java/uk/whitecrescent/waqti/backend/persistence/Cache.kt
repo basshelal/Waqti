@@ -6,7 +6,6 @@ import io.reactivex.Observable
 import org.jetbrains.anko.doAsync
 import uk.whitecrescent.waqti.CACHE_CHECKING_PERIOD
 import uk.whitecrescent.waqti.CACHE_CHECKING_UNIT
-import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.Committable
 import uk.whitecrescent.waqti.backend.task.ID
@@ -29,10 +28,6 @@ open class Cache<E : Cacheable>(
     @QueriesDataBase
     private val isInconsistent: Boolean
         get() = map.asSequence().any { it.key !in db.ids }
-
-    @ForLater
-    // TODO: 18-Feb-19 We'll use this to implement an Undo delete
-    private var lastRemoved: List<E> = emptyList()
 
     val type: String = db.entityInfo.dbName
 
@@ -95,12 +90,6 @@ open class Cache<E : Cacheable>(
     fun remove(id: ID) {
         db.remove(id)
         map.remove(id)
-    }
-
-    fun undoRemove() {
-        TODO("Not Yet implemented")
-        // put back whatever is in last removed, every time something is removed it gets added
-        // there, that list will be emptied periodically/eventually
     }
 
     //endregion Core Modification

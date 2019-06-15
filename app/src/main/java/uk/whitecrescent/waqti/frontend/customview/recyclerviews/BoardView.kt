@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.cardview.widget.CardView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -44,6 +43,7 @@ class BoardView
     val taskListAdapters = ArrayList<TaskListAdapter>()
 
     lateinit var itemTouchHelper: ItemTouchHelper
+    lateinit var pagerSnapHelper: PagerSnapHelper
 
     private inline val boardViewCallBack: BoardViewCallBack?
         get() = boardAdapter.boardViewCallBack
@@ -115,7 +115,7 @@ class BoardView
         })
         itemTouchHelper.attachToRecyclerView(this)
 
-        object : PagerSnapHelper() {
+        pagerSnapHelper = object : PagerSnapHelper() {
             override fun findTargetSnapPosition(layoutManager: LayoutManager?, velocityX: Int, velocityY: Int): Int {
                 val currentBoardPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
                 boardViewCallBack.ifNotNull {
@@ -124,12 +124,13 @@ class BoardView
                 mainActivity.viewModel.boardPosition = true to currentBoardPos
                 return currentBoardPos
             }
-        }.attachToRecyclerView(this)
+        }
+        pagerSnapHelper.attachToRecyclerView(this)
     }
 
     fun addListAdapterIfNotExists(taskListAdapter: TaskListAdapter) {
         taskListAdapter.let {
-            if (!adapterExists(it.taskListID)) taskListAdapters.add(it)
+            if (!doesListAdapterExist(it.taskListID)) taskListAdapters.add(it)
         }
     }
 
@@ -143,12 +144,16 @@ class BoardView
         return taskListAdapters.find { it.taskListID == taskListID }
     }
 
-    fun adapterExists(taskListID: ID): Boolean {
+    fun doesListAdapterExist(taskListID: ID): Boolean {
         return taskListID in taskListAdapters.map { it.taskListID }
     }
 
-    val allCards: List<CardView>
-        get() = taskListAdapters.flatMap { it.allCards }
+    fun getOrCreateListAdapter(taskListID: ID): TaskListAdapter {
+        return getListAdapter(taskListID) ?: TaskListAdapter(taskListID, boardViewCallBack)
+    }
+
+    /*val allCards: List<CardView>
+        get() = taskListAdapters.flatMap { it.allCards }*/
 }
 
 class BoardAdapter(val boardID: ID, val boardViewCallBack: BoardViewCallBack? = null) :
@@ -193,7 +198,7 @@ class BoardAdapter(val boardID: ID, val boardViewCallBack: BoardViewCallBack? = 
         // Adapters get created and destroyed because their associated views do too, actually
         // more specifically, they get recycled
 
-        val taskListAdapter = TaskListAdapter(board[position].id, boardViewCallBack)
+        val taskListAdapter = boardView.getOrCreateListAdapter(board[position].id)
         holder.taskListView.adapter = taskListAdapter
         boardView.addListAdapterIfNotExists(taskListAdapter)
 
@@ -252,27 +257,22 @@ class BoardAdapter(val boardID: ID, val boardViewCallBack: BoardViewCallBack? = 
         val taskListAdaptersCopy = ArrayList(boardView.taskListAdapters)
         if (doesNotMatchOrder()) {
 
-            board.filter { taskList -> taskList.id in taskListAdaptersCopy.map { it.taskListID } }
+            board.filter { taskList -> taskList.id in taskListAdaptersCopy.map { it?.taskListID } }
                     .mapIndexed { index, taskList -> index to taskList }.toMap()
                     .forEach { entry ->
                         val (index, taskList) = entry
 
                         boardView.taskListAdapters[index] =
-                                taskListAdaptersCopy.find { it.taskListID == taskList.id }!!
+                                taskListAdaptersCopy.find { it?.taskListID == taskList.id }!!
                     }
 
         }
     }
 
     private fun doesNotMatchOrder(): Boolean {
+        val adapterIDs = boardView.taskListAdapters.map { it.taskListID }
 
-        /*
-         * Possible Optimization is to check that doing the matchOrder() operation will change
-         * anything or not but seems a little unnecessary right now
-         */
-
-        return boardView.taskListAdapters.size != board.size ||
-                boardView.taskListAdapters.map { it.taskListID } != board.map { it.id }
+        return adapterIDs != board.take(adapterIDs.size).map { it.id }
     }
 }
 
