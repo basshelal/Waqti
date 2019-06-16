@@ -1,7 +1,10 @@
 package uk.whitecrescent.waqti.frontend.fragments.view
 
+import android.content.Context
 import android.os.Bundle
+import android.os.Vibrator
 import android.text.SpannableStringBuilder
+import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,9 +21,11 @@ import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListAdapter
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
+import uk.whitecrescent.waqti.frontend.vibrateCompat
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
@@ -119,6 +124,41 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
                 replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
                 addToBackStack("")
+            }
+        }
+
+        delete_floatingButton.apply {
+            alpha = 0F
+            setOnDragListener { _, event ->
+                if (event.localState is DragEventLocalState) {
+                    val draggingState = event.localState as DragEventLocalState
+                    when (event.action) {
+                        DragEvent.ACTION_DRAG_STARTED -> {
+                            delete_floatingButton.alpha = 1F
+                        }
+                        DragEvent.ACTION_DRAG_ENTERED -> {
+                            (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrateCompat(50)
+                        }
+                        DragEvent.ACTION_DROP -> {
+                            ConfirmDialog().apply {
+                                title = this@ViewListFragment.mainActivity.getString(R.string.deleteTaskQuestion)
+                                onConfirm = {
+                                    Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
+                                    this@ViewListFragment.taskList_recyclerView.apply {
+                                        listAdapter.notifyItemRemoved(
+                                                findViewHolderForItemId(draggingState.taskID).adapterPosition
+                                        )
+                                    }
+                                    this.dismiss()
+                                }
+                            }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+                        }
+                        DragEvent.ACTION_DRAG_ENDED -> {
+                            delete_floatingButton.alpha = 0F
+                        }
+                    }
+                }
+                true
             }
         }
     }
