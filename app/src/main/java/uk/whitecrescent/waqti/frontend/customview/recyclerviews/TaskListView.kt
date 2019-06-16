@@ -15,7 +15,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -188,8 +187,9 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                 )
                 return@setOnLongClickListener true
             }
-            progressBar.visibility = View.GONE
+
             textView.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
         }
     }
 
@@ -442,7 +442,6 @@ class TaskViewHolder(view: View) : ViewHolder(view) {
     var taskListID: ID = 0L
     val cardView: CardView = itemView.task_cardView
     val progressBar: ProgressBar = itemView.taskCard_progressBar
-    val parent: ConstraintLayout = itemView.taskCard_parent
     val textView: TextView = itemView.task_textView
 
     inline val mainActivity: MainActivity get() = itemView.mainActivity

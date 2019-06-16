@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
@@ -190,7 +189,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                     this@BoardAdapter.itemTouchHelper.startDrag(holder)
                     true
                 }
-                visibility = View.VISIBLE
             }
             addButton.apply {
                 setOnClickListener {
@@ -207,9 +205,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                         addToBackStack(null)
                     }
                 }
-                visibility = View.VISIBLE
             }
-            progressBar.visibility = View.GONE
         }
     }
 
@@ -243,7 +239,6 @@ open class BoardViewHolder(view: View) : ViewHolder(view) {
     open val header: TextView = itemView.taskListHeader_textView
     open val taskListView: TaskListView = itemView.taskList_recyclerView
     open val addButton: FloatingActionButton = itemView.taskListFooter_textView
-    open val progressBar: ProgressBar = itemView.progressBar
     open val rootView: ConstraintLayout = itemView.taskList_rootView
 
     inline val mainActivity: MainActivity get() = itemView.mainActivity
