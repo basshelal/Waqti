@@ -28,7 +28,8 @@
         app:elevation="14dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="@color/white" />
 
     <uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListView
         android:id="@+id/boardsList_recyclerView"

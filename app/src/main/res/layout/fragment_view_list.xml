@@ -41,6 +41,7 @@
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@id/taskList_recyclerView"
-        app:layout_constraintStart_toStartOf="@id/taskList_recyclerView" />
+        app:layout_constraintStart_toStartOf="@id/taskList_recyclerView"
+        app:rippleColor="@color/white" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
