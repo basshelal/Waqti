@@ -8,11 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
-import androidx.core.content.edit
 import kotlinx.android.synthetic.main.fragment_settings.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.frontend.TASK_CARD_TEXT_SIZE
-import uk.whitecrescent.waqti.frontend.TASK_LIST_WIDTH_KEY
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 import uk.whitecrescent.waqti.getPercent
@@ -39,7 +36,7 @@ class SettingsFragment : WaqtiFragment() {
 
             val range = 20 to 80
 
-            val fromPreferences = mainActivity.waqtiSharedPreferences.getInt(TASK_LIST_WIDTH_KEY, 66)
+            val fromPreferences = mainActivity.waqtiPreferences.taskListWidth
 
             progress = range.getPercent(fromPreferences)
             taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + fromPreferences
@@ -52,9 +49,7 @@ class SettingsFragment : WaqtiFragment() {
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    mainActivity.waqtiSharedPreferences.edit {
-                        putInt(TASK_LIST_WIDTH_KEY, range.getValue(progress))
-                    }
+                    mainActivity.waqtiPreferences.taskListWidth = range.getValue(progress)
                 }
             })
         }
@@ -63,7 +58,7 @@ class SettingsFragment : WaqtiFragment() {
 
             val range = 14 to 30
 
-            val fromPreferences = mainActivity.waqtiSharedPreferences.getInt(TASK_CARD_TEXT_SIZE, 18)
+            val fromPreferences = mainActivity.waqtiPreferences.taskCardTextSize
 
             progress = range.getPercent(fromPreferences)
 
@@ -79,9 +74,7 @@ class SettingsFragment : WaqtiFragment() {
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    mainActivity.waqtiSharedPreferences.edit {
-                        putInt(TASK_CARD_TEXT_SIZE, range.getValue(progress))
-                    }
+                    mainActivity.waqtiPreferences.taskCardTextSize = range.getValue(progress)
                 }
             })
         }
@@ -114,9 +107,7 @@ class SettingsFragment : WaqtiFragment() {
             progress = range.getPercent(default)
             taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + default
 
-            mainActivity.waqtiSharedPreferences.edit {
-                putInt(TASK_LIST_WIDTH_KEY, range.getValue(progress))
-            }
+            mainActivity.waqtiPreferences.taskListWidth = range.getValue(progress)
         }
 
         cardTextSizeSetting_seekBar.apply {
@@ -128,9 +119,7 @@ class SettingsFragment : WaqtiFragment() {
             progress = range.getPercent(default)
             cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) + default
 
-            mainActivity.waqtiSharedPreferences.edit {
-                putInt(TASK_CARD_TEXT_SIZE, range.getValue(progress))
-            }
+            mainActivity.waqtiPreferences.taskCardTextSize = range.getValue(progress)
         }
     }
 

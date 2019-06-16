@@ -14,15 +14,16 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
+import org.jetbrains.anko.doAsync
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
-import uk.whitecrescent.waqti.frontend.TASK_LIST_WIDTH_KEY
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
@@ -101,15 +102,22 @@ open class BoardView
         pagerSnapHelper.attachToRecyclerView(this)
     }
 
-    fun addListAdapterIfNotExists(taskListAdapter: TaskListAdapter) {
-        taskListAdapter.let {
+
+    fun addListAdapter(taskListAdapter: TaskListAdapter): TaskListAdapter {
+        return taskListAdapter.also {
+            taskListAdapters.add(it)
+        }
+    }
+
+    fun addListAdapterIfNotExists(taskListAdapter: TaskListAdapter): TaskListAdapter {
+        return taskListAdapter.also {
             if (!doesListAdapterExist(it.taskListID)) taskListAdapters.add(it)
         }
     }
 
     fun removeListAdapterIfExists(taskListAdapter: TaskListAdapter) {
-        getListAdapter(taskListAdapter.taskListID).apply {
-            if (this != null) taskListAdapters.remove(this)
+        getListAdapter(taskListAdapter.taskListID).also {
+            if (it != null) taskListAdapters.remove(it)
         }
     }
 
@@ -118,11 +126,11 @@ open class BoardView
     }
 
     fun doesListAdapterExist(taskListID: ID): Boolean {
-        return taskListID in taskListAdapters.map { it.taskListID }
+        return getListAdapter(taskListID) != null
     }
 
     fun getOrCreateListAdapter(taskListID: ID): TaskListAdapter {
-        return getListAdapter(taskListID) ?: TaskListAdapter(taskListID)
+        return getListAdapter(taskListID) ?: addListAdapter(TaskListAdapter(taskListID))
     }
 
 }
@@ -142,6 +150,16 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             "Recycler View attached to a BoardAdapter must be a BoardView"
         }
         boardView = recyclerView
+
+        // TODO: 15-Jun-19 Check!!
+        doAsync {
+            board.forEach {
+                boardView.getOrCreateListAdapter(it.id)
+            }
+
+            matchOrder()
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -164,22 +182,17 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         // Adapters get created and destroyed because their associated views do too, actually
         // more specifically, they get recycled
 
-        val taskListAdapter = boardView.getOrCreateListAdapter(board[position].id)
-        holder.taskListView.adapter = taskListAdapter
-        boardView.addListAdapterIfNotExists(taskListAdapter)
-
-        matchOrder()
+        holder.taskListView.adapter = boardView.getOrCreateListAdapter(board[position].id)
 
         holder.itemView.taskList_rootView.updateLayoutParams {
-            val percent = (boardView.mainActivity
-                    .waqtiSharedPreferences
-                    .getInt(TASK_LIST_WIDTH_KEY, 66) / 100.0)
+
+            val percent = boardView.mainActivity
+                    .waqtiPreferences.taskListWidth / 100.0
 
             width = (boardView.mainActivity.dimensions.first.toFloat() * percent).roundToInt()
-
         }
 
-        holder.header.apply {
+        holder.header.doInBackground {
             setOnLongClickListener {
                 this@BoardAdapter.boardView.itemTouchHelper.startDrag(holder)
                 true
@@ -198,7 +211,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 }
             }
         }
-        holder.addButton.apply {
+        holder.addButton.doInBackground {
             setOnClickListener {
 
                 @GoToFragment
@@ -210,7 +223,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                     it.clearFocusAndHideSoftKeyboard()
 
                     replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
-                    addToBackStack("")
+                    addToBackStack(null)
                 }
             }
         }
@@ -220,18 +233,20 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     }
 
     fun matchOrder() {
-        val taskListAdaptersCopy = ArrayList(boardView.taskListAdapters)
-        if (doesNotMatchOrder()) {
+        doAsync {
+            val taskListAdaptersCopy = ArrayList(boardView.taskListAdapters)
+            if (doesNotMatchOrder()) {
 
-            board.filter { taskList -> taskList.id in taskListAdaptersCopy.map { it?.taskListID } }
-                    .mapIndexed { index, taskList -> index to taskList }.toMap()
-                    .forEach { entry ->
-                        val (index, taskList) = entry
+                board.filter { taskList -> taskList.id in taskListAdaptersCopy.map { it?.taskListID } }
+                        .mapIndexed { index, taskList -> index to taskList }.toMap()
+                        .forEach { entry ->
+                            val (index, taskList) = entry
 
-                        boardView.taskListAdapters[index] =
-                                taskListAdaptersCopy.find { it?.taskListID == taskList.id }!!
-                    }
+                            boardView.taskListAdapters[index] =
+                                    taskListAdaptersCopy.find { it?.taskListID == taskList.id }!!
+                        }
 
+            }
         }
     }
 
@@ -244,10 +259,20 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
 
 class BoardViewHolder(view: View) : ViewHolder(view) {
-    val header: TextView
-        get() = itemView.taskListHeader_textView
-    val taskListView: TaskListView
-        get() = itemView.taskList_recyclerView
-    val addButton: FloatingActionButton
-        get() = itemView.taskListFooter_textView
+    val header: TextView = itemView.taskListHeader_textView
+    val taskListView: TaskListView = itemView.taskList_recyclerView
+    val addButton: FloatingActionButton = itemView.taskListFooter_textView
+}
+
+class PreCachingLayoutManager(context: Context,
+                              @RecyclerView.Orientation
+                              orientation: Int = HORIZONTAL,
+                              reverseLayout: Boolean = false,
+                              private val extraLayoutSpacePx: Int = 600) :
+        LinearLayoutManager(context, orientation, reverseLayout) {
+
+    @Deprecated("Use calculateExtraLayoutSpace instead")
+    override fun getExtraLayoutSpace(state: RecyclerView.State): Int {
+        return extraLayoutSpacePx
+    }
 }

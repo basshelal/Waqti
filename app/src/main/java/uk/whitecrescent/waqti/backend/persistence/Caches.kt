@@ -68,7 +68,7 @@ object Caches {
 
     fun initialize() {
         doAsync {
-            allCaches.forEach { it.initialize() }
+            allCaches.forEach { doAsync { it.initialize() } }
         }
     }
 

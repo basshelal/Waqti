@@ -1,7 +1,5 @@
 package uk.whitecrescent.waqti.frontend
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Bundle
@@ -40,12 +38,16 @@ class MainActivity : AppCompatActivity() {
 
     val currentTouchPoint = Point()
 
+    lateinit var waqtiPreferences: WaqtiPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.blank_activity)
 
         viewModel = getViewModel()
+
+        waqtiPreferences = WaqtiPreferences(this)
 
         if (supportFragmentManager.fragments.size == 0) {
             @GoToFragment
@@ -132,9 +134,6 @@ class MainActivity : AppCompatActivity() {
         }
         return super.dispatchTouchEvent(event)
     }
-
-    inline val waqtiSharedPreferences: SharedPreferences
-        get() = getSharedPreferences(WAQTI_SHARED_PREFERENCES, Context.MODE_PRIVATE)
 
     inline val dimensions: Pair<Int, Int>
         get() = this.resources

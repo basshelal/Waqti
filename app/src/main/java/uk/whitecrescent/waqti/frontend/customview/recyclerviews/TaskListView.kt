@@ -10,7 +10,6 @@ import android.util.AttributeSet
 import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.DRAG_FLAG_OPAQUE
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.cardview.widget.CardView
@@ -19,7 +18,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
-import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
@@ -28,8 +26,8 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.GoToFragment
-import uk.whitecrescent.waqti.frontend.TASK_CARD_TEXT_SIZE
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.frontend.startDragCompat
@@ -42,6 +40,13 @@ import kotlin.math.roundToInt
 private const val animationDuration = 250L
 private const val scrollAmount = 1.718281828459045 // E - 1
 private const val draggingViewAlpha = 0F
+
+private val taskViewHolderPool = object : RecyclerView.RecycledViewPool() {
+
+    override fun setMaxRecycledViews(viewType: Int, max: Int) {
+        super.setMaxRecycledViews(viewType, 250)
+    }
+}
 
 open class TaskListView
 @JvmOverloads constructor(context: Context,
@@ -57,12 +62,12 @@ open class TaskListView
     init {
         layoutManager = LinearLayoutManager(context, VERTICAL, false)
         itemAnimator = TaskListItemAnimator()
+        this.setRecycledViewPool(taskViewHolderPool)
     }
 
 }
 
-class TaskListAdapter(var taskListID: ID) :
-        Adapter<TaskViewHolder>() {
+class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
 
     lateinit var taskListView: TaskListView
 
@@ -104,11 +109,12 @@ class TaskListAdapter(var taskListID: ID) :
 
     override fun getItemId(position: Int) = taskList[position].id
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-            TaskViewHolder(
-                    LayoutInflater.from(parent.context)
-                            .inflate(R.layout.task_card, parent, false)
-            )
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
+        return TaskViewHolder(
+                LayoutInflater.from(parent.context)
+                        .inflate(R.layout.task_card, parent, false)
+        )
+    }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
 
@@ -116,35 +122,38 @@ class TaskListAdapter(var taskListID: ID) :
         holder.taskListID = this.taskListID
 
         holder.itemView.apply {
-            task_textView.text = taskList[position].name
-            task_textView.textSize =
-                    mainActivity.waqtiSharedPreferences
-                            .getInt(TASK_CARD_TEXT_SIZE, 18).toFloat()
-            if (this is CardView)
-                setCardBackgroundColor(Caches.boards[mainActivity.viewModel.boardID].cardColor.toAndroidColor)
-            setOnClickListener {
-                @GoToFragment
-                it.mainActivity.supportFragmentManager.commitTransaction {
+            doInBackground {
+                task_textView.text = taskList[position].name
+                task_textView.textSize =
+                        mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
+                if (this is CardView)
+                    setCardBackgroundColor(Caches.boards[mainActivity.viewModel.boardID].cardColor.toAndroidColor)
+                setOnClickListener {
+                    @GoToFragment
+                    it.mainActivity.supportFragmentManager.commitTransaction {
 
-                    it.mainActivity.viewModel.taskID = holder.taskID
-                    it.mainActivity.viewModel.listID = taskListID
+                        it.mainActivity.viewModel.taskID = holder.taskID
+                        it.mainActivity.viewModel.listID = taskListID
 
+                        it.clearFocusAndHideSoftKeyboard()
+
+                        addToBackStack("")
+                        replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
+                    }
+                }
+                setOnLongClickListener {
                     it.clearFocusAndHideSoftKeyboard()
-
-                    addToBackStack("")
-                    replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
+                    it.startDragCompat(
+                            null,
+                            ShadowBuilder(it.task_materialCardView),
+                            DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
+                            View.DRAG_FLAG_OPAQUE
+                    )
+                    return@setOnLongClickListener true
                 }
             }
-            setOnLongClickListener {
-                it.clearFocusAndHideSoftKeyboard()
-                it.startDragCompat(
-                        null,
-                        ShadowBuilder(it.task_materialCardView),
-                        DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
-                        DRAG_FLAG_OPAQUE
-                )
-                return@setOnLongClickListener true
-            }
+            // onDragListener must be on main thread so that even if the above hasn't finished this
+            // will be done because we need the dragging over functionality to work
 
             // onDragListener is basically like, do this when someone is dragging on top of you
             setOnDragListener { v, event ->
@@ -152,7 +161,7 @@ class TaskListAdapter(var taskListID: ID) :
                 val draggingView = taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)?.itemView
                 when (event.action) {
                     DragEvent.ACTION_DRAG_ENTERED -> {
-                        if (holder.adapterPosition != NO_POSITION) {
+                        if (holder.adapterPosition != RecyclerView.NO_POSITION) {
                             onDrag(draggingState, holder)
                         }
                     }

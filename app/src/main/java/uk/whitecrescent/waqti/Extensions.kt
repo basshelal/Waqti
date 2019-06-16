@@ -28,6 +28,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import io.objectbox.Box
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.BoardList
@@ -219,6 +223,36 @@ inline fun <T> T?.ifNotNull(func: T.() -> Unit): T? {
     if (this != null) this.apply(func)
     return this
 }
+
+inline fun <T> T.androidObservable(): Observable<T> {
+    return Observable.just(this)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.computation())
+}
+
+inline fun <T> T.doInBackground(crossinline onNext: T.() -> Unit): Disposable {
+    return androidObservable()
+            .subscribe {
+                it.apply(onNext)
+            }
+}
+
+inline fun <T> T.doInBackground(crossinline onNext: T.() -> Unit,
+                                noinline onError: (Throwable) -> Unit = {},
+                                noinline onComplete: () -> Unit = {},
+                                noinline onSubscribe: (Disposable) -> Unit = {}): Disposable {
+    return androidObservable()
+            .subscribe({
+                it.apply(onNext)
+            }, {
+                onError(it)
+            }, {
+                onComplete()
+            }, {
+                onSubscribe(it)
+            })
+}
+
 
 //endregion Android Utils
 

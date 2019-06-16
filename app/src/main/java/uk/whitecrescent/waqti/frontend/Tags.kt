@@ -10,9 +10,3 @@ const val CREATE_BOARD_FRAGMENT = "CreateBoardFragment"
 
 const val ABOUT_FRAGMENT = "AboutFragment"
 const val SETTINGS_FRAGMENT = "SettingsFragment"
-
-const val WAQTI_SHARED_PREFERENCES = "WaqtiSharedPreferences"
-const val BOARD_LIST_NAME_PREFERENCES_KEY = "BoardListName"
-const val BOARD_LIST_VIEW_MODE_KEY = "BoardListViewMode"
-const val TASK_LIST_WIDTH_KEY = "TaskListWidth"
-const val TASK_CARD_TEXT_SIZE = "TaskCardTextSize"

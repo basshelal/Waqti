@@ -3,13 +3,13 @@ package uk.whitecrescent.waqti.backend.persistence
 import uk.whitecrescent.waqti.backend.task.ID
 
 // Estimates for reasonable Cache sizes
-const val TASKS_CACHE_SIZE = 1000
-const val TEMPLATES_CACHE_SIZE = 50
-const val LABELS_CACHE_SIZE = 50
-const val PRIORITIES_CACHE_SIZE = 50
-const val TIME_UNITS_CACHE_SIZE = 50
-const val TASK_LISTS_CACHE_SIZE = 250
-const val BOARDS_CACHE_SIZE = 25
+const val TASKS_CACHE_SIZE = 100
+const val TEMPLATES_CACHE_SIZE = 10
+const val LABELS_CACHE_SIZE = 10
+const val PRIORITIES_CACHE_SIZE = 10
+const val TIME_UNITS_CACHE_SIZE = 10
+const val TASK_LISTS_CACHE_SIZE = 25
+const val BOARDS_CACHE_SIZE = 5
 const val BOARD_LISTS_CACHE_SIZE = 1
 
 /*

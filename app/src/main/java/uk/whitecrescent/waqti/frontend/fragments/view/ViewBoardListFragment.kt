@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.core.content.edit
 import androidx.core.view.postDelayed
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
@@ -17,8 +16,6 @@ import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
-import uk.whitecrescent.waqti.frontend.BOARD_LIST_NAME_PREFERENCES_KEY
-import uk.whitecrescent.waqti.frontend.BOARD_LIST_VIEW_MODE_KEY
 import uk.whitecrescent.waqti.frontend.CREATE_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
@@ -43,8 +40,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
         mainActivityViewModel.boardPosition = false to 0
 
-        viewMode = ViewMode.valueOf(mainActivity.waqtiSharedPreferences
-                .getString(BOARD_LIST_VIEW_MODE_KEY, ViewMode.LIST_VERTICAL.name)!!)
+        viewMode = mainActivity.waqtiPreferences.boardListViewMode
 
         require(Caches.boardLists.size <= 1)
 
@@ -64,17 +60,12 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                 mainActivity.hideableEditTextView = this
                 fun update() {
                     if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
-                        if (text.toString() != mainActivity.waqtiSharedPreferences
-                                        .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards))) {
-                            mainActivity.waqtiSharedPreferences.edit {
-                                putString(BOARD_LIST_NAME_PREFERENCES_KEY, text.toString())
-                            }
+                        if (text.toString() != mainActivity.waqtiPreferences.boardListName) {
+                            mainActivity.waqtiPreferences.boardListName = text.toString()
                         }
                     }
                 }
-                text = SpannableStringBuilder(
-                        mainActivity.waqtiSharedPreferences
-                                .getString(BOARD_LIST_NAME_PREFERENCES_KEY, getString(R.string.allBoards)))
+                text = SpannableStringBuilder(mainActivity.waqtiPreferences.boardListName)
                 addAfterTextChangedListener { update() }
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -103,9 +94,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                                     .setIcon(R.drawable.grid_icon)
                         }
                     }
-                    mainActivity.waqtiSharedPreferences.edit {
-                        putString(BOARD_LIST_VIEW_MODE_KEY, viewMode.name)
-                    }
+                    mainActivity.waqtiPreferences.boardListViewMode = viewMode
                 }
                 update()
                 setOnClickListener {
