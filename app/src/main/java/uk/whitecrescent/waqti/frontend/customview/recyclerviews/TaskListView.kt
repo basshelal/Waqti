@@ -12,7 +12,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.children
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,6 +33,7 @@ import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.doInBackgroundDelayed
 import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.frontend.startDragCompat
@@ -120,9 +124,14 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
+        holder.apply {
+            progressBar.visibility = View.VISIBLE
+            parent.visibility = View.GONE
+        }
 
-        holder.itemView.apply {
-            setOnDragListener { _, event ->
+        // simulated lag/delay
+        holder.doInBackgroundDelayed(500) {
+            cardView.setOnDragListener { _, event ->
                 val draggingState = event.localState as DragEventLocalState
                 val draggingView = taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)?.itemView
                 when (event.action) {
@@ -153,20 +162,16 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                 }
                 return@setOnDragListener true
             }
-        }
 
-        // simulated lag/delay
-        holder.itemView.doInBackgroundDelayed(750) {
             holder.taskID = taskList[position].id
             holder.taskListID = this@TaskListAdapter.taskListID
 
-            task_textView.text = taskList[position].name
-            task_textView.textSize =
-                    mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
-            if (this is CardView)
-                setCardBackgroundColor(Caches.boards[mainActivity.viewModel.boardID].cardColor.toAndroidColor)
+            textView.text = taskList[position].name
+            textView.textSize = mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
+
+            cardView.setCardBackgroundColor(Caches.boards[mainActivity.viewModel.boardID].cardColor.toAndroidColor)
             // onDragListener is basically like, do this when someone is dragging on top of you
-            setOnClickListener {
+            cardView.setOnClickListener {
                 @GoToFragment
                 it.mainActivity.supportFragmentManager.commitTransaction {
 
@@ -179,18 +184,18 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                     replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
                 }
             }
-            setOnLongClickListener {
+            cardView.setOnLongClickListener {
                 it.clearFocusAndHideSoftKeyboard()
                 it.startDragCompat(
                         null,
-                        ShadowBuilder(it.task_materialCardView),
+                        ShadowBuilder(it.task_cardView),
                         DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
                         View.DRAG_FLAG_OPAQUE
                 )
                 return@setOnLongClickListener true
             }
-            taskCard_progressBar.visibility = View.GONE
-            taskCard_parent.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
+            parent.visibility = View.VISIBLE
         }
     }
 
@@ -441,6 +446,12 @@ class TaskViewHolder(view: View) : ViewHolder(view) {
 
     //the ID of the TaskList that this ViewHolder's Task is in
     var taskListID: ID = 0L
+    val cardView: CardView = itemView.task_cardView
+    val progressBar: ProgressBar = itemView.taskCard_progressBar
+    val parent: ConstraintLayout = itemView.taskCard_parent
+    val textView: TextView = itemView.task_textView
+
+    inline val mainActivity: MainActivity get() = itemView.mainActivity
 }
 
 class TaskListItemAnimator : DefaultItemAnimator() {

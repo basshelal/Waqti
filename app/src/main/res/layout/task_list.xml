@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/taskList_rootView"
     android:layout_width="@dimen/taskListWidth"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:visibility="gone">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -23,7 +24,6 @@
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         android:textColor="@color/black"
         android:textSize="30sp"
-        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -32,7 +32,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:scrollbars="vertical"
-        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/taskListHeader_textView"
         tools:listitem="@layout/task_card" />
@@ -43,7 +42,6 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:src="@drawable/add_icon"
-        android:visibility="gone"
         app:backgroundTint="@color/primaryColor"
         app:elevation="14dp"
         app:fabSize="normal"

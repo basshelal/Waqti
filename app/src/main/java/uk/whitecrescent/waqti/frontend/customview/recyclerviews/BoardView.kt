@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,6 +25,7 @@ import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.doInBackgroundDelayed
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
@@ -150,19 +152,24 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
 
+        holder.apply {
+            progressBar.visibility = View.GONE
+            rootView.visibility = View.VISIBLE
+        }
+
         // simulated lag/delay
-        holder.doInBackgroundDelayed(750) {
+        holder.doInBackgroundDelayed(500) {
+
             taskListView.apply {
                 addOnScrollListener(holder.addButton.verticalFABOnScrollListener)
-                visibility = View.VISIBLE
                 this.bringToFront()
             }
-            itemView.taskList_rootView.apply {
+            rootView.apply {
                 updateLayoutParams {
-                    val percent = holder.itemView.mainActivity
+                    val percent = holder.mainActivity
                             .waqtiPreferences.taskListWidth / 100.0
 
-                    width = (holder.itemView.mainActivity.dimensions.first.toFloat() * percent)
+                    width = (holder.mainActivity.dimensions.first.toFloat() * percent)
                             .roundToInt()
                 }
             }
@@ -184,7 +191,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                     this@BoardAdapter.itemTouchHelper.startDrag(holder)
                     true
                 }
-                visibility = View.VISIBLE
             }
             addButton.apply {
                 setOnClickListener {
@@ -201,9 +207,9 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                         addToBackStack(null)
                     }
                 }
-                visibility = View.VISIBLE
             }
             progressBar.visibility = View.GONE
+            rootView.visibility = View.VISIBLE
         }
 
         // For some annoying reason, the adapter set must be done synchronously,
@@ -247,6 +253,9 @@ open class BoardViewHolder(view: View) : ViewHolder(view) {
     open val taskListView: TaskListView = itemView.taskList_recyclerView
     open val addButton: FloatingActionButton = itemView.taskListFooter_textView
     open val progressBar: ProgressBar = itemView.progressBar
+    open val rootView: ConstraintLayout = itemView.taskList_rootView
+
+    inline val mainActivity: MainActivity get() = itemView.mainActivity
 }
 
 class PreCachingLayoutManager(context: Context,
