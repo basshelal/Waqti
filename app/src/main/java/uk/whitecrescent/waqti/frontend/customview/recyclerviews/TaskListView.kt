@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.cardview.widget.CardView
+import androidx.core.view.children
 import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -40,6 +41,7 @@ import kotlin.math.roundToInt
 private const val animationDuration = 250L
 private const val scrollAmount = 1.718281828459045 // E - 1
 private const val draggingViewAlpha = 0F
+private val defaultInterpolator = AccelerateDecelerateInterpolator()
 
 private val taskViewHolderPool = object : RecyclerView.RecycledViewPool() {
 
@@ -76,7 +78,8 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
     inline val linearLayoutManager: LinearLayoutManager
         get() = taskListView.layoutManager as LinearLayoutManager
 
-    private val defaultInterpolator = AccelerateDecelerateInterpolator()
+    inline val allCards: List<CardView>
+        get() = taskListView.children.map { it as CardView }.toList()
 
     init {
         this.setHasStableIds(true)
@@ -152,11 +155,9 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                     return@setOnLongClickListener true
                 }
             }
-            // onDragListener must be on main thread so that even if the above hasn't finished this
-            // will be done because we need the dragging over functionality to work
 
             // onDragListener is basically like, do this when someone is dragging on top of you
-            setOnDragListener { v, event ->
+            setOnDragListener { _, event ->
                 val draggingState = event.localState as DragEventLocalState
                 val draggingView = taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)?.itemView
                 when (event.action) {
@@ -176,6 +177,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                     }
                     DragEvent.ACTION_DRAG_ENDED -> {
                         draggingView?.alpha = 1F
+                        doInBackground { allCards.forEach { it.alpha = 1F } }
                     }
                 }
                 return@setOnDragListener true
@@ -246,12 +248,8 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
     private inline fun checkForScrollDown(draggingState: DragEventLocalState, holder: TaskViewHolder) {
 
         if (draggingState.adapterPosition >= linearLayoutManager.findLastCompletelyVisibleItemPosition()) {
-
-            taskListView.postDelayed(animationDuration) {
-                val scrollBy = (holder.itemView.height * scrollAmount).roundToInt()
-                taskListView.smoothScrollBy(0, scrollBy, defaultInterpolator)
-            }
-
+            val scrollBy = (holder.itemView.height * scrollAmount).roundToInt()
+            taskListView.smoothScrollBy(0, scrollBy, defaultInterpolator)
         }
 
     }
@@ -259,12 +257,8 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
     private inline fun checkForScrollUp(draggingState: DragEventLocalState, holder: TaskViewHolder) {
 
         if (draggingState.adapterPosition <= linearLayoutManager.findFirstCompletelyVisibleItemPosition()) {
-
-            taskListView.postDelayed(animationDuration) {
-                val scrollBy = (holder.itemView.height * -scrollAmount).roundToInt()
-                taskListView.smoothScrollBy(0, scrollBy, defaultInterpolator)
-            }
-
+            val scrollBy = (holder.itemView.height * -scrollAmount).roundToInt()
+            taskListView.smoothScrollBy(0, scrollBy, defaultInterpolator)
         }
 
     }
