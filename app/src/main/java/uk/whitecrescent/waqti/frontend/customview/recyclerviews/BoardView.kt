@@ -18,9 +18,17 @@ import org.jetbrains.anko.doAsync
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
+import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
+import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
+import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
+import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
+import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
 open class BoardView
@@ -148,11 +156,47 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
         holder.itemView.taskList_rootView.doInBackground {
             updateLayoutParams {
-                val percent = boardView.mainActivity
+                val percent = holder.itemView.mainActivity
                         .waqtiPreferences.taskListWidth / 100.0
 
-                width = (boardView.mainActivity.dimensions.first.toFloat() * percent).roundToInt()
+                width = (holder.itemView.mainActivity.dimensions.first.toFloat() * percent)
+                        .roundToInt()
             }
+        }
+
+        holder.header.doInBackground {
+            text = board[position].name
+            setOnClickListener {
+                @GoToFragment
+                it.mainActivity.supportFragmentManager.commitTransaction {
+
+                    it.mainActivity.viewModel.listID = board[holder.adapterPosition].id
+
+                    it.clearFocusAndHideSoftKeyboard()
+
+                    addToBackStack("")
+                    replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
+                }
+            }
+        }
+        holder.addButton.doInBackground {
+            setOnClickListener {
+
+                @GoToFragment
+                it.mainActivity.supportFragmentManager.commitTransaction {
+
+                    it.mainActivity.viewModel.boardID = boardID
+                    it.mainActivity.viewModel.listID = holder.taskListView.listAdapter.taskListID
+
+                    it.clearFocusAndHideSoftKeyboard()
+
+                    replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
+                    addToBackStack(null)
+                }
+            }
+        }
+        holder.taskListView.doInBackground {
+            addOnScrollListener(holder.addButton.verticalFABOnScrollListener)
         }
 
         holder.header.doInBackground {

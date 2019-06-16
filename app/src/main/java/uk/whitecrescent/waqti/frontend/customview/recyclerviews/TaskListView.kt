@@ -14,7 +14,6 @@ import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.cardview.widget.CardView
 import androidx.core.view.children
-import androidx.core.view.postDelayed
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -38,7 +37,6 @@ import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.notifySwapped
 import kotlin.math.roundToInt
 
-private const val animationDuration = 250L
 private const val scrollAmount = 1.718281828459045 // E - 1
 private const val draggingViewAlpha = 0F
 private val defaultInterpolator = AccelerateDecelerateInterpolator()
@@ -171,12 +169,18 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                             draggingView?.alpha = draggingViewAlpha
                     }
                     DragEvent.ACTION_DRAG_EXITED -> {
+                        // Safety measure just in case
+                        doInBackground {
+                            allCards.filter { it != draggingView && it.alpha < 1F }
+                                    .forEach { it.alpha = 1F }
+                        }
                     }
                     DragEvent.ACTION_DROP -> {
                         draggingState.updateToMatch(holder)
                     }
                     DragEvent.ACTION_DRAG_ENDED -> {
                         draggingView?.alpha = 1F
+                        // Safety measure just in case
                         doInBackground { allCards.forEach { it.alpha = 1F } }
                     }
                 }
@@ -314,44 +318,68 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                                                 otherAdapter: TaskListAdapter) {
 
         taskListView.boardView.apply {
+            // The list that we will be scrolling to
+            val newBoardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
 
-            postDelayed(animationDuration * 2) {
+            val currentBoardPosition = mainActivity.viewModel.boardPosition.second
 
-                // The list that we will be scrolling to
-                val boardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
+            if (newBoardPosition > currentBoardPosition) scrollRight(currentBoardPosition)
+            else if (newBoardPosition < currentBoardPosition) scrollLeft(currentBoardPosition)
 
-                // TODO: 11-Jun-19 Bug here with custom widths, possibly better to explicitly tell it how much to scroll
-                //  and use the same properties we use for scrolling up and down
+            mainActivity.viewModel.boardPosition = true to newBoardPosition
 
-                // draft code below
-                /*val percent = (mainActivity
-                        .waqtiSharedPreferences
-                        .getInt(TASK_LIST_WIDTH_KEY, 66) / 100.0)
-
-                val width = (boardView.mainActivity.dimensions.first.toFloat() * percent).roundToInt()
-
-                smoothScrollBy(width, 0, defaultInterpolator)*/
-
-                smoothScrollToPosition(boardPosition)
-                mainActivity.viewModel.boardPosition = true to boardPosition
-            }
         }
     }
 
     private inline fun onScrollAcrossEmptyList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
 
         taskListView.boardView.apply {
+            // The list that we will be scrolling to
+            val newBoardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
 
-            postDelayed(animationDuration * 2) {
+            val currentBoardPosition = mainActivity.viewModel.boardPosition.second
 
-                // The list that we will be scrolling to
-                val boardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
+            if (newBoardPosition > currentBoardPosition) scrollRight(currentBoardPosition)
+            else if (newBoardPosition < currentBoardPosition) scrollLeft(currentBoardPosition)
 
+            mainActivity.viewModel.boardPosition = true to newBoardPosition
 
-                // TODO: 11-Jun-19 Bug here with custom widths, possibly better to explicitly tell it how much to scroll
-                smoothScrollToPosition(boardPosition)
-                mainActivity.viewModel.boardPosition = true to boardPosition
-            }
+        }
+    }
+
+    private inline fun scrollLeft(currentBoardPosition: Int) {
+        taskListView.boardView.apply {
+            val scrollBy: Int
+
+            val percent = mainActivity.waqtiPreferences.taskListWidth / 100.0
+
+            val screenWidth = mainActivity.dimensions.first
+
+            val listWidth = (screenWidth.toFloat() * percent).roundToInt()
+
+            if (currentBoardPosition == boardAdapter.lastPosition) {
+                scrollBy = (listWidth) - ((screenWidth - listWidth) / 2)
+            } else scrollBy = listWidth
+
+            taskListView.boardView.smoothScrollBy(-scrollBy, 0, defaultInterpolator)
+        }
+    }
+
+    private inline fun scrollRight(currentBoardPosition: Int) {
+        taskListView.boardView.apply {
+            val scrollBy: Int
+
+            val percent = mainActivity.waqtiPreferences.taskListWidth / 100.0
+
+            val screenWidth = mainActivity.dimensions.first
+
+            val listWidth = (screenWidth.toFloat() * percent).roundToInt()
+
+            if (currentBoardPosition == 0) {
+                scrollBy = (listWidth) - ((screenWidth - listWidth) / 2)
+            } else scrollBy = listWidth
+
+            taskListView.boardView.smoothScrollBy(scrollBy, 0, defaultInterpolator)
         }
     }
 
