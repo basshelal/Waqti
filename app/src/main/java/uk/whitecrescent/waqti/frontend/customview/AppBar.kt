@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.customview
 
 import android.content.Context
@@ -97,12 +99,20 @@ class AppBar
         attributes.recycle()
     }
 
-    fun popupMenuOnItemClicked(onClick: (MenuItem) -> Boolean) {
+    inline fun removeRightImageView() {
+        rightImageView.apply {
+            setImageDrawable(null)
+            background = null
+            setOnClickListener(null)
+        }
+    }
+
+    inline fun popupMenuOnItemClicked(noinline onClick: (MenuItem) -> Boolean) {
         popupMenu.setOnMenuItemClickListener(onClick)
     }
 
-    fun setBackgroundColor(color: WaqtiColor) {
-        (editTextView.parent as ConstraintLayout).setBackgroundColor(color.toAndroidColor)
+    inline fun setBackgroundColor(color: WaqtiColor) {
+        this.setBackgroundColor(color.toAndroidColor)
     }
 
 }
