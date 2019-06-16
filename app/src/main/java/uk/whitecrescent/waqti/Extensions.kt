@@ -230,17 +230,32 @@ inline fun <T> T.androidObservable(): Observable<T> {
             .subscribeOn(Schedulers.computation())
 }
 
-inline fun <T> T.doInBackground(crossinline onNext: T.() -> Unit): Disposable {
+inline fun <reified T> T.doInBackground(crossinline onNext: T.() -> Unit): Disposable {
     return androidObservable()
-            .subscribe {
+            .subscribe({
                 it.apply(onNext)
-            }
+            }, {
+                logE("Error on doInBackground, provided ${T::class.java}")
+                it.printStackTrace()
+            })
 }
 
-inline fun <T> T.doInBackground(crossinline onNext: T.() -> Unit,
-                                noinline onError: (Throwable) -> Unit = {},
-                                noinline onComplete: () -> Unit = {},
-                                noinline onSubscribe: (Disposable) -> Unit = {}): Disposable {
+inline fun <reified T> T.doInBackgroundDelayed(delayMillis: Long,
+                                               crossinline onNext: T.() -> Unit): Disposable {
+    return androidObservable()
+            .delay(delayMillis, java.util.concurrent.TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
+            .subscribe({
+                it.apply(onNext)
+            }, {
+                logE("Error on doInBackgroundDelayed, provided ${T::class.java} with delay $delayMillis")
+                it.printStackTrace()
+            })
+}
+
+inline fun <reified T> T.doInBackground(crossinline onNext: T.() -> Unit,
+                                        noinline onError: (Throwable) -> Unit = {},
+                                        noinline onComplete: () -> Unit = {},
+                                        noinline onSubscribe: (Disposable) -> Unit = {}): Disposable {
     return androidObservable()
             .subscribe({
                 it.apply(onNext)

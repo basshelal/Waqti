@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -14,13 +15,13 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
-import org.jetbrains.anko.doAsync
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
+import uk.whitecrescent.waqti.doInBackgroundDelayed
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
@@ -149,66 +150,74 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
 
-        // Adapters get created and destroyed because their associated views do too, actually
-        // more specifically, they get recycled
-
-        holder.taskListView.adapter = boardView.getOrCreateListAdapter(board[position].id)
-
-        holder.itemView.taskList_rootView.doInBackground {
-            updateLayoutParams {
-                val percent = holder.itemView.mainActivity
-                        .waqtiPreferences.taskListWidth / 100.0
-
-                width = (holder.itemView.mainActivity.dimensions.first.toFloat() * percent)
-                        .roundToInt()
+        // simulated lag/delay
+        holder.doInBackgroundDelayed(750) {
+            taskListView.apply {
+                addOnScrollListener(holder.addButton.verticalFABOnScrollListener)
+                visibility = View.VISIBLE
+                this.bringToFront()
             }
-        }
+            itemView.taskList_rootView.apply {
+                updateLayoutParams {
+                    val percent = holder.itemView.mainActivity
+                            .waqtiPreferences.taskListWidth / 100.0
 
-        holder.header.doInBackground {
-            text = board[position].name
-            setOnClickListener {
-                @GoToFragment
-                it.mainActivity.supportFragmentManager.commitTransaction {
-
-                    it.mainActivity.viewModel.listID = board[holder.adapterPosition].id
-
-                    it.clearFocusAndHideSoftKeyboard()
-
-                    addToBackStack("")
-                    replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
+                    width = (holder.itemView.mainActivity.dimensions.first.toFloat() * percent)
+                            .roundToInt()
                 }
             }
-        }
-        holder.addButton.doInBackground {
-            setOnClickListener {
+            header.apply {
+                text = board[position].name
+                setOnClickListener {
+                    @GoToFragment
+                    it.mainActivity.supportFragmentManager.commitTransaction {
 
-                @GoToFragment
-                it.mainActivity.supportFragmentManager.commitTransaction {
+                        it.mainActivity.viewModel.listID = board[holder.adapterPosition].id
 
-                    it.mainActivity.viewModel.boardID = boardID
-                    it.mainActivity.viewModel.listID = holder.taskListView.listAdapter.taskListID
+                        it.clearFocusAndHideSoftKeyboard()
 
-                    it.clearFocusAndHideSoftKeyboard()
-
-                    replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
-                    addToBackStack(null)
+                        addToBackStack("")
+                        replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
+                    }
                 }
+                setOnLongClickListener {
+                    this@BoardAdapter.itemTouchHelper.startDrag(holder)
+                    true
+                }
+                visibility = View.VISIBLE
             }
-        }
-        holder.taskListView.doInBackground {
-            addOnScrollListener(holder.addButton.verticalFABOnScrollListener)
+            addButton.apply {
+                setOnClickListener {
+
+                    @GoToFragment
+                    it.mainActivity.supportFragmentManager.commitTransaction {
+
+                        it.mainActivity.viewModel.boardID = boardID
+                        it.mainActivity.viewModel.listID = holder.taskListView.listAdapter.taskListID
+
+                        it.clearFocusAndHideSoftKeyboard()
+
+                        replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
+                        addToBackStack(null)
+                    }
+                }
+                visibility = View.VISIBLE
+            }
+            progressBar.visibility = View.GONE
         }
 
-        holder.header.doInBackground {
-            setOnLongClickListener {
-                this@BoardAdapter.itemTouchHelper.startDrag(holder)
-                true
-            }
+        // For some annoying reason, the adapter set must be done synchronously,
+        //  otherwise later on after many scrolls, the list has invisible items,
+        //  God knows why, I have no idea to be honest, but it seems the adapter
+        //  is still there because you can scroll and click and drag, but the items
+        //  are just invisible for some reason
+        holder.taskListView.apply {
+            adapter = this@BoardAdapter.boardView.getOrCreateListAdapter(board[position].id)
         }
     }
 
     private fun matchOrder() {
-        doAsync {
+        doInBackground {
             val taskListAdaptersCopy = ArrayList(boardView.taskListAdapters)
             if (doesNotMatchOrder()) {
 
@@ -237,6 +246,7 @@ open class BoardViewHolder(view: View) : ViewHolder(view) {
     open val header: TextView = itemView.taskListHeader_textView
     open val taskListView: TaskListView = itemView.taskList_recyclerView
     open val addButton: FloatingActionButton = itemView.taskListFooter_textView
+    open val progressBar: ProgressBar = itemView.progressBar
 }
 
 class PreCachingLayoutManager(context: Context,

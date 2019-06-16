@@ -23,10 +23,12 @@ import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.backend.persistence.Caches
+import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
+import uk.whitecrescent.waqti.doInBackgroundDelayed
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
@@ -44,7 +46,7 @@ private val defaultInterpolator = AccelerateDecelerateInterpolator()
 private val taskViewHolderPool = object : RecyclerView.RecycledViewPool() {
 
     override fun setMaxRecycledViews(viewType: Int, max: Int) {
-        super.setMaxRecycledViews(viewType, 250)
+        super.setMaxRecycledViews(viewType, TASKS_CACHE_SIZE)
     }
 }
 
@@ -119,42 +121,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
 
-        holder.taskID = taskList[position].id
-        holder.taskListID = this.taskListID
-
         holder.itemView.apply {
-            doInBackground {
-                task_textView.text = taskList[position].name
-                task_textView.textSize =
-                        mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
-                if (this is CardView)
-                    setCardBackgroundColor(Caches.boards[mainActivity.viewModel.boardID].cardColor.toAndroidColor)
-                setOnClickListener {
-                    @GoToFragment
-                    it.mainActivity.supportFragmentManager.commitTransaction {
-
-                        it.mainActivity.viewModel.taskID = holder.taskID
-                        it.mainActivity.viewModel.listID = taskListID
-
-                        it.clearFocusAndHideSoftKeyboard()
-
-                        addToBackStack("")
-                        replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
-                    }
-                }
-                setOnLongClickListener {
-                    it.clearFocusAndHideSoftKeyboard()
-                    it.startDragCompat(
-                            null,
-                            ShadowBuilder(it.task_materialCardView),
-                            DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
-                            View.DRAG_FLAG_OPAQUE
-                    )
-                    return@setOnLongClickListener true
-                }
-            }
-
-            // onDragListener is basically like, do this when someone is dragging on top of you
             setOnDragListener { _, event ->
                 val draggingState = event.localState as DragEventLocalState
                 val draggingView = taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)?.itemView
@@ -186,6 +153,44 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                 }
                 return@setOnDragListener true
             }
+        }
+
+        // simulated lag/delay
+        holder.itemView.doInBackgroundDelayed(750) {
+            holder.taskID = taskList[position].id
+            holder.taskListID = this@TaskListAdapter.taskListID
+
+            task_textView.text = taskList[position].name
+            task_textView.textSize =
+                    mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
+            if (this is CardView)
+                setCardBackgroundColor(Caches.boards[mainActivity.viewModel.boardID].cardColor.toAndroidColor)
+            // onDragListener is basically like, do this when someone is dragging on top of you
+            setOnClickListener {
+                @GoToFragment
+                it.mainActivity.supportFragmentManager.commitTransaction {
+
+                    it.mainActivity.viewModel.taskID = holder.taskID
+                    it.mainActivity.viewModel.listID = taskListID
+
+                    it.clearFocusAndHideSoftKeyboard()
+
+                    addToBackStack("")
+                    replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
+                }
+            }
+            setOnLongClickListener {
+                it.clearFocusAndHideSoftKeyboard()
+                it.startDragCompat(
+                        null,
+                        ShadowBuilder(it.task_materialCardView),
+                        DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
+                        View.DRAG_FLAG_OPAQUE
+                )
+                return@setOnLongClickListener true
+            }
+            taskCard_progressBar.visibility = View.GONE
+            taskCard_parent.visibility = View.VISIBLE
         }
     }
 
