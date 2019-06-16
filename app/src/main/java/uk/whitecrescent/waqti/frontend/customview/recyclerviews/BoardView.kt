@@ -22,7 +22,6 @@ import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.doInBackgroundDelayed
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.MainActivity
@@ -43,9 +42,13 @@ open class BoardView
         get() = this.adapter as BoardAdapter
 
     val taskListAdapters = ArrayList<TaskListAdapter>()
+    val taskListWidth: Int
 
     init {
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
+
+        val percent = mainActivity.waqtiPreferences.taskListWidth / 100.0
+        taskListWidth = (mainActivity.dimensions.first.toFloat() * percent).roundToInt()
     }
 
     private fun addListAdapter(taskListAdapter: TaskListAdapter): TaskListAdapter {
@@ -81,7 +84,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             "Recycler View attached to a BoardAdapter must be a BoardView"
         }
         boardView = recyclerView
-
 
         doInBackground {
             board.forEach {
@@ -152,26 +154,23 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
 
-        holder.apply {
-            progressBar.visibility = View.GONE
-            rootView.visibility = View.VISIBLE
+        // For some annoying reason, the adapter set must be done synchronously,
+        //  otherwise later on after many scrolls, the list has invisible items,
+        //  God knows why, I have no idea to be honest, but it seems the adapter
+        //  is still there because you can scroll and click and drag, but the items
+        //  are just invisible for some reason
+        holder.taskListView.apply {
+            adapter = this@BoardAdapter.boardView.getOrCreateListAdapter(board[position].id)
         }
 
-        // simulated lag/delay
-        holder.doInBackgroundDelayed(500) {
+        holder.rootView.updateLayoutParams {
+            width = boardView.taskListWidth
+        }
+
+        holder.doInBackground {
 
             taskListView.apply {
                 addOnScrollListener(holder.addButton.verticalFABOnScrollListener)
-                this.bringToFront()
-            }
-            rootView.apply {
-                updateLayoutParams {
-                    val percent = holder.mainActivity
-                            .waqtiPreferences.taskListWidth / 100.0
-
-                    width = (holder.mainActivity.dimensions.first.toFloat() * percent)
-                            .roundToInt()
-                }
             }
             header.apply {
                 text = board[position].name
@@ -191,6 +190,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                     this@BoardAdapter.itemTouchHelper.startDrag(holder)
                     true
                 }
+                visibility = View.VISIBLE
             }
             addButton.apply {
                 setOnClickListener {
@@ -207,18 +207,9 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                         addToBackStack(null)
                     }
                 }
+                visibility = View.VISIBLE
             }
             progressBar.visibility = View.GONE
-            rootView.visibility = View.VISIBLE
-        }
-
-        // For some annoying reason, the adapter set must be done synchronously,
-        //  otherwise later on after many scrolls, the list has invisible items,
-        //  God knows why, I have no idea to be honest, but it seems the adapter
-        //  is still there because you can scroll and click and drag, but the items
-        //  are just invisible for some reason
-        holder.taskListView.apply {
-            adapter = this@BoardAdapter.boardView.getOrCreateListAdapter(board[position].id)
         }
     }
 
@@ -265,8 +256,8 @@ class PreCachingLayoutManager(context: Context,
                               private val extraLayoutSpacePx: Int = 600) :
         LinearLayoutManager(context, orientation, reverseLayout) {
 
-    @Deprecated("Use calculateExtraLayoutSpace instead")
-    override fun getExtraLayoutSpace(state: RecyclerView.State): Int {
-        return extraLayoutSpacePx
+
+    override fun calculateExtraLayoutSpace(state: RecyclerView.State, extraLayoutSpace: IntArray) {
+        super.calculateExtraLayoutSpace(state, IntArray(2) { extraLayoutSpacePx })
     }
 }

@@ -31,7 +31,6 @@ import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.doInBackgroundDelayed
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
@@ -125,12 +124,6 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.apply {
-            progressBar.visibility = View.VISIBLE
-            parent.visibility = View.GONE
-        }
-
-        // simulated lag/delay
-        holder.doInBackgroundDelayed(500) {
             cardView.setOnDragListener { _, event ->
                 val draggingState = event.localState as DragEventLocalState
                 val draggingView = taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)?.itemView
@@ -162,7 +155,9 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                 }
                 return@setOnDragListener true
             }
+        }
 
+        holder.doInBackground {
             holder.taskID = taskList[position].id
             holder.taskListID = this@TaskListAdapter.taskListID
 
@@ -170,7 +165,6 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
             textView.textSize = mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
 
             cardView.setCardBackgroundColor(Caches.boards[mainActivity.viewModel.boardID].cardColor.toAndroidColor)
-            // onDragListener is basically like, do this when someone is dragging on top of you
             cardView.setOnClickListener {
                 @GoToFragment
                 it.mainActivity.supportFragmentManager.commitTransaction {
@@ -195,11 +189,11 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                 return@setOnLongClickListener true
             }
             progressBar.visibility = View.GONE
-            parent.visibility = View.VISIBLE
+            textView.visibility = View.VISIBLE
         }
     }
 
-    private inline fun onDrag(draggingState: DragEventLocalState, holder: TaskViewHolder): Boolean {
+    private fun onDrag(draggingState: DragEventLocalState, holder: TaskViewHolder): Boolean {
         return when {
 
             draggingState.taskListID == holder.taskListID -> {
@@ -249,7 +243,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
         }
     }
 
-    private inline fun onDragInSameList(draggingState: DragEventLocalState, holder: TaskViewHolder) {
+    private fun onDragInSameList(draggingState: DragEventLocalState, holder: TaskViewHolder) {
         val newDragPos = holder.adapterPosition
         val oldDragPos = draggingState.adapterPosition
 
@@ -259,7 +253,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
         draggingState.adapterPosition = newDragPos
     }
 
-    private inline fun checkForScrollDown(draggingState: DragEventLocalState, holder: TaskViewHolder) {
+    private fun checkForScrollDown(draggingState: DragEventLocalState, holder: TaskViewHolder) {
 
         if (draggingState.adapterPosition >= linearLayoutManager.findLastCompletelyVisibleItemPosition()) {
             val scrollBy = (holder.itemView.height * scrollAmount).roundToInt()
@@ -268,7 +262,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
 
     }
 
-    private inline fun checkForScrollUp(draggingState: DragEventLocalState, holder: TaskViewHolder) {
+    private fun checkForScrollUp(draggingState: DragEventLocalState, holder: TaskViewHolder) {
 
         if (draggingState.adapterPosition <= linearLayoutManager.findFirstCompletelyVisibleItemPosition()) {
             val scrollBy = (holder.itemView.height * -scrollAmount).roundToInt()
@@ -277,9 +271,9 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
 
     }
 
-    private inline fun onDragAcrossFilledList(draggingState: DragEventLocalState,
-                                              holder: TaskViewHolder,
-                                              otherAdapter: TaskListAdapter) {
+    private fun onDragAcrossFilledList(draggingState: DragEventLocalState,
+                                       holder: TaskViewHolder,
+                                       otherAdapter: TaskListAdapter) {
 
         // TODO: 12-Jun-19 Bug probably here, drag from left list to right many times,
         //  then without letting go all the way back to left, you'll notice duplicates appearing
@@ -305,7 +299,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
         //  and what is the holder that is closest to it so that we act accordingly
     }
 
-    private inline fun onDragAcrossEmptyList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
+    private fun onDragAcrossEmptyList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
 
         val otherTaskList = otherAdapter.taskList
         val task = otherTaskList[draggingState.taskID]
@@ -323,9 +317,9 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
         draggingState.adapterPosition = newDragPos
     }
 
-    private inline fun onScrollAcrossFilledList(draggingState: DragEventLocalState,
-                                                holder: TaskViewHolder,
-                                                otherAdapter: TaskListAdapter) {
+    private fun onScrollAcrossFilledList(draggingState: DragEventLocalState,
+                                         holder: TaskViewHolder,
+                                         otherAdapter: TaskListAdapter) {
 
         taskListView.boardView.apply {
             // The list that we will be scrolling to
@@ -341,7 +335,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
         }
     }
 
-    private inline fun onScrollAcrossEmptyList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
+    private fun onScrollAcrossEmptyList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
 
         taskListView.boardView.apply {
             // The list that we will be scrolling to
@@ -357,7 +351,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
         }
     }
 
-    private inline fun scrollLeft(currentBoardPosition: Int) {
+    private fun scrollLeft(currentBoardPosition: Int) {
         taskListView.boardView.apply {
             val scrollBy: Int
 
@@ -375,7 +369,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
         }
     }
 
-    private inline fun scrollRight(currentBoardPosition: Int) {
+    private fun scrollRight(currentBoardPosition: Int) {
         taskListView.boardView.apply {
             val scrollBy: Int
 

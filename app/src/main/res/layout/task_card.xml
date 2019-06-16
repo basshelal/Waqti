@@ -10,17 +10,21 @@
     app:cardCornerRadius="8dp"
     app:cardElevation="8dp">
 
-    <ProgressBar
-        android:id="@+id/taskCard_progressBar"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:indeterminateTint="@color/primaryColor" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/taskCard_parent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
+        android:layout_height="match_parent">
+
+        <ProgressBar
+            android:id="@+id/taskCard_progressBar"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/primaryColor"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/task_textView"
@@ -32,6 +36,7 @@
             android:layout_marginBottom="8dp"
             android:textColor="@color/black"
             android:textSize="18sp"
+            android:visibility="invisible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
