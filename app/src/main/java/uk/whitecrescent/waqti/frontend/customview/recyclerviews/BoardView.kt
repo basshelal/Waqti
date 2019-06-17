@@ -21,6 +21,7 @@ import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
+import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.MainActivity
@@ -45,6 +46,7 @@ open class BoardView
 
     init {
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
+        this.isNestedScrollingEnabled = false
 
         val percent = mainActivity.waqtiPreferences.taskListWidth / 100.0
         taskListWidth = (mainActivity.dimensions.first.toFloat() * percent).roundToInt()
@@ -159,19 +161,19 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         //  is still there because you can scroll and click and drag, but the items
         //  are just invisible for some reason
         holder.taskListView.apply {
+            fadeIn(250)
             adapter = this@BoardAdapter.boardView.getOrCreateListAdapter(board[position].id)
         }
 
-        holder.rootView.updateLayoutParams {
-            width = boardView.taskListWidth
-        }
-
         holder.doInBackground {
-
+            rootView.updateLayoutParams {
+                width = boardView.taskListWidth
+            }
             taskListView.apply {
                 addOnScrollListener(holder.addButton.verticalFABOnScrollListener)
             }
             header.apply {
+                fadeIn(100)
                 text = board[position].name
                 setOnClickListener {
                     @GoToFragment
@@ -191,6 +193,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 }
             }
             addButton.apply {
+                fadeIn(100)
                 setOnClickListener {
 
                     @GoToFragment

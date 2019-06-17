@@ -12,6 +12,7 @@ import android.text.Editable
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.view.animation.AlphaAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -186,6 +187,20 @@ inline val View.locationOnScreen: Point
         }
         return Point(point[0], point[1])
     }
+
+inline fun View.fadeIn(durationMillis: Long = 250) {
+    this.startAnimation(AlphaAnimation(0F, 1F).apply {
+        duration = durationMillis
+        fillAfter = true
+    })
+}
+
+inline fun View.fadeOut(durationMillis: Long = 250) {
+    this.startAnimation(AlphaAnimation(1F, 0F).apply {
+        duration = durationMillis
+        fillAfter = true
+    })
+}
 
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.

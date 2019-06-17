@@ -67,6 +67,7 @@ open class TaskListView
         layoutManager = LinearLayoutManager(context, VERTICAL, false)
         itemAnimator = TaskListItemAnimator()
         this.setRecycledViewPool(taskViewHolderPool)
+        this.isNestedScrollingEnabled = false
     }
 
 }
@@ -120,6 +121,8 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                         .inflate(R.layout.task_card, parent, false)
         )
     }
+
+    // TODO: 17-Jun-19 Search Google recyclerview onbindviewholder slow
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.apply {
