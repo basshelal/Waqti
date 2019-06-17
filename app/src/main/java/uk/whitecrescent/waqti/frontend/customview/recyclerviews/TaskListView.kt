@@ -60,8 +60,8 @@ open class TaskListView
     inline val listAdapter: TaskListAdapter
         get() = adapter as TaskListAdapter
 
-    inline val boardView: BoardView
-        get() = parent.parent as BoardView
+    inline val boardView: BoardView?
+        get() = parent?.parent as BoardView?
 
     init {
         layoutManager = LinearLayoutManager(context, VERTICAL, false)
@@ -98,7 +98,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                 DragEvent.ACTION_DRAG_ENTERED -> {
                     if (this.taskListID != draggingState.taskListID &&
                             draggingState.adapterPosition > lastPosition) {
-                        val otherAdapter = taskListView.boardView.getListAdapter(draggingState.taskListID)
+                        val otherAdapter = taskListView.boardView?.getListAdapter(draggingState.taskListID)
                         if (otherAdapter != null) {
                             onDragAcrossEmptyList(draggingState, otherAdapter)
                             onScrollAcrossEmptyList(draggingState, otherAdapter)
@@ -118,85 +118,23 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskViewHolder {
         return TaskViewHolder(
                 LayoutInflater.from(parent.context)
-                        .inflate(R.layout.task_card, parent, false)
+                        .inflate(R.layout.task_card, parent, false),
+                this
         )
     }
 
-    // TODO: 17-Jun-19 Search Google recyclerview onbindviewholder slow
-
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.apply {
-            cardView.setOnDragListener { _, event ->
-                val draggingState = event.localState as DragEventLocalState
-                val draggingView = taskListView.findViewHolderForAdapterPosition(draggingState.adapterPosition)?.itemView
-                when (event.action) {
-                    DragEvent.ACTION_DRAG_ENTERED -> {
-                        if (holder.adapterPosition != RecyclerView.NO_POSITION) {
-                            onDrag(draggingState, holder)
-                        }
-                    }
-                    DragEvent.ACTION_DRAG_LOCATION -> {
-                        if (draggingView?.alpha != draggingViewAlpha)
-                            draggingView?.alpha = draggingViewAlpha
-                    }
-                    DragEvent.ACTION_DRAG_EXITED -> {
-                        // Safety measure just in case
-                        doInBackground {
-                            allCards.filter { it != draggingView && it.alpha < 1F }
-                                    .forEach { it.alpha = 1F }
-                        }
-                    }
-                    DragEvent.ACTION_DROP -> {
-                        draggingState.updateToMatch(holder)
-                    }
-                    DragEvent.ACTION_DRAG_ENDED -> {
-                        draggingView?.alpha = 1F
-                        // Safety measure just in case
-                        doInBackground { allCards.forEach { it.alpha = 1F } }
-                    }
-                }
-                return@setOnDragListener true
+            taskID = taskList[position].id
+            taskListID = this@TaskListAdapter.taskListID
+
+            doInBackground {
+                textView.text = taskList[position].name
             }
-        }
-
-        holder.doInBackground {
-            holder.taskID = taskList[position].id
-            holder.taskListID = this@TaskListAdapter.taskListID
-
-            textView.text = taskList[position].name
-            textView.textSize = mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
-
-            cardView.setCardBackgroundColor(Caches.boards[mainActivity.viewModel.boardID].cardColor.toAndroidColor)
-            cardView.setOnClickListener {
-                @GoToFragment
-                it.mainActivity.supportFragmentManager.commitTransaction {
-
-                    it.mainActivity.viewModel.taskID = holder.taskID
-                    it.mainActivity.viewModel.listID = taskListID
-
-                    it.clearFocusAndHideSoftKeyboard()
-
-                    addToBackStack("")
-                    replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
-                }
-            }
-            cardView.setOnLongClickListener {
-                it.clearFocusAndHideSoftKeyboard()
-                it.startDragCompat(
-                        null,
-                        ShadowBuilder(it.task_cardView),
-                        DragEventLocalState(holder.taskID, holder.taskListID, holder.adapterPosition),
-                        View.DRAG_FLAG_OPAQUE
-                )
-                return@setOnLongClickListener true
-            }
-
-            textView.visibility = View.VISIBLE
-            progressBar.visibility = View.GONE
         }
     }
 
-    private fun onDrag(draggingState: DragEventLocalState, holder: TaskViewHolder): Boolean {
+    fun onDrag(draggingState: DragEventLocalState, holder: TaskViewHolder): Boolean {
         return when {
 
             draggingState.taskListID == holder.taskListID -> {
@@ -221,7 +159,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
             // they are in diff lists
             draggingState.taskListID != holder.taskListID -> {
 
-                val otherAdapter = taskListView.boardView.getListAdapter(draggingState.taskListID)
+                val otherAdapter = taskListView.boardView?.getListAdapter(draggingState.taskListID)
                 if (otherAdapter != null) {
 
                     onDragAcrossFilledList(draggingState, holder, otherAdapter)
@@ -324,7 +262,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                                          holder: TaskViewHolder,
                                          otherAdapter: TaskListAdapter) {
 
-        taskListView.boardView.apply {
+        taskListView.boardView?.apply {
             // The list that we will be scrolling to
             val newBoardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
 
@@ -340,7 +278,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
 
     private fun onScrollAcrossEmptyList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
 
-        taskListView.boardView.apply {
+        taskListView.boardView?.apply {
             // The list that we will be scrolling to
             val newBoardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
 
@@ -355,7 +293,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
     }
 
     private fun scrollLeft(currentBoardPosition: Int) {
-        taskListView.boardView.apply {
+        taskListView.boardView?.apply {
             val scrollBy: Int
 
             val percent = mainActivity.waqtiPreferences.taskListWidth / 100.0
@@ -368,12 +306,12 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                 scrollBy = (listWidth) - ((screenWidth - listWidth) / 2)
             } else scrollBy = listWidth
 
-            taskListView.boardView.smoothScrollBy(-scrollBy, 0, defaultInterpolator)
+            smoothScrollBy(-scrollBy, 0, defaultInterpolator)
         }
     }
 
     private fun scrollRight(currentBoardPosition: Int) {
-        taskListView.boardView.apply {
+        taskListView.boardView?.apply {
             val scrollBy: Int
 
             val percent = mainActivity.waqtiPreferences.taskListWidth / 100.0
@@ -386,7 +324,7 @@ class TaskListAdapter(var taskListID: ID) : Adapter<TaskViewHolder>() {
                 scrollBy = (listWidth) - ((screenWidth - listWidth) / 2)
             } else scrollBy = listWidth
 
-            taskListView.boardView.smoothScrollBy(scrollBy, 0, defaultInterpolator)
+            smoothScrollBy(scrollBy, 0, defaultInterpolator)
         }
     }
 
@@ -436,7 +374,7 @@ private class ShadowBuilder(view: View) : View.DragShadowBuilder(view) {
 
 }
 
-class TaskViewHolder(view: View) : ViewHolder(view) {
+class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHolder(view) {
 
     //the ID of the Task that this ViewHolder contains
     var taskID: ID = 0L
@@ -448,6 +386,74 @@ class TaskViewHolder(view: View) : ViewHolder(view) {
     val textView: TextView = itemView.task_textView
 
     inline val mainActivity: MainActivity get() = itemView.mainActivity
+
+    init {
+        cardView.setOnDragListener { _, event ->
+            val draggingState = event.localState as DragEventLocalState
+            val draggingView = adapter.taskListView
+                    .findViewHolderForAdapterPosition(draggingState.adapterPosition)?.itemView
+            when (event.action) {
+                DragEvent.ACTION_DRAG_ENTERED -> {
+                    if (adapterPosition != RecyclerView.NO_POSITION) {
+                        adapter.onDrag(draggingState, this)
+                    }
+                }
+                DragEvent.ACTION_DRAG_LOCATION -> {
+                    if (draggingView?.alpha != draggingViewAlpha)
+                        draggingView?.alpha = draggingViewAlpha
+                }
+                DragEvent.ACTION_DRAG_EXITED -> {
+                    // Safety measure just in case
+                    doInBackground {
+                        adapter.allCards.filter { it != draggingView && it.alpha < 1F }
+                                .forEach { it.alpha = 1F }
+                    }
+                }
+                DragEvent.ACTION_DROP -> {
+                    draggingState.updateToMatch(this)
+                }
+                DragEvent.ACTION_DRAG_ENDED -> {
+                    draggingView?.alpha = 1F
+                    // Safety measure just in case
+                    doInBackground { adapter.allCards.forEach { it.alpha = 1F } }
+                }
+            }
+            return@setOnDragListener true
+
+        }
+        this.doInBackground {
+            textView.textSize = mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
+            cardView.apply {
+                setCardBackgroundColor(Caches.boards[mainActivity.viewModel.boardID].cardColor.toAndroidColor)
+                setOnClickListener {
+                    @GoToFragment
+                    it.mainActivity.supportFragmentManager.commitTransaction {
+
+                        it.mainActivity.viewModel.taskID = taskID
+                        it.mainActivity.viewModel.listID = taskListID
+
+                        it.clearFocusAndHideSoftKeyboard()
+
+                        addToBackStack("")
+                        replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
+                    }
+                }
+                setOnLongClickListener {
+                    it.clearFocusAndHideSoftKeyboard()
+                    it.startDragCompat(
+                            null,
+                            ShadowBuilder(it.task_cardView),
+                            DragEventLocalState(taskID, taskListID, adapterPosition),
+                            View.DRAG_FLAG_OPAQUE
+                    )
+                    return@setOnLongClickListener true
+                }
+            }
+
+            textView.visibility = View.VISIBLE
+            progressBar.visibility = View.GONE
+        }
+    }
 }
 
 class TaskListItemAnimator : DefaultItemAnimator() {

@@ -1,29 +1,8 @@
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
-import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.cardview.widget.CardView
-import androidx.core.view.updateLayoutParams
-import kotlinx.android.synthetic.main.task_card.view.*
-import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.NewAPI
-import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
-import uk.whitecrescent.waqti.commitTransaction
-import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
-import uk.whitecrescent.waqti.frontend.GoToFragment
-import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
-import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
-import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
-import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
-import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
-import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.notifySwapped
-import uk.whitecrescent.waqti.verticalFABOnScrollListener
-import kotlin.math.roundToInt
 
 // TODO: 15-Jun-19 This Adapter should be used to keep any UI code in the views and any back end
 //  code in the adapter, we take care of UI stuff, this guy does any other stuff
@@ -115,6 +94,7 @@ abstract class BoardViewAdapter {
 }
 
 
+/*
 class WaqtiBoardViewAdapter(val boardID: ID) : BoardViewAdapter() {
 
     val board = Caches.boards[boardID]
@@ -244,4 +224,4 @@ class WaqtiBoardViewAdapter(val boardID: ID) : BoardViewAdapter() {
 
     }
 
-}
+}*/

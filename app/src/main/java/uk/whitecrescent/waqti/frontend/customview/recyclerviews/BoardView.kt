@@ -21,7 +21,6 @@ import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.MainActivity
@@ -68,7 +67,8 @@ open class BoardView
 
 }
 
-class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
+class BoardAdapter(val boardID: ID)
+    : RecyclerView.Adapter<BoardViewHolder>() {
 
     val board = Caches.boards[boardID]
 
@@ -149,7 +149,8 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardViewHolder {
         return BoardViewHolder(
                 LayoutInflater.from(parent.context)
-                        .inflate(R.layout.task_list, parent, false)
+                        .inflate(R.layout.task_list, parent, false),
+                this
         )
     }
 
@@ -161,54 +162,11 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         //  is still there because you can scroll and click and drag, but the items
         //  are just invisible for some reason
         holder.taskListView.apply {
-            fadeIn(250)
             adapter = this@BoardAdapter.boardView.getOrCreateListAdapter(board[position].id)
         }
 
-        holder.doInBackground {
-            rootView.updateLayoutParams {
-                width = boardView.taskListWidth
-            }
-            taskListView.apply {
-                addOnScrollListener(holder.addButton.verticalFABOnScrollListener)
-            }
-            header.apply {
-                fadeIn(100)
-                text = board[position].name
-                setOnClickListener {
-                    @GoToFragment
-                    it.mainActivity.supportFragmentManager.commitTransaction {
-
-                        it.mainActivity.viewModel.listID = board[holder.adapterPosition].id
-
-                        it.clearFocusAndHideSoftKeyboard()
-
-                        addToBackStack("")
-                        replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
-                    }
-                }
-                setOnLongClickListener {
-                    this@BoardAdapter.itemTouchHelper.startDrag(holder)
-                    true
-                }
-            }
-            addButton.apply {
-                fadeIn(100)
-                setOnClickListener {
-
-                    @GoToFragment
-                    it.mainActivity.supportFragmentManager.commitTransaction {
-
-                        it.mainActivity.viewModel.boardID = boardID
-                        it.mainActivity.viewModel.listID = holder.taskListView.listAdapter.taskListID
-
-                        it.clearFocusAndHideSoftKeyboard()
-
-                        replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
-                        addToBackStack(null)
-                    }
-                }
-            }
+        holder.header.doInBackground {
+            text = board[position].name
         }
     }
 
@@ -238,13 +196,61 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 }
 
 
-open class BoardViewHolder(view: View) : ViewHolder(view) {
-    open val header: TextView = itemView.taskListHeader_textView
-    open val taskListView: TaskListView = itemView.taskList_recyclerView
-    open val addButton: FloatingActionButton = itemView.taskListFooter_textView
-    open val rootView: ConstraintLayout = itemView.taskList_rootView
+class BoardViewHolder(view: View,
+                      private val adapter: BoardAdapter) : ViewHolder(view) {
+    val header: TextView = itemView.taskListHeader_textView
+    val taskListView: TaskListView = itemView.taskList_recyclerView
+    val addButton: FloatingActionButton = itemView.taskListFooter_textView
+    val rootView: ConstraintLayout = itemView.taskList_rootView
 
     inline val mainActivity: MainActivity get() = itemView.mainActivity
+
+
+    init {
+        this.doInBackground {
+            rootView.updateLayoutParams {
+                width = adapter.boardView.taskListWidth
+            }
+            taskListView.apply {
+                addOnScrollListener(addButton.verticalFABOnScrollListener)
+            }
+            header.apply {
+                setOnClickListener {
+                    @GoToFragment
+                    it.mainActivity.supportFragmentManager.commitTransaction {
+
+                        it.mainActivity.viewModel.listID = adapter.board[adapterPosition].id
+
+                        it.clearFocusAndHideSoftKeyboard()
+
+                        addToBackStack("")
+                        replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
+                    }
+                }
+                setOnLongClickListener {
+                    adapter.itemTouchHelper.startDrag(this@BoardViewHolder)
+                    true
+                }
+            }
+            addButton.apply {
+                setOnClickListener {
+
+                    @GoToFragment
+                    it.mainActivity.supportFragmentManager.commitTransaction {
+
+                        it.mainActivity.viewModel.boardID = adapter.boardID
+                        it.mainActivity.viewModel.listID = taskListView.listAdapter.taskListID
+
+                        it.clearFocusAndHideSoftKeyboard()
+
+                        replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
+                        addToBackStack(null)
+                    }
+                }
+            }
+        }
+    }
+
 }
 
 class PreCachingLayoutManager(context: Context,
