@@ -99,7 +99,7 @@ object Caches {
         Caches.boardLists.first().remove(boardID).update()
     }
 
-    fun seed(boards: Int = 5, lists: Int = 5, tasks: Int = 10) {
+    inline fun seed(boards: Int = 5, lists: Int = 5, tasks: Int = 10) {
         Caches.clearAllCaches().commit()
 
         Caches.boardLists.put(BoardList("Default"))
@@ -126,6 +126,31 @@ object Caches {
                 }
             }.asList()).update()
         }
+    }
+
+    inline fun seedRealistic() {
+        require(Caches.boardLists.size == 1)
+
+        Caches.boardLists.first().add(Board("To Do",
+                listOf(
+                        TaskList("To Do",
+                                listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+                                        .map { Task(it) }
+                        ),
+                        TaskList("Today",
+                                listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+                                        .map { Task(it) }
+                        ),
+                        TaskList("Later",
+                                listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+                                        .map { Task(it) }
+                        ),
+                        TaskList("Done",
+                                listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
+                                        .map { Task(it) }
+                        )
+                )
+        )).update()
     }
 
 }
