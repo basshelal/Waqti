@@ -169,7 +169,7 @@ class TaskListAdapter(val taskListID: ID,
         }
     }
 
-    fun onDrag(draggingState: DragEventLocalState, holder: TaskViewHolder): Boolean {
+    private inline fun onDrag(draggingState: DragEventLocalState, holder: TaskViewHolder): Boolean {
         return when {
 
             draggingState.taskListID == holder.taskListID -> {
@@ -219,7 +219,7 @@ class TaskListAdapter(val taskListID: ID,
         }
     }
 
-    private fun onDragInSameList(draggingState: DragEventLocalState, holder: TaskViewHolder) {
+    private inline fun onDragInSameList(draggingState: DragEventLocalState, holder: TaskViewHolder) {
         val newDragPos = holder.adapterPosition
         val oldDragPos = draggingState.adapterPosition
 
@@ -229,7 +229,7 @@ class TaskListAdapter(val taskListID: ID,
         draggingState.adapterPosition = newDragPos
     }
 
-    private fun checkForScrollDown(draggingState: DragEventLocalState, holder: TaskViewHolder) {
+    private inline fun checkForScrollDown(draggingState: DragEventLocalState, holder: TaskViewHolder) {
 
         if (draggingState.adapterPosition >= linearLayoutManager.findLastCompletelyVisibleItemPosition()) {
             val scrollBy = (holder.itemView.height * scrollAmount).roundToInt()
@@ -238,7 +238,7 @@ class TaskListAdapter(val taskListID: ID,
 
     }
 
-    private fun checkForScrollUp(draggingState: DragEventLocalState, holder: TaskViewHolder) {
+    private inline fun checkForScrollUp(draggingState: DragEventLocalState, holder: TaskViewHolder) {
 
         if (draggingState.adapterPosition <= linearLayoutManager.findFirstCompletelyVisibleItemPosition()) {
             val scrollBy = (holder.itemView.height * -scrollAmount).roundToInt()
@@ -247,9 +247,9 @@ class TaskListAdapter(val taskListID: ID,
 
     }
 
-    private fun onDragAcrossFilledList(draggingState: DragEventLocalState,
-                                       holder: TaskViewHolder,
-                                       otherAdapter: TaskListAdapter) {
+    private inline fun onDragAcrossFilledList(draggingState: DragEventLocalState,
+                                              holder: TaskViewHolder,
+                                              otherAdapter: TaskListAdapter) {
 
         val otherTaskList = otherAdapter.taskList
         val task = otherTaskList[draggingState.taskID]
@@ -272,7 +272,8 @@ class TaskListAdapter(val taskListID: ID,
         //  and what is the holder that is closest to it so that we act accordingly
     }
 
-    private fun onDragAcrossEmptyList(draggingState: DragEventLocalState, otherAdapter: TaskListAdapter) {
+    private inline fun onDragAcrossEmptyList(draggingState: DragEventLocalState,
+                                             otherAdapter: TaskListAdapter) {
 
         val otherTaskList = otherAdapter.taskList
         val task = otherTaskList[draggingState.taskID]
@@ -290,11 +291,11 @@ class TaskListAdapter(val taskListID: ID,
         draggingState.adapterPosition = newDragPos
     }
 
-    private fun onScrollAcrossFilledList() {
+    private inline fun onScrollAcrossFilledList() {
 
         taskListView.apply {
             // The list that we will be scrolling to
-            val newBoardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
+            val newBoardPosition = boardAdapter.indexOfAdapter(this@TaskListAdapter)
 
             val currentBoardPosition = mainActivityViewModel.boardPosition.second
 
@@ -306,11 +307,11 @@ class TaskListAdapter(val taskListID: ID,
         }
     }
 
-    private fun onScrollAcrossEmptyList() {
+    private inline fun onScrollAcrossEmptyList() {
 
         taskListView.apply {
             // The list that we will be scrolling to
-            val newBoardPosition = boardAdapter.board.indexOf(this@TaskListAdapter.taskListID)
+            val newBoardPosition = boardAdapter.indexOfAdapter(this@TaskListAdapter)
 
             val currentBoardPosition = mainActivityViewModel.boardPosition.second
 
@@ -322,7 +323,7 @@ class TaskListAdapter(val taskListID: ID,
         }
     }
 
-    private fun scrollLeft(currentBoardPosition: Int) {
+    private inline fun scrollLeft(currentBoardPosition: Int) {
         taskListView.apply {
             val scrollBy: Int
 
@@ -338,7 +339,7 @@ class TaskListAdapter(val taskListID: ID,
         }
     }
 
-    private fun scrollRight(currentBoardPosition: Int) {
+    private inline fun scrollRight(currentBoardPosition: Int) {
         taskListView.apply {
             val scrollBy: Int
 

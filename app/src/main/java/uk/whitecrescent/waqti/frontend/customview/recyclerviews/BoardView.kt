@@ -185,6 +185,10 @@ class BoardAdapter(val boardID: ID)
     fun getOrCreateListAdapter(taskListID: ID): TaskListAdapter {
         return getListAdapter(taskListID) ?: addListAdapter(TaskListAdapter(taskListID, this))
     }
+
+    fun indexOfAdapter(taskListAdapter: TaskListAdapter): Int {
+        return taskListAdapters.indexOf(taskListAdapter)
+    }
 }
 
 
