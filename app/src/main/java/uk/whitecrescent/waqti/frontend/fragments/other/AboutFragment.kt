@@ -17,6 +17,17 @@ import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 
 class AboutFragment : WaqtiFragment() {
 
+    companion object {
+        private var _instance: AboutFragment? = null
+
+        @JvmStatic
+        val instance: AboutFragment
+            get() {
+                if (_instance == null) _instance = AboutFragment()
+                return _instance ?: AboutFragment()
+            }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_about, container, false)
     }
@@ -37,7 +48,6 @@ class AboutFragment : WaqtiFragment() {
                             .setImage(R.drawable.waqti_icon)
                             .setDescription(getString(R.string.waqtiDescription) +
                                     "\n\n" + getString(R.string.waqtiBetaText))
-                            //.addParagraph(getString(R.string.waqtiBetaText))
 
                             // Waqti is free and open source
                             .addHeading(getString(R.string.waqtiOpenSource))

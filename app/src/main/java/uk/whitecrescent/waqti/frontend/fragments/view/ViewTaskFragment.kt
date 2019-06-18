@@ -34,6 +34,17 @@ import uk.whitecrescent.waqti.rfcFormatted
 
 class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
+    companion object {
+        private var _instance: ViewTaskFragment? = null
+
+        @JvmStatic
+        val instance: ViewTaskFragment
+            get() {
+                if (_instance == null) _instance = ViewTaskFragment()
+                return _instance ?: ViewTaskFragment()
+            }
+    }
+
     private var taskID: ID = 0L
     private var listID: ID = 0L
     private var boardID: ID = 0L

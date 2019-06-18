@@ -434,8 +434,8 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
 
                         it.clearFocusAndHideSoftKeyboard()
 
-                        addToBackStack("")
-                        replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
+                        addToBackStack(null)
+                        replace(R.id.fragmentContainer, ViewTaskFragment.instance, VIEW_TASK_FRAGMENT)
                     }
                 }
                 setOnLongClickListener {

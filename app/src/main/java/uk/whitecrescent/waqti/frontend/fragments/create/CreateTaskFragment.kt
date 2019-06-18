@@ -17,6 +17,7 @@ import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
+import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
@@ -30,6 +31,17 @@ import uk.whitecrescent.waqti.rfcFormatted
 
 @Suppress("NOTHING_TO_INLINE")
 class CreateTaskFragment : WaqtiCreateFragment<Task>() {
+
+    companion object {
+        private var _instance: CreateTaskFragment? = null
+
+        @JvmStatic
+        val instance: CreateTaskFragment
+            get() {
+                if (_instance == null) _instance = CreateTaskFragment()
+                return _instance ?: CreateTaskFragment()
+            }
+    }
 
     private lateinit var viewModel: CreateTaskFragmentViewModel
     private var boardID: ID = 0L
@@ -52,19 +64,19 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     }
 
     override fun setUpViews() {
+        doInBackground {
+            setUpAppBar()
 
-        setUpAppBar()
+            setUpButton()
 
-        setUpButton()
+            setUpTimeViews()
 
-        setUpTimeViews()
+            setUpDeadlineViews()
 
-        setUpDeadlineViews()
+            setUpDescriptionViews()
 
-        setUpDescriptionViews()
-
-        hideProperties()
-
+            hideProperties()
+        }
     }
 
     private inline fun setUpAppBar() {

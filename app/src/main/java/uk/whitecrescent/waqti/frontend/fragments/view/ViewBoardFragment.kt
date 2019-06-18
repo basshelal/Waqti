@@ -35,7 +35,14 @@ import uk.whitecrescent.waqti.mainActivity
 class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
     companion object {
-        fun newInstance() = ViewBoardFragment()
+        private var _instance: ViewBoardFragment? = null
+
+        @JvmStatic
+        val instance: ViewBoardFragment
+            get() {
+                if (_instance == null) _instance = ViewBoardFragment()
+                return _instance ?: ViewBoardFragment()
+            }
     }
 
     private var boardID: ID = 0L
@@ -220,8 +227,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
                         it.clearFocusAndHideSoftKeyboard()
 
-                        replace(R.id.fragmentContainer, CreateListFragment(), CREATE_LIST_FRAGMENT)
-                        addToBackStack("")
+                        replace(R.id.fragmentContainer, CreateListFragment.instance, CREATE_LIST_FRAGMENT)
+                        addToBackStack(null)
                     }
                 }
             }

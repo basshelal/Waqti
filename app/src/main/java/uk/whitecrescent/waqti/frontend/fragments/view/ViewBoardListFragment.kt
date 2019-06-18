@@ -27,6 +27,17 @@ import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
 class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
+    companion object {
+        private var _instance: ViewBoardListFragment? = null
+
+        @JvmStatic
+        val instance: ViewBoardListFragment
+            get() {
+                if (_instance == null) _instance = ViewBoardListFragment()
+                return _instance ?: ViewBoardListFragment()
+            }
+    }
+
     lateinit var viewMode: ViewMode
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -107,8 +118,8 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
                     it.clearFocusAndHideSoftKeyboard()
 
-                    replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
-                    addToBackStack("")
+                    replace(R.id.fragmentContainer, CreateBoardFragment.instance, CREATE_BOARD_FRAGMENT)
+                    addToBackStack(null)
                 }
             }
 

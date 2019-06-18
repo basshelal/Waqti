@@ -32,6 +32,17 @@ import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
 class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
+    companion object {
+        private var _instance: ViewListFragment? = null
+
+        @JvmStatic
+        val instance: ViewListFragment
+            get() {
+                if (_instance == null) _instance = ViewListFragment()
+                return _instance ?: ViewListFragment()
+            }
+    }
+
     private var listID: ID = 0L
     private var boardID: ID = 0L
 
@@ -52,6 +63,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     override fun setUpViews(element: TaskList) {
         taskList_recyclerView.adapter = TaskListAdapter(listID)
         doInBackground {
+            mainActivity.resetNavBarStatusBarColor()
             taskList_appBar.apply {
                 setBackgroundColor(Caches.boards[boardID].barColor)
                 editTextView.apply {
@@ -120,8 +132,8 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
                     it.clearFocusAndHideSoftKeyboard()
 
-                    replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
-                    addToBackStack("")
+                    replace(R.id.fragmentContainer, CreateTaskFragment.instance, CREATE_TASK_FRAGMENT)
+                    addToBackStack(null)
                 }
             }
 

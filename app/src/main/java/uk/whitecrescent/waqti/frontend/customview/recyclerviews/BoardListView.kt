@@ -131,8 +131,8 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
                         boardListPosition = false to position
                     }
 
-                    replace(R.id.fragmentContainer, ViewBoardFragment.newInstance(), BOARD_FRAGMENT)
-                    addToBackStack("ViewBoardFragment")
+                    replace(R.id.fragmentContainer, ViewBoardFragment.instance, BOARD_FRAGMENT)
+                    addToBackStack(null)
                 }
             }
         }

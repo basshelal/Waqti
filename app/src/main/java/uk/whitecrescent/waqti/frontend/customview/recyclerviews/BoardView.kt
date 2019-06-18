@@ -82,7 +82,8 @@ class BoardAdapter(val boardID: ID)
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         require(recyclerView is BoardView) {
-            "Recycler View attached to a BoardAdapter must be a BoardView"
+            "Recycler View attached to a BoardAdapter must be a BoardView," +
+                    " passed in ${recyclerView::class}"
         }
         boardView = recyclerView
 
@@ -161,9 +162,8 @@ class BoardAdapter(val boardID: ID)
         //  God knows why, I have no idea to be honest, but it seems the adapter
         //  is still there because you can scroll and click and drag, but the items
         //  are just invisible for some reason
-        holder.taskListView.apply {
-            adapter = this@BoardAdapter.boardView.getOrCreateListAdapter(board[position].id)
-        }
+        holder.taskListView.adapter = boardView.getOrCreateListAdapter(board[position].id)
+
 
         holder.header.doInBackground {
             text = board[position].name
@@ -197,16 +197,20 @@ class BoardAdapter(val boardID: ID)
 
 
 class BoardViewHolder(view: View,
-                      private val adapter: BoardAdapter) : ViewHolder(view) {
+                      val adapter: BoardAdapter) : ViewHolder(view) {
     val header: TextView = itemView.taskListHeader_textView
     val taskListView: TaskListView = itemView.taskList_recyclerView
-    val addButton: FloatingActionButton = itemView.taskListFooter_textView
+    val addButton: FloatingActionButton = itemView.taskListFooter_fab
     val rootView: ConstraintLayout = itemView.taskList_rootView
 
     inline val mainActivity: MainActivity get() = itemView.mainActivity
 
 
     init {
+        rootView.updateLayoutParams {
+            width = adapter.boardView.taskListWidth
+        }
+
         this.doInBackground {
             rootView.updateLayoutParams {
                 width = adapter.boardView.taskListWidth
@@ -223,8 +227,8 @@ class BoardViewHolder(view: View,
 
                         it.clearFocusAndHideSoftKeyboard()
 
-                        addToBackStack("")
-                        replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
+                        addToBackStack(null)
+                        replace(R.id.fragmentContainer, ViewListFragment.instance, VIEW_LIST_FRAGMENT)
                     }
                 }
                 setOnLongClickListener {
@@ -243,7 +247,7 @@ class BoardViewHolder(view: View,
 
                         it.clearFocusAndHideSoftKeyboard()
 
-                        replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
+                        replace(R.id.fragmentContainer, CreateTaskFragment.instance, CREATE_TASK_FRAGMENT)
                         addToBackStack(null)
                     }
                 }

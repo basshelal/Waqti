@@ -12,6 +12,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
+import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.hideSoftKeyboard
@@ -19,6 +20,17 @@ import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 
 class CreateBoardFragment : WaqtiCreateFragment<Board>() {
+
+    companion object {
+        private var _instance: CreateBoardFragment? = null
+
+        @JvmStatic
+        val instance: CreateBoardFragment
+            get() {
+                if (_instance == null) _instance = CreateBoardFragment()
+                return _instance ?: CreateBoardFragment()
+            }
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -32,11 +44,11 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
     }
 
     override fun setUpViews() {
+        doInBackground {
+            setUpButton()
 
-        setUpButton()
-
-        setUpAppBar()
-
+            setUpAppBar()
+        }
     }
 
     private inline fun setUpAppBar() {

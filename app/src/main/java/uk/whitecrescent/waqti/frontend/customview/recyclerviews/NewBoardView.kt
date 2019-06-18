@@ -137,7 +137,7 @@ class WaqtiBoardViewAdapter(val boardID: ID) : BoardViewAdapter() {
 
                         it.clearFocusAndHideSoftKeyboard()
 
-                        addToBackStack("")
+                        addToBackStack(null)
                         replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
                     }
                 }
@@ -197,7 +197,7 @@ class WaqtiBoardViewAdapter(val boardID: ID) : BoardViewAdapter() {
 
                     it.clearFocusAndHideSoftKeyboard()
 
-                    addToBackStack("")
+                    addToBackStack(null)
                     replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
                 }
             }
