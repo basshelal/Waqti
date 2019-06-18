@@ -25,7 +25,6 @@ import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.backend.persistence.Caches
-import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
@@ -46,13 +45,6 @@ private const val scrollAmount = 1.718281828459045 // E - 1
 private const val draggingViewAlpha = 0F
 private val defaultInterpolator = AccelerateDecelerateInterpolator()
 
-private val taskViewHolderPool = object : RecyclerView.RecycledViewPool() {
-
-    override fun setMaxRecycledViews(viewType: Int, max: Int) {
-        super.setMaxRecycledViews(viewType, TASKS_CACHE_SIZE)
-    }
-}
-
 class TaskListView
 @JvmOverloads constructor(context: Context,
                           attributeSet: AttributeSet? = null,
@@ -62,9 +54,10 @@ class TaskListView
         get() = adapter as TaskListAdapter
 
     init {
-        layoutManager = LinearLayoutManager(context, VERTICAL, false)
+        layoutManager = LinearLayoutManager(context, VERTICAL, false).also {
+            it.initialPrefetchItemCount = 25
+        }
         itemAnimator = TaskListItemAnimator()
-        this.setRecycledViewPool(taskViewHolderPool)
         this.isNestedScrollingEnabled = false
     }
 
@@ -412,39 +405,6 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
     inline val mainActivity: MainActivity get() = itemView.mainActivity
 
     init {
-        /*cardView.setOnDragListener { _, event ->
-            val draggingState = event.localState as DragEventLocalState
-            val draggingView = adapter.taskListView
-                    .findViewHolderForAdapterPosition(draggingState.adapterPosition)?.itemView
-            when (event.action) {
-                DragEvent.ACTION_DRAG_ENTERED -> {
-                    if (adapterPosition != RecyclerView.NO_POSITION) {
-                        adapter.onDrag(draggingState, this)
-                    }
-                }
-                DragEvent.ACTION_DRAG_LOCATION -> {
-                    if (draggingView?.alpha != draggingViewAlpha)
-                        draggingView?.alpha = draggingViewAlpha
-                }
-                DragEvent.ACTION_DRAG_EXITED -> {
-                    // Safety measure just in case
-                    doInBackground {
-                        adapter.allCards.filter { it != draggingView && it.alpha < 1F }
-                                .forEach { it.alpha = 1F }
-                    }
-                }
-                DragEvent.ACTION_DROP -> {
-                    draggingState.updateToMatch(this)
-                }
-                DragEvent.ACTION_DRAG_ENDED -> {
-                    draggingView?.alpha = 1F
-                    // Safety measure just in case
-                    doInBackground { adapter.allCards.forEach { it.alpha = 1F } }
-                }
-            }
-            return@setOnDragListener true
-
-        }*/
         doInBackground {
             textView.textSize = mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
             cardView.apply {

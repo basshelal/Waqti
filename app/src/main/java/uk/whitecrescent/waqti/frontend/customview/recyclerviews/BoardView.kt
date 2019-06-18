@@ -17,6 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
+import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
@@ -33,6 +34,13 @@ import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
+private val taskViewHolderPool = object : RecyclerView.RecycledViewPool() {
+
+    override fun setMaxRecycledViews(viewType: Int, max: Int) {
+        super.setMaxRecycledViews(viewType, TASKS_CACHE_SIZE)
+    }
+}
+
 class BoardView
 @JvmOverloads constructor(context: Context,
                           attributeSet: AttributeSet? = null,
@@ -45,10 +53,8 @@ class BoardView
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
         this.isNestedScrollingEnabled = false
     }
-
 }
 
-// boardID **could** be a var but others rely on board so it's a little too risky
 class BoardAdapter(val boardID: ID)
     : RecyclerView.Adapter<BoardViewHolder>() {
 
@@ -56,7 +62,7 @@ class BoardAdapter(val boardID: ID)
 
     lateinit var boardView: BoardView
     lateinit var itemTouchHelper: ItemTouchHelper
-    lateinit var pagerSnapHelper: PagerSnapHelper
+    lateinit var snapHelper: PagerSnapHelper
     var taskListWidth: Int = 600
 
     private val taskListAdapters = ArrayList<TaskListAdapter>()
@@ -117,14 +123,14 @@ class BoardAdapter(val boardID: ID)
         })
         itemTouchHelper.attachToRecyclerView(boardView)
 
-        pagerSnapHelper = object : PagerSnapHelper() {
+        snapHelper = object : PagerSnapHelper() {
             override fun findTargetSnapPosition(layoutManager: RecyclerView.LayoutManager?, velocityX: Int, velocityY: Int): Int {
                 val currentBoardPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
                 boardView.mainActivityViewModel.boardPosition = true to currentBoardPos
                 return currentBoardPos
             }
         }
-        pagerSnapHelper.attachToRecyclerView(boardView)
+        snapHelper.attachToRecyclerView(boardView)
     }
 
     override fun getItemCount(): Int {
@@ -149,20 +155,18 @@ class BoardAdapter(val boardID: ID)
     }
 
     private fun matchOrder() {
-        doInBackground {
-            val taskListAdaptersCopy = ArrayList(taskListAdapters)
-            if (doesNotMatchOrder()) {
 
-                board.filter { taskList -> taskList.id in taskListAdaptersCopy.map { it?.taskListID } }
-                        .mapIndexed { index, taskList -> index to taskList }.toMap()
-                        .forEach { entry ->
-                            val (index, taskList) = entry
+        val taskListAdaptersCopy = ArrayList(taskListAdapters)
+        if (doesNotMatchOrder()) {
 
-                            taskListAdapters[index] =
-                                    taskListAdaptersCopy.find { it?.taskListID == taskList.id }!!
-                        }
+            board.filter { taskList -> taskList.id in taskListAdaptersCopy.map { it?.taskListID } }
+                    .mapIndexed { index, taskList -> index to taskList }.toMap()
+                    .forEach { entry ->
+                        val (index, taskList) = entry
 
-            }
+                        taskListAdapters[index] =
+                                taskListAdaptersCopy.find { it?.taskListID == taskList.id }!!
+                    }
         }
     }
 
@@ -208,6 +212,7 @@ class BoardViewHolder(view: View,
                 width = adapter.taskListWidth
             }
             taskListView.apply {
+                setRecycledViewPool(taskViewHolderPool)
                 addOnScrollListener(addButton.verticalFABOnScrollListener)
             }
             header.apply {
