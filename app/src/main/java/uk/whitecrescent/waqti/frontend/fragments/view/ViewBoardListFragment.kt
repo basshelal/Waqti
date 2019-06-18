@@ -23,20 +23,10 @@ import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
 class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
-
-    companion object {
-        private var _instance: ViewBoardListFragment? = null
-
-        @JvmStatic
-        val instance: ViewBoardListFragment
-            get() {
-                if (_instance == null) _instance = ViewBoardListFragment()
-                return _instance ?: ViewBoardListFragment()
-            }
-    }
 
     lateinit var viewMode: ViewMode
 
@@ -114,11 +104,12 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                 @GoToFragment
                 it.mainActivity.supportFragmentManager.commitTransaction {
 
-                    it.mainActivity.viewModel.boardListPosition = false to boardsList_recyclerView.boardListAdapter.itemCount - 1
+                    it.mainActivityViewModel.boardListPosition =
+                            false to boardsList_recyclerView.boardListAdapter.itemCount - 1
 
                     it.clearFocusAndHideSoftKeyboard()
 
-                    replace(R.id.fragmentContainer, CreateBoardFragment.instance, CREATE_BOARD_FRAGMENT)
+                    replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
                     addToBackStack(null)
                 }
             }

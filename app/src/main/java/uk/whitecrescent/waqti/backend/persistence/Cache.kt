@@ -3,16 +3,15 @@ package uk.whitecrescent.waqti.backend.persistence
 import android.annotation.SuppressLint
 import io.objectbox.Box
 import io.reactivex.Observable
-import org.jetbrains.anko.doAsync
 import uk.whitecrescent.waqti.CACHE_CHECKING_PERIOD
 import uk.whitecrescent.waqti.CACHE_CHECKING_UNIT
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.Committable
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.debug
+import uk.whitecrescent.waqti.doInBackgroundAsync
 import uk.whitecrescent.waqti.ids
 import uk.whitecrescent.waqti.size
-import java.util.concurrent.Future
 import java.util.concurrent.TimeUnit
 
 open class Cache<E : Cacheable>(
@@ -31,10 +30,12 @@ open class Cache<E : Cacheable>(
 
     val type: String = db.entityInfo.dbName
 
-    fun initialize(): Future<Unit> {
-        return doAsync {
+    // TODO: 18-Jun-19 This looks like a problem
+    fun initialize() {
+        doInBackgroundAsync {
             debug("Started initialization for Cache of $type")
-            db.all.asSequence().take(sizeLimit).forEach {
+            Sequence { db.all.iterator() }
+                    .asSequence().take(sizeLimit).forEach {
                 it.initialize()
                 safeAdd(it)
             }
@@ -166,7 +167,7 @@ open class Cache<E : Cacheable>(
 
     //region Dangerous Bulk Removes
 
-    fun clearMap() = doAsync { map.clear() }
+    fun clearMap() = doInBackgroundAsync { map.clear() }
 
     fun clearDB() = object : Committable {
         override fun commit() {

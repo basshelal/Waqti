@@ -29,10 +29,11 @@ import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
-open class BoardView
+class BoardView
 @JvmOverloads constructor(context: Context,
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
@@ -40,33 +41,14 @@ open class BoardView
     inline val boardAdapter: BoardAdapter
         get() = this.adapter as BoardAdapter
 
-    val taskListAdapters = ArrayList<TaskListAdapter>()
-    val taskListWidth: Int
-
     init {
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
         this.isNestedScrollingEnabled = false
-
-        val percent = mainActivity.waqtiPreferences.taskListWidth / 100.0
-        taskListWidth = (mainActivity.dimensions.first.toFloat() * percent).roundToInt()
-    }
-
-    private fun addListAdapter(taskListAdapter: TaskListAdapter): TaskListAdapter {
-        return taskListAdapter.also {
-            taskListAdapters.add(it)
-        }
-    }
-
-    fun getListAdapter(taskListID: ID): TaskListAdapter? {
-        return taskListAdapters.find { it.taskListID == taskListID }
-    }
-
-    fun getOrCreateListAdapter(taskListID: ID): TaskListAdapter {
-        return getListAdapter(taskListID) ?: addListAdapter(TaskListAdapter(taskListID))
     }
 
 }
 
+// boardID **could** be a var but others rely on board so it's a little too risky
 class BoardAdapter(val boardID: ID)
     : RecyclerView.Adapter<BoardViewHolder>() {
 
@@ -75,6 +57,9 @@ class BoardAdapter(val boardID: ID)
     lateinit var boardView: BoardView
     lateinit var itemTouchHelper: ItemTouchHelper
     lateinit var pagerSnapHelper: PagerSnapHelper
+    var taskListWidth: Int = 600
+
+    private val taskListAdapters = ArrayList<TaskListAdapter>()
 
     init {
         this.setHasStableIds(true)
@@ -87,9 +72,12 @@ class BoardAdapter(val boardID: ID)
         }
         boardView = recyclerView
 
+        val percent = boardView.mainActivity.waqtiPreferences.taskListWidth / 100.0
+        taskListWidth = (boardView.mainActivity.dimensions.first.toFloat() * percent).roundToInt()
+
         doInBackground {
             board.forEach {
-                boardView.getOrCreateListAdapter(it.id)
+                getOrCreateListAdapter(it.id)
             }
             matchOrder()
             attachHelpers()
@@ -123,7 +111,7 @@ class BoardAdapter(val boardID: ID)
                 board.move(fromPos, toPos).update()
                 matchOrder()
                 notifyItemMoved(fromPos, toPos)
-                boardView.mainActivity.viewModel.boardPosition = true to toPos
+                boardView.mainActivityViewModel.boardPosition = true to toPos
             }
 
         })
@@ -132,7 +120,7 @@ class BoardAdapter(val boardID: ID)
         pagerSnapHelper = object : PagerSnapHelper() {
             override fun findTargetSnapPosition(layoutManager: RecyclerView.LayoutManager?, velocityX: Int, velocityY: Int): Int {
                 val currentBoardPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
-                boardView.mainActivity.viewModel.boardPosition = true to currentBoardPos
+                boardView.mainActivityViewModel.boardPosition = true to currentBoardPos
                 return currentBoardPos
             }
         }
@@ -156,23 +144,13 @@ class BoardAdapter(val boardID: ID)
     }
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
-
-        // For some annoying reason, the adapter set must be done synchronously,
-        //  otherwise later on after many scrolls, the list has invisible items,
-        //  God knows why, I have no idea to be honest, but it seems the adapter
-        //  is still there because you can scroll and click and drag, but the items
-        //  are just invisible for some reason
-        holder.taskListView.adapter = boardView.getOrCreateListAdapter(board[position].id)
-
-
-        holder.header.doInBackground {
-            text = board[position].name
-        }
+        holder.taskListView.adapter = getOrCreateListAdapter(board[position].id)
+        holder.header.text = board[position].name
     }
 
     private fun matchOrder() {
         doInBackground {
-            val taskListAdaptersCopy = ArrayList(boardView.taskListAdapters)
+            val taskListAdaptersCopy = ArrayList(taskListAdapters)
             if (doesNotMatchOrder()) {
 
                 board.filter { taskList -> taskList.id in taskListAdaptersCopy.map { it?.taskListID } }
@@ -180,7 +158,7 @@ class BoardAdapter(val boardID: ID)
                         .forEach { entry ->
                             val (index, taskList) = entry
 
-                            boardView.taskListAdapters[index] =
+                            taskListAdapters[index] =
                                     taskListAdaptersCopy.find { it?.taskListID == taskList.id }!!
                         }
 
@@ -189,9 +167,23 @@ class BoardAdapter(val boardID: ID)
     }
 
     private fun doesNotMatchOrder(): Boolean {
-        val adapterIDs = boardView.taskListAdapters.map { it.taskListID }
+        val adapterIDs = taskListAdapters.map { it.taskListID }
 
         return adapterIDs != board.take(adapterIDs.size).map { it.id }
+    }
+
+    fun addListAdapter(taskListAdapter: TaskListAdapter): TaskListAdapter {
+        return taskListAdapter.also {
+            taskListAdapters.add(it)
+        }
+    }
+
+    fun getListAdapter(taskListID: ID): TaskListAdapter? {
+        return taskListAdapters.find { it.taskListID == taskListID }
+    }
+
+    fun getOrCreateListAdapter(taskListID: ID): TaskListAdapter {
+        return getListAdapter(taskListID) ?: addListAdapter(TaskListAdapter(taskListID, this))
     }
 }
 
@@ -207,13 +199,9 @@ class BoardViewHolder(view: View,
 
 
     init {
-        rootView.updateLayoutParams {
-            width = adapter.boardView.taskListWidth
-        }
-
-        this.doInBackground {
+        doInBackground {
             rootView.updateLayoutParams {
-                width = adapter.boardView.taskListWidth
+                width = adapter.taskListWidth
             }
             taskListView.apply {
                 addOnScrollListener(addButton.verticalFABOnScrollListener)
@@ -223,12 +211,12 @@ class BoardViewHolder(view: View,
                     @GoToFragment
                     it.mainActivity.supportFragmentManager.commitTransaction {
 
-                        it.mainActivity.viewModel.listID = adapter.board[adapterPosition].id
+                        it.mainActivityViewModel.listID = adapter.board[adapterPosition].id
 
                         it.clearFocusAndHideSoftKeyboard()
 
                         addToBackStack(null)
-                        replace(R.id.fragmentContainer, ViewListFragment.instance, VIEW_LIST_FRAGMENT)
+                        replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
                     }
                 }
                 setOnLongClickListener {
@@ -242,12 +230,12 @@ class BoardViewHolder(view: View,
                     @GoToFragment
                     it.mainActivity.supportFragmentManager.commitTransaction {
 
-                        it.mainActivity.viewModel.boardID = adapter.boardID
-                        it.mainActivity.viewModel.listID = taskListView.listAdapter.taskListID
+                        it.mainActivityViewModel.boardID = adapter.boardID
+                        it.mainActivityViewModel.listID = taskListView.listAdapter.taskListID
 
                         it.clearFocusAndHideSoftKeyboard()
 
-                        replace(R.id.fragmentContainer, CreateTaskFragment.instance, CREATE_TASK_FRAGMENT)
+                        replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
                         addToBackStack(null)
                     }
                 }

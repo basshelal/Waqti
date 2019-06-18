@@ -2,7 +2,6 @@
 
 package uk.whitecrescent.waqti.backend.persistence
 
-import org.jetbrains.anko.doAsync
 import uk.whitecrescent.waqti.backend.Committable
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.BoardList
@@ -13,6 +12,7 @@ import uk.whitecrescent.waqti.backend.task.Priority
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.backend.task.Template
 import uk.whitecrescent.waqti.backend.task.TimeUnit
+import uk.whitecrescent.waqti.doInBackgroundAsync
 
 
 /*
@@ -76,7 +76,7 @@ object Caches {
     )
 
     fun initialize() {
-        doAsync { allCaches.forEach { doAsync { it.initialize() } } }
+        doInBackgroundAsync { allCaches.forEach { it.initialize() } }
     }
 
     fun close() {

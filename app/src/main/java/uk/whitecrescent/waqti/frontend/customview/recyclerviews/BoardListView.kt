@@ -23,6 +23,7 @@ import uk.whitecrescent.waqti.frontend.getColorCompat
 import uk.whitecrescent.waqti.frontend.setTextAppearanceCompat
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.mainActivityViewModel
 
 class BoardListView
 @JvmOverloads constructor(context: Context,
@@ -63,7 +64,7 @@ class BoardListView
                     boardList.move(fromPos, toPos).update()
                     notifyItemMoved(fromPos, toPos)
                 }
-                mainActivity.viewModel.boardListPosition = true to toPos
+                mainActivityViewModel.boardListPosition = true to toPos
             }
 
         }).attachToRecyclerView(this)
@@ -126,12 +127,12 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
 
                     it.hideSoftKeyboard()
 
-                    it.mainActivity.viewModel.apply {
+                    it.mainActivityViewModel.apply {
                         boardID = boardList[holder.adapterPosition].id
                         boardListPosition = false to position
                     }
 
-                    replace(R.id.fragmentContainer, ViewBoardFragment.instance, BOARD_FRAGMENT)
+                    replace(R.id.fragmentContainer, ViewBoardFragment(), BOARD_FRAGMENT)
                     addToBackStack(null)
                 }
             }

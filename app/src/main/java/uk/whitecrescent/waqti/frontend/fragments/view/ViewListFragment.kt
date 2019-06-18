@@ -23,25 +23,14 @@ import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
-import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListAdapter
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.vibrateCompat
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
 class ViewListFragment : WaqtiViewFragment<TaskList>() {
-
-    companion object {
-        private var _instance: ViewListFragment? = null
-
-        @JvmStatic
-        val instance: ViewListFragment
-            get() {
-                if (_instance == null) _instance = ViewListFragment()
-                return _instance ?: ViewListFragment()
-            }
-    }
 
     private var listID: ID = 0L
     private var boardID: ID = 0L
@@ -61,7 +50,8 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     }
 
     override fun setUpViews(element: TaskList) {
-        taskList_recyclerView.adapter = TaskListAdapter(listID)
+        taskList_recyclerView.adapter = mainActivityViewModel.boardAdapter
+                ?.getOrCreateListAdapter(listID)
         doInBackground {
             mainActivity.resetNavBarStatusBarColor()
             taskList_appBar.apply {
@@ -127,12 +117,12 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                 @GoToFragment
                 it.mainActivity.supportFragmentManager.commitTransaction {
 
-                    it.mainActivity.viewModel.boardID = boardID
-                    it.mainActivity.viewModel.listID = listID
+                    it.mainActivityViewModel.boardID = boardID
+                    it.mainActivityViewModel.listID = listID
 
                     it.clearFocusAndHideSoftKeyboard()
 
-                    replace(R.id.fragmentContainer, CreateTaskFragment.instance, CREATE_TASK_FRAGMENT)
+                    replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
                     addToBackStack(null)
                 }
             }

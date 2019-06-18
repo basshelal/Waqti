@@ -21,17 +21,6 @@ import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 
 class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 
-    companion object {
-        private var _instance: CreateListFragment? = null
-
-        @JvmStatic
-        val instance: CreateListFragment
-            get() {
-                if (_instance == null) _instance = CreateListFragment()
-                return _instance ?: CreateListFragment()
-            }
-    }
-
     var boardID: ID = 0L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,

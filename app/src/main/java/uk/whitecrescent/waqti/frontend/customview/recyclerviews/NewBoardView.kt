@@ -1,12 +1,8 @@
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
-import android.view.ViewGroup
-import uk.whitecrescent.waqti.NewAPI
-import uk.whitecrescent.waqti.backend.task.ID
-
 // TODO: 15-Jun-19 This Adapter should be used to keep any UI code in the views and any back end
 //  code in the adapter, we take care of UI stuff, this guy does any other stuff
-@NewAPI
+/*@NewAPI
 abstract class BoardViewAdapter {
 
     // Board
@@ -91,7 +87,7 @@ abstract class BoardViewAdapter {
                                          draggingOverTaskListAdapter: TaskListAdapter) {
     }
 
-}
+}*/
 
 
 /*

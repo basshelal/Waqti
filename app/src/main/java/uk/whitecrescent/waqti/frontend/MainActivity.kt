@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
 
         if (supportFragmentManager.fragments.size == 0) {
             supportFragmentManager.commitTransaction {
-                add(R.id.fragmentContainer, ViewBoardListFragment.instance, BOARD_LIST_FRAGMENT)
+                add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
             }
         }
 
@@ -79,14 +79,14 @@ class MainActivity : AppCompatActivity() {
                 R.id.settings_navDrawerItem -> {
                     @GoToFragment
                     supportFragmentManager.commitTransaction {
-                        replace(R.id.fragmentContainer, SettingsFragment.instance, SETTINGS_FRAGMENT)
+                        replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
                         addToBackStack(null)
                     }
                 }
                 R.id.about_navDrawerItem -> {
                     @GoToFragment
                     supportFragmentManager.commitTransaction {
-                        replace(R.id.fragmentContainer, AboutFragment.instance, ABOUT_FRAGMENT)
+                        replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
                         addToBackStack(null)
                     }
                 }

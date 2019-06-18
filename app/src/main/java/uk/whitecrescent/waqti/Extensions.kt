@@ -54,6 +54,7 @@ import uk.whitecrescent.waqti.backend.task.Template
 import uk.whitecrescent.waqti.backend.task.TimeUnit
 import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.MainActivity
+import uk.whitecrescent.waqti.frontend.MainActivityViewModel
 import uk.whitecrescent.waqti.frontend.SimpleTextWatcher
 import java.util.Objects
 import kotlin.math.roundToInt
@@ -98,6 +99,9 @@ inline val Activity.alarmManager: AlarmManager
 
 inline val View.mainActivity: MainActivity
     get() = this.context as MainActivity
+
+inline val View.mainActivityViewModel: MainActivityViewModel
+    get() = mainActivity.viewModel
 
 inline fun View.hideSoftKeyboard() {
     (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
@@ -242,7 +246,19 @@ inline fun <T> T?.ifNotNull(func: T.() -> Unit): T? {
 inline fun <T> T.androidObservable(): Observable<T> {
     return Observable.just(this)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.computation())
+            .subscribeOn(Schedulers.single())
+}
+
+inline fun <reified T> T.doInBackgroundAsync(crossinline onNext: T.() -> Unit): Disposable {
+    return Observable.just(this)
+            .observeOn(Schedulers.io())
+            .subscribeOn(Schedulers.io())
+            .subscribe({
+                it.apply(onNext)
+            }, {
+                logE("Error on doInBackgroundAsync, provided ${T::class.java}")
+                throw it
+            })
 }
 
 inline fun <reified T> T.doInBackground(crossinline onNext: T.() -> Unit): Disposable {
@@ -251,7 +267,7 @@ inline fun <reified T> T.doInBackground(crossinline onNext: T.() -> Unit): Dispo
                 it.apply(onNext)
             }, {
                 logE("Error on doInBackground, provided ${T::class.java}")
-                it.printStackTrace()
+                throw it
             })
 }
 
@@ -263,7 +279,7 @@ inline fun <reified T> T.doInBackgroundDelayed(delayMillis: Long,
                 it.apply(onNext)
             }, {
                 logE("Error on doInBackgroundDelayed, provided ${T::class.java} with delay $delayMillis")
-                it.printStackTrace()
+                throw it
             })
 }
 

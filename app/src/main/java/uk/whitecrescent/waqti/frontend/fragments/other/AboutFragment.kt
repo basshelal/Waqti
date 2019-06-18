@@ -17,17 +17,6 @@ import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 
 class AboutFragment : WaqtiFragment() {
 
-    companion object {
-        private var _instance: AboutFragment? = null
-
-        @JvmStatic
-        val instance: AboutFragment
-            get() {
-                if (_instance == null) _instance = AboutFragment()
-                return _instance ?: AboutFragment()
-            }
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_about, container, false)
     }

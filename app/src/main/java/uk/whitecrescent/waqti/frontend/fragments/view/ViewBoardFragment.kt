@@ -31,19 +31,9 @@ import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.vibrateCompat
 import uk.whitecrescent.waqti.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.mainActivityViewModel
 
 class ViewBoardFragment : WaqtiViewFragment<Board>() {
-
-    companion object {
-        private var _instance: ViewBoardFragment? = null
-
-        @JvmStatic
-        val instance: ViewBoardFragment
-            get() {
-                if (_instance == null) _instance = ViewBoardFragment()
-                return _instance ?: ViewBoardFragment()
-            }
-    }
 
     private var boardID: ID = 0L
 
@@ -57,12 +47,16 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         boardID = mainActivityViewModel.boardID
 
+        if (mainActivityViewModel.boardAdapter?.boardID != boardID) {
+            mainActivityViewModel.boardAdapter = BoardAdapter(boardID)
+        }
+
         setUpViews(Caches.boards[boardID])
     }
 
     override fun setUpViews(element: Board) {
+        boardView.adapter = mainActivityViewModel.boardAdapter
         doInBackground {
-            boardView.adapter = BoardAdapter(element.id)
             mainActivity.resetNavBarStatusBarColor()
 
             board_appBar.apply {
@@ -222,12 +216,12 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     @GoToFragment
                     it.mainActivity.supportFragmentManager.commitTransaction {
 
-                        it.mainActivity.viewModel.boardID = element.id
-                        it.mainActivity.viewModel.boardPosition = false to boardView.boardAdapter.itemCount - 1
+                        it.mainActivityViewModel.boardID = element.id
+                        it.mainActivityViewModel.boardPosition = false to boardView.boardAdapter.itemCount - 1
 
                         it.clearFocusAndHideSoftKeyboard()
 
-                        replace(R.id.fragmentContainer, CreateListFragment.instance, CREATE_LIST_FRAGMENT)
+                        replace(R.id.fragmentContainer, CreateListFragment(), CREATE_LIST_FRAGMENT)
                         addToBackStack(null)
                     }
                 }
@@ -250,7 +244,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                     title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteTaskQuestion)
                                     onConfirm = {
                                         Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
-                                        this@ViewBoardFragment.boardView
+                                        this@ViewBoardFragment.boardView.boardAdapter
                                                 .getListAdapter(draggingState.taskListID)?.apply {
                                                     notifyItemRemoved(taskListView
                                                             .findViewHolderForItemId(draggingState.taskID)
