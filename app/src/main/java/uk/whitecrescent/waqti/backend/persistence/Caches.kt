@@ -62,14 +62,21 @@ object Caches {
     val boards: Cache<Board> = Cache(Database.boards, BOARDS_CACHE_SIZE)
     val boardLists: Cache<BoardList> = Cache(Database.boardLists, BOARD_LISTS_CACHE_SIZE)
 
+    inline val boardList: BoardList
+        get() {
+            require(Caches.boardLists.size == 1) {
+                "BoardLists Cache cannot contain ${Caches.boardLists.size}, must be exactly one"
+            }
+
+            return Caches.boardLists.first()
+        }
+
     val allCaches = listOf(
             tasks, templates, labels, priorities, timeUnits, taskLists, boards, boardLists
     )
 
     fun initialize() {
-        doAsync {
-            allCaches.forEach { doAsync { it.initialize() } }
-        }
+        doAsync { allCaches.forEach { doAsync { it.initialize() } } }
     }
 
     fun close() {
@@ -96,16 +103,15 @@ object Caches {
 
     inline fun deleteBoard(boardID: ID) {
         Caches.boards[boardID].clear().update()
-        Caches.boardLists.first().remove(boardID).update()
+        Caches.boardList.remove(boardID).update()
     }
 
     inline fun seed(boards: Int = 5, lists: Int = 5, tasks: Int = 10) {
         Caches.clearAllCaches().commit()
 
         Caches.boardLists.put(BoardList("Default"))
-        require(Caches.boardLists.size == 1)
 
-        Caches.boardLists.first().addAll(Array(boards) {
+        Caches.boardList.addAll(Array(boards) {
             Board("Board").apply {
                 name = "Board $id"
             }
@@ -129,9 +135,7 @@ object Caches {
     }
 
     inline fun seedRealistic() {
-        require(Caches.boardLists.size == 1)
-
-        Caches.boardLists.first().add(Board("To Do",
+        Caches.boardList.add(Board("To Do",
                 listOf(
                         TaskList("To Do",
                                 listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")

@@ -22,6 +22,7 @@ import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME_PROPERTY
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
@@ -55,22 +56,19 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     @SuppressLint("SetTextI18n")
     override fun setUpViews(element: Task) {
+        doInBackground {
+            setUpAppBar(element)
 
-        mainActivity.setNavigationBarColor(Caches.boards[boardID].barColor)
-        mainActivity.setStatusBarColor(Caches.boards[boardID].barColor)
+            // TODO: 07-Jun-19 Make background color of the linearLayout be same as Task color
+            nestedScrollView.setBackgroundColor(Caches.boards[boardID].cardColor.toAndroidColor)
+            linearLayout.setBackgroundColor(Caches.boards[boardID].cardColor.toAndroidColor)
 
-        setUpAppBar(element)
+            setUpTimeViews(element)
 
-        // TODO: 07-Jun-19 Make background color of the linearLayout be same as Task color
-        nestedScrollView.setBackgroundColor(Caches.boards[boardID].cardColor.toAndroidColor)
-        linearLayout.setBackgroundColor(Caches.boards[boardID].cardColor.toAndroidColor)
+            setUpDeadlineViews(element)
 
-        setUpTimeViews(element)
-
-        setUpDeadlineViews(element)
-
-        setUpDescriptionViews(element)
-
+            setUpDescriptionViews(element)
+        }
     }
 
 

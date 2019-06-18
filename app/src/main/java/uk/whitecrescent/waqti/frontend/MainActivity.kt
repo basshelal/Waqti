@@ -81,14 +81,14 @@ class MainActivity : AppCompatActivity() {
                     @GoToFragment
                     supportFragmentManager.commitTransaction {
                         replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
-                        addToBackStack("")
+                        addToBackStack(null)
                     }
                 }
                 R.id.about_navDrawerItem -> {
                     @GoToFragment
                     supportFragmentManager.commitTransaction {
                         replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
-                        addToBackStack("")
+                        addToBackStack(null)
                     }
                 }
             }

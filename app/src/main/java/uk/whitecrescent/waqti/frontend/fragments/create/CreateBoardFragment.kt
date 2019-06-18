@@ -55,7 +55,7 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
         addBoard_button.apply {
             isVisible = false
             setOnClickListener {
-                Caches.boardLists.first().add(createElement()).update()
+                Caches.boardList.add(createElement()).update()
                 finish()
             }
         }
