@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.SeekBar
 import kotlinx.android.synthetic.main.fragment_settings.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 import uk.whitecrescent.waqti.getPercent
@@ -31,71 +30,70 @@ class SettingsFragment : WaqtiFragment() {
 
     @SuppressLint("SetTextI18n")
     private inline fun setUpViews() {
-        doInBackground {
-            mainActivity.resetNavBarStatusBarColor()
+        mainActivity.resetNavBarStatusBarColor()
 
-            taskListWidthSetting_seekBar.apply {
+        taskListWidthSetting_seekBar.apply {
 
-                val range = 20 to 80
+            val range = 20 to 80
 
-                val fromPreferences = mainActivity.waqtiPreferences.taskListWidth
+            val fromPreferences = mainActivity.waqtiPreferences.taskListWidth
 
-                progress = range.getPercent(fromPreferences)
-                taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + fromPreferences
+            progress = range.getPercent(fromPreferences)
+            taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + fromPreferences
 
-                setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                        taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + range.getValue(progress)
-                    }
-
-                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                        mainActivity.waqtiPreferences.taskListWidth = range.getValue(progress)
-                    }
-                })
-            }
-
-            cardTextSizeSetting_seekBar.apply {
-
-                val range = 14 to 30
-
-                val fromPreferences = mainActivity.waqtiPreferences.taskCardTextSize
-
-                progress = range.getPercent(fromPreferences)
-
-                cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) +
-                        fromPreferences
-
-                setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                    override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                        cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) +
-                                range.getValue(progress)
-                    }
-
-                    override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-                    override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                        mainActivity.waqtiPreferences.taskCardTextSize = range.getValue(progress)
-                    }
-                })
-            }
-
-            resetToDefaults_button.apply {
-                setOnClickListener {
-                    ConfirmDialog().apply {
-                        title = this@SettingsFragment.mainActivity
-                                .getString(R.string.resetToDefaults)
-                        message = this@SettingsFragment.mainActivity
-                                .getString(R.string.resetToDefaultsQuestion)
-                        onConfirm = {
-                            resetSettingsToDefaults()
-                            this.dismiss()
-                        }
-                    }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + range.getValue(progress)
                 }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    mainActivity.waqtiPreferences.taskListWidth = range.getValue(progress)
+                }
+            })
+        }
+
+        cardTextSizeSetting_seekBar.apply {
+
+            val range = 14 to 30
+
+            val fromPreferences = mainActivity.waqtiPreferences.taskCardTextSize
+
+            progress = range.getPercent(fromPreferences)
+
+            cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) +
+                    fromPreferences
+
+            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                    cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) +
+                            range.getValue(progress)
+                }
+
+                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+                override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                    mainActivity.waqtiPreferences.taskCardTextSize = range.getValue(progress)
+                }
+            })
+        }
+
+        resetToDefaults_button.apply {
+            setOnClickListener {
+                ConfirmDialog().apply {
+                    title = this@SettingsFragment.mainActivity
+                            .getString(R.string.resetToDefaults)
+                    message = this@SettingsFragment.mainActivity
+                            .getString(R.string.resetToDefaultsQuestion)
+                    onConfirm = {
+                        resetSettingsToDefaults()
+                        this.dismiss()
+                    }
+                }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
             }
         }
+
     }
 
     @SuppressLint("SetTextI18n")
