@@ -7,6 +7,7 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.PorterDuff
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.DragEvent
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.children
+import androidx.core.view.forEach
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,6 +32,7 @@ import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.MainActivity
@@ -38,6 +41,7 @@ import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.frontend.startDragCompat
 import uk.whitecrescent.waqti.lastPosition
 import uk.whitecrescent.waqti.locationOnScreen
+import uk.whitecrescent.waqti.logE
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.notifySwapped
@@ -70,6 +74,7 @@ class TaskListView
         setRecycledViewPool(taskViewHolderPool)
         itemAnimator = TaskListItemAnimator()
         this.isNestedScrollingEnabled = false
+        logE("New TaskListView")
     }
 
 }
@@ -89,6 +94,7 @@ class TaskListAdapter(val taskListID: ID,
 
     init {
         this.setHasStableIds(true)
+        logE("New TaskListAdapter")
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -107,11 +113,65 @@ class TaskListAdapter(val taskListID: ID,
                             onScrollAcrossEmptyList()
                         }
                     }
-
                 }
             }
             true
         }
+    }
+
+    // This can be used to find the closest ViewHolder to the current touch position
+    // so that we can do stuff with it.
+    // This was made as a way to possibly replace the current dragging method but more importantly
+    // to fix the dragging over an empty area problem, this function will essentially return
+    // the ViewHolder vertically closest to the given point but within the margin offset,
+    // currently 8dp.
+    // If we call this and it returns null, but our list is not empty, we can safely assume the
+    // user is dragging over the empty part of a list at the bottom, (not an empty list though)
+    // we can then act accordingly
+    private inline fun RecyclerView.findVerticallyClosestChildViewHolderUnder(
+            x: Float, y: Float): ViewHolder? {
+        val margin = convertDpToPx(8F, context)
+
+        forEach {
+            val rect = Rect()
+            it.getGlobalVisibleRect(rect)
+        }
+
+
+        (0..margin).forEach {
+            findChildViewUnder(x, y + it).also { if (it != null) return findContainingViewHolder(it) }
+            findChildViewUnder(x, y - it).also { if (it != null) return findContainingViewHolder(it) }
+        }
+        return null
+    }
+
+    private inline fun RecyclerView.findVerticallyClosestChildViewHolderUnderTouchPoint(
+            touchPoint: Point): ViewHolder? {
+        val margin = convertDpToPx(8F, context)
+        val localPoint = Point()
+
+        val rvRect = Rect()
+        this.getGlobalVisibleRect(rvRect)
+        localPoint.apply {
+            x = touchPoint.x - rvRect.left
+            y = touchPoint.y - rvRect.top
+        }
+
+        logE(localPoint)
+
+
+        // finChildView uses distances relative to the recycler view not absolute points, the
+        // touch point is an absolute point, so we need to figure out a way to translate the
+        // points correctly
+        (0..margin).forEach {
+            findChildViewUnder(localPoint.x.toFloat(), localPoint.y.toFloat() + it).also {
+                if (it != null) return findContainingViewHolder(it)
+            }
+            findChildViewUnder(localPoint.x.toFloat(), localPoint.y.toFloat() - it).also {
+                if (it != null) return findContainingViewHolder(it)
+            }
+        }
+        return null
     }
 
     override fun getItemCount() = taskList.size
