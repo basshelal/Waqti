@@ -9,12 +9,13 @@
 
     <ImageView
         android:id="@+id/leftImageView"
-        android:layout_width="35dp"
+        android:layout_width="50dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:scaleType="fitCenter"
         android:src="@drawable/menu_icon"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -37,12 +38,13 @@
 
     <ImageView
         android:id="@+id/rightImageView"
-        android:layout_width="35dp"
+        android:layout_width="50dp"
         android:layout_height="0dp"
-        android:layout_marginEnd="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"
         android:focusable="true"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
         android:scaleType="fitCenter"
         android:src="@drawable/overflow_icon"
         app:layout_constraintBottom_toBottomOf="parent"
