@@ -18,6 +18,8 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.fadeIn
+import uk.whitecrescent.waqti.fadeOut
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
@@ -126,14 +128,15 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
             }
         }
 
-        delete_floatingButton.apply {
+        delete_imageView.apply {
             alpha = 0F
             setOnDragListener { _, event ->
                 if (event.localState is DragEventLocalState) {
                     val draggingState = event.localState as DragEventLocalState
                     when (event.action) {
                         DragEvent.ACTION_DRAG_STARTED -> {
-                            delete_floatingButton.alpha = 1F
+                            alpha = 1F
+                            fadeIn(200)
                         }
                         DragEvent.ACTION_DRAG_ENTERED -> {
                             (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrateCompat(50)
@@ -153,7 +156,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                             }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
                         }
                         DragEvent.ACTION_DRAG_ENDED -> {
-                            delete_floatingButton.alpha = 0F
+                            fadeOut(200)
                         }
                     }
                 }

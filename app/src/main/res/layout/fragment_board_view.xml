@@ -41,14 +41,15 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:rippleColor="@color/white" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/delete_floatingButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.mikhaellopez.circularimageview.CircularImageView
+        android:id="@+id/delete_imageView"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:clickable="false"
-        android:src="@android:drawable/ic_menu_close_clear_cancel"
-        app:backgroundTint="@color/errorColor"
-        app:fabSize="normal"
+        android:scaleType="centerInside"
+        android:src="@drawable/delete_icon"
+        app:civ_background_color="@color/errorColor"
+        app:civ_border="false"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"

@@ -2,6 +2,7 @@
 
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
+import android.content.ClipData
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Point
@@ -435,7 +436,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                 setOnLongClickListener {
                     it.clearFocusAndHideSoftKeyboard()
                     it.startDragCompat(
-                            null,
+                            ClipData.newPlainText("", ""),
                             ShadowBuilder(this),
                             DragEventLocalState(taskID, taskListID, adapterPosition),
                             View.DRAG_FLAG_OPAQUE
