@@ -20,7 +20,6 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
-import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
@@ -56,7 +55,6 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
     override fun setUpViews(element: Board) {
         boardView.adapter = mainActivityViewModel.boardAdapter
-        doInBackground {
             mainActivity.resetNavBarStatusBarColor()
 
             board_appBar.apply {
@@ -262,7 +260,6 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     true
                 }
             }
-        }
     }
 
     override fun onDestroy() {

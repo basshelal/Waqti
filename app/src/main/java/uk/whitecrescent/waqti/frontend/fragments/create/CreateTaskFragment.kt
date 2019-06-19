@@ -17,7 +17,6 @@ import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
-import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
@@ -53,19 +52,19 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     }
 
     override fun setUpViews() {
-        doInBackground {
-            setUpAppBar()
 
-            setUpButton()
+        setUpAppBar()
 
-            setUpTimeViews()
+        setUpButton()
 
-            setUpDeadlineViews()
+        setUpTimeViews()
 
-            setUpDescriptionViews()
+        setUpDeadlineViews()
 
-            hideProperties()
-        }
+        setUpDescriptionViews()
+
+        hideProperties()
+
     }
 
     private inline fun setUpAppBar() {

@@ -13,7 +13,6 @@ import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.hideSoftKeyboard
@@ -38,11 +37,11 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
     }
 
     override fun setUpViews() {
-        doInBackground {
-            setUpAppBar()
 
-            setUpButton()
-        }
+        setUpAppBar()
+
+        setUpButton()
+
     }
 
     private inline fun setUpAppBar() {

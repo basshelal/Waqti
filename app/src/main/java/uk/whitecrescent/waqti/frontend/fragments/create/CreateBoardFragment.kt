@@ -12,7 +12,6 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
-import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.hideSoftKeyboard
@@ -33,11 +32,11 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
     }
 
     override fun setUpViews() {
-        doInBackground {
-            setUpButton()
 
-            setUpAppBar()
-        }
+        setUpButton()
+
+        setUpAppBar()
+
     }
 
     private inline fun setUpAppBar() {

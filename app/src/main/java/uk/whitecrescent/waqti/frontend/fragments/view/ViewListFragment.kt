@@ -18,7 +18,6 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
-import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
@@ -52,116 +51,116 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     override fun setUpViews(element: TaskList) {
         taskList_recyclerView.adapter = mainActivityViewModel.boardAdapter
                 ?.getOrCreateListAdapter(listID)
-        doInBackground {
-            mainActivity.resetNavBarStatusBarColor()
-            taskList_appBar.apply {
-                setBackgroundColor(Caches.boards[boardID].barColor)
-                editTextView.apply {
-                    mainActivity.hideableEditTextView = this
-                    fun update() {
-                        text.also {
-                            if (it != null &&
-                                    it.isNotBlank() &&
-                                    it.isNotEmpty() &&
-                                    it.toString() != element.name)
-                                Caches.taskLists[listID].name = it.toString()
-                        }
-                    }
-                    text = SpannableStringBuilder(element.name)
-                    addAfterTextChangedListener { update() }
-                    setOnEditorActionListener { _, actionId, _ ->
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            update()
-                            clearFocusAndHideSoftKeyboard()
-                            true
-                        } else false
+
+        mainActivity.resetNavBarStatusBarColor()
+        taskList_appBar.apply {
+            setBackgroundColor(Caches.boards[boardID].barColor)
+            editTextView.apply {
+                mainActivity.hideableEditTextView = this
+                fun update() {
+                    text.also {
+                        if (it != null &&
+                                it.isNotBlank() &&
+                                it.isNotEmpty() &&
+                                it.toString() != element.name)
+                            Caches.taskLists[listID].name = it.toString()
                     }
                 }
-                popupMenuOnItemClicked {
-                    when (it.itemId) {
-                        R.id.deleteList_menuItem -> {
-                            ConfirmDialog().apply {
-                                title = this@ViewListFragment.mainActivity.getString(R.string.deleteListQuestion)
-                                message = this@ViewListFragment.mainActivity.getString(R.string.deleteListDetails)
-                                onConfirm = {
-                                    dismiss()
-                                    Caches.deleteTaskList(listID, boardID)
-                                    finish()
-                                }
-                            }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
-                            true
-                        }
-                        R.id.clearList_menuItem -> {
-                            ConfirmDialog().apply {
-                                title = this@ViewListFragment.mainActivity.getString(R.string.clearListQuestion)
-                                message = this@ViewListFragment.mainActivity.getString(R.string.clearListDetails)
-                                onConfirm = {
-                                    dismiss()
-                                    Caches.taskLists[listID].clear().update()
-                                    this@ViewListFragment.taskList_recyclerView.listAdapter.notifyDataSetChanged()
-                                }
-                            }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
-                            true
-                        }
-                        else -> false
-                    }
+                text = SpannableStringBuilder(element.name)
+                addAfterTextChangedListener { update() }
+                setOnEditorActionListener { _, actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        update()
+                        clearFocusAndHideSoftKeyboard()
+                        true
+                    } else false
                 }
             }
-
-            taskList_recyclerView.apply {
-                background = Caches.boards[boardID].backgroundColor.toColorDrawable
-                addOnScrollListener(this@ViewListFragment.addTask_floatingButton.verticalFABOnScrollListener)
-            }
-
-            addTask_floatingButton.setOnClickListener {
-                @GoToFragment
-                it.mainActivity.supportFragmentManager.commitTransaction {
-
-                    it.mainActivityViewModel.boardID = boardID
-                    it.mainActivityViewModel.listID = listID
-
-                    it.clearFocusAndHideSoftKeyboard()
-
-                    replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
-                    addToBackStack(null)
-                }
-            }
-
-            delete_floatingButton.apply {
-                alpha = 0F
-                setOnDragListener { _, event ->
-                    if (event.localState is DragEventLocalState) {
-                        val draggingState = event.localState as DragEventLocalState
-                        when (event.action) {
-                            DragEvent.ACTION_DRAG_STARTED -> {
-                                delete_floatingButton.alpha = 1F
+            popupMenuOnItemClicked {
+                when (it.itemId) {
+                    R.id.deleteList_menuItem -> {
+                        ConfirmDialog().apply {
+                            title = this@ViewListFragment.mainActivity.getString(R.string.deleteListQuestion)
+                            message = this@ViewListFragment.mainActivity.getString(R.string.deleteListDetails)
+                            onConfirm = {
+                                dismiss()
+                                Caches.deleteTaskList(listID, boardID)
+                                finish()
                             }
-                            DragEvent.ACTION_DRAG_ENTERED -> {
-                                (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrateCompat(50)
-                            }
-                            DragEvent.ACTION_DROP -> {
-                                ConfirmDialog().apply {
-                                    title = this@ViewListFragment.mainActivity.getString(R.string.deleteTaskQuestion)
-                                    onConfirm = {
-                                        Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
-                                        this@ViewListFragment.taskList_recyclerView.apply {
-                                            listAdapter.notifyItemRemoved(
-                                                    findViewHolderForItemId(draggingState.taskID).adapterPosition
-                                            )
-                                        }
-                                        this.dismiss()
-                                    }
-                                }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
-                            }
-                            DragEvent.ACTION_DRAG_ENDED -> {
-                                delete_floatingButton.alpha = 0F
-                            }
-                        }
+                        }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+                        true
                     }
-                    true
+                    R.id.clearList_menuItem -> {
+                        ConfirmDialog().apply {
+                            title = this@ViewListFragment.mainActivity.getString(R.string.clearListQuestion)
+                            message = this@ViewListFragment.mainActivity.getString(R.string.clearListDetails)
+                            onConfirm = {
+                                dismiss()
+                                Caches.taskLists[listID].clear().update()
+                                this@ViewListFragment.taskList_recyclerView.listAdapter.notifyDataSetChanged()
+                            }
+                        }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+                        true
+                    }
+                    else -> false
                 }
             }
         }
+
+        taskList_recyclerView.apply {
+            background = Caches.boards[boardID].backgroundColor.toColorDrawable
+            addOnScrollListener(this@ViewListFragment.addTask_floatingButton.verticalFABOnScrollListener)
+        }
+
+        addTask_floatingButton.setOnClickListener {
+            @GoToFragment
+            it.mainActivity.supportFragmentManager.commitTransaction {
+
+                it.mainActivityViewModel.boardID = boardID
+                it.mainActivityViewModel.listID = listID
+
+                it.clearFocusAndHideSoftKeyboard()
+
+                replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
+                addToBackStack(null)
+            }
+        }
+
+        delete_floatingButton.apply {
+            alpha = 0F
+            setOnDragListener { _, event ->
+                if (event.localState is DragEventLocalState) {
+                    val draggingState = event.localState as DragEventLocalState
+                    when (event.action) {
+                        DragEvent.ACTION_DRAG_STARTED -> {
+                            delete_floatingButton.alpha = 1F
+                        }
+                        DragEvent.ACTION_DRAG_ENTERED -> {
+                            (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrateCompat(50)
+                        }
+                        DragEvent.ACTION_DROP -> {
+                            ConfirmDialog().apply {
+                                title = this@ViewListFragment.mainActivity.getString(R.string.deleteTaskQuestion)
+                                onConfirm = {
+                                    Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
+                                    this@ViewListFragment.taskList_recyclerView.apply {
+                                        listAdapter.notifyItemRemoved(
+                                                findViewHolderForItemId(draggingState.taskID).adapterPosition
+                                        )
+                                    }
+                                    this.dismiss()
+                                }
+                            }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+                        }
+                        DragEvent.ACTION_DRAG_ENDED -> {
+                            delete_floatingButton.alpha = 0F
+                        }
+                    }
+                }
+                true
+            }
+        }
+
     }
 
     override fun finish() {

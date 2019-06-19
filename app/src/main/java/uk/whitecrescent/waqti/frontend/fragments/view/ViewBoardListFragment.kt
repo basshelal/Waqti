@@ -16,7 +16,6 @@ import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
-import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.CREATE_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
@@ -48,82 +47,80 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
     override fun setUpViews(element: BoardList) {
         boardsList_recyclerView.adapter = BoardListAdapter(element.id, viewMode)
-        doInBackground {
-            mainActivity.resetNavBarStatusBarColor()
+        mainActivity.resetNavBarStatusBarColor()
 
-            boardList_appBar.apply {
-                editTextView.apply {
-                    mainActivity.hideableEditTextView = this
-                    fun update() {
-                        if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
-                            if (text.toString() != mainActivity.waqtiPreferences.boardListName) {
-                                mainActivity.waqtiPreferences.boardListName = text.toString()
-                            }
+        boardList_appBar.apply {
+            editTextView.apply {
+                mainActivity.hideableEditTextView = this
+                fun update() {
+                    if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
+                        if (text.toString() != mainActivity.waqtiPreferences.boardListName) {
+                            mainActivity.waqtiPreferences.boardListName = text.toString()
                         }
-                    }
-                    text = SpannableStringBuilder(mainActivity.waqtiPreferences.boardListName)
-                    addAfterTextChangedListener { update() }
-                    setOnEditorActionListener { _, actionId, _ ->
-                        if (actionId == EditorInfo.IME_ACTION_DONE) {
-                            update()
-                            clearFocusAndHideSoftKeyboard()
-                            true
-                        } else false
                     }
                 }
-                rightImageView.apply {
-                    fun update() {
-                        when (viewMode) {
-                            ViewMode.LIST_VERTICAL -> {
-                                setImageResource(R.drawable.grid_icon)
-                                boardsList_recyclerView.changeViewMode(ViewMode.LIST_VERTICAL)
-
-                                mainActivity.navigationView.menu
-                                        .findItem(R.id.allBoards_navDrawerItem)
-                                        .setIcon(R.drawable.list_icon)
-                            }
-                            ViewMode.GRID_VERTICAL -> {
-                                setImageResource(R.drawable.list_icon)
-                                boardsList_recyclerView.changeViewMode(ViewMode.GRID_VERTICAL)
-                                mainActivity.navigationView.menu
-                                        .findItem(R.id.allBoards_navDrawerItem)
-                                        .setIcon(R.drawable.grid_icon)
-                            }
-                        }
-                        mainActivity.waqtiPreferences.boardListViewMode = viewMode
-                    }
-                    update()
-                    setOnClickListener {
-                        viewMode = viewMode.switch()
+                text = SpannableStringBuilder(mainActivity.waqtiPreferences.boardListName)
+                addAfterTextChangedListener { update() }
+                setOnEditorActionListener { _, actionId, _ ->
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
-                    }
+                        clearFocusAndHideSoftKeyboard()
+                        true
+                    } else false
                 }
             }
+            rightImageView.apply {
+                fun update() {
+                    when (viewMode) {
+                        ViewMode.LIST_VERTICAL -> {
+                            setImageResource(R.drawable.grid_icon)
+                            boardsList_recyclerView.changeViewMode(ViewMode.LIST_VERTICAL)
 
-            addBoard_FloatingButton.setOnClickListener {
-                @GoToFragment
-                it.mainActivity.supportFragmentManager.commitTransaction {
-
-                    it.mainActivityViewModel.boardListPosition =
-                            false to boardsList_recyclerView.boardListAdapter.itemCount - 1
-
-                    it.clearFocusAndHideSoftKeyboard()
-
-                    replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
-                    addToBackStack(null)
-                }
-            }
-
-            boardsList_recyclerView.apply {
-                if (this.boardListAdapter.itemCount > 0) {
-                    postDelayed(100L) {
-                        mainActivityViewModel.boardListPosition.apply {
-                            if (first) smoothScrollToPosition(second)
+                            mainActivity.navigationView.menu
+                                    .findItem(R.id.allBoards_navDrawerItem)
+                                    .setIcon(R.drawable.list_icon)
+                        }
+                        ViewMode.GRID_VERTICAL -> {
+                            setImageResource(R.drawable.list_icon)
+                            boardsList_recyclerView.changeViewMode(ViewMode.GRID_VERTICAL)
+                            mainActivity.navigationView.menu
+                                    .findItem(R.id.allBoards_navDrawerItem)
+                                    .setIcon(R.drawable.grid_icon)
                         }
                     }
+                    mainActivity.waqtiPreferences.boardListViewMode = viewMode
                 }
-                addOnScrollListener(this@ViewBoardListFragment.addBoard_FloatingButton.verticalFABOnScrollListener)
+                update()
+                setOnClickListener {
+                    viewMode = viewMode.switch()
+                    update()
+                }
             }
+        }
+
+        addBoard_FloatingButton.setOnClickListener {
+            @GoToFragment
+            it.mainActivity.supportFragmentManager.commitTransaction {
+
+                it.mainActivityViewModel.boardListPosition =
+                        false to boardsList_recyclerView.boardListAdapter.itemCount - 1
+
+                it.clearFocusAndHideSoftKeyboard()
+
+                replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
+                addToBackStack(null)
+            }
+        }
+
+        boardsList_recyclerView.apply {
+            if (this.boardListAdapter.itemCount > 0) {
+                postDelayed(100L) {
+                    mainActivityViewModel.boardListPosition.apply {
+                        if (first) smoothScrollToPosition(second)
+                    }
+                }
+            }
+            addOnScrollListener(this@ViewBoardListFragment.addBoard_FloatingButton.verticalFABOnScrollListener)
         }
     }
 
