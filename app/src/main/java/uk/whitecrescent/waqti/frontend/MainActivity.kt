@@ -132,6 +132,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        val s = super.dispatchTouchEvent(event)
         currentTouchPoint.set(event.rawX.toInt(), event.rawY.toInt())
         if (event.action == MotionEvent.ACTION_DOWN) {
             if (hideableEditTextView.isVisible) {
@@ -142,7 +143,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        return super.dispatchTouchEvent(event)
+        return s
     }
 
     inline val dimensions: Pair<Int, Int>

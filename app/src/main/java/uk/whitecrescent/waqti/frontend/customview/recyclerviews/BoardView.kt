@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
@@ -29,6 +30,7 @@ import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
+import uk.whitecrescent.waqti.logE
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
@@ -49,6 +51,8 @@ class BoardView
 
     inline val boardAdapter: BoardAdapter
         get() = this.adapter as BoardAdapter
+    inline val linearLayoutManager: LinearLayoutManager
+        get() = this.layoutManager as LinearLayoutManager
 
     init {
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false).also {
@@ -57,6 +61,7 @@ class BoardView
         }
         setRecycledViewPool(listViewHolderPool)
         this.isNestedScrollingEnabled = false
+        logE("New BoardView")
     }
 }
 
@@ -69,6 +74,7 @@ class BoardAdapter(val boardID: ID)
     lateinit var itemTouchHelper: ItemTouchHelper
     lateinit var snapHelper: PagerSnapHelper
     var taskListWidth: Int = 600
+    var clickedTaskListView: TaskListView? = null
 
     private val taskListAdapters = ArrayList<TaskListAdapter>()
 
@@ -96,6 +102,15 @@ class BoardAdapter(val boardID: ID)
     }
 
     private fun attachHelpers() {
+
+        boardView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == SCROLL_STATE_IDLE && recyclerView is BoardView) {
+                    val currentBoardPos = recyclerView.linearLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    boardView.mainActivityViewModel.boardPosition.changeTo(true to currentBoardPos)
+                }
+            }
+        })
 
         itemTouchHelper = ItemTouchHelper(object : SimpleItemTouchHelperCallback() {
 
@@ -128,13 +143,7 @@ class BoardAdapter(val boardID: ID)
         })
         itemTouchHelper.attachToRecyclerView(boardView)
 
-        snapHelper = object : PagerSnapHelper() {
-            override fun findTargetSnapPosition(layoutManager: RecyclerView.LayoutManager?, velocityX: Int, velocityY: Int): Int {
-                val currentBoardPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
-                boardView.mainActivityViewModel.boardPosition.changeTo(true to currentBoardPos)
-                return currentBoardPos
-            }
-        }
+        snapHelper = PagerSnapHelper()
         snapHelper.attachToRecyclerView(boardView)
     }
 
@@ -221,6 +230,8 @@ class BoardViewHolder(view: View,
                 setOnClickListener {
                     @GoToFragment
                     it.mainActivity.supportFragmentManager.commitTransaction {
+
+                        adapter.clickedTaskListView = taskListView
 
                         it.mainActivityViewModel.listID = adapter.board[adapterPosition].id
 

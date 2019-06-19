@@ -9,6 +9,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.R
@@ -27,6 +29,7 @@ import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalSt
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.vibrateCompat
+import uk.whitecrescent.waqti.logE
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
@@ -48,6 +51,29 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
         boardID = mainActivityViewModel.boardID
 
         setUpViews(Caches.taskLists[listID])
+
+        taskList_recyclerView.visibility = View.GONE
+
+        mainActivityViewModel.boardAdapter?.clickedTaskListView?.let {
+            (it.parent as? ViewGroup)?.removeView(it)
+            (taskList_recyclerView.parent as ConstraintLayout).addView(it)
+        }
+
+        val lp = taskList_recyclerView.layoutParams as ConstraintLayout.LayoutParams
+        logE(lp.topToBottom)
+        logE(R.id.taskList_appBar)
+        logE(lp.bottomToBottom)
+        logE(lp.width)
+        logE(lp.height)
+
+
+        taskList_recyclerView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            topToBottom = lp.topToBottom
+            bottomToBottom = lp.bottomToBottom
+            width = lp.width
+            height = lp.height
+        }
+
     }
 
     override fun setUpViews(element: TaskList) {

@@ -18,7 +18,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.view.children
-import androidx.core.view.forEach
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -104,13 +103,15 @@ class TaskListAdapter(val taskListID: ID,
         taskListView.setOnDragListener { _, event ->
             val draggingState = event.localState as DragEventLocalState
             when (event.action) {
-                DragEvent.ACTION_DRAG_ENTERED -> {
-                    if (this.taskListID != draggingState.taskListID &&
-                            draggingState.adapterPosition > lastPosition) {
-                        val otherAdapter = boardAdapter.getListAdapter(draggingState.taskListID)
-                        if (otherAdapter != null) {
-                            onDragAcrossEmptyList(draggingState, otherAdapter)
-                            onScrollAcrossEmptyList()
+                DragEvent.ACTION_DRAG_LOCATION -> {
+                    if (this.taskListID != draggingState.taskListID) {
+                        val lastViewHolderY = taskListView.findViewHolderForAdapterPosition(lastPosition)?.itemView?.y
+                        if (taskList.isEmpty() || (lastViewHolderY != null && event.y > lastViewHolderY)) {
+                            val otherAdapter = boardAdapter.getListAdapter(draggingState.taskListID)
+                            if (otherAdapter != null) {
+                                onDragAcrossEmptyList(draggingState, otherAdapter)
+                                onScrollAcrossEmptyList()
+                            }
                         }
                     }
                 }
@@ -128,23 +129,6 @@ class TaskListAdapter(val taskListID: ID,
     // If we call this and it returns null, but our list is not empty, we can safely assume the
     // user is dragging over the empty part of a list at the bottom, (not an empty list though)
     // we can then act accordingly
-    private inline fun RecyclerView.findVerticallyClosestChildViewHolderUnder(
-            x: Float, y: Float): ViewHolder? {
-        val margin = convertDpToPx(8F, context)
-
-        forEach {
-            val rect = Rect()
-            it.getGlobalVisibleRect(rect)
-        }
-
-
-        (0..margin).forEach {
-            findChildViewUnder(x, y + it).also { if (it != null) return findContainingViewHolder(it) }
-            findChildViewUnder(x, y - it).also { if (it != null) return findContainingViewHolder(it) }
-        }
-        return null
-    }
-
     private inline fun RecyclerView.findVerticallyClosestChildViewHolderUnderTouchPoint(
             touchPoint: Point): ViewHolder? {
         val margin = convertDpToPx(8F, context)
@@ -156,13 +140,6 @@ class TaskListAdapter(val taskListID: ID,
             x = touchPoint.x - rvRect.left
             y = touchPoint.y - rvRect.top
         }
-
-        logE(localPoint)
-
-
-        // finChildView uses distances relative to the recycler view not absolute points, the
-        // touch point is an absolute point, so we need to figure out a way to translate the
-        // points correctly
         (0..margin).forEach {
             findChildViewUnder(localPoint.x.toFloat(), localPoint.y.toFloat() + it).also {
                 if (it != null) return findContainingViewHolder(it)
@@ -170,7 +147,15 @@ class TaskListAdapter(val taskListID: ID,
             findChildViewUnder(localPoint.x.toFloat(), localPoint.y.toFloat() - it).also {
                 if (it != null) return findContainingViewHolder(it)
             }
+            findChildViewUnder(localPoint.x.toFloat() + it, localPoint.y.toFloat()).also {
+                if (it != null) return findContainingViewHolder(it)
+            }
+            findChildViewUnder(localPoint.x.toFloat() - it, localPoint.y.toFloat()).also {
+                if (it != null) return findContainingViewHolder(it)
+            }
         }
+        logE("$touchPoint fails with $localPoint on $taskListID")
+        logE(rvRect)
         return null
     }
 

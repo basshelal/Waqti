@@ -9,8 +9,8 @@ class MainActivityViewModel : ViewModel() {
     var boardID: ID = 0L
     var listID: ID = 0L
     var taskID: ID = 0L
-    var boardPosition = ChangedPositionPair(false, 0)
     var boardListPosition = ChangedPositionPair(false, 0)
+    var boardPosition = ChangedPositionPair(false, 0)
     var boardAdapter: BoardAdapter? = null
 
 }
