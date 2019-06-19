@@ -300,12 +300,12 @@ class TaskListAdapter(val taskListID: ID,
             // The list that we will be scrolling to
             val newBoardPosition = boardAdapter.indexOfAdapter(this@TaskListAdapter)
 
-            val currentBoardPosition = mainActivityViewModel.boardPosition.second
+            val currentBoardPosition = mainActivityViewModel.boardPosition.position
 
             if (newBoardPosition > currentBoardPosition) scrollRight(currentBoardPosition)
             else if (newBoardPosition < currentBoardPosition) scrollLeft(currentBoardPosition)
 
-            mainActivityViewModel.boardPosition = true to newBoardPosition
+            mainActivityViewModel.boardPosition.changeTo(true to newBoardPosition)
 
         }
     }
@@ -316,12 +316,12 @@ class TaskListAdapter(val taskListID: ID,
             // The list that we will be scrolling to
             val newBoardPosition = boardAdapter.indexOfAdapter(this@TaskListAdapter)
 
-            val currentBoardPosition = mainActivityViewModel.boardPosition.second
+            val currentBoardPosition = mainActivityViewModel.boardPosition.position
 
             if (newBoardPosition > currentBoardPosition) scrollRight(currentBoardPosition)
             else if (newBoardPosition < currentBoardPosition) scrollLeft(currentBoardPosition)
 
-            mainActivityViewModel.boardPosition = true to newBoardPosition
+            mainActivityViewModel.boardPosition.changeTo(true to newBoardPosition)
 
         }
     }

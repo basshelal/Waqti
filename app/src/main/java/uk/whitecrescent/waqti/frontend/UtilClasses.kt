@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
-
 open class SimpleTextWatcher : TextWatcher {
 
     override fun afterTextChanged(editable: Editable?) {}
@@ -76,6 +75,17 @@ open class FABOnScrollListener(val fab: FloatingActionButton, val orientation: O
 
     enum class Orientation {
         HORIZONTAL, VERTICAL
+    }
+}
+
+data class ChangedPositionPair(var positionChanged: Boolean,
+                               var position: Int) {
+
+    inline fun changeTo(pair: Pair<Boolean, Int>) = changeTo(pair.first, pair.second)
+
+    inline fun changeTo(positionChanged: Boolean, position: Int) {
+        this.positionChanged = positionChanged
+        this.position = position
     }
 }
 

@@ -122,7 +122,7 @@ class BoardAdapter(val boardID: ID)
                 board.move(fromPos, toPos).update()
                 matchOrder()
                 notifyItemMoved(fromPos, toPos)
-                boardView.mainActivityViewModel.boardPosition = true to toPos
+                boardView.mainActivityViewModel.boardPosition.changeTo(true to toPos)
             }
 
         })
@@ -131,7 +131,7 @@ class BoardAdapter(val boardID: ID)
         snapHelper = object : PagerSnapHelper() {
             override fun findTargetSnapPosition(layoutManager: RecyclerView.LayoutManager?, velocityX: Int, velocityY: Int): Int {
                 val currentBoardPos = super.findTargetSnapPosition(layoutManager, velocityX, velocityY)
-                boardView.mainActivityViewModel.boardPosition = true to currentBoardPos
+                boardView.mainActivityViewModel.boardPosition.changeTo(true to currentBoardPos)
                 return currentBoardPos
             }
         }

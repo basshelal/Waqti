@@ -16,15 +16,18 @@ abstract class WaqtiFragment(val animate: Boolean = true) : Fragment() {
         super.onCreate(savedInstanceState)
 
         if (animate) {
-            sharedElementEnterTransition = TransitionInflater.from(context)
+            TransitionInflater.from(context)
                     .inflateTransition(R.transition.fade_transit)
-            enterTransition = TransitionInflater.from(context)
-                    .inflateTransition(R.transition.fade_transit)
+                    .also {
 
-            sharedElementReturnTransition = TransitionInflater.from(context)
-                    .inflateTransition(R.transition.fade_transit)
-            exitTransition = TransitionInflater.from(context)
-                    .inflateTransition(R.transition.fade_transit)
+                        enterTransition = it
+
+                        returnTransition = it
+
+                        reenterTransition = it
+
+                        exitTransition = it
+                    }
         }
     }
 

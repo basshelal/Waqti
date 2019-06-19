@@ -64,7 +64,7 @@ class BoardListView
                     boardList.move(fromPos, toPos).update()
                     notifyItemMoved(fromPos, toPos)
                 }
-                mainActivityViewModel.boardListPosition = true to toPos
+                mainActivityViewModel.boardListPosition.changeTo(true to toPos)
             }
 
         }).attachToRecyclerView(this)
@@ -129,7 +129,7 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
 
                     it.mainActivityViewModel.apply {
                         boardID = boardList[holder.adapterPosition].id
-                        boardListPosition = false to position
+                        boardListPosition.changeTo(false to position)
                     }
 
                     replace(R.id.fragmentContainer, ViewBoardFragment(), BOARD_FRAGMENT)

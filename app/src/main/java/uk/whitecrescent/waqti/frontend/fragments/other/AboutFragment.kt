@@ -25,49 +25,49 @@ class AboutFragment : WaqtiFragment() {
         setUpViews()
     }
 
-    private inline fun setUpViews() {
+    private fun setUpViews() {
         mainActivity.resetNavBarStatusBarColor()
-        about_linearLayout.addView(
-                AboutPage(mainActivity)
-                        .isRTL(false)
+        val view = AboutPage(mainActivity)
+                .isRTL(false)
 
-                        // Image and Description
-                        .setImage(R.drawable.waqti_icon)
-                        .setDescription(getString(R.string.waqtiDescription) +
-                                "\n\n" + getString(R.string.waqtiBetaText))
+                // Image and Description
+                .setImage(R.drawable.waqti_icon)
+                .setDescription(getString(R.string.waqtiDescription) +
+                        "\n\n" + getString(R.string.waqtiBetaText))
 
-                        // Waqti is free and open source
-                        .addHeading(getString(R.string.waqtiOpenSource))
-                        .addGitHub("basshelal/Waqti-Android", "Fork Waqti on GitHub")
-                        .addLink("MIT License",
-                                "https://github.com/basshelal/Waqti-Android/blob/master/LICENSE")
+                // Waqti is free and open source
+                .addHeading(getString(R.string.waqtiOpenSource))
+                .addGitHub("basshelal/Waqti-Android", "Fork Waqti on GitHub")
+                .addLink("MIT License",
+                        "https://github.com/basshelal/Waqti-Android/blob/master/LICENSE")
 
-                        // Open Source Libraries Used
-                        .addHeading(getString(R.string.openSourceLibraries))
-                        .addLibrary("JetBrains/kotlin", "Kotlin")
-                        .addLibrary("objectbox/objectbox-java", "ObjectBox")
-                        .addLibrary("ReactiveX/RxJava", "RxJava")
-                        .addLibrary("ReactiveX/RxAndroid", "RxAndroid")
-                        .addLibrary("junit-team/junit5", "JUnit5")
-                        .addLibrary("JakeWharton/ThreeTenABP", "ThreeTenABP")
-                        .addLibrary("google/gson", "Gson")
-                        .addLibrary("material-components/material-components-android", "Material Components for Android")
-                        .addLibrary("florent37/ShapeOfView", "ShapeOfView")
-                        .addLibrary("Kotlin/anko", "Anko")
-                        .addLibrary("square/leakcanary", "LeakCanary")
-                        .addLibrary("KeenenCharles/AndroidUnplash", "Android Unsplash")
-                        .addLibrary("lopspower/CircularImageView", "CircularImageView")
-                        .addLibrary("square/retrofit", "Retrofit")
-                        .addLibrary("bumptech/glide", "Glide")
-                        .addLibrary("medyo/android-about-page", "Android About Page")
+                // Open Source Libraries Used
+                .addHeading(getString(R.string.openSourceLibraries))
+                .addLibrary("JetBrains/kotlin", "Kotlin")
+                .addLibrary("objectbox/objectbox-java", "ObjectBox")
+                .addLibrary("ReactiveX/RxJava", "RxJava")
+                .addLibrary("ReactiveX/RxAndroid", "RxAndroid")
+                .addLibrary("junit-team/junit5", "JUnit5")
+                .addLibrary("JakeWharton/ThreeTenABP", "ThreeTenABP")
+                .addLibrary("google/gson", "Gson")
+                .addLibrary("material-components/material-components-android", "Material Components for Android")
+                .addLibrary("florent37/ShapeOfView", "ShapeOfView")
+                .addLibrary("Kotlin/anko", "Anko")
+                .addLibrary("square/leakcanary", "LeakCanary")
+                .addLibrary("KeenenCharles/AndroidUnplash", "Android Unsplash")
+                .addLibrary("lopspower/CircularImageView", "CircularImageView")
+                .addLibrary("square/retrofit", "Retrofit")
+                .addLibrary("bumptech/glide", "Glide")
+                .addLibrary("medyo/android-about-page", "Android About Page")
 
-                        // About the Developer
-                        .addHeading(getString(R.string.aboutTheDeveloper))
-                        .addGitHub("basshelal", "Bassam Helal on GitHub")
-                        .addLinkedIn("bassamhelal", "Bassam Helal on LinkedIn")
-                        .create()
-        )
-
+                // About the Developer
+                .addHeading(getString(R.string.aboutTheDeveloper))
+                .addGitHub("basshelal", "Bassam Helal on GitHub")
+                .addLinkedIn("bassamhelal", "Bassam Helal on LinkedIn")
+                .create()
+        view.visibility = View.INVISIBLE
+        about_linearLayout.addView(view)
+        view.visibility = View.VISIBLE
     }
 
     override fun finish() {

@@ -38,7 +38,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
         super.onActivityCreated(savedInstanceState)
 
 
-        mainActivityViewModel.boardPosition = false to 0
+        mainActivityViewModel.boardPosition.changeTo(false to 0)
 
         viewMode = mainActivity.waqtiPreferences.boardListViewMode
 
@@ -102,8 +102,8 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
             @GoToFragment
             it.mainActivity.supportFragmentManager.commitTransaction {
 
-                it.mainActivityViewModel.boardListPosition =
-                        false to boardsList_recyclerView.boardListAdapter.itemCount - 1
+                it.mainActivityViewModel.boardListPosition
+                        .changeTo(false to boardsList_recyclerView.boardListAdapter.itemCount - 1)
 
                 it.clearFocusAndHideSoftKeyboard()
 
@@ -116,7 +116,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
             if (this.boardListAdapter.itemCount > 0) {
                 postDelayed(100L) {
                     mainActivityViewModel.boardListPosition.apply {
-                        if (first) smoothScrollToPosition(second)
+                        if (positionChanged) smoothScrollToPosition(position)
                     }
                 }
             }

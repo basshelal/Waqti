@@ -72,7 +72,8 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 
     override fun finish() {
         listName_editText.hideSoftKeyboard()
-        mainActivityViewModel.boardPosition = true to mainActivityViewModel.boardPosition.second + 1
+        mainActivityViewModel.boardPosition
+                .changeTo(true to mainActivityViewModel.boardPosition.position + 1)
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }
