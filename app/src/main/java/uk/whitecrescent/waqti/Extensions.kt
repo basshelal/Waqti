@@ -246,7 +246,7 @@ inline fun <T> T?.ifNotNull(func: T.() -> Unit): T? {
 inline fun <T> T.androidObservable(): Observable<T> {
     return Observable.just(this)
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribeOn(Schedulers.single())
+            .subscribeOn(Schedulers.computation())
 }
 
 inline fun <reified T> T.doInBackgroundAsync(crossinline onNext: T.() -> Unit): Disposable {

@@ -25,6 +25,7 @@ import kotlinx.android.synthetic.main.task_card.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.backend.persistence.Caches
+import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
@@ -41,6 +42,13 @@ import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.notifySwapped
 import kotlin.math.roundToInt
 
+private val taskViewHolderPool = object : RecyclerView.RecycledViewPool() {
+
+    override fun setMaxRecycledViews(viewType: Int, max: Int) {
+        super.setMaxRecycledViews(viewType, TASKS_CACHE_SIZE)
+    }
+}
+
 private const val scrollAmount = 1.718281828459045 // E - 1
 private const val draggingViewAlpha = 0F
 private val defaultInterpolator = AccelerateDecelerateInterpolator()
@@ -55,8 +63,10 @@ class TaskListView
 
     init {
         layoutManager = LinearLayoutManager(context, VERTICAL, false).also {
+            it.isItemPrefetchEnabled = true
             it.initialPrefetchItemCount = 25
         }
+        setRecycledViewPool(taskViewHolderPool)
         itemAnimator = TaskListItemAnimator()
         this.isNestedScrollingEnabled = false
     }

@@ -17,7 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
-import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
+import uk.whitecrescent.waqti.backend.persistence.TASK_LISTS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
@@ -34,10 +34,11 @@ import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
-private val taskViewHolderPool = object : RecyclerView.RecycledViewPool() {
+
+private val listViewHolderPool = object : RecyclerView.RecycledViewPool() {
 
     override fun setMaxRecycledViews(viewType: Int, max: Int) {
-        super.setMaxRecycledViews(viewType, TASKS_CACHE_SIZE)
+        super.setMaxRecycledViews(viewType, TASK_LISTS_CACHE_SIZE)
     }
 }
 
@@ -50,7 +51,11 @@ class BoardView
         get() = this.adapter as BoardAdapter
 
     init {
-        layoutManager = LinearLayoutManager(context, HORIZONTAL, false)
+        layoutManager = LinearLayoutManager(context, HORIZONTAL, false).also {
+            it.isItemPrefetchEnabled = true
+            it.initialPrefetchItemCount = 5
+        }
+        setRecycledViewPool(listViewHolderPool)
         this.isNestedScrollingEnabled = false
     }
 }
@@ -211,10 +216,7 @@ class BoardViewHolder(view: View,
             rootView.updateLayoutParams {
                 width = adapter.taskListWidth
             }
-            taskListView.apply {
-                setRecycledViewPool(taskViewHolderPool)
-                addOnScrollListener(addButton.verticalFABOnScrollListener)
-            }
+            taskListView.addOnScrollListener(addButton.verticalFABOnScrollListener)
             header.apply {
                 setOnClickListener {
                     @GoToFragment
