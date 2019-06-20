@@ -2,6 +2,7 @@ package uk.whitecrescent.waqti.frontend.fragments.create
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +18,11 @@ import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.getViewModel
-import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.isNotDefault
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
@@ -67,14 +68,23 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     }
 
     private inline fun setUpAppBar() {
-        taskName_editText.apply {
-            requestFocusAndShowSoftKeyboard()
-            mainActivity.hideableEditTextView = this
-            addAfterTextChangedListener {
-                if (it != null) {
-                    addTask_button.isVisible = !(it.isEmpty() || it.isBlank())
+        mainActivity.appBar {
+            color = WaqtiColor.WHITE
+            elevation = 0F
+            leftImageView.isVisible = false
+            editTextView {
+                removeAllTextChangedListeners()
+                isEditable = true
+                hint = getString(R.string.taskNameHint)
+                text = SpannableStringBuilder("")
+                requestFocusAndShowSoftKeyboard()
+                addAfterTextChangedListener {
+                    if (it != null) {
+                        addTask_button.isVisible = !(it.isEmpty() || it.isBlank())
+                    }
                 }
             }
+            rightImageView.isVisible = false
         }
     }
 
@@ -152,7 +162,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     }
 
     override fun createElement(): Task {
-        return Task(taskName_editText.text.toString()).apply {
+        return Task(mainActivity.appBar.editTextView.text.toString()).apply {
             setTime()
             setDeadline()
             setDescription()
@@ -166,7 +176,6 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     }
 
     override fun finish() {
-        taskName_editText.hideSoftKeyboard()
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }

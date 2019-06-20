@@ -58,7 +58,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         mainActivity.appBar.apply {
             color = element.barColor
-            editTextView.apply {
+            editTextView {
                 removeAllTextChangedListeners()
                 hint = getString(R.string.boardNameHint)
                 fun update() {

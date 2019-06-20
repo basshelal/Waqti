@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
@@ -50,8 +51,9 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
             color = WaqtiColor.WAQTI_DEFAULT
             elevation = DEFAULT_ELEVATION
             leftImageDefault()
-            editTextView.apply {
+            editTextView {
                 removeAllTextChangedListeners()
+                isEditable = true
                 hint = getString(R.string.allBoards)
                 fun update() {
                     if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
@@ -71,7 +73,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                 }
             }
             rightImageView.apply {
-                rightImageIsVisible = true
+                rightImageView.isVisible = true
                 fun update() {
                     when (viewMode) {
                         ViewMode.LIST_VERTICAL -> {

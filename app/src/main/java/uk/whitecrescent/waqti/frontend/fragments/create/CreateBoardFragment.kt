@@ -3,6 +3,7 @@
 package uk.whitecrescent.waqti.frontend.fragments.create
 
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,9 +13,8 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
-import uk.whitecrescent.waqti.hideSoftKeyboard
-import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 
 class CreateBoardFragment : WaqtiCreateFragment<Board>() {
@@ -39,14 +39,23 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
     }
 
     private inline fun setUpAppBar() {
-        boardName_editText.apply {
-            requestFocusAndShowSoftKeyboard()
-            mainActivity.hideableEditTextView = this
-            addAfterTextChangedListener {
-                if (it != null) {
-                    addBoard_button.isVisible = !(it.isEmpty() || it.isBlank())
+        mainActivity.appBar {
+            color = WaqtiColor.WHITE
+            elevation = 0F
+            leftImageView.isVisible = false
+            editTextView {
+                removeAllTextChangedListeners()
+                isEditable = true
+                hint = getString(R.string.boardNameHint)
+                text = SpannableStringBuilder("")
+                requestFocusAndShowSoftKeyboard()
+                addAfterTextChangedListener {
+                    if (it != null) {
+                        addBoard_button.isVisible = !(it.isEmpty() || it.isBlank())
+                    }
                 }
             }
+            rightImageView.isVisible = false
         }
     }
 
@@ -61,11 +70,10 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
     }
 
     override fun createElement(): Board {
-        return Board(boardName_editText.text.toString())
+        return Board(mainActivity.appBar.editTextView.text.toString())
     }
 
     override fun finish() {
-        boardName_editText.hideSoftKeyboard()
         mainActivityVM.boardListPosition
                 .changeTo(true to mainActivityVM.boardListPosition.position + 1)
         @GoToFragment

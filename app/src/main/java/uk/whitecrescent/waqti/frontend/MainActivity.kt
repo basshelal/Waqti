@@ -62,6 +62,7 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout.apply {
             addOnBackPressedCallback {
+                appBar.clearFocusAndHideSoftKeyboard()
                 if (isDrawerOpen(navigationView)) {
                     closeDrawers()
                     return@addOnBackPressedCallback

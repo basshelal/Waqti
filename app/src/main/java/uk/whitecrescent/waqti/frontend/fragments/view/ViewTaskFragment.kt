@@ -75,8 +75,9 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
             color = Caches.boards[boardID].cardColor
             elevation = 0F
             leftImageDefault()
-            editTextView.apply {
+            editTextView {
                 removeAllTextChangedListeners()
+                isEditable = true
                 hint = getString(R.string.taskNameHint)
                 fun update() {
                     text.also {

@@ -27,6 +27,10 @@ abstract class WaqtiFragment(val animate: Boolean = true) : Fragment() {
                         reenterTransition = it
 
                         exitTransition = it
+
+                        allowEnterTransitionOverlap = true
+
+                        allowReturnTransitionOverlap = true
                     }
         }
     }

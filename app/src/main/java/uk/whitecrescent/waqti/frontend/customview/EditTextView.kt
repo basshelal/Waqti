@@ -33,6 +33,7 @@ class EditTextView
             isFocusable = value
             isClickable = value
         }
+    // TODO: 20-Jun-19 Something doesn't work here
     var isMultiLine: Boolean = false
         set(value) {
             field = value
@@ -64,6 +65,8 @@ class EditTextView
 
         attributes.recycle()
     }
+
+    inline operator fun invoke(apply: EditTextView.() -> Unit) = this.apply(apply)
 
     fun removeAllTextChangedListeners() {
         currentTextChangedListeners.forEach {

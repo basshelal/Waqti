@@ -85,8 +85,9 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
             color = Caches.boards[boardID].barColor
             elevation = DEFAULT_ELEVATION
             leftImageDefault()
-            editTextView.apply {
+            editTextView {
                 removeAllTextChangedListeners()
+                isEditable = true
                 hint = getString(R.string.listNameHint)
                 fun update() {
                     text.also {

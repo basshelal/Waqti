@@ -3,6 +3,7 @@
 package uk.whitecrescent.waqti.frontend.fragments.create
 
 import android.os.Bundle
+import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +14,8 @@ import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
-import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 
 class CreateListFragment : WaqtiCreateFragment<TaskList>() {
@@ -44,14 +45,23 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
     }
 
     private inline fun setUpAppBar() {
-        listName_editText.apply {
-            requestFocusAndShowSoftKeyboard()
-            mainActivity.hideableEditTextView = this
-            addAfterTextChangedListener {
-                if (it != null) {
-                    addList_button.isVisible = !(it.isEmpty() || it.isBlank())
+        mainActivity.appBar {
+            color = WaqtiColor.WHITE
+            elevation = 0F
+            leftImageView.isVisible = false
+            editTextView {
+                removeAllTextChangedListeners()
+                isEditable = true
+                hint = getString(R.string.listNameHint)
+                text = SpannableStringBuilder("")
+                requestFocusAndShowSoftKeyboard()
+                addAfterTextChangedListener {
+                    if (it != null) {
+                        addList_button.isVisible = !(it.isEmpty() || it.isBlank())
+                    }
                 }
             }
+            rightImageView.isVisible = false
         }
     }
 
@@ -66,11 +76,10 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
     }
 
     override fun createElement(): TaskList {
-        return TaskList(listName_editText.text.toString())
+        return TaskList(mainActivity.appBar.editTextView.text.toString())
     }
 
     override fun finish() {
-        listName_editText.hideSoftKeyboard()
         mainActivityVM.boardPosition
                 .changeTo(true to mainActivityVM.boardPosition.position + 1)
         @GoToFragment
