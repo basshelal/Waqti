@@ -3,19 +3,25 @@
 package uk.whitecrescent.waqti.frontend.customview
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.text.SpannableStringBuilder
 import android.util.AttributeSet
 import android.view.MenuItem
 import android.view.View
-import android.widget.PopupMenu
-import androidx.constraintlayout.widget.ConstraintLayout
+import android.widget.ImageView
+import androidx.annotation.MenuRes
+import androidx.appcompat.widget.PopupMenu
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import com.google.android.material.shape.MaterialShapeDrawable
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
+import org.jetbrains.anko.internals.AnkoInternals
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.removeOnClickListener
 
 /**
  * A Material-like AppBar that allows for an ImageView on the start, an [EditTextView] in the
@@ -33,10 +39,42 @@ import uk.whitecrescent.waqti.mainActivity
 class AppBar
 @JvmOverloads constructor(context: Context,
                           attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) : ConstraintLayout(context, attributeSet, defStyle) {
+                          defStyle: Int = 0) : Toolbar(context, attributeSet, defStyle) {
+
+    val DEFAULT_ELEVATION = 16F
 
     lateinit var popupMenu: PopupMenu
-        private set
+    private val materialShapeDrawable = MaterialShapeDrawable(context, attributeSet, defStyle, 0)
+
+    inline val leftImageView: ImageView get() = appBar_leftImageView
+    inline val rightImageView: ImageView get() = appBar_rightImageView
+    inline val editTextView: EditTextView get() = appBar_editTextView
+
+    inline var color: WaqtiColor
+        @Deprecated(AnkoInternals.NO_GETTER, level = DeprecationLevel.ERROR) get() = AnkoInternals.noGetter()
+        set(value) = setBackgroundColor(value.toAndroidColor)
+
+    inline var leftImage: Drawable
+        set(value) = leftImageView.setImageDrawable(value)
+        get() = leftImageView.drawable
+
+    inline var leftImageIsVisible: Boolean
+        set(value) {
+            if (value) leftImageView.visibility = View.VISIBLE
+            else leftImageView.visibility = View.INVISIBLE
+        }
+        get() = leftImageView.visibility == View.VISIBLE
+
+    inline var rightImage: Drawable
+        set(value) = rightImageView.setImageDrawable(value)
+        get() = rightImageView.drawable
+
+    inline var rightImageIsVisible: Boolean
+        set(value) {
+            if (value) rightImageView.visibility = View.VISIBLE
+            else rightImageView.visibility = View.INVISIBLE
+        }
+        get() = rightImageView.visibility == View.VISIBLE
 
     init {
 
@@ -44,13 +82,17 @@ class AppBar
 
         val attributes = context.obtainStyledAttributes(attributeSet, R.styleable.AppBar)
 
+        color = WaqtiColor.WHITE
+        elevation = DEFAULT_ELEVATION
+
         leftImageView.apply {
-            attributes.getDrawable(R.styleable.AppBar_leftImage).apply {
-                if (this == null) setImageResource(R.drawable.menu_icon)
-                else setImageDrawable(this)
+            attributes.getDrawable(R.styleable.AppBar_leftImage).also {
+                if (it == null) leftImage = context.getDrawable(R.drawable.menu_icon)!!
+                else leftImage = it
             }
-            attributes.getBoolean(R.styleable.AppBar_leftClickOpensDrawer, true).apply {
-                if (this == true) setOnClickListener {
+            // remove, should be done by getting the leftImageView
+            attributes.getBoolean(R.styleable.AppBar_leftClickOpensDrawer, true).also {
+                if (it == true) setOnClickListener {
                     mainActivity.drawerLayout.apply {
                         hideSoftKeyboard()
                         openDrawer(GravityCompat.START)
@@ -59,18 +101,21 @@ class AppBar
             }
         }
 
+        // remove all of this, should be done by caller
         editTextView.apply {
-            attributes.getString(R.styleable.AppBar_text).apply {
-                if (this == null) text = SpannableStringBuilder("")
-                else text = SpannableStringBuilder(this)
+            attributes.getString(R.styleable.AppBar_text).also {
+                if (it == null) text = SpannableStringBuilder("")
+                else text = SpannableStringBuilder(it)
             }
-            attributes.getString(R.styleable.AppBar_hint).apply {
-                if (this == null) hint = ""
-                else hint = this
+            attributes.getString(R.styleable.AppBar_hint).also {
+                if (it == null) hint = ""
+                else hint = it
             }
+            // remove
             if (!attributes.getBoolean(R.styleable.AppBar_editable, true)) {
                 isEditable = false
             }
+            // remove
             if (attributes.getBoolean(R.styleable.AppBar_isMultiLine, false)) {
                 isMultiLine = true
             }
@@ -78,41 +123,65 @@ class AppBar
 
         rightImageView.apply {
             if (attributes.getBoolean(R.styleable.AppBar_hasRightImage, true)) {
-                attributes.getDrawable(R.styleable.AppBar_rightImage).apply {
-                    if (this == null) setImageResource(R.drawable.overflow_icon)
-                    else setImageDrawable(this)
+                rightImageIsVisible = true
+                attributes.getDrawable(R.styleable.AppBar_rightImage).also {
+                    if (it == null) rightImage = context.getDrawable(R.drawable.overflow_icon)!!
+                    else rightImage = it
                 }
-                attributes.getResourceId(R.styleable.AppBar_rightClickOpensMenu, Int.MIN_VALUE).apply {
-                    if (this != Int.MIN_VALUE) {
+                // remove, should be done by getting the rightImageView
+                attributes.getResourceId(R.styleable.AppBar_rightClickOpensMenu, Int.MIN_VALUE).also {
+                    if (it != Int.MIN_VALUE) {
                         popupMenu = PopupMenu(context, rightImageView)
-                        popupMenu.inflate(this)
+                        popupMenu.inflate(it)
                         setOnClickListener { popupMenu.show() }
                     }
                 }
-            } else {
-                setImageDrawable(null)
-                background = null
-            }
-
+            } else rightImageIsVisible = false
         }
 
         attributes.recycle()
     }
 
-    inline fun removeRightImageView() {
-        rightImageView.apply {
-            setImageDrawable(null)
-            background = null
-            setOnClickListener(null)
+    inline operator fun invoke(apply: AppBar.() -> Unit): AppBar = this.apply(apply)
+
+    inline fun leftImageDefault() {
+        leftImageView.apply {
+            leftImageIsVisible = true
+            leftImage = context.getDrawable(R.drawable.menu_icon)!!
+            setOnClickListener {
+                mainActivity.drawerLayout.apply {
+                    hideSoftKeyboard()
+                    openDrawer(GravityCompat.START)
+                }
+            }
         }
     }
 
-    inline fun popupMenuOnItemClicked(noinline onClick: (MenuItem) -> Boolean) {
+    inline fun rightImageDefault(@MenuRes menuRes: Int,
+                                 noinline popupMenuOnItemClicked: (MenuItem) -> Boolean) {
+        rightImageView.apply {
+            removeOnClickListener()
+            rightImageIsVisible = true
+            rightImage = context.getDrawable(R.drawable.overflow_icon)!!
+
+            popupMenu = PopupMenu(context, rightImageView)
+            popupMenu.inflate(menuRes)
+            popupMenu.setOnMenuItemClickListener(popupMenuOnItemClicked)
+            setOnClickListener { popupMenu.show() }
+        }
+    }
+
+    // remove, should be done in caller
+    fun popupMenuOnItemClicked(onClick: (MenuItem) -> Boolean) {
         popupMenu.setOnMenuItemClickListener(onClick)
     }
 
     inline fun setBackgroundColor(color: WaqtiColor) {
-        this.setBackgroundColor(color.toAndroidColor)
+        setBackgroundColor(color.toAndroidColor)
+    }
+
+    override fun setBackgroundColor(color: Int) {
+        background = materialShapeDrawable.apply { setTint(color) }
     }
 
 }

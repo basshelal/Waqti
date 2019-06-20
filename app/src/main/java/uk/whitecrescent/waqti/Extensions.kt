@@ -8,13 +8,11 @@ import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Point
-import android.text.Editable
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.inputmethod.InputMethodManager
-import android.widget.TextView
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
@@ -55,7 +53,6 @@ import uk.whitecrescent.waqti.backend.task.TimeUnit
 import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.MainActivityViewModel
-import uk.whitecrescent.waqti.frontend.SimpleTextWatcher
 import java.util.Objects
 import kotlin.math.roundToInt
 
@@ -146,14 +143,6 @@ inline val FloatingActionButton.verticalFABOnScrollListener: FABOnScrollListener
 inline val FloatingActionButton.horizontalFABOnScrollListener: FABOnScrollListener
     get() = FABOnScrollListener(this, FABOnScrollListener.Orientation.HORIZONTAL)
 
-inline fun TextView.addAfterTextChangedListener(crossinline func: (Editable?) -> Unit) {
-    this.addTextChangedListener(object : SimpleTextWatcher() {
-        override fun afterTextChanged(editable: Editable?) {
-            func(editable)
-        }
-    })
-}
-
 inline val RecyclerView.Adapter<*>.lastPosition: Int
     get() = this.itemCount - 1
 
@@ -205,6 +194,8 @@ inline fun View.fadeOut(durationMillis: Long = 250) {
         fillAfter = true
     })
 }
+
+inline fun View.removeOnClickListener() = this.setOnClickListener(null)
 
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.

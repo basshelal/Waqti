@@ -9,15 +9,14 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.view.postDelayed
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
-import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.CREATE_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
@@ -37,8 +36,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-
-        mainActivityViewModel.boardPosition.changeTo(false to 0)
+        mainActivityVM.boardPosition.changeTo(false to 0)
 
         viewMode = mainActivity.waqtiPreferences.boardListViewMode
 
@@ -48,10 +46,13 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
     override fun setUpViews(element: BoardList) {
         boardsList_recyclerView.adapter = BoardListAdapter(element.id, viewMode)
         mainActivity.resetNavBarStatusBarColor()
-
-        boardList_appBar.apply {
+        mainActivity.appBar {
+            color = WaqtiColor.WAQTI_DEFAULT
+            elevation = DEFAULT_ELEVATION
+            leftImageDefault()
             editTextView.apply {
-                mainActivity.hideableEditTextView = this
+                removeAllTextChangedListeners()
+                hint = getString(R.string.allBoards)
                 fun update() {
                     if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
                         if (text.toString() != mainActivity.waqtiPreferences.boardListName) {
@@ -59,8 +60,8 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                         }
                     }
                 }
-                text = SpannableStringBuilder(mainActivity.waqtiPreferences.boardListName)
                 addAfterTextChangedListener { update() }
+                text = SpannableStringBuilder(mainActivity.waqtiPreferences.boardListName)
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
@@ -70,10 +71,11 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                 }
             }
             rightImageView.apply {
+                rightImageIsVisible = true
                 fun update() {
                     when (viewMode) {
                         ViewMode.LIST_VERTICAL -> {
-                            setImageResource(R.drawable.grid_icon)
+                            rightImage = mainActivity.getDrawable(R.drawable.grid_icon)!!
                             boardsList_recyclerView.changeViewMode(ViewMode.LIST_VERTICAL)
 
                             mainActivity.navigationView.menu
@@ -81,7 +83,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                                     .setIcon(R.drawable.list_icon)
                         }
                         ViewMode.GRID_VERTICAL -> {
-                            setImageResource(R.drawable.list_icon)
+                            rightImage = mainActivity.getDrawable((R.drawable.list_icon))!!
                             boardsList_recyclerView.changeViewMode(ViewMode.GRID_VERTICAL)
                             mainActivity.navigationView.menu
                                     .findItem(R.id.allBoards_navDrawerItem)

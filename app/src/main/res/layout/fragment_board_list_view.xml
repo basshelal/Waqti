@@ -6,16 +6,17 @@
     android:layout_height="match_parent"
     android:focusableInTouchMode="true">
 
-    <uk.whitecrescent.waqti.frontend.customview.AppBar
-        android:id="@+id/boardList_appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:hint="@string/allBoards"
+    <uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListView
+        android:id="@+id/boardsList_recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scrollbars="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:leftClickOpensDrawer="true"
-        app:rightImage="@drawable/grid_icon" />
+        tools:listitem="@layout/board_card" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addBoard_FloatingButton"
@@ -30,18 +31,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:rippleColor="@color/white" />
-
-    <uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListView
-        android:id="@+id/boardsList_recyclerView"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/boardList_appBar"
-        tools:listitem="@layout/board_card" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

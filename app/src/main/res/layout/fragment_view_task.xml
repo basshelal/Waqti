@@ -1,20 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/viewTaskFragment_constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <uk.whitecrescent.waqti.frontend.customview.AppBar
-        android:id="@+id/task_appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:hint="@string/taskNameHint"
-        app:isMultiLine="true"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:leftClickOpensDrawer="true"
-        app:rightClickOpensMenu="@menu/menu_task" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
@@ -22,7 +11,7 @@
         android:layout_height="0dp"
         android:layout_margin="8dp"
         android:scrollbars="vertical"
-        app:layout_constraintTop_toBottomOf="@id/task_appBar">
+        app:layout_constraintTop_toTopOf="parent">
 
         <LinearLayout
             android:id="@+id/linearLayout"

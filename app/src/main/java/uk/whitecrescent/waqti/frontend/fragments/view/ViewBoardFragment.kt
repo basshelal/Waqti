@@ -11,10 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.postDelayed
 import kotlinx.android.synthetic.main.fragment_board_view.*
-import kotlinx.android.synthetic.main.view_appbar.view.*
-import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
@@ -46,23 +43,24 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        boardID = mainActivityViewModel.boardID
+        boardID = mainActivityVM.boardID
 
-        if (mainActivityViewModel.boardAdapter?.boardID != boardID) {
-            mainActivityViewModel.boardAdapter = BoardAdapter(boardID)
+        if (mainActivityVM.boardAdapter?.boardID != boardID) {
+            mainActivityVM.boardAdapter = BoardAdapter(boardID)
         }
 
         setUpViews(Caches.boards[boardID])
     }
 
     override fun setUpViews(element: Board) {
-        boardView.adapter = mainActivityViewModel.boardAdapter
+        boardView.adapter = mainActivityVM.boardAdapter
         mainActivity.resetNavBarStatusBarColor()
 
-        board_appBar.apply {
-            setBackgroundColor(element.barColor)
+        mainActivity.appBar.apply {
+            color = element.barColor
             editTextView.apply {
-                mainActivity.hideableEditTextView = this
+                removeAllTextChangedListeners()
+                hint = getString(R.string.boardNameHint)
                 fun update() {
                     text.also {
                         if (it != null &&
@@ -82,9 +80,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     } else false
                 }
             }
-            @ForLater
-            // TODO: 25-Feb-19 Board appearance stuff for later
-            popupMenuOnItemClicked {
+            rightImageDefault(R.menu.menu_board) {
                 when (it.itemId) {
                     R.id.deleteBoard_menuItem -> {
                         ConfirmDialog().apply {

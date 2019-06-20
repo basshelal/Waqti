@@ -173,13 +173,13 @@ class BoardAdapter(val boardID: ID)
         val taskListAdaptersCopy = ArrayList(taskListAdapters)
         if (doesNotMatchOrder()) {
 
-            board.filter { taskList -> taskList.id in taskListAdaptersCopy.map { it?.taskListID } }
+            board.filter { taskList -> taskList.id in taskListAdaptersCopy.map { it.taskListID } }
                     .mapIndexed { index, taskList -> index to taskList }.toMap()
                     .forEach { entry ->
                         val (index, taskList) = entry
 
                         taskListAdapters[index] =
-                                taskListAdaptersCopy.find { it?.taskListID == taskList.id }!!
+                                taskListAdaptersCopy.find { it.taskListID == taskList.id }!!
                     }
         }
     }
@@ -225,7 +225,10 @@ class BoardViewHolder(view: View,
             rootView.updateLayoutParams {
                 width = adapter.taskListWidth
             }
-            taskListView.addOnScrollListener(addButton.verticalFABOnScrollListener)
+            taskListView.apply {
+                clearOnScrollListeners()
+                addOnScrollListener(addButton.verticalFABOnScrollListener)
+            }
             header.apply {
                 setOnClickListener {
                     @GoToFragment

@@ -9,7 +9,7 @@ import uk.whitecrescent.waqti.frontend.MainActivityViewModel
 
 abstract class WaqtiFragment(val animate: Boolean = true) : Fragment() {
 
-    protected lateinit var mainActivityViewModel: MainActivityViewModel
+    protected lateinit var mainActivityVM: MainActivityViewModel
     protected lateinit var mainActivity: MainActivity
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,7 +35,7 @@ abstract class WaqtiFragment(val animate: Boolean = true) : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         mainActivity = activity as MainActivity
-        mainActivityViewModel = mainActivity.viewModel
+        mainActivityVM = mainActivity.viewModel
     }
 
     protected abstract fun finish()

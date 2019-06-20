@@ -58,6 +58,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        hideableEditTextView = appBar.editTextView
+
         drawerLayout.apply {
             addOnBackPressedCallback {
                 if (isDrawerOpen(navigationView)) {
@@ -103,8 +105,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-
-
         if (BuildConfig.DEBUG && Database.tasks.size < 100) {
             Caches.seed(5, 20, 100)
         }
@@ -145,6 +145,9 @@ class MainActivity : AppCompatActivity() {
         }
         return s
     }
+
+    inline val appBar: AppBar
+        get() = activity_appBar
 
     inline val dimensions: Pair<Int, Int>
         get() = this.resources

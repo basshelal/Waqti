@@ -1,33 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/viewListFragment_constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
-    <uk.whitecrescent.waqti.frontend.customview.AppBar
-        android:id="@+id/taskList_appBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:hint="@string/listNameHint"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:leftClickOpensDrawer="true"
-        app:rightClickOpensMenu="@menu/menu_list" />
-
-    <uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView
-        android:id="@+id/taskList_recyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scrollbars="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/taskList_appBar"
-        tools:listitem="@layout/task_card">
-
-    </uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/addTask_floatingButton"
@@ -40,8 +16,8 @@
         app:elevation="14dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/taskList_recyclerView"
-        app:layout_constraintStart_toStartOf="@id/taskList_recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:rippleColor="@color/white" />
 
     <com.mikhaellopez.circularimageview.CircularImageView
@@ -56,6 +32,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/taskList_appBar" />
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

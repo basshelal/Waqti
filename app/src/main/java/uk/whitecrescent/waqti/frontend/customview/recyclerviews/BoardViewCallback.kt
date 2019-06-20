@@ -23,7 +23,7 @@ val myBoardViewCallback = object : BoardViewCallback {
             @GoToFragment
             it.mainActivity.supportFragmentManager.commitTransaction {
 
-                it.mainActivityViewModel.listID = boardViewHolder.adapter.board[boardViewHolder.adapterPosition].id
+                it.mainActivityVM.listID = boardViewHolder.adapter.board[boardViewHolder.adapterPosition].id
 
                 it.clearFocusAndHideSoftKeyboard()
 
@@ -45,8 +45,8 @@ val myBoardViewCallback = object : BoardViewCallback {
             @GoToFragment
             it.mainActivity.supportFragmentManager.commitTransaction {
 
-                it.mainActivityViewModel.boardID = boardViewHolder.adapter.boardID
-                it.mainActivityViewModel.listID = boardViewHolder.taskListView.listAdapter.taskListID
+                it.mainActivityVM.boardID = boardViewHolder.adapter.boardID
+                it.mainActivityVM.listID = boardViewHolder.taskListView.listAdapter.taskListID
 
                 it.clearFocusAndHideSoftKeyboard()
 

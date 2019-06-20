@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.fragment_create_list.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
@@ -30,7 +29,7 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        boardID = mainActivityViewModel.boardID
+        boardID = mainActivityVM.boardID
 
         setUpViews()
 
@@ -72,8 +71,8 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 
     override fun finish() {
         listName_editText.hideSoftKeyboard()
-        mainActivityViewModel.boardPosition
-                .changeTo(true to mainActivityViewModel.boardPosition.position + 1)
+        mainActivityVM.boardPosition
+                .changeTo(true to mainActivityVM.boardPosition.position + 1)
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }

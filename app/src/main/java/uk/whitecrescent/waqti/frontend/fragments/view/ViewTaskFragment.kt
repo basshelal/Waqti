@@ -9,12 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.fragment_view_task.*
-import kotlinx.android.synthetic.main.view_appbar.view.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DEADLINE_PROPERTY
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION_PROPERTY
@@ -27,7 +24,6 @@ import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
-import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.rfcFormatted
 
@@ -45,9 +41,9 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        taskID = mainActivityViewModel.taskID
-        listID = mainActivityViewModel.listID
-        boardID = mainActivityViewModel.boardID
+        taskID = mainActivityVM.taskID
+        listID = mainActivityVM.listID
+        boardID = mainActivityVM.boardID
 
         setUpViews(Caches.tasks[taskID])
 
@@ -59,8 +55,11 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
         setUpAppBar(element)
 
         // TODO: 07-Jun-19 Make background color of the linearLayout be same as Task color
-        nestedScrollView.setBackgroundColor(Caches.boards[boardID].cardColor.toAndroidColor)
-        linearLayout.setBackgroundColor(Caches.boards[boardID].cardColor.toAndroidColor)
+        Caches.boards[boardID].cardColor.toAndroidColor.also {
+            viewTaskFragment_constraintLayout.setBackgroundColor(it)
+            nestedScrollView.setBackgroundColor(it)
+            linearLayout.setBackgroundColor(it)
+        }
 
         setUpTimeViews(element)
 
@@ -72,10 +71,13 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
 
     private fun setUpAppBar(task: Task) {
-        task_appBar.apply {
-            setBackgroundColor(Caches.boards[boardID].barColor)
+        mainActivity.appBar {
+            color = Caches.boards[boardID].cardColor
+            elevation = 0F
+            leftImageDefault()
             editTextView.apply {
-                mainActivity.hideableEditTextView = this
+                removeAllTextChangedListeners()
+                hint = getString(R.string.taskNameHint)
                 fun update() {
                     text.also {
                         if (it != null &&
@@ -83,6 +85,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                                 it.isNotEmpty() &&
                                 it.toString() != task.name)
                             Caches.tasks[taskID].changeName(text.toString())
+                        // TODO: 20-Jun-19 Notify the adapter that I've changed
                     }
                 }
                 text = SpannableStringBuilder(task.name)
@@ -95,7 +98,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                     } else false
                 }
             }
-            popupMenuOnItemClicked {
+            rightImageDefault(R.menu.menu_task) {
                 when (it.itemId) {
                     R.id.deleteTask_menuItem -> {
                         ConfirmDialog().apply {
@@ -121,7 +124,6 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                     else -> false
                 }
             }
-            (parent as ConstraintLayout).background = Caches.boards[boardID].cardColor.toColorDrawable
         }
     }
 
@@ -195,7 +197,6 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
     }
 
     override fun finish() {
-        task_appBar.hideSoftKeyboard()
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }

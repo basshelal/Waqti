@@ -3,12 +3,10 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/primaryColor"
-    app:elevation="14dp">
+    android:layout_height="wrap_content">
 
     <ImageView
-        android:id="@+id/leftImageView"
+        android:id="@+id/appBar_leftImageView"
         android:layout_width="50dp"
         android:layout_height="0dp"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -19,12 +17,12 @@
         android:scaleType="fitCenter"
         android:src="@drawable/menu_icon"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/editTextView"
+        app:layout_constraintEnd_toStartOf="@+id/appBar_editTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <uk.whitecrescent.waqti.frontend.customview.EditTextView
-        android:id="@+id/editTextView"
+        android:id="@+id/appBar_editTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -32,12 +30,12 @@
         android:imeOptions="actionDone"
         android:inputType="textCapSentences|textAutoCorrect"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/rightImageView"
-        app:layout_constraintStart_toEndOf="@+id/leftImageView"
+        app:layout_constraintEnd_toStartOf="@id/appBar_rightImageView"
+        app:layout_constraintStart_toEndOf="@+id/appBar_leftImageView"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/rightImageView"
+        android:id="@+id/appBar_rightImageView"
         android:layout_width="50dp"
         android:layout_height="0dp"
         android:background="?attr/selectableItemBackgroundBorderless"
@@ -49,7 +47,7 @@
         android:src="@drawable/overflow_icon"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/editTextView"
+        app:layout_constraintStart_toEndOf="@id/appBar_editTextView"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

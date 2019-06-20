@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.fragment_create_board.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.addAfterTextChangedListener
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.frontend.GoToFragment
@@ -67,8 +66,8 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
     override fun finish() {
         boardName_editText.hideSoftKeyboard()
-        mainActivityViewModel.boardListPosition
-                .changeTo(true to mainActivityViewModel.boardListPosition.position + 1)
+        mainActivityVM.boardListPosition
+                .changeTo(true to mainActivityVM.boardListPosition.position + 1)
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }
