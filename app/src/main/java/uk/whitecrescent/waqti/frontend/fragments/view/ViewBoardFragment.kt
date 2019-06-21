@@ -45,7 +45,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         boardID = mainActivityVM.boardID
 
-        if (mainActivityVM.boardAdapter?.boardID != boardID) {
+        if (mainActivityVM.boardAdapter == null ||
+                mainActivityVM.boardAdapter?.boardID != boardID) {
             mainActivityVM.boardAdapter = BoardAdapter(boardID)
         }
 
@@ -53,7 +54,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     }
 
     override fun setUpViews(element: Board) {
-        boardView.adapter = mainActivityVM.boardAdapter
+        boardView.adapter = BoardAdapter(boardID)
         mainActivity.resetNavBarStatusBarColor()
 
         mainActivity.appBar.apply {
@@ -67,7 +68,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 it.isNotBlank() &&
                                 it.isNotEmpty() &&
                                 it.toString() != element.name)
-                            Caches.boards[boardID].name = it.toString()
+                            element.name = it.toString()
                     }
                 }
                 text = SpannableStringBuilder(element.name)

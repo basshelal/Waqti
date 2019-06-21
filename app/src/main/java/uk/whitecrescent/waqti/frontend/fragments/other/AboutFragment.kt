@@ -28,7 +28,7 @@ class AboutFragment : WaqtiFragment() {
         setUpViews()
     }
 
-    private fun setUpViews() {
+    override fun setUpViews() {
         mainActivity.appBar {
             color = WaqtiColor.WAQTI_DEFAULT
             elevation = DEFAULT_ELEVATION

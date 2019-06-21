@@ -73,7 +73,6 @@ class TaskListView
         setRecycledViewPool(taskViewHolderPool)
         itemAnimator = TaskListItemAnimator()
         this.isNestedScrollingEnabled = false
-        logE("New TaskListView")
     }
 
 }
@@ -93,7 +92,6 @@ class TaskListAdapter(val taskListID: ID,
 
     init {
         this.setHasStableIds(true)
-        logE("New TaskListAdapter")
     }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {

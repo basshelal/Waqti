@@ -30,7 +30,6 @@ import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
-import uk.whitecrescent.waqti.logE
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
@@ -61,7 +60,6 @@ class BoardView
         }
         setRecycledViewPool(listViewHolderPool)
         this.isNestedScrollingEnabled = false
-        logE("New BoardView")
     }
 }
 
@@ -74,7 +72,6 @@ class BoardAdapter(val boardID: ID)
     lateinit var itemTouchHelper: ItemTouchHelper
     lateinit var snapHelper: PagerSnapHelper
     var taskListWidth: Int = 600
-    var clickedTaskListView: TaskListView? = null
 
     private val taskListAdapters = ArrayList<TaskListAdapter>()
 
@@ -233,8 +230,6 @@ class BoardViewHolder(view: View,
                 setOnClickListener {
                     @GoToFragment
                     it.mainActivity.supportFragmentManager.commitTransaction {
-
-                        adapter.clickedTaskListView = taskListView
 
                         it.mainActivityViewModel.listID = adapter.board[adapterPosition].id
 

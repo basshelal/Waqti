@@ -42,6 +42,8 @@ abstract class WaqtiFragment(val animate: Boolean = true) : Fragment() {
         mainActivityVM = mainActivity.viewModel
     }
 
+    protected abstract fun setUpViews()
+
     protected abstract fun finish()
 
 }

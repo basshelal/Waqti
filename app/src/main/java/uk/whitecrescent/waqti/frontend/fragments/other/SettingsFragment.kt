@@ -32,7 +32,7 @@ class SettingsFragment : WaqtiFragment() {
     }
 
     @SuppressLint("SetTextI18n")
-    private inline fun setUpViews() {
+    override fun setUpViews() {
         mainActivity.appBar {
             color = WaqtiColor.WAQTI_DEFAULT
             elevation = DEFAULT_ELEVATION

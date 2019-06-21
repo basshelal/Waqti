@@ -25,20 +25,20 @@ import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
-import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.vibrateCompat
+import uk.whitecrescent.waqti.logE
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.shortSnackBar
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
+import kotlin.math.abs
 
 class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
     private var listID: ID = 0L
     private var boardID: ID = 0L
-    lateinit var taskListView: TaskListView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -52,27 +52,26 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
         listID = mainActivityVM.listID
         boardID = mainActivityVM.boardID
 
-        mainActivityVM.boardAdapter?.clickedTaskListView?.let {
-            (it.parent as ViewGroup).removeView(it)
-            viewListFragment_constraintLayout.addView(it)
-            taskListView = it
-        }
-
-        // TODO: 20-Jun-19 remove later, this is for swiping inside the TaskListView
         val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onDown(e: MotionEvent?): Boolean {
-                return true
-            }
-
             override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
-                taskListView.shortSnackBar("Flinged X: $velocityX, Y, $velocityY")
-                return true
+                logE("Velocity X: $velocityX")
+                logE("Velocity Y: $velocityY")
+                if (abs(velocityX) > abs(velocityY)) {
+                    if (velocityX > 5000) {
+                        this@ViewListFragment.taskList_recyclerView.shortSnackBar("Swiped right X: $velocityX")
+                        return true
+                    } else if (velocityX < -5000) {
+                        this@ViewListFragment.taskList_recyclerView.shortSnackBar("Swiped left X: $velocityX")
+                        return true
+                    }
+                }
+                return false
             }
         })
-        taskListView.setOnTouchListener { v, event ->
+        taskList_recyclerView.setOnTouchListener { v, event ->
             return@setOnTouchListener if (gestureDetector.onTouchEvent(event)) {
                 true
-            } else taskListView.onTouchEvent(event)
+            } else taskList_recyclerView.onTouchEvent(event)
         }
 
         setUpViews(Caches.taskLists[listID])
@@ -80,6 +79,8 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     }
 
     override fun setUpViews(element: TaskList) {
+        taskList_recyclerView.adapter = mainActivityVM.boardAdapter
+                ?.getOrCreateListAdapter(listID)
         mainActivity.resetNavBarStatusBarColor()
         mainActivity.appBar {
             color = Caches.boards[boardID].barColor
@@ -129,7 +130,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                             onConfirm = {
                                 dismiss()
                                 Caches.taskLists[listID].clear().update()
-                                taskListView.listAdapter.notifyDataSetChanged()
+                                this@ViewListFragment.taskList_recyclerView.listAdapter.notifyDataSetChanged()
                             }
                         }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
                         true
@@ -139,7 +140,8 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
             }
         }
 
-        taskListView.apply {
+        taskList_recyclerView.apply {
+            background = Caches.boards[boardID].backgroundColor.toColorDrawable
             clearOnScrollListeners()
             addOnScrollListener(this@ViewListFragment.addTask_floatingButton.verticalFABOnScrollListener)
         }
@@ -177,7 +179,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                                 title = this@ViewListFragment.mainActivity.getString(R.string.deleteTaskQuestion)
                                 onConfirm = {
                                     Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
-                                    taskListView.apply {
+                                    this@ViewListFragment.taskList_recyclerView.apply {
                                         listAdapter.notifyItemRemoved(
                                                 findViewHolderForItemId(draggingState.taskID).adapterPosition
                                         )
@@ -194,7 +196,6 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                 true
             }
         }
-
     }
 
     override fun finish() {

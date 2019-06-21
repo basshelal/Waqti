@@ -18,11 +18,9 @@ import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.doInBackgroundAsync
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar
 import uk.whitecrescent.waqti.frontend.customview.EditTextView
-import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
@@ -98,12 +96,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             true
-        }
-
-        doInBackgroundAsync {
-            if (Caches.boardList.isNotEmpty()) {
-                viewModel.boardAdapter = BoardAdapter(Caches.boardList.first().id)
-            }
         }
 
         if (BuildConfig.DEBUG && Database.tasks.size < 100) {

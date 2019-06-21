@@ -6,5 +6,4 @@ abstract class WaqtiCreateFragment<E : Cacheable> : WaqtiFragment(true) {
 
     protected abstract fun createElement(): E
 
-    protected abstract fun setUpViews()
 }
