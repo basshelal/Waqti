@@ -12,8 +12,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.TaskList
@@ -88,15 +86,6 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
         taskList_recyclerView.apply {
             background = Caches.boards[boardID].backgroundColor.toColorDrawable
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                        listAdapter.currentPosition = (layoutManager as LinearLayoutManager)
-                                .findFirstCompletelyVisibleItemPosition()
-                        logE(listAdapter.currentPosition)
-                    }
-                }
-            })
             addOnScrollListener(this@ViewListFragment.addTask_floatingButton.verticalFABOnScrollListener)
         }
 
