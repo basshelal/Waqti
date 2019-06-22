@@ -20,7 +20,6 @@ import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar
-import uk.whitecrescent.waqti.frontend.customview.EditTextView
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
@@ -30,12 +29,6 @@ import uk.whitecrescent.waqti.size
 class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel: MainActivityViewModel
-
-    /**
-     * The [EditTextView] that will lose focus when the user clicks anywhere outside it,
-     * this is the [EditTextView] of the [AppBar]
-     */
-    lateinit var hideableEditTextView: EditTextView
 
     val currentTouchPoint = Point()
 
@@ -55,8 +48,6 @@ class MainActivity : AppCompatActivity() {
                 add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
             }
         }
-
-        hideableEditTextView = appBar.editTextView
 
         drawerLayout.apply {
             addOnBackPressedCallback {
@@ -128,11 +119,11 @@ class MainActivity : AppCompatActivity() {
         val s = super.dispatchTouchEvent(event)
         currentTouchPoint.set(event.rawX.toInt(), event.rawY.toInt())
         if (event.action == MotionEvent.ACTION_DOWN) {
-            if (hideableEditTextView.isVisible) {
+            if (appBar.editTextView.isVisible) {
                 val viewRect = Rect()
-                hideableEditTextView.getGlobalVisibleRect(viewRect)
+                appBar.editTextView.getGlobalVisibleRect(viewRect)
                 if (!viewRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    hideableEditTextView.clearFocusAndHideSoftKeyboard()
+                    appBar.editTextView.clearFocusAndHideSoftKeyboard()
                 }
             }
         }

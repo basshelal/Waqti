@@ -72,7 +72,6 @@ class TaskListView
         }
         setRecycledViewPool(taskViewHolderPool)
         itemAnimator = TaskListItemAnimator()
-        this.isNestedScrollingEnabled = false
     }
 
 }
@@ -89,6 +88,8 @@ class TaskListAdapter(val taskListID: ID,
 
     inline val allCards: List<CardView>
         get() = taskListView.children.map { it as CardView }.toList()
+
+    var currentPosition: Int = 0
 
     init {
         this.setHasStableIds(true)

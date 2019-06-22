@@ -30,6 +30,7 @@ import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
+import uk.whitecrescent.waqti.logE
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
@@ -59,7 +60,6 @@ class BoardView
             it.initialPrefetchItemCount = 5
         }
         setRecycledViewPool(listViewHolderPool)
-        this.isNestedScrollingEnabled = false
     }
 }
 
@@ -163,6 +163,9 @@ class BoardAdapter(val boardID: ID)
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
         holder.taskListView.adapter = getOrCreateListAdapter(board[position].id)
         holder.header.text = board[position].name
+        holder.taskListView.apply {
+            scrollToPosition(listAdapter.currentPosition)
+        }
     }
 
     private fun matchOrder() {
@@ -223,7 +226,15 @@ class BoardViewHolder(view: View,
                 width = adapter.taskListWidth
             }
             taskListView.apply {
-                clearOnScrollListeners()
+                addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                        if (newState == SCROLL_STATE_IDLE) {
+                            listAdapter.currentPosition = (layoutManager as LinearLayoutManager)
+                                    .findFirstCompletelyVisibleItemPosition()
+                            logE(listAdapter.currentPosition)
+                        }
+                    }
+                })
                 addOnScrollListener(addButton.verticalFABOnScrollListener)
             }
             header.apply {

@@ -32,9 +32,9 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
     override fun setUpViews() {
 
-        setUpButton()
-
         setUpAppBar()
+
+        setUpButton()
 
     }
 

@@ -78,7 +78,8 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                     when (viewMode) {
                         ViewMode.LIST_VERTICAL -> {
                             rightImage = mainActivity.getDrawable(R.drawable.grid_icon)!!
-                            boardsList_recyclerView.changeViewMode(ViewMode.LIST_VERTICAL)
+                            this@ViewBoardListFragment.boardsList_recyclerView
+                                    .changeViewMode(ViewMode.LIST_VERTICAL)
 
                             mainActivity.navigationView.menu
                                     .findItem(R.id.allBoards_navDrawerItem)
@@ -86,7 +87,8 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                         }
                         ViewMode.GRID_VERTICAL -> {
                             rightImage = mainActivity.getDrawable((R.drawable.list_icon))!!
-                            boardsList_recyclerView.changeViewMode(ViewMode.GRID_VERTICAL)
+                            this@ViewBoardListFragment.boardsList_recyclerView
+                                    .changeViewMode(ViewMode.GRID_VERTICAL)
                             mainActivity.navigationView.menu
                                     .findItem(R.id.allBoards_navDrawerItem)
                                     .setIcon(R.drawable.grid_icon)
@@ -101,7 +103,6 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                 }
             }
         }
-
         addBoard_FloatingButton.setOnClickListener {
             @GoToFragment
             it.mainActivity.supportFragmentManager.commitTransaction {
