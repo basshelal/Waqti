@@ -7,6 +7,7 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.AppCompatEditText
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.Inconvenience
@@ -42,7 +43,9 @@ class EditTextView
                 // we want a Multi-Line but with an IME done button, not a new line button
                 @ForLater
                 @Inconvenience
-                inputType = inputType or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                imeOptions = EditorInfo.IME_ACTION_DONE
+                setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_MULTI_LINE
+                        or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT)
             }
         }
     private var currentTextChangedListeners = ArrayList<TextWatcher>()
@@ -58,6 +61,8 @@ class EditTextView
         attributes.getBoolean(R.styleable.EditTextView_isMultiline, false).also {
             isMultiLine = it
         }
+
+        isMultiLine = true
 
         setTextAppearanceCompat(R.style.TextAppearance_MaterialComponents_Headline4)
         setTextColor(Color.BLACK)
