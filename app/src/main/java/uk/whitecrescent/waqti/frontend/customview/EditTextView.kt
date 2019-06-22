@@ -9,16 +9,12 @@ import android.util.AttributeSet
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.AppCompatEditText
-import uk.whitecrescent.waqti.ForLater
-import uk.whitecrescent.waqti.Inconvenience
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.SimpleTextWatcher
 import uk.whitecrescent.waqti.frontend.setTextAppearanceCompat
 
 /**
- * The most basic version of an Editable TextView, used across the app.
- * Don't forget to manually set your input types in XML, this cannot be done here successfully
- * because of compatibility issues with API Levels < 23
+ * The most basic version of an Editable TextView, used across the app especially in the [AppBar]
  */
 class EditTextView
 @JvmOverloads constructor(context: Context,
@@ -34,15 +30,10 @@ class EditTextView
             isFocusable = value
             isClickable = value
         }
-    // TODO: 20-Jun-19 Something doesn't work here
     var isMultiLine: Boolean = false
         set(value) {
             field = value
             if (value) {
-                // TODO: 13-Feb-19 This is so hard to make perfect ughhh
-                // we want a Multi-Line but with an IME done button, not a new line button
-                @ForLater
-                @Inconvenience
                 imeOptions = EditorInfo.IME_ACTION_DONE
                 setRawInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or InputType.TYPE_TEXT_FLAG_MULTI_LINE
                         or InputType.TYPE_TEXT_FLAG_AUTO_CORRECT)
