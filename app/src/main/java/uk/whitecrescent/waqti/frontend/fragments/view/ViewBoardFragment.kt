@@ -30,6 +30,7 @@ import uk.whitecrescent.waqti.frontend.vibrateCompat
 import uk.whitecrescent.waqti.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
+import uk.whitecrescent.waqti.shortSnackBar
 
 class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
@@ -104,6 +105,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                             ConfirmDialog().apply {
                                 title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteTaskQuestion)
                                 onConfirm = {
+                                    val taskName = Caches.tasks[draggingState.taskID].name
                                     Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
                                     this@ViewBoardFragment.boardView.boardAdapter
                                             .getListAdapter(draggingState.taskListID)?.apply {
@@ -111,6 +113,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                                         .findViewHolderForItemId(draggingState.taskID)
                                                         .adapterPosition)
                                             }
+                                    mainActivity.appBar.shortSnackBar("Deleted Task $taskName")
                                     this.dismiss()
                                 }
                             }.show(mainActivity.supportFragmentManager, "ConfirmDialog")

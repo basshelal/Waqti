@@ -26,6 +26,7 @@ import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.rfcFormatted
+import uk.whitecrescent.waqti.shortSnackBar
 
 class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
@@ -105,16 +106,10 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                         ConfirmDialog().apply {
                             title = this@ViewTaskFragment.mainActivity.getString(R.string.deleteTaskQuestion)
                             onConfirm = {
+                                val taskName = Caches.tasks[taskID].name
                                 this.dismiss()
                                 Caches.deleteTask(taskID, listID)
-                                // TODO: 14-Jun-19 Undo delete
-                                /*Snackbar.make(this@ViewTaskFragment.task_appBar,
-                                        "Deleted", Snackbar.LENGTH_LONG)
-                                        .setAction("Undo") {
-                                            mainActivity.fragmentContainer
-                                                    .shortSnackBar("Not yet implemented")
-                                        }
-                                        .show()*/
+                                mainActivity.appBar.shortSnackBar("Deleted Task $taskName")
                                 finish()
                             }
                         }.show(mainActivity.supportFragmentManager, "ConfirmDialog")

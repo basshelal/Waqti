@@ -28,6 +28,7 @@ import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.vibrateCompat
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
+import uk.whitecrescent.waqti.shortSnackBar
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
 class ViewListFragment : WaqtiViewFragment<TaskList>() {
@@ -94,12 +95,14 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                             ConfirmDialog().apply {
                                 title = this@ViewListFragment.mainActivity.getString(R.string.deleteTaskQuestion)
                                 onConfirm = {
+                                    val taskName = Caches.tasks[draggingState.taskID].name
                                     Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
                                     this@ViewListFragment.taskList_recyclerView.apply {
                                         listAdapter.notifyItemRemoved(
                                                 findViewHolderForItemId(draggingState.taskID).adapterPosition
                                         )
                                     }
+                                    mainActivity.appBar.shortSnackBar("Deleted Task $taskName")
                                     this.dismiss()
                                 }
                             }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
@@ -149,8 +152,10 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                             title = this@ViewListFragment.mainActivity.getString(R.string.deleteListQuestion)
                             message = this@ViewListFragment.mainActivity.getString(R.string.deleteListDetails)
                             onConfirm = {
+                                val listName = Caches.taskLists[listID].name
                                 dismiss()
                                 Caches.deleteTaskList(listID, boardID)
+                                mainActivity.appBar.shortSnackBar("Deleted List $listName")
                                 finish()
                             }
                         }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
@@ -163,6 +168,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                             onConfirm = {
                                 dismiss()
                                 Caches.taskLists[listID].clear().update()
+                                mainActivity.appBar.shortSnackBar("Cleared List")
                                 this@ViewListFragment.taskList_recyclerView.listAdapter.notifyDataSetChanged()
                             }
                         }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
