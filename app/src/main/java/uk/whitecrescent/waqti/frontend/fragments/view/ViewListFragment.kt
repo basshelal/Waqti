@@ -6,9 +6,7 @@ import android.os.Bundle
 import android.os.Vibrator
 import android.text.SpannableStringBuilder
 import android.view.DragEvent
-import android.view.GestureDetector
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -28,12 +26,9 @@ import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalSt
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.vibrateCompat
-import uk.whitecrescent.waqti.logE
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
-import uk.whitecrescent.waqti.shortSnackBar
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
-import kotlin.math.abs
 
 class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
@@ -51,28 +46,6 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
         listID = mainActivityVM.listID
         boardID = mainActivityVM.boardID
-
-        val gestureDetector = GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onFling(e1: MotionEvent?, e2: MotionEvent?, velocityX: Float, velocityY: Float): Boolean {
-                logE("Velocity X: $velocityX")
-                logE("Velocity Y: $velocityY")
-                if (abs(velocityX) > abs(velocityY)) {
-                    if (velocityX > 5000) {
-                        this@ViewListFragment.taskList_recyclerView.shortSnackBar("Swiped right X: $velocityX")
-                        return true
-                    } else if (velocityX < -5000) {
-                        this@ViewListFragment.taskList_recyclerView.shortSnackBar("Swiped left X: $velocityX")
-                        return true
-                    }
-                }
-                return false
-            }
-        })
-        taskList_recyclerView.setOnTouchListener { v, event ->
-            return@setOnTouchListener if (gestureDetector.onTouchEvent(event)) {
-                true
-            } else taskList_recyclerView.onTouchEvent(event)
-        }
 
         setUpViews(Caches.taskLists[listID])
 
