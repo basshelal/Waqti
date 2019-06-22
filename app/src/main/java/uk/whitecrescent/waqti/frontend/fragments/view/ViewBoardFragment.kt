@@ -162,8 +162,10 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                             title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardQuestion)
                             message = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardDetails)
                             onConfirm = {
+                                val boardName = Caches.boards[boardID].name
                                 dismiss()
                                 Caches.deleteBoard(boardID)
+                                mainActivity.appBar.shortSnackBar("Deleted Board $boardName")
                                 finish()
                             }
                         }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
