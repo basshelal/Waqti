@@ -4,10 +4,8 @@ import android.graphics.Point
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.drawerlayout.widget.DrawerLayout
 import kotlinx.android.synthetic.main.blank_activity.*
 import org.jetbrains.anko.displayMetrics
 import uk.whitecrescent.waqti.BuildConfig
@@ -18,6 +16,7 @@ import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
+import uk.whitecrescent.waqti.doInBackgroundDelayed
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
@@ -60,29 +59,33 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.popBackStack()
                 } else this@MainActivity.finish()
             }
-            addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
-                override fun onDrawerOpened(drawerView: View) = clearFocusAndHideSoftKeyboard()
-            })
         }
 
         navigationView.setNavigationItemSelectedListener {
             drawerLayout.closeDrawers()
             when (it.itemId) {
                 R.id.allBoards_navDrawerItem -> {
-                    popAllFragmentsInBackStack()
+                    doInBackgroundDelayed(300) {
+                        popAllFragmentsInBackStack()
+                    }
                 }
                 R.id.settings_navDrawerItem -> {
                     @GoToFragment
-                    supportFragmentManager.commitTransaction {
-                        replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
-                        addToBackStack(null)
+                    doInBackgroundDelayed(300) {
+                        supportFragmentManager.commitTransaction {
+                            replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
+                            addToBackStack(null)
+                        }
                     }
+
                 }
                 R.id.about_navDrawerItem -> {
-                    @GoToFragment
-                    supportFragmentManager.commitTransaction {
-                        replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
-                        addToBackStack(null)
+                    doInBackgroundDelayed(300) {
+                        @GoToFragment
+                        supportFragmentManager.commitTransaction {
+                            replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
+                            addToBackStack(null)
+                        }
                     }
                 }
             }
