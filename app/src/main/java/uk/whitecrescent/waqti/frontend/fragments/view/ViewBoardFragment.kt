@@ -17,6 +17,7 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
 import uk.whitecrescent.waqti.frontend.CREATE_LIST_FRAGMENT
@@ -56,80 +57,86 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
     override fun setUpViews(element: Board) {
         setUpAppBar(element)
-        boardView.adapter = BoardAdapter(boardID)
-        mainActivity.resetNavBarStatusBarColor()
 
-        boardView.apply {
-            background = element.backgroundColor.toColorDrawable
-            // TODO: 23-Jun-19 Get rid of this sometime!
-            if (boardAdapter.itemCount > 0) {
-                postDelayed(100L) {
-                    mainActivityViewModel.boardPosition.apply {
-                        if (positionChanged) scrollToPosition(position)
-                    }
-                }
-            }
-            addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
-        }
+        doInBackground {
 
-        addList_floatingButton.apply {
-            setOnClickListener {
-                @GoToFragment
-                it.mainActivity.supportFragmentManager.commitTransaction {
+            boardView.adapter = BoardAdapter(boardID)
 
-                    it.mainActivityViewModel.boardID = element.id
-                    it.mainActivityViewModel.boardPosition
-                            .changeTo(false to boardView.boardAdapter.itemCount - 1)
-
-                    it.clearFocusAndHideSoftKeyboard()
-
-                    replace(R.id.fragmentContainer, CreateListFragment(), CREATE_LIST_FRAGMENT)
-                    addToBackStack(null)
-                }
-            }
-        }
-
-        delete_imageView.apply {
-            alpha = 0F
-            setOnDragListener { _, event ->
-                if (event.localState is DragEventLocalState) {
-                    val draggingState = event.localState as DragEventLocalState
-                    when (event.action) {
-                        DragEvent.ACTION_DRAG_STARTED -> {
-                            alpha = 1F
-                            fadeIn(200)
-                        }
-                        DragEvent.ACTION_DRAG_ENTERED -> {
-                            (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrateCompat(50)
-                        }
-                        DragEvent.ACTION_DROP -> {
-                            ConfirmDialog().apply {
-                                title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteTaskQuestion)
-                                onConfirm = {
-                                    val taskName = Caches.tasks[draggingState.taskID].name
-                                    Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
-                                    this@ViewBoardFragment.boardView.boardAdapter
-                                            .getListAdapter(draggingState.taskListID)?.apply {
-                                                notifyItemRemoved(taskListView
-                                                        .findViewHolderForItemId(draggingState.taskID)
-                                                        .adapterPosition)
-                                            }
-                                    mainActivity.appBar.shortSnackBar("Deleted Task $taskName")
-                                    this.dismiss()
-                                }
-                            }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
-                        }
-                        DragEvent.ACTION_DRAG_ENDED -> {
-                            fadeOut(200)
+            boardView.apply {
+                background = element.backgroundColor.toColorDrawable
+                // TODO: 23-Jun-19 Get rid of this sometime!
+                if (boardAdapter.itemCount > 0) {
+                    postDelayed(100L) {
+                        mainActivityViewModel.boardPosition.apply {
+                            if (positionChanged) scrollToPosition(position)
                         }
                     }
                 }
-                true
+                addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
             }
+
+            addList_floatingButton.apply {
+                setOnClickListener {
+                    @GoToFragment
+                    it.mainActivity.supportFragmentManager.commitTransaction {
+
+                        it.mainActivityViewModel.boardID = element.id
+                        it.mainActivityViewModel.boardPosition
+                                .changeTo(false to boardView.boardAdapter.itemCount - 1)
+
+                        it.clearFocusAndHideSoftKeyboard()
+
+                        replace(R.id.fragmentContainer, CreateListFragment(), CREATE_LIST_FRAGMENT)
+                        addToBackStack(null)
+                    }
+                }
+            }
+
+            delete_imageView.apply {
+                alpha = 0F
+                setOnDragListener { _, event ->
+                    if (event.localState is DragEventLocalState) {
+                        val draggingState = event.localState as DragEventLocalState
+                        when (event.action) {
+                            DragEvent.ACTION_DRAG_STARTED -> {
+                                alpha = 1F
+                                fadeIn(200)
+                            }
+                            DragEvent.ACTION_DRAG_ENTERED -> {
+                                (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrateCompat(50)
+                            }
+                            DragEvent.ACTION_DROP -> {
+                                ConfirmDialog().apply {
+                                    title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteTaskQuestion)
+                                    onConfirm = {
+                                        val taskName = Caches.tasks[draggingState.taskID].name
+                                        Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
+                                        this@ViewBoardFragment.boardView.boardAdapter
+                                                .getListAdapter(draggingState.taskListID)?.apply {
+                                                    notifyItemRemoved(taskListView
+                                                            .findViewHolderForItemId(draggingState.taskID)
+                                                            .adapterPosition)
+                                                }
+                                        mainActivity.appBar.shortSnackBar("Deleted Task $taskName")
+                                        this.dismiss()
+                                    }
+                                }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+                            }
+                            DragEvent.ACTION_DRAG_ENDED -> {
+                                fadeOut(200)
+                            }
+                        }
+                    }
+                    true
+                }
+            }
+
+            boardFragment_progressBar.visibility = View.GONE
         }
     }
 
     private fun setUpAppBar(element: Board) {
+        mainActivity.resetNavBarStatusBarColor()
         mainActivity.appBar.apply {
             color = element.barColor
             elevation = DEFAULT_ELEVATION
