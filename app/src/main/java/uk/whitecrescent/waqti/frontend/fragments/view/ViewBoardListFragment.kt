@@ -16,6 +16,7 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.convertDpToPx
+import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.CREATE_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
@@ -46,11 +47,41 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
     }
 
     override fun setUpViews(element: BoardList) {
-        boardsList_recyclerView.adapter = BoardListAdapter(element.id, viewMode)
-        if (boardsList_recyclerView.boardListAdapter.boardList.isEmpty()) {
-            emptyState_scrollView.isVisible = true
-            addBoard_FloatingButton.customSize = convertDpToPx(85, mainActivity)
+        doInBackground {
+            boardsList_recyclerView.apply {
+                adapter = BoardListAdapter(element.id, viewMode)
+                setUpAppBar(element)
+                if (boardListAdapter.boardList.isEmpty()) {
+                    emptyState_scrollView.isVisible = true
+                    addBoard_FloatingButton.customSize = convertDpToPx(85, mainActivity)
+                }
+                if (this.boardListAdapter.itemCount > 0) {
+                    postDelayed(100L) {
+                        mainActivityViewModel.boardListPosition.apply {
+                            if (positionChanged) smoothScrollToPosition(position)
+                        }
+                    }
+                }
+                addOnScrollListener(this@ViewBoardListFragment.addBoard_FloatingButton.verticalFABOnScrollListener)
+            }
+
+            addBoard_FloatingButton.setOnClickListener {
+                @GoToFragment
+                it.mainActivity.supportFragmentManager.commitTransaction {
+
+                    it.mainActivityViewModel.boardListPosition
+                            .changeTo(false to boardsList_recyclerView.boardListAdapter.itemCount - 1)
+
+                    it.clearFocusAndHideSoftKeyboard()
+
+                    replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
+                    addToBackStack(null)
+                }
+            }
         }
+    }
+
+    private fun setUpAppBar(element: BoardList) {
         mainActivity.resetNavBarStatusBarColor()
         mainActivity.appBar {
             color = WaqtiColor.WAQTI_DEFAULT
@@ -107,30 +138,6 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                     update()
                 }
             }
-        }
-        addBoard_FloatingButton.setOnClickListener {
-            @GoToFragment
-            it.mainActivity.supportFragmentManager.commitTransaction {
-
-                it.mainActivityViewModel.boardListPosition
-                        .changeTo(false to boardsList_recyclerView.boardListAdapter.itemCount - 1)
-
-                it.clearFocusAndHideSoftKeyboard()
-
-                replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
-                addToBackStack(null)
-            }
-        }
-
-        boardsList_recyclerView.apply {
-            if (this.boardListAdapter.itemCount > 0) {
-                postDelayed(100L) {
-                    mainActivityViewModel.boardListPosition.apply {
-                        if (positionChanged) smoothScrollToPosition(position)
-                    }
-                }
-            }
-            addOnScrollListener(this@ViewBoardListFragment.addBoard_FloatingButton.verticalFABOnScrollListener)
         }
     }
 
