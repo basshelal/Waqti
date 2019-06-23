@@ -15,6 +15,7 @@ import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.frontend.CREATE_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
@@ -46,6 +47,10 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
     override fun setUpViews(element: BoardList) {
         boardsList_recyclerView.adapter = BoardListAdapter(element.id, viewMode)
+        if (boardsList_recyclerView.boardListAdapter.boardList.isEmpty()) {
+            emptyState_scrollView.isVisible = true
+            addBoard_FloatingButton.customSize = convertDpToPx(85, mainActivity)
+        }
         mainActivity.resetNavBarStatusBarColor()
         mainActivity.appBar {
             color = WaqtiColor.WAQTI_DEFAULT

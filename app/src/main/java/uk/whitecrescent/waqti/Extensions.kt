@@ -204,8 +204,8 @@ inline fun View.removeOnClickListener() = this.setOnClickListener(null)
  * @param context Context to get resources and device specific display metrics
  * @return A float value to represent px equivalent to dp depending on device density
  */
-fun convertDpToPx(dp: Float, context: Context): Int {
-    return (dp * (context.resources.displayMetrics.densityDpi.toFloat() /
+fun convertDpToPx(dp: Number, context: Context): Int {
+    return (dp.toFloat() * (context.resources.displayMetrics.densityDpi.toFloat() /
             DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 }
 
@@ -216,8 +216,8 @@ fun convertDpToPx(dp: Float, context: Context): Int {
  * @param context Context to get resources and device specific display metrics
  * @return A float value to represent dp equivalent to px value
  */
-fun convertPxToDp(px: Float, context: Context): Int {
-    return (px / (context.resources.displayMetrics.densityDpi.toFloat() /
+fun convertPxToDp(px: Number, context: Context): Int {
+    return (px.toFloat() / (context.resources.displayMetrics.densityDpi.toFloat() /
             DisplayMetrics.DENSITY_DEFAULT)).roundToInt()
 }
 

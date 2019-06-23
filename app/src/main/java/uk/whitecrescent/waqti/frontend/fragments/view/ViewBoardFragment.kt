@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import uk.whitecrescent.waqti.R
@@ -17,6 +18,7 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
@@ -60,9 +62,12 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         doInBackground {
 
-            boardView.adapter = BoardAdapter(boardID)
-
             boardView.apply {
+                adapter = BoardAdapter(boardID)
+                if (boardAdapter.board.isEmpty()) {
+                    emptyState_scrollView.isVisible = true
+                    addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
+                }
                 background = element.backgroundColor.toColorDrawable
                 // TODO: 23-Jun-19 Get rid of this sometime!
                 if (boardAdapter.itemCount > 0) {

@@ -122,4 +122,9 @@
         defaults?</string>
 
 
+    <string name="nothingToSee">Nothing to see…</string>
+    <string name="boardIsEmpty">This board is empty 🙁\n\nAdd a list to get started</string>
+    <string name="boardListIsEmpty">You have no boards 🙁\n\nAdd a board to get started</string>
+
+
 </resources>

@@ -138,7 +138,7 @@ class SettingsFragment : WaqtiFragment() {
     private inline fun resetSettingsToDefaults() {
         taskListWidthSetting_seekBar.apply {
 
-            val range = 20 to 100
+            val range = 20 to 80
 
             val default = 66
 

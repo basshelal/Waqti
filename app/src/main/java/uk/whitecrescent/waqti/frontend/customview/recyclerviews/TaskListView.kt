@@ -128,7 +128,7 @@ class TaskListAdapter(val taskListID: ID,
     // we can then act accordingly
     private inline fun RecyclerView.findVerticallyClosestChildViewHolderUnderTouchPoint(
             touchPoint: Point): ViewHolder? {
-        val margin = convertDpToPx(8F, context)
+        val margin = convertDpToPx(8, context)
         val localPoint = Point()
 
         val rvRect = Rect()
