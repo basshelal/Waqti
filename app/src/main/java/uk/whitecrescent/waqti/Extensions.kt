@@ -239,10 +239,72 @@ inline fun <T> T?.ifNotNullAlso(func: (T) -> Unit): T? {
     return this
 }
 
+//endregion Android Utils
+
+//region RxJava Extensions
+
+/**
+ * Provides an Observable that can be used to execute code on the computation thread and notify
+ * the main thread, this means this Observable can be used to safely modify any UI elements on a
+ * background thread
+ */
 inline fun <T> T.androidObservable(): Observable<T> {
     return Observable.just(this)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribeOn(Schedulers.computation())
+}
+
+/**
+ * Executes the code provided by [onNext] continuously when the provided [predicate] is true,
+ * [onNext] will only be invoked once but if the [predicate] becomes false and then true again
+ * [onNext] will execute again. All this is done on a background thread and notified on the main
+ * thread just like [androidObservable].
+ */
+inline fun <reified T> T.doInBackgroundWhen(crossinline predicate: (T) -> Boolean,
+                                            crossinline onNext: T.() -> Unit,
+                                            period: Number = 100,
+                                            timeUnit: java.util.concurrent.TimeUnit =
+                                                    java.util.concurrent.TimeUnit.MILLISECONDS): Disposable {
+    var invoked = false
+    return Observable.interval(period.toLong(), timeUnit, Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.computation())
+            .subscribe({
+                if (!predicate(this)) invoked = false
+                if (predicate(this) && !invoked) {
+                    onNext(this)
+                    invoked = true
+                }
+            }, {
+                logE("Error on doInBackgroundAsync, provided ${T::class.java}")
+                throw it
+            })
+}
+
+/**
+ * Executes the code provided by [onNext] once as soon as the provided [predicate] is true.
+ * All this is done on a background thread and notified on the main thread just like
+ * [androidObservable].
+ */
+inline fun <reified T> T.doInBackgroundOnceWhen(crossinline predicate: (T) -> Boolean,
+                                                crossinline onNext: T.() -> Unit,
+                                                period: Number = 100,
+                                                timeUnit: java.util.concurrent.TimeUnit =
+                                                        java.util.concurrent.TimeUnit.MILLISECONDS): Disposable {
+    var done = false
+    return Observable.interval(period.toLong(), timeUnit, Schedulers.computation())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.computation())
+            .takeWhile { !done }
+            .subscribe({
+                if (predicate(this)) {
+                    onNext(this)
+                    done = true
+                }
+            }, {
+                logE("Error on doInBackgroundAsync, provided ${T::class.java}")
+                throw it
+            })
 }
 
 inline fun <reified T> T.doInBackgroundAsync(crossinline onNext: T.() -> Unit): Disposable {
@@ -296,7 +358,7 @@ inline fun <reified T> T.doInBackground(crossinline onNext: T.() -> Unit,
 }
 
 
-//endregion Android Utils
+//endregion RxJava Extensions
 
 //region Collections Utils
 

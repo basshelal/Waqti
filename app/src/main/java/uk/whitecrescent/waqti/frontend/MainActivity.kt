@@ -5,6 +5,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.blank_activity.*
 import org.jetbrains.anko.displayMetrics
@@ -16,7 +17,7 @@ import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.doInBackgroundDelayed
+import uk.whitecrescent.waqti.doInBackgroundOnceWhen
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
@@ -65,28 +66,27 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.closeDrawers()
             when (it.itemId) {
                 R.id.allBoards_navDrawerItem -> {
-                    doInBackgroundDelayed(300) {
+                    doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(navigationView) }, {
                         popAllFragmentsInBackStack()
-                    }
+                    })
                 }
                 R.id.settings_navDrawerItem -> {
-                    @GoToFragment
-                    doInBackgroundDelayed(300) {
+                    doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(navigationView) }, {
                         supportFragmentManager.commitTransaction {
+                            @GoToFragment
                             replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
                             addToBackStack(null)
                         }
-                    }
-
+                    })
                 }
                 R.id.about_navDrawerItem -> {
-                    doInBackgroundDelayed(300) {
+                    doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
                         @GoToFragment
                         supportFragmentManager.commitTransaction {
                             replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
                             addToBackStack(null)
                         }
-                    }
+                    })
                 }
             }
             true
