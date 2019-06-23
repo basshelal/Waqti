@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewMode
 
 class WaqtiPreferences(val context: Context) {
@@ -13,6 +14,7 @@ class WaqtiPreferences(val context: Context) {
     val BOARD_LIST_VIEW_MODE_KEY = "BoardListViewMode"
     val TASK_LIST_WIDTH_KEY = "TaskListWidth"
     val TASK_CARD_TEXT_SIZE = "TaskCardTextSize"
+    val BOARD_SCROLL_SNAP_MODE = "BoardScrollSnapMode"
 
     val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(WAQTI_SHARED_PREFERENCES, Context.MODE_PRIVATE)
@@ -50,5 +52,13 @@ class WaqtiPreferences(val context: Context) {
         get() = sharedPreferences.getInt(
                 TASK_CARD_TEXT_SIZE,
                 18)
+
+    inline var boardScrollSnapMode: ScrollSnapMode
+        set(value) = sharedPreferences.edit {
+            putString(BOARD_SCROLL_SNAP_MODE, value.name)
+        }
+        get() = ScrollSnapMode.valueOf(sharedPreferences.getString(
+                BOARD_SCROLL_SNAP_MODE,
+                ScrollSnapMode.PAGED.name)!!)
 
 }

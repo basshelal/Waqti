@@ -10,10 +10,12 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import uk.whitecrescent.waqti.R
@@ -28,6 +30,9 @@ import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.LINEAR
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.NONE
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.PAGED
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.mainActivity
@@ -69,7 +74,7 @@ class BoardAdapter(val boardID: ID)
 
     lateinit var boardView: BoardView
     lateinit var itemTouchHelper: ItemTouchHelper
-    lateinit var snapHelper: PagerSnapHelper
+    var snapHelper: SnapHelper? = null
     var taskListWidth: Int = 600
 
     private val taskListAdapters = ArrayList<TaskListAdapter>()
@@ -84,6 +89,10 @@ class BoardAdapter(val boardID: ID)
                     " passed in ${recyclerView::class}"
         }
         boardView = recyclerView
+
+        // TODO: 23-Jun-19 If any of the settings changed we need to invalidate the BoardView
+        //  replicate this by going to a Board, go to Settings, change something than just click
+        //  back to go to the board, you'll notice some Views haven't fully changed
 
         val percent = boardView.mainActivity.waqtiPreferences.taskListWidth / 100.0
         taskListWidth = (boardView.mainActivity.dimensions.first.toFloat() * percent).roundToInt()
@@ -139,8 +148,22 @@ class BoardAdapter(val boardID: ID)
         })
         itemTouchHelper.attachToRecyclerView(boardView)
 
-        snapHelper = PagerSnapHelper()
-        snapHelper.attachToRecyclerView(boardView)
+        if (snapHelper != null) {
+            snapHelper?.attachToRecyclerView(null)
+        }
+
+        when (boardView.mainActivity.waqtiPreferences.boardScrollSnapMode) {
+            PAGED -> {
+                snapHelper = PagerSnapHelper()
+            }
+            LINEAR -> {
+                snapHelper = LinearSnapHelper()
+            }
+            NONE -> {
+                snapHelper = null
+            }
+        }
+        snapHelper?.attachToRecyclerView(boardView)
     }
 
     override fun getItemCount(): Int {
@@ -261,6 +284,10 @@ class BoardViewHolder(view: View,
         }
     }
 
+}
+
+enum class ScrollSnapMode {
+    PAGED, LINEAR, NONE
 }
 
 class PreCachingLayoutManager(context: Context,

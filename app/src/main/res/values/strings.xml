@@ -111,12 +111,15 @@
     <!--Settings Page-->
     <string name="taskListWidth">Task List Width:</string>
     <string name="taskCardTextSize">Task Card Text Size:</string>
+    <string name="boardScrollSnapMode">Board Scroll Snap Mode:</string>
+    <string-array name="boardScrollSnapModeOptions">
+        <item>Paged</item>
+        <item>Linear</item>
+        <item>None</item>
+    </string-array>
     <string name="resetToDefaults">Reset to defaults</string>
     <string name="resetToDefaultsQuestion">Are you sure you want to reset settings to
         defaults?</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 
 </resources>

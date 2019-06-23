@@ -8,12 +8,15 @@ import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.SeekBar
 import androidx.core.view.isInvisible
 import kotlinx.android.synthetic.main.fragment_settings.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 import uk.whitecrescent.waqti.getPercent
 import uk.whitecrescent.waqti.getValue
@@ -93,6 +96,27 @@ class SettingsFragment : WaqtiFragment() {
             })
         }
 
+        boardScrollSnapMode_spinner.apply {
+            adapter = ArrayAdapter.createFromResource(
+                    mainActivity,
+                    R.array.boardScrollSnapModeOptions,
+                    R.layout.support_simple_spinner_dropdown_item
+            ).also {
+                it.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
+            }
+            setSelection(mainActivity.waqtiPreferences.boardScrollSnapMode.ordinal, true)
+            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+
+                override fun onNothingSelected(parent: AdapterView<*>?) {}
+
+                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int,
+                                            id: Long) {
+                    mainActivity.waqtiPreferences.boardScrollSnapMode =
+                            ScrollSnapMode.valueOf(selectedItem.toString().toUpperCase())
+                }
+            }
+        }
+
         resetToDefaults_button.apply {
             setOnClickListener {
                 ConfirmDialog().apply {
@@ -134,6 +158,12 @@ class SettingsFragment : WaqtiFragment() {
             cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) + default
 
             mainActivity.waqtiPreferences.taskCardTextSize = range.getValue(progress)
+        }
+
+        boardScrollSnapMode_spinner.apply {
+            setSelection(ScrollSnapMode.PAGED.ordinal, true)
+
+            mainActivity.waqtiPreferences.boardScrollSnapMode = ScrollSnapMode.PAGED
         }
     }
 

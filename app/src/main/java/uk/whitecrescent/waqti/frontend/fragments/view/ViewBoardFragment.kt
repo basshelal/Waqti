@@ -61,10 +61,11 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         boardView.apply {
             background = element.backgroundColor.toColorDrawable
+            // TODO: 23-Jun-19 Get rid of this sometime!
             if (boardAdapter.itemCount > 0) {
                 postDelayed(100L) {
                     mainActivityViewModel.boardPosition.apply {
-                        if (positionChanged) smoothScrollToPosition(position)
+                        if (positionChanged) scrollToPosition(position)
                     }
                 }
             }
