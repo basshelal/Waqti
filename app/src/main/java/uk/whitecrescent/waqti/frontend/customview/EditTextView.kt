@@ -1,19 +1,16 @@
 package uk.whitecrescent.waqti.frontend.customview
 
 import android.content.Context
-import android.graphics.Color
 import android.text.Editable
 import android.text.InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
 import android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
 import android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
 import android.text.TextWatcher
 import android.util.AttributeSet
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.AppCompatEditText
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.SimpleTextWatcher
-import uk.whitecrescent.waqti.frontend.setTextAppearanceCompat
 
 /**
  * The most basic version of an Editable TextView, used across the app especially in the [AppBar]
@@ -53,12 +50,6 @@ class EditTextView
         attributes.getBoolean(R.styleable.EditTextView_isMultiline, true).also {
             isMultiLine = it
         }
-
-        isMultiLine = true
-
-        setTextAppearanceCompat(R.style.TextAppearance_MaterialComponents_Headline4)
-        setTextColor(Color.BLACK)
-        textAlignment = View.TEXT_ALIGNMENT_CENTER
 
         attributes.recycle()
     }

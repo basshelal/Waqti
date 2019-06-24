@@ -22,6 +22,9 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <uk.whitecrescent.waqti.frontend.customview.EditTextView
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="32sp"
         android:id="@+id/appBar_editTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

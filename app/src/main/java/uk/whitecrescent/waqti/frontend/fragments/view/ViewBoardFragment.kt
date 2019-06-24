@@ -10,7 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
-import androidx.core.view.postDelayed
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
@@ -68,9 +67,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
                 }
                 background = element.backgroundColor.toColorDrawable
-                // TODO: 23-Jun-19 Get rid of this sometime!
                 if (boardAdapter.itemCount > 0) {
-                    postDelayed(100L) {
+                    post {
                         mainActivityViewModel.boardPosition.apply {
                             if (positionChanged) scrollToPosition(position)
                         }
