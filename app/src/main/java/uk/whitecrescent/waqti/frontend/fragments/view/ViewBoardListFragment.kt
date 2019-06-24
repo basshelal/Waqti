@@ -48,7 +48,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
     override fun setUpViews(element: BoardList) {
         doInBackground {
-            boardsList_recyclerView.apply {
+            boardsList_recyclerView?.apply {
                 adapter = BoardListAdapter(element.id, viewMode)
                 setUpAppBar(element)
                 if (boardListAdapter.boardList.isEmpty()) {
@@ -65,7 +65,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                 addOnScrollListener(this@ViewBoardListFragment.addBoard_FloatingButton.verticalFABOnScrollListener)
             }
 
-            addBoard_FloatingButton.setOnClickListener {
+            addBoard_FloatingButton?.setOnClickListener {
                 @GoToFragment
                 it.mainActivity.supportFragmentManager.commitTransaction {
 
