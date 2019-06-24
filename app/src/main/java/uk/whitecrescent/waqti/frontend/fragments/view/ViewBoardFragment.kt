@@ -61,9 +61,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         setUpAppBar(element)
 
         doInBackground {
-
-            boardView.apply {
-                adapter = BoardAdapter(boardID)
+            boardView?.apply {
+                adapter = mainActivityVM.boardAdapter
                 if (boardAdapter.board.isEmpty()) {
                     emptyState_scrollView.isVisible = true
                     addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
@@ -80,7 +79,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
             }
 
-            addList_floatingButton.apply {
+            addList_floatingButton?.apply {
                 setOnClickListener {
                     @GoToFragment
                     it.mainActivity.supportFragmentManager.commitTransaction {
@@ -97,7 +96,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 }
             }
 
-            delete_imageView.apply {
+            delete_imageView?.apply {
                 alpha = 0F
                 setOnDragListener { _, event ->
                     if (event.localState is DragEventLocalState) {
@@ -136,7 +135,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 }
             }
 
-            boardFragment_progressBar.visibility = View.GONE
+            boardFragment_progressBar?.visibility = View.GONE
         }
     }
 
