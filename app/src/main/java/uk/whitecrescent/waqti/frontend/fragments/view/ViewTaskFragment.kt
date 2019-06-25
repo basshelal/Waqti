@@ -109,7 +109,8 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                                 val taskName = Caches.tasks[taskID].name
                                 this.dismiss()
                                 Caches.deleteTask(taskID, listID)
-                                mainActivity.appBar.shortSnackBar("Deleted Task $taskName")
+                                mainActivity.appBar.shortSnackBar(getString(R.string.deletedTask)
+                                        + " $taskName")
                                 finish()
                             }
                         }.show(mainActivity.supportFragmentManager, "ConfirmDialog")

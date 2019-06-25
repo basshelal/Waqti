@@ -119,7 +119,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                                             .findViewHolderForItemId(draggingState.taskID)
                                                             .adapterPosition)
                                                 }
-                                        mainActivity.appBar.shortSnackBar("Deleted Task $taskName")
+                                        mainActivity.appBar.shortSnackBar(getString(R.string.deletedTask)
+                                                + " $taskName")
                                         this.dismiss()
                                     }
                                 }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
@@ -175,7 +176,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 val boardName = Caches.boards[boardID].name
                                 dismiss()
                                 Caches.deleteBoard(boardID)
-                                mainActivity.appBar.shortSnackBar("Deleted Board $boardName")
+                                mainActivity.appBar.shortSnackBar(getString(R.string.deletedBoard)
+                                        + " $boardName")
                                 finish()
                             }
                         }.show(mainActivity.supportFragmentManager, "ConfirmDialog")

@@ -50,7 +50,7 @@
                 android:id="@+id/emptyTitle_textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/nothingToSee"
+                android:text="@string/nopeSorryNothing"
                 android:textAlignment="center"
                 android:textColor="@color/black"
                 android:textSize="30sp"
