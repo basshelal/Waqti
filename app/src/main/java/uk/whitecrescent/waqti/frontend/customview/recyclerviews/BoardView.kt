@@ -55,8 +55,6 @@ class BoardView
 
     inline val boardAdapter: BoardAdapter
         get() = this.adapter as BoardAdapter
-    inline val linearLayoutManager: LinearLayoutManager
-        get() = this.layoutManager as LinearLayoutManager
 
     init {
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false).also {
@@ -78,6 +76,11 @@ class BoardAdapter(val boardID: ID)
     var taskListWidth: Int = 600
 
     private val taskListAdapters = ArrayList<TaskListAdapter>()
+
+    inline val linearLayoutManager: LinearLayoutManager
+        get() = boardView.layoutManager as LinearLayoutManager
+
+    private var savedState: LinearLayoutManager.SavedState? = null
 
     init {
         this.setHasStableIds(true)
@@ -111,7 +114,7 @@ class BoardAdapter(val boardID: ID)
         boardView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == SCROLL_STATE_IDLE && recyclerView is BoardView) {
-                    val currentBoardPos = recyclerView.linearLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    val currentBoardPos = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
                     boardView.mainActivityViewModel.boardPosition.changeTo(true to currentBoardPos)
                 }
             }
@@ -187,6 +190,14 @@ class BoardAdapter(val boardID: ID)
         holder.header.text = board[position].name
     }
 
+    override fun onViewDetachedFromWindow(holder: BoardViewHolder) {
+        holder.taskListView.listAdapter.saveState()
+    }
+
+    override fun onViewAttachedToWindow(holder: BoardViewHolder) {
+        holder.taskListView.listAdapter.restoreState()
+    }
+
     private fun matchOrder() {
 
         val taskListAdaptersCopy = ArrayList(taskListAdapters)
@@ -225,6 +236,24 @@ class BoardAdapter(val boardID: ID)
 
     fun indexOfAdapter(taskListAdapter: TaskListAdapter): Int {
         return taskListAdapters.indexOf(taskListAdapter)
+    }
+
+    fun saveState() {
+        if (::boardView.isInitialized) {
+            savedState = linearLayoutManager.onSaveInstanceState() as LinearLayoutManager.SavedState
+            taskListAdapters.forEach {
+                it.saveState()
+            }
+        }
+    }
+
+    fun restoreState() {
+        if (::boardView.isInitialized) {
+            linearLayoutManager.onRestoreInstanceState(savedState)
+            taskListAdapters.forEach {
+                it.restoreState()
+            }
+        }
     }
 }
 

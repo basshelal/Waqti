@@ -61,6 +61,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         doInBackground {
             boardView?.apply {
+                mainActivityVM.boardAdapter?.restoreState()
                 adapter = mainActivityVM.boardAdapter
                 if (boardAdapter.board.isEmpty()) {
                     emptyState_scrollView.isVisible = true
@@ -70,7 +71,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 if (boardAdapter.itemCount > 0) {
                     post {
                         mainActivityViewModel.boardPosition.apply {
-                            if (positionChanged) scrollToPosition(position)
+                            // if (positionChanged) scrollToPosition(position)
                         }
                     }
                 }
@@ -285,9 +286,14 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         }
     }
 
+    override fun onStop() {
+        mainActivityVM.boardAdapter?.saveState()
+        super.onStop()
+    }
+
     override fun onDestroy() {
-        super.onDestroy()
         Caches.boards.clearMap()
+        super.onDestroy()
     }
 
     override fun finish() {

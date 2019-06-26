@@ -89,6 +89,8 @@ class TaskListAdapter(val taskListID: ID,
     inline val allCards: List<CardView>
         get() = taskListView.children.map { it as CardView }.toList()
 
+    private var savedState: LinearLayoutManager.SavedState? = null
+
     init {
         this.setHasStableIds(true)
     }
@@ -398,6 +400,18 @@ class TaskListAdapter(val taskListID: ID,
             } else scrollBy = listWidth
 
             boardAdapter.boardView.smoothScrollBy(scrollBy, 0, defaultInterpolator)
+        }
+    }
+
+    fun saveState() {
+        if (::taskListView.isInitialized) {
+            savedState = linearLayoutManager.onSaveInstanceState() as LinearLayoutManager.SavedState
+        }
+    }
+
+    fun restoreState() {
+        if (::taskListView.isInitialized) {
+            linearLayoutManager.onRestoreInstanceState(savedState)
         }
     }
 
