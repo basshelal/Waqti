@@ -39,7 +39,7 @@ class SettingsFragment : WaqtiFragment() {
         mainActivity.appBar {
             color = WaqtiColor.WAQTI_DEFAULT
             elevation = DEFAULT_ELEVATION
-            leftImageDefault()
+            leftImageBack()
             editTextView {
                 removeAllTextChangedListeners()
                 isEditable = false

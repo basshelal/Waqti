@@ -122,7 +122,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
         mainActivity.appBar {
             color = Caches.boards[boardID].barColor
             elevation = DEFAULT_ELEVATION
-            leftImageDefault()
+            leftImageBack()
             editTextView {
                 removeAllTextChangedListeners()
                 isEditable = true

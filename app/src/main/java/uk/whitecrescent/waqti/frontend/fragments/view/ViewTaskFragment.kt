@@ -75,7 +75,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
         mainActivity.appBar {
             color = Caches.boards[boardID].cardColor
             elevation = 0F
-            leftImageDefault()
+            leftImageBack()
             editTextView {
                 removeAllTextChangedListeners()
                 isEditable = true

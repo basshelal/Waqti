@@ -143,7 +143,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         mainActivity.appBar.apply {
             color = element.barColor
             elevation = DEFAULT_ELEVATION
-            leftImageDefault()
+            leftImageBack()
             editTextView {
                 removeAllTextChangedListeners()
                 hint = getString(R.string.boardNameHint)

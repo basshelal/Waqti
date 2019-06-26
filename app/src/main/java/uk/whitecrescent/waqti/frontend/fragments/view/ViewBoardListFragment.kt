@@ -86,7 +86,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
         mainActivity.appBar {
             color = WaqtiColor.WAQTI_DEFAULT
             elevation = DEFAULT_ELEVATION
-            leftImageDefault()
+            leftImageMenu()
             editTextView {
                 removeAllTextChangedListeners()
                 isEditable = true

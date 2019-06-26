@@ -64,7 +64,7 @@ class AppBar
 
     inline operator fun invoke(apply: AppBar.() -> Unit): AppBar = this.apply(apply)
 
-    inline fun leftImageDefault() {
+    inline fun leftImageMenu() {
         leftImageView.apply {
             leftImageView.visibility = View.VISIBLE
             leftImage = context.getDrawable(R.drawable.menu_icon)!!
@@ -73,6 +73,16 @@ class AppBar
                     hideSoftKeyboard()
                     openDrawer(GravityCompat.START)
                 }
+            }
+        }
+    }
+
+    inline fun leftImageBack() {
+        leftImageView.apply {
+            leftImageView.visibility = View.VISIBLE
+            leftImage = context.getDrawable(R.drawable.back_icon)!!
+            setOnClickListener {
+                mainActivity.supportFragmentManager.popBackStack()
             }
         }
     }
