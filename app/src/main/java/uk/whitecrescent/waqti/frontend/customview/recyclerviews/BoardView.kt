@@ -228,7 +228,7 @@ class BoardAdapter(val boardID: ID)
     }
 
     fun getListAdapter(taskListID: ID): TaskListAdapter? {
-        return taskListAdapters.find { it.taskListID == taskListID }?.apply { restoreState() }
+        return taskListAdapters.find { it.taskListID == taskListID }?.also { it.restoreState() }
     }
 
     fun getOrCreateListAdapter(taskListID: ID): TaskListAdapter {

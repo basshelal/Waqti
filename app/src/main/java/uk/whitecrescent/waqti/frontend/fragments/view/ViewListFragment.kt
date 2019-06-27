@@ -168,9 +168,11 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                             title = this@ViewListFragment.mainActivity.getString(R.string.clearListQuestion)
                             message = this@ViewListFragment.mainActivity.getString(R.string.clearListDetails)
                             onConfirm = {
+                                val listName = Caches.taskLists[listID].name
                                 dismiss()
                                 Caches.taskLists[listID].clear().update()
-                                mainActivity.appBar.shortSnackBar(getString(R.string.clearedList))
+                                mainActivity.appBar.shortSnackBar(getString(R.string.clearedList)
+                                        + " $listName")
                                 this@ViewListFragment.taskList_recyclerView.listAdapter.notifyDataSetChanged()
                             }
                         }.show(mainActivity.supportFragmentManager, "ConfirmDialog")

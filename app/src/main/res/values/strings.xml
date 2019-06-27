@@ -79,7 +79,7 @@
 
     <string name="clearListQuestion">Clear List?</string>
     <string name="clearListDetails">This will delete all the tasks in this list but not this
-    list</string>
+    list itself</string>
 
     <string name="selectDate">Select Date</string>
     <string name="selectTime">Select Time</string>
@@ -117,7 +117,7 @@
         <item>Linear</item>
         <item>None</item>
     </string-array>
-    <string name="resetToDefaults">Reset to defaults</string>
+    <string name="resetToDefaults">Reset to defaults?</string>
     <string name="resetToDefaultsQuestion">Are you sure you want to reset settings to
         defaults?</string>
 
@@ -126,10 +126,10 @@
     <string name="boardIsEmpty">This board is empty 🙁\n\nAdd a list to get started</string>
     <string name="boardListIsEmpty">You have no boards 🙁\n\nAdd a board to get started</string>
 
-    <string name="deletedTask">Deleted Task</string>
-    <string name="deletedList">Deleted List</string>
-    <string name="clearedList">Cleared List</string>
-    <string name="deletedBoard">Deleted Board</string>
+    <string name="deletedTask">Deleted Task:</string>
+    <string name="deletedList">Deleted List:</string>
+    <string name="clearedList">Cleared List:</string>
+    <string name="deletedBoard">Deleted Board:</string>
 
 
 </resources>

@@ -8,12 +8,12 @@
 
     <TextView
         android:id="@+id/dialogTitle_textView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:text="@string/confirmDialog"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
@@ -23,12 +23,13 @@
 
     <TextView
         android:id="@+id/dialogMessage_textView"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
         android:text="@string/confirmDialogMessage"
+        android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
