@@ -73,6 +73,9 @@ class AboutFragment : WaqtiFragment() {
                 .addLibrary("square/retrofit", "Retrofit")
                 .addLibrary("bumptech/glide", "Glide")
                 .addLibrary("medyo/android-about-page", "Android About Page")
+                .addLibrary("afollestad/material-dialogs", "Material Dialogs")
+                .addLibrary("aritraroy/Flashbar", "Flashbar")
+                .addLibrary("TakuSemba/Spotlight", "Spotlight")
 
                 // About the Developer
                 .addHeading(getString(R.string.aboutTheDeveloper))

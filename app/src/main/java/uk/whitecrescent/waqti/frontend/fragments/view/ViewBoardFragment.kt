@@ -278,11 +278,6 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         }
     }
 
-    override fun onDestroy() {
-        Caches.boards.clearMap()
-        super.onDestroy()
-    }
-
     override fun finish() {
         mainActivity.supportFragmentManager.popBackStack()
     }
