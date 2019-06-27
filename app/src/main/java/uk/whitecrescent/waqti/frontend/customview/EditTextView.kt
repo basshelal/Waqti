@@ -2,9 +2,9 @@ package uk.whitecrescent.waqti.frontend.customview
 
 import android.content.Context
 import android.text.Editable
+import android.text.InputType.TYPE_CLASS_TEXT
 import android.text.InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
 import android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
-import android.text.InputType.TYPE_TEXT_FLAG_MULTI_LINE
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
@@ -34,7 +34,9 @@ class EditTextView
             field = value
             if (value) {
                 imeOptions = EditorInfo.IME_ACTION_DONE
-                setRawInputType(TYPE_TEXT_FLAG_CAP_SENTENCES or TYPE_TEXT_FLAG_MULTI_LINE or TYPE_TEXT_FLAG_AUTO_CORRECT)
+                setRawInputType(TYPE_CLASS_TEXT or
+                        TYPE_TEXT_FLAG_AUTO_CORRECT or
+                        TYPE_TEXT_FLAG_CAP_SENTENCES)
             }
         }
     private var currentTextChangedListeners = ArrayList<TextWatcher>()

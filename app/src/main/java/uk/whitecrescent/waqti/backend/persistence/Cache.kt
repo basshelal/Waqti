@@ -36,9 +36,9 @@ open class Cache<E : Cacheable>(
             debug("Started initialization for Cache of $type")
             Sequence { db.all.iterator() }
                     .asSequence().take(sizeLimit).forEach {
-                it.initialize()
-                safeAdd(it)
-            }
+                        it.initialize()
+                        safeAdd(it)
+                    }
             debug("Completed initialization for Cache of $type")
             debug("Cache of $type is of size ${size}")
             debug("DB of $type is of size ${db.size}")
@@ -169,19 +169,13 @@ open class Cache<E : Cacheable>(
 
     fun clearMap() = doInBackgroundAsync { map.clear() }
 
-    fun clearDB() = object : Committable {
-        override fun commit() {
-            db.removeAll()
-        }
+    fun clearDB() = Committable {
+        db.removeAll()
     }
 
-    fun clearAll(): Committable {
-        return object : Committable {
-            override fun commit() {
-                clearDB().commit()
-                clearMap()
-            }
-        }
+    fun clearAll() = Committable {
+        clearDB().commit()
+        clearMap()
     }
 
     fun close() {

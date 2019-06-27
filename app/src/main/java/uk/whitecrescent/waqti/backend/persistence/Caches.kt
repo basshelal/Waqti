@@ -84,12 +84,8 @@ object Caches {
         allCaches.forEach { it.close() }
     }
 
-    fun clearAllCaches(): Committable {
-        return object : Committable {
-            override fun commit() {
-                allCaches.forEach { it.clearAll().commit() }
-            }
-        }
+    fun clearAllCaches() = Committable {
+        allCaches.forEach { it.clearAll().commit() }
     }
 
     inline fun deleteTask(taskID: ID, listID: ID) {

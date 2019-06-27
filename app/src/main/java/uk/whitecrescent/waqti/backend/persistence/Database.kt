@@ -85,12 +85,8 @@ object Database {
         )
     }
 
-    fun clearAllDBs(): Committable {
-        return object : Committable {
-            override fun commit() {
-                allDBs.forEach { it.removeAll() }
-            }
-        }
+    fun clearAllDBs() = Committable {
+        allDBs.forEach { it.removeAll() }
     }
 
     fun applyMigration() {
