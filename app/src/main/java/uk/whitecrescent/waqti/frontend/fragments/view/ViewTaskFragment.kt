@@ -87,7 +87,6 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                                 it.isNotEmpty() &&
                                 it.toString() != task.name)
                             Caches.tasks[taskID].changeName(text.toString())
-                        // TODO: 20-Jun-19 Notify the adapter that I've changed
                     }
                 }
                 text = SpannableStringBuilder(task.name)

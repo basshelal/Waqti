@@ -10,6 +10,8 @@ class MainActivityViewModel : ViewModel() {
     var listID: ID = 0L
     var taskID: ID = 0L
     var boardListPosition = ChangedPositionPair(false, 0)
+
+    // TODO: 27-Jun-19 We need to get rid of this guy sometime
     var boardPosition = ChangedPositionPair(false, 0)
     var boardAdapter: BoardAdapter? = null
     var settingsChanged = false

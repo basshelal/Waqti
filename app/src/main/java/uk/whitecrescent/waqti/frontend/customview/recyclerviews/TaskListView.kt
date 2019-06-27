@@ -91,6 +91,8 @@ class TaskListAdapter(val taskListID: ID,
 
     private var savedState: LinearLayoutManager.SavedState? = null
 
+    var onInflate: TaskListView.() -> Unit = {}
+
     init {
         this.setHasStableIds(true)
     }
@@ -101,6 +103,8 @@ class TaskListAdapter(val taskListID: ID,
 
         taskListView.apply {
             restoreState()
+            onInflate(this)
+            onInflate = {}
             addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                     if (newState == RecyclerView.SCROLL_STATE_IDLE) {

@@ -137,7 +137,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
     private fun setUpAppBar(element: Board) {
         mainActivity.resetNavBarStatusBarColor()
-        mainActivity.appBar.apply {
+        mainActivity.appBar {
             color = element.barColor
             elevation = DEFAULT_ELEVATION
             leftImageBack()

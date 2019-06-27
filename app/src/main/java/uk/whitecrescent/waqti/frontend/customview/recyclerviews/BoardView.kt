@@ -91,6 +91,8 @@ class BoardAdapter(val boardID: ID)
 
     private var savedState: LinearLayoutManager.SavedState? = null
 
+    var onInflate: BoardView.() -> Unit = {}
+
     init {
         this.setHasStableIds(true)
     }
@@ -103,6 +105,10 @@ class BoardAdapter(val boardID: ID)
         boardView = recyclerView
 
         restoreState()
+
+        onInflate(boardView)
+        onInflate = {}
+
 
         // TODO: 23-Jun-19 If any of the settings changed we need to invalidate the BoardView
         //  replicate this by going to a Board, go to Settings, change something than just click

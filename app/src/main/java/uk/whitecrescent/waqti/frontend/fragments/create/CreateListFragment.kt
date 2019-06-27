@@ -17,6 +17,7 @@ import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
+import uk.whitecrescent.waqti.scrollToEnd
 
 class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 
@@ -80,6 +81,10 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
     }
 
     override fun finish() {
+        mainActivityVM.boardAdapter?.onInflate = {
+            scrollToEnd()
+        }
+
         mainActivityVM.boardPosition
                 .changeTo(true to mainActivityVM.boardPosition.position + 1)
         @GoToFragment

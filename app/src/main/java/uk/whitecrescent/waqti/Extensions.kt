@@ -127,11 +127,23 @@ inline fun addTasks(amount: Int) {
 
 inline fun RecyclerView.scrollToEnd() {
     if (this.adapter != null) {
-        this.smoothScrollToPosition(adapter!!.itemCount - 1)
+        this.scrollToPosition(adapter!!.lastPosition)
+    }
+}
+
+inline fun RecyclerView.smoothScrollToEnd() {
+    if (this.adapter != null) {
+        this.smoothScrollToPosition(adapter!!.lastPosition)
     }
 }
 
 inline fun RecyclerView.scrollToStart() {
+    if (this.adapter != null) {
+        this.scrollToPosition(0)
+    }
+}
+
+inline fun RecyclerView.smoothScrollToStart() {
     if (this.adapter != null) {
         this.smoothScrollToPosition(0)
     }

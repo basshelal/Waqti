@@ -17,6 +17,7 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
@@ -54,71 +55,74 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
     override fun setUpViews(element: TaskList) {
         setUpAppBar(element)
-        taskList_recyclerView.adapter = mainActivityVM.boardAdapter
-                ?.getOrCreateListAdapter(listID)
-        mainActivity.resetNavBarStatusBarColor()
 
-        taskList_recyclerView.apply {
-            background = Caches.boards[boardID].backgroundColor.toColorDrawable
-            addOnScrollListener(this@ViewListFragment.addTask_floatingButton.verticalFABOnScrollListener)
-        }
+        taskList_recyclerView.adapter = mainActivityVM.boardAdapter?.getOrCreateListAdapter(listID)
 
-        addTask_floatingButton.setOnClickListener {
-            @GoToFragment
-            it.mainActivity.supportFragmentManager.commitTransaction {
+        doInBackground {
 
-                it.mainActivityViewModel.boardID = boardID
-                it.mainActivityViewModel.listID = listID
-
-                it.clearFocusAndHideSoftKeyboard()
-
-                replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
-                addToBackStack(null)
+            taskList_recyclerView.apply {
+                background = Caches.boards[boardID].backgroundColor.toColorDrawable
+                addOnScrollListener(this@ViewListFragment.addTask_floatingButton.verticalFABOnScrollListener)
             }
-        }
 
-        delete_imageView.apply {
-            bringToFront()
-            alpha = 0F
-            setOnDragListener { _, event ->
-                if (event.localState is DragEventLocalState) {
-                    val draggingState = event.localState as DragEventLocalState
-                    when (event.action) {
-                        DragEvent.ACTION_DRAG_STARTED -> {
-                            alpha = 1F
-                            fadeIn(200)
-                        }
-                        DragEvent.ACTION_DRAG_ENTERED -> {
-                            (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrateCompat(50)
-                        }
-                        DragEvent.ACTION_DROP -> {
-                            ConfirmDialog().apply {
-                                title = this@ViewListFragment.mainActivity.getString(R.string.deleteTaskQuestion)
-                                onConfirm = {
-                                    val taskName = Caches.tasks[draggingState.taskID].name
-                                    Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
-                                    this@ViewListFragment.taskList_recyclerView.apply {
-                                        listAdapter.notifyItemRemoved(
-                                                findViewHolderForItemId(draggingState.taskID).adapterPosition
-                                        )
+            addTask_floatingButton.setOnClickListener {
+                @GoToFragment
+                it.mainActivity.supportFragmentManager.commitTransaction {
+
+                    it.mainActivityViewModel.boardID = boardID
+                    it.mainActivityViewModel.listID = listID
+
+                    it.clearFocusAndHideSoftKeyboard()
+
+                    replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
+                    addToBackStack(null)
+                }
+            }
+
+            delete_imageView.apply {
+                bringToFront()
+                alpha = 0F
+                setOnDragListener { _, event ->
+                    if (event.localState is DragEventLocalState) {
+                        val draggingState = event.localState as DragEventLocalState
+                        when (event.action) {
+                            DragEvent.ACTION_DRAG_STARTED -> {
+                                alpha = 1F
+                                fadeIn(200)
+                            }
+                            DragEvent.ACTION_DRAG_ENTERED -> {
+                                (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrateCompat(50)
+                            }
+                            DragEvent.ACTION_DROP -> {
+                                ConfirmDialog().apply {
+                                    title = this@ViewListFragment.mainActivity.getString(R.string.deleteTaskQuestion)
+                                    onConfirm = {
+                                        val taskName = Caches.tasks[draggingState.taskID].name
+                                        Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
+                                        this@ViewListFragment.taskList_recyclerView.apply {
+                                            listAdapter.notifyItemRemoved(
+                                                    findViewHolderForItemId(draggingState.taskID).adapterPosition
+                                            )
+                                        }
+                                        mainActivity.appBar.shortSnackBar(getString(R.string.deletedTask)
+                                                + " $taskName")
+                                        this.dismiss()
                                     }
-                                    mainActivity.appBar.shortSnackBar(getString(R.string.deletedTask)
-                                            + " $taskName")
-                                    this.dismiss()
-                                }
-                            }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
-                        }
-                        DragEvent.ACTION_DRAG_ENDED -> {
-                            fadeOut(200)
+                                }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+                            }
+                            DragEvent.ACTION_DRAG_ENDED -> {
+                                fadeOut(200)
+                            }
                         }
                     }
+                    true
                 }
-                true
             }
         }
     }
 
     private fun setUpAppBar(element: TaskList) {
+        mainActivity.resetNavBarStatusBarColor()
         mainActivity.appBar {
             color = Caches.boards[boardID].barColor
             elevation = DEFAULT_ELEVATION

@@ -176,6 +176,10 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     }
 
     override fun finish() {
+        // TODO: 28-Jun-19 It's not doing it
+        /*mainActivityVM.boardAdapter?.getListAdapter(listID)?.onInflate = {
+            scrollToEnd()
+        }*/
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }
