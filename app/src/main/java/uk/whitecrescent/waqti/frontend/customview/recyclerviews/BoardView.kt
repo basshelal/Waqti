@@ -93,6 +93,8 @@ class BoardAdapter(val boardID: ID)
         }
         boardView = recyclerView
 
+        restoreState()
+
         // TODO: 23-Jun-19 If any of the settings changed we need to invalidate the BoardView
         //  replicate this by going to a Board, go to Settings, change something than just click
         //  back to go to the board, you'll notice some Views haven't fully changed
@@ -113,7 +115,8 @@ class BoardAdapter(val boardID: ID)
 
         boardView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                if (newState == SCROLL_STATE_IDLE && recyclerView is BoardView) {
+                if (newState == SCROLL_STATE_IDLE) {
+                    saveState()
                     val currentBoardPos = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
                     boardView.mainActivityViewModel.boardPosition.changeTo(true to currentBoardPos)
                 }
