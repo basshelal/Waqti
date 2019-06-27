@@ -429,6 +429,12 @@ class TaskListAdapter(val taskListID: ID,
         }
     }
 
+    fun invalidate() {
+        if (::taskListView.isInitialized) {
+            taskListView.invalidate()
+        }
+    }
+
 }
 
 data class DragEventLocalState(

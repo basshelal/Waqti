@@ -12,5 +12,6 @@ class MainActivityViewModel : ViewModel() {
     var boardListPosition = ChangedPositionPair(false, 0)
     var boardPosition = ChangedPositionPair(false, 0)
     var boardAdapter: BoardAdapter? = null
+    var settingsChanged = false
 
 }

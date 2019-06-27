@@ -64,6 +64,14 @@ class BoardView
         }
         setRecycledViewPool(listViewHolderPool)
     }
+
+    fun invalidateBoard() {
+        this.invalidate()
+        (this.adapter as? BoardAdapter)?.taskListAdapters?.forEach {
+            it.invalidate()
+        }
+    }
+
 }
 
 class BoardAdapter(val boardID: ID)
@@ -76,7 +84,7 @@ class BoardAdapter(val boardID: ID)
     private var snapHelper: SnapHelper? = null
     var taskListWidth: Int = 600
 
-    private val taskListAdapters = ArrayList<TaskListAdapter>()
+    val taskListAdapters = ArrayList<TaskListAdapter>()
 
     private inline val linearLayoutManager: LinearLayoutManager
         get() = boardView.layoutManager as LinearLayoutManager

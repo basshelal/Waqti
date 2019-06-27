@@ -61,6 +61,10 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         doInBackground {
             boardView?.apply {
+                if (mainActivityVM.settingsChanged) {
+                    invalidateBoard()
+                    mainActivityVM.settingsChanged = false
+                }
                 adapter = mainActivityVM.boardAdapter
                 if (boardAdapter.board.isEmpty()) {
                     emptyState_scrollView.isVisible = true

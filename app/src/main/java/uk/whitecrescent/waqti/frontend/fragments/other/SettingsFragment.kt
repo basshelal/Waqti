@@ -67,6 +67,7 @@ class SettingsFragment : WaqtiFragment() {
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     mainActivity.waqtiPreferences.taskListWidth = range.getValue(progress)
+                    mainActivityVM.settingsChanged = true
                 }
             })
         }
@@ -92,6 +93,7 @@ class SettingsFragment : WaqtiFragment() {
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
                     mainActivity.waqtiPreferences.taskCardTextSize = range.getValue(progress)
+                    mainActivityVM.settingsChanged = true
                 }
             })
         }
@@ -113,6 +115,7 @@ class SettingsFragment : WaqtiFragment() {
                                             id: Long) {
                     mainActivity.waqtiPreferences.boardScrollSnapMode =
                             ScrollSnapMode.valueOf(selectedItem.toString().toUpperCase())
+                    mainActivityVM.settingsChanged = true
                 }
             }
         }
@@ -146,6 +149,7 @@ class SettingsFragment : WaqtiFragment() {
             taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + default
 
             mainActivity.waqtiPreferences.taskListWidth = range.getValue(progress)
+            mainActivityVM.settingsChanged = true
         }
 
         cardTextSizeSetting_seekBar.apply {
@@ -158,12 +162,14 @@ class SettingsFragment : WaqtiFragment() {
             cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) + default
 
             mainActivity.waqtiPreferences.taskCardTextSize = range.getValue(progress)
+            mainActivityVM.settingsChanged = true
         }
 
         boardScrollSnapMode_spinner.apply {
             setSelection(ScrollSnapMode.PAGED.ordinal, true)
 
             mainActivity.waqtiPreferences.boardScrollSnapMode = ScrollSnapMode.PAGED
+            mainActivityVM.settingsChanged = true
         }
     }
 
