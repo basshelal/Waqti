@@ -72,12 +72,12 @@ class BoardAdapter(val boardID: ID)
 
     lateinit var boardView: BoardView
     lateinit var itemTouchHelper: ItemTouchHelper
-    var snapHelper: SnapHelper? = null
+    private var snapHelper: SnapHelper? = null
     var taskListWidth: Int = 600
 
     private val taskListAdapters = ArrayList<TaskListAdapter>()
 
-    inline val linearLayoutManager: LinearLayoutManager
+    private inline val linearLayoutManager: LinearLayoutManager
         get() = boardView.layoutManager as LinearLayoutManager
 
     private var savedState: LinearLayoutManager.SavedState? = null
@@ -190,14 +190,6 @@ class BoardAdapter(val boardID: ID)
         holder.header.text = board[position].name
     }
 
-    override fun onViewDetachedFromWindow(holder: BoardViewHolder) {
-        holder.taskListView.listAdapter.saveState()
-    }
-
-    override fun onViewAttachedToWindow(holder: BoardViewHolder) {
-        holder.taskListView.listAdapter.restoreState()
-    }
-
     private fun matchOrder() {
 
         val taskListAdaptersCopy = ArrayList(taskListAdapters)
@@ -240,7 +232,8 @@ class BoardAdapter(val boardID: ID)
 
     fun saveState() {
         if (::boardView.isInitialized) {
-            savedState = linearLayoutManager.onSaveInstanceState() as LinearLayoutManager.SavedState
+            savedState = boardView.layoutManager?.onSaveInstanceState()
+                    as LinearLayoutManager.SavedState
             taskListAdapters.forEach {
                 it.saveState()
             }
@@ -249,7 +242,7 @@ class BoardAdapter(val boardID: ID)
 
     fun restoreState() {
         if (::boardView.isInitialized) {
-            linearLayoutManager.onRestoreInstanceState(savedState)
+            boardView.layoutManager?.onRestoreInstanceState(savedState)
             taskListAdapters.forEach {
                 it.restoreState()
             }

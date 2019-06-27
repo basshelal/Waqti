@@ -61,20 +61,12 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         doInBackground {
             boardView?.apply {
-                mainActivityVM.boardAdapter?.restoreState()
                 adapter = mainActivityVM.boardAdapter
                 if (boardAdapter.board.isEmpty()) {
                     emptyState_scrollView.isVisible = true
                     addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
                 }
                 background = element.backgroundColor.toColorDrawable
-                if (boardAdapter.itemCount > 0) {
-                    post {
-                        mainActivityViewModel.boardPosition.apply {
-                            // if (positionChanged) scrollToPosition(position)
-                        }
-                    }
-                }
                 addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
             }
 
@@ -284,11 +276,6 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 }
             }
         }
-    }
-
-    override fun onStop() {
-        mainActivityVM.boardAdapter?.saveState()
-        super.onStop()
     }
 
     override fun onDestroy() {

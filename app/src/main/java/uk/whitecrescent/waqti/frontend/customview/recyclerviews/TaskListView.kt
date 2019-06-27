@@ -40,7 +40,6 @@ import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.frontend.startDragCompat
 import uk.whitecrescent.waqti.lastPosition
 import uk.whitecrescent.waqti.locationOnScreen
-import uk.whitecrescent.waqti.logE
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.notifySwapped
@@ -99,23 +98,33 @@ class TaskListAdapter(val taskListID: ID,
         check(recyclerView is TaskListView)
         taskListView = recyclerView
 
-        taskListView.setOnDragListener { _, event ->
-            val draggingState = event.localState as DragEventLocalState
-            when (event.action) {
-                DragEvent.ACTION_DRAG_LOCATION -> {
-                    if (this.taskListID != draggingState.taskListID) {
-                        val lastViewHolderY = taskListView.findViewHolderForAdapterPosition(lastPosition)?.itemView?.y
-                        if (taskList.isEmpty() || (lastViewHolderY != null && event.y > lastViewHolderY)) {
-                            val otherAdapter = boardAdapter.getListAdapter(draggingState.taskListID)
-                            if (otherAdapter != null) {
-                                onDragAcrossEmptyList(draggingState, otherAdapter)
-                                onScrollAcrossEmptyList()
+        taskListView.apply {
+            restoreState()
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                        saveState()
+                    }
+                }
+            })
+            setOnDragListener { _, event ->
+                val draggingState = event.localState as DragEventLocalState
+                when (event.action) {
+                    DragEvent.ACTION_DRAG_LOCATION -> {
+                        if (this@TaskListAdapter.taskListID != draggingState.taskListID) {
+                            val lastViewHolderY = taskListView.findViewHolderForAdapterPosition(lastPosition)?.itemView?.y
+                            if (taskList.isEmpty() || (lastViewHolderY != null && event.y > lastViewHolderY)) {
+                                val otherAdapter = boardAdapter.getListAdapter(draggingState.taskListID)
+                                if (otherAdapter != null) {
+                                    onDragAcrossEmptyList(draggingState, otherAdapter)
+                                    onScrollAcrossEmptyList()
+                                }
                             }
                         }
                     }
                 }
+                true
             }
-            true
         }
     }
 
@@ -153,8 +162,6 @@ class TaskListAdapter(val taskListID: ID,
                 if (it != null) return findContainingViewHolder(it)
             }
         }
-        logE("$touchPoint fails with $localPoint on $taskListID")
-        logE(rvRect)
         return null
     }
 
@@ -405,13 +412,14 @@ class TaskListAdapter(val taskListID: ID,
 
     fun saveState() {
         if (::taskListView.isInitialized) {
-            savedState = linearLayoutManager.onSaveInstanceState() as LinearLayoutManager.SavedState
+            savedState = taskListView.layoutManager?.onSaveInstanceState()
+                    as LinearLayoutManager.SavedState
         }
     }
 
     fun restoreState() {
         if (::taskListView.isInitialized) {
-            linearLayoutManager.onRestoreInstanceState(savedState)
+            taskListView.layoutManager?.onRestoreInstanceState(savedState)
         }
     }
 
