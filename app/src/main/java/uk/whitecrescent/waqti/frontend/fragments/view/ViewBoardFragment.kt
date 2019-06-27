@@ -143,6 +143,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
             leftImageBack()
             editTextView {
                 removeAllTextChangedListeners()
+                isEditable = true
                 hint = getString(R.string.boardNameHint)
                 fun update() {
                     text.also {
