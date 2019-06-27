@@ -5,6 +5,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
@@ -193,6 +194,11 @@ class BoardAdapter(val boardID: ID)
         holder.header.text = board[position].name
     }
 
+    override fun onViewAttachedToWindow(holder: BoardViewHolder) {
+        holder.itemView.startAnimation(AnimationUtils.loadAnimation(boardView.context,
+                R.anim.task_list_show_anim))
+    }
+
     private fun matchOrder() {
 
         val taskListAdaptersCopy = ArrayList(taskListAdapters)
@@ -222,7 +228,7 @@ class BoardAdapter(val boardID: ID)
     }
 
     fun getListAdapter(taskListID: ID): TaskListAdapter? {
-        return taskListAdapters.find { it.taskListID == taskListID }
+        return taskListAdapters.find { it.taskListID == taskListID }?.apply { restoreState() }
     }
 
     fun getOrCreateListAdapter(taskListID: ID): TaskListAdapter {

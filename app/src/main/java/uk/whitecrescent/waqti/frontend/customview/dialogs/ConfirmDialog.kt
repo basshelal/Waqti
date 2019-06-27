@@ -1,5 +1,6 @@
 package uk.whitecrescent.waqti.frontend.customview.dialogs
 
+import android.text.SpannableStringBuilder
 import android.view.View
 import kotlinx.android.synthetic.main.dialog_confirm.*
 import uk.whitecrescent.waqti.R
@@ -16,10 +17,10 @@ class ConfirmDialog : MaterialDialog() {
 
         dialog.apply {
 
-            if (message == "") dialogMessage_textView.visibility = View.GONE
-            else dialogMessage_textView.text = message
+            dialogTitle_textView.text = SpannableStringBuilder(title)
 
-            dialogTitle_textView.text = title
+            if (message == "") dialogMessage_textView.visibility = View.GONE
+            else dialogMessage_textView.text = SpannableStringBuilder(message)
 
             confirm_button.setOnClickListener {
                 onConfirm()

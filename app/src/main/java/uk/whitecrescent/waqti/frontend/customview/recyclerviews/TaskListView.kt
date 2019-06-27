@@ -14,6 +14,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
@@ -222,6 +223,11 @@ class TaskListAdapter(val taskListID: ID,
 
             }
         }
+    }
+
+    override fun onViewAttachedToWindow(holder: TaskViewHolder) {
+        holder.itemView.startAnimation(AnimationUtils.loadAnimation(taskListView.context,
+                R.anim.task_list_item_show_anim))
     }
 
     private inline fun onDrag(draggingState: DragEventLocalState, holder: TaskViewHolder): Boolean {

@@ -67,5 +67,4 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
     implementation 'com.kc.androidunsplash:androidunsplash:1.0.4'
     implementation 'com.github.medyo:android-about-page:1.2.5'
-    implementation 'com.github.ybq:Android-SpinKit:1.2.0'
 }
