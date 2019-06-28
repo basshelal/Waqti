@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModel
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import kotlinx.android.synthetic.main.property_card.view.*
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.Time
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -74,6 +75,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
             elevation = 0F
             leftImageView.isVisible = false
             editTextView {
+                textColor = WaqtiColor.BLACK.toAndroidColor
                 removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.taskNameHint)

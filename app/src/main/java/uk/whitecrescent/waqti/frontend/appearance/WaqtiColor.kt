@@ -30,6 +30,7 @@ open class WaqtiColor(val value: String) {
     companion object {
         val BLACK = WaqtiColor("#000000")
         val WHITE = WaqtiColor("#FFFFFF")
+        val WAQTI_WHITE = WaqtiColor("#EEEEEE")
         val CARD_DEFAULT = WaqtiColor("#E0E0E0")
         val WAQTI_DEFAULT = WaqtiColor("#880E4F")
         val DEFAULT = WHITE

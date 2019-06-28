@@ -68,6 +68,7 @@ class AppBar
         leftImageView.apply {
             leftImageView.visibility = View.VISIBLE
             leftImage = context.getDrawable(R.drawable.menu_icon)!!
+            leftImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
             setOnClickListener {
                 mainActivity.drawerLayout.apply {
                     hideSoftKeyboard()
@@ -81,6 +82,7 @@ class AppBar
         leftImageView.apply {
             leftImageView.visibility = View.VISIBLE
             leftImage = context.getDrawable(R.drawable.back_icon)!!
+            leftImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
             setOnClickListener {
                 mainActivity.supportFragmentManager.popBackStack()
             }
@@ -92,7 +94,7 @@ class AppBar
         rightImageView.apply {
             rightImageView.visibility = View.VISIBLE
             rightImage = context.getDrawable(R.drawable.overflow_icon)!!
-
+            rightImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
             setOnClickListener {
                 PopupMenu(context, rightImageView).apply {
                     inflate(menuRes)

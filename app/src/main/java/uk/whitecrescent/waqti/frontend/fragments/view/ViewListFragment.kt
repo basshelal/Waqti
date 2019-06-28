@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.fragment_view_list.*
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -22,6 +23,7 @@ import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
@@ -128,6 +130,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
             elevation = DEFAULT_ELEVATION
             leftImageBack()
             editTextView {
+                textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
                 removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.listNameHint)

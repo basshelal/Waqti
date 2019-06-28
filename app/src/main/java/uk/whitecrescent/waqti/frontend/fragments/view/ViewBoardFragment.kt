@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.fragment_board_view.*
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -23,6 +24,7 @@ import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
 import uk.whitecrescent.waqti.frontend.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
@@ -59,12 +61,15 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     override fun setUpViews(element: Board) {
         setUpAppBar(element)
 
+        boardView?.apply {
+            if (mainActivityVM.settingsChanged) {
+                invalidateBoard()
+                mainActivityVM.settingsChanged = false
+            }
+        }
+
         doInBackground {
             boardView?.apply {
-                if (mainActivityVM.settingsChanged) {
-                    invalidateBoard()
-                    mainActivityVM.settingsChanged = false
-                }
                 adapter = mainActivityVM.boardAdapter
                 if (boardAdapter.board.isEmpty()) {
                     emptyState_scrollView.isVisible = true
@@ -142,6 +147,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
             elevation = DEFAULT_ELEVATION
             leftImageBack()
             editTextView {
+                textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
                 removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.boardNameHint)

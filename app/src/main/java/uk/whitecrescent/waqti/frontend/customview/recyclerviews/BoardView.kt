@@ -109,11 +109,6 @@ class BoardAdapter(val boardID: ID)
         onInflate(boardView)
         onInflate = {}
 
-
-        // TODO: 23-Jun-19 If any of the settings changed we need to invalidate the BoardView
-        //  replicate this by going to a Board, go to Settings, change something than just click
-        //  back to go to the board, you'll notice some Views haven't fully changed
-
         val percent = boardView.mainActivity.waqtiPreferences.taskListWidth / 100.0
         taskListWidth = (boardView.mainActivity.dimensions.first.toFloat() * percent).roundToInt()
 

@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -88,6 +89,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
             elevation = DEFAULT_ELEVATION
             leftImageMenu()
             editTextView {
+                textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
                 removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.allBoards)
@@ -114,6 +116,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                     when (viewMode) {
                         ViewMode.LIST_VERTICAL -> {
                             rightImage = mainActivity.getDrawable(R.drawable.grid_icon)!!
+                            rightImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
                             this@ViewBoardListFragment.boardsList_recyclerView
                                     .changeViewMode(ViewMode.LIST_VERTICAL)
 
@@ -123,6 +126,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                         }
                         ViewMode.GRID_VERTICAL -> {
                             rightImage = mainActivity.getDrawable((R.drawable.list_icon))!!
+                            rightImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
                             this@ViewBoardListFragment.boardsList_recyclerView
                                     .changeViewMode(ViewMode.GRID_VERTICAL)
                             mainActivity.navigationView.menu

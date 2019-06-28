@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.fragment_view_task.*
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DEADLINE_PROPERTY
@@ -20,6 +21,7 @@ import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
@@ -76,7 +78,9 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
             color = Caches.boards[boardID].cardColor
             elevation = 0F
             leftImageBack()
+            leftImage.setTint(WaqtiColor.BLACK.toAndroidColor)
             editTextView {
+                textColor = WaqtiColor.BLACK.toAndroidColor
                 removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.taskNameHint)
@@ -120,6 +124,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                     else -> false
                 }
             }
+            rightImage.setTint(WaqtiColor.BLACK.toAndroidColor)
         }
     }
 

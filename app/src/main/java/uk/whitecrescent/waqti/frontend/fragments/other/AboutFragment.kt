@@ -13,6 +13,7 @@ import androidx.core.view.isInvisible
 import kotlinx.android.synthetic.main.fragment_about.*
 import mehdi.sakout.aboutpage.AboutPage
 import mehdi.sakout.aboutpage.Element
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
@@ -34,6 +35,7 @@ class AboutFragment : WaqtiFragment() {
             elevation = DEFAULT_ELEVATION
             leftImageBack()
             editTextView {
+                textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
                 removeAllTextChangedListeners()
                 isEditable = false
                 text = SpannableStringBuilder(getString(R.string.about))

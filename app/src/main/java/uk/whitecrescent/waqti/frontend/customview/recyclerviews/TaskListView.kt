@@ -436,6 +436,7 @@ class TaskListAdapter(val taskListID: ID,
     fun invalidate() {
         if (::taskListView.isInitialized) {
             taskListView.invalidate()
+            taskListView.children.forEach { it.invalidate() }
         }
     }
 
