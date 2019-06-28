@@ -1,6 +1,6 @@
 # Waqti
 
-![Waqti icon](pictures/waqti_icon.png)
+![Waqti icon](pictures/Waqti-Feature-Graphic.png)
 
 * [Overview](#overview)
 * [Current Functionality](#current-functionality)
