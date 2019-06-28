@@ -154,6 +154,8 @@ open class Cache<E : Cacheable>(
 
     fun valueList() = map.values.toList()
 
+    fun all() = db.all
+
     override fun isEmpty() = map.isEmpty()
 
     override operator fun iterator() = valueList().iterator()

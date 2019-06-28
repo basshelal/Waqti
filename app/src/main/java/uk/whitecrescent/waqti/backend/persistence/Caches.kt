@@ -64,6 +64,7 @@ object Caches {
 
     inline val boardList: BoardList
         get() {
+            solveBoardList()
             require(Caches.boardLists.size == 1) {
                 "BoardLists Cache cannot contain ${Caches.boardLists.size}, must be exactly one"
             }
@@ -76,6 +77,7 @@ object Caches {
     )
 
     fun initialize() {
+        solveBoardList()
         boardLists.initialize()
         doInBackgroundAsync { allCaches.forEach { it.initialize() } }
     }
@@ -86,6 +88,21 @@ object Caches {
 
     fun clearAllCaches() = Committable {
         allCaches.forEach { it.clearAll().commit() }
+    }
+
+    inline fun solveBoardList() {
+        (Caches.boardLists.size).also {
+            if (it == 1) return
+            if (it == 0) {
+                Caches.boardLists.put(BoardList("Default"))
+                Caches.boardLists.first().addAll(Caches.boards.all())
+            }
+            if (it > 1) {
+                Caches.boardLists.clearAll().commit()
+                Caches.boardLists.put(BoardList("Default"))
+                Caches.boardLists.first().addAll(Caches.boards.all())
+            }
+        }
     }
 
     inline fun deleteTask(taskID: ID, listID: ID) {
@@ -132,23 +149,158 @@ object Caches {
     }
 
     inline fun seedRealistic() {
-        Caches.boardList.add(Board("To Do",
-                listOf(
-                        TaskList("To Do",
-                                listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
-                                        .map { Task(it) }
-                        ),
-                        TaskList("Today",
-                                listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
-                                        .map { Task(it) }
-                        ),
-                        TaskList("Later",
-                                listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
-                                        .map { Task(it) }
-                        ),
-                        TaskList("Done",
-                                listOf("1", "2", "3", "4", "5", "6", "7", "8", "9")
-                                        .map { Task(it) }
+        Caches.clearAllCaches().commit()
+
+        Caches.boardLists.put(BoardList("Default"))
+
+        Caches.boardList.addAll(listOf(
+                Board("Personal",
+                        listOf(
+                                TaskList("To Do",
+                                        listOf("Buy groceries",
+                                                "Dentist appointment on Friday",
+                                                "House viewing on Monday",
+                                                "Buy new clothes",
+                                                "Buy new microphone",
+                                                "Weekly music session",
+                                                "Weekly language session",
+                                                "Liverpool match on Saturday with friends",
+                                                "Clean up room",
+                                                "Haircut before project meeting",
+                                                "Finish writing CV",
+                                                "Thank Professor Van Dyke",
+                                                "Book Star Wars tickets")
+                                                .map { Task(it) }
+                                ),
+                                TaskList("Today",
+                                        listOf("Lunch with Salman",
+                                                "Meeting with Dr. Roberts at 14:00",
+                                                "Workout at 16:00",
+                                                "Call Mum at 20:00",
+                                                "Piano practice")
+                                                .map { Task(it) }
+                                ),
+                                TaskList("Done",
+                                        listOf("Pick up phone from repair on Monday",
+                                                "Call electric company regarding outages",
+                                                "Hangout with friends on Saturday",
+                                                "Watch Lego Movie with brother",
+                                                "Send laundry to dry cleaners",
+                                                "Book dentist appointment",
+                                                "Piano practice",
+                                                "Meeting with Dr. Roberts at 10:00",
+                                                "Buy new speakers",
+                                                "Weekly language session",
+                                                "Weekly music session",
+                                                "Start writing CV",
+                                                "Transfer money to savings account",
+                                                "Call Uncles and Aunts",
+                                                "Send phone to repair shop",
+                                                "Clean up Drive folders",
+                                                "Buy new hard drive",
+                                                "Take out trash on Wednesday")
+                                                .map { Task(it) }
+                                )
+                        )
+                ),
+                Board("University",
+                        listOf(
+                                TaskList("Assignments",
+                                        listOf("Web Development assignment 2 on 11-Jan-19",
+                                                "Machine Learning assignment 2 on 12-Nov-18",
+                                                "Software Testing assignment 1 on 10-Dec-18",
+                                                "Programming assignment 1 on 14-Dec-18")
+                                                .map { Task(it) }
+                                ),
+                                TaskList("Due this week",
+                                        listOf("Web Development assignment 1 on 10-Oct-18",
+                                                "Machine Learninf assignment 1 on 17-Oct-18")
+                                                .map { Task(it) }
+                                ),
+                                TaskList("Done",
+                                        listOf<String>()
+                                                .map { Task(it) }
+                                )
+                        )
+                ),
+                Board("Final Year Project",
+                        listOf(
+                                TaskList("To Do",
+                                        listOf("1",
+                                                "2",
+                                                "3",
+                                                "4",
+                                                "5",
+                                                "6",
+                                                "7",
+                                                "8",
+                                                "9")
+                                                .map { Task(it) }
+                                ),
+                                TaskList("Today",
+                                        listOf("1",
+                                                "2",
+                                                "3",
+                                                "4",
+                                                "5",
+                                                "6",
+                                                "7",
+                                                "8",
+                                                "9")
+                                                .map { Task(it) }
+                                ),
+                                TaskList("Done",
+                                        listOf("1",
+                                                "2",
+                                                "3",
+                                                "4",
+                                                "5",
+                                                "6",
+                                                "7",
+                                                "8",
+                                                "9")
+                                                .map { Task(it) }
+                                )
+                        )
+                ),
+                Board("Android App",
+                        listOf(
+                                TaskList("To Do",
+                                        listOf("1",
+                                                "2",
+                                                "3",
+                                                "4",
+                                                "5",
+                                                "6",
+                                                "7",
+                                                "8",
+                                                "9")
+                                                .map { Task(it) }
+                                ),
+                                TaskList("Today",
+                                        listOf("1",
+                                                "2",
+                                                "3",
+                                                "4",
+                                                "5",
+                                                "6",
+                                                "7",
+                                                "8",
+                                                "9")
+                                                .map { Task(it) }
+                                ),
+                                TaskList("Done",
+                                        listOf("1",
+                                                "2",
+                                                "3",
+                                                "4",
+                                                "5",
+                                                "6",
+                                                "7",
+                                                "8",
+                                                "9")
+                                                .map { Task(it) }
+                                )
                         )
                 )
         )).update()
