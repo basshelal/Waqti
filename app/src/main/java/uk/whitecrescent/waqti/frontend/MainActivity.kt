@@ -9,11 +9,8 @@ import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.blank_activity.*
 import org.jetbrains.anko.displayMetrics
-import uk.whitecrescent.waqti.BuildConfig
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.addOnBackPressedCallback
-import uk.whitecrescent.waqti.backend.persistence.Caches
-import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
@@ -24,7 +21,6 @@ import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.getViewModel
-import uk.whitecrescent.waqti.size
 
 class MainActivity : AppCompatActivity() {
 
@@ -43,7 +39,7 @@ class MainActivity : AppCompatActivity() {
 
         waqtiPreferences = WaqtiPreferences(this)
 
-        if (supportFragmentManager.fragments.size == 0) {
+        if (supportFragmentManager.fragments.isEmpty()) {
             supportFragmentManager.commitTransaction {
                 add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
             }
@@ -90,10 +86,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             true
-        }
-
-        if (BuildConfig.DEBUG && Database.tasks.size < 100) {
-            Caches.seed(5, 20, 100)
         }
     }
 

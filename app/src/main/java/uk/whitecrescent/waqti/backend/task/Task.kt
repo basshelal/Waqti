@@ -30,13 +30,13 @@ import uk.whitecrescent.waqti.backend.task.Properties.PRIORITY
 import uk.whitecrescent.waqti.backend.task.Properties.SUB_TASKS
 import uk.whitecrescent.waqti.backend.task.Properties.TARGET
 import uk.whitecrescent.waqti.backend.task.Properties.TIME
-import uk.whitecrescent.waqti.debug
 import uk.whitecrescent.waqti.ids
 import uk.whitecrescent.waqti.isAfter
 import uk.whitecrescent.waqti.isBefore
 import uk.whitecrescent.waqti.isInThePast
 import uk.whitecrescent.waqti.isNotConstrained
 import uk.whitecrescent.waqti.isUnMet
+import uk.whitecrescent.waqti.logD
 import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.tasks
 import uk.whitecrescent.waqti.toArrayList
@@ -1490,12 +1490,12 @@ class Task(name: String = "") : Cacheable {
                             }
 
                             override fun onComplete() {
-                                debug("Observing ENDED for Task: $name $id because " +
+                                logD("Observing ENDED for Task: $name $id because " +
                                         if (done) "not in cache" else "IMPOSSIBLE!")
                             }
 
                             override fun onSubscribe(d: Disposable) {
-                                debug("Observing STARTED for Task: $name $id")
+                                logD("Observing STARTED for Task: $name $id")
                             }
                         }
                 )

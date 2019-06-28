@@ -8,9 +8,9 @@ import uk.whitecrescent.waqti.CACHE_CHECKING_UNIT
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.Committable
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.debug
 import uk.whitecrescent.waqti.doInBackgroundAsync
 import uk.whitecrescent.waqti.ids
+import uk.whitecrescent.waqti.logD
 import uk.whitecrescent.waqti.size
 import java.util.concurrent.TimeUnit
 
@@ -30,18 +30,17 @@ open class Cache<E : Cacheable>(
 
     val type: String = db.entityInfo.dbName
 
-    // TODO: 18-Jun-19 This looks like a problem
     fun initialize() {
         doInBackgroundAsync {
-            debug("Started initialization for Cache of $type")
+            logD("Started initialization for Cache of $type")
             Sequence { db.all.iterator() }
                     .asSequence().take(sizeLimit).forEach {
                         it.initialize()
                         safeAdd(it)
                     }
-            debug("Completed initialization for Cache of $type")
-            debug("Cache of $type is of size ${size}")
-            debug("DB of $type is of size ${db.size}")
+            logD("Completed initialization for Cache of $type")
+            logD("Cache of $type is of size ${size}")
+            logD("DB of $type is of size ${db.size}")
         }
     }
 

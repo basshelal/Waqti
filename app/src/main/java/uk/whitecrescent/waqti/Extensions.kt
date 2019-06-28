@@ -38,7 +38,6 @@ import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.collections.Tuple
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.Database
-import uk.whitecrescent.waqti.backend.task.DEBUG
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.backend.task.Description
@@ -61,15 +60,15 @@ import kotlin.math.roundToInt
 //region Debug Utils
 
 inline fun logE(message: Any?, tag: String = "DEFAULT") {
-    Log.e(tag, message.toString())
+    if (BuildConfig.DEBUG) Log.e(tag, message.toString())
 }
 
 inline fun logD(message: Any?, tag: String = "DEFAULT") {
-    Log.d(tag, message.toString())
+    if (BuildConfig.DEBUG) Log.d(tag, message.toString())
 }
 
 inline fun logI(message: Any?, tag: String = "DEFAULT") {
-    Log.i(tag, message.toString())
+    if (BuildConfig.DEBUG) Log.i(tag, message.toString())
 }
 
 inline fun View.shortSnackBar(string: String) = Snackbar.make(this, string, Snackbar.LENGTH_SHORT).show()
@@ -464,10 +463,6 @@ val CACHE_CHECKING_UNIT = java.util.concurrent.TimeUnit.SECONDS
 //endregion Persistence Utils
 
 //region Model Utils
-
-inline fun debug(message: Any?, tag: String = "DEFAULT") {
-    if (DEBUG) logD(message, tag)
-}
 
 inline fun setGracePeriod(duration: Duration) {
     GRACE_PERIOD = duration
