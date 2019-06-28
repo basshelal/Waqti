@@ -1,6 +1,12 @@
-# Waqti Android (Work in Progress)
+# Waqti
 
-README last updated on Mon-31-Dec-18
+![Waqti icon](pictures/waqti_icon.png)
+
+* [Overview](#overview)
+* [Current Functionality](#current-functionality)
+* [Implementation Details](#implementation-details)
+
+README last updated on Fri-28-Jun-19
 
 ![Waqti Demo Mon-31-Dec-18](WaqtiDemo-31-Dec-18.gif)
 
