@@ -27,6 +27,7 @@ import uk.whitecrescent.waqti.isNotDefault
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 import uk.whitecrescent.waqti.rfcFormatted
+import uk.whitecrescent.waqti.smoothScrollToEnd
 
 @Suppress("NOTHING_TO_INLINE")
 class CreateTaskFragment : WaqtiCreateFragment<Task>() {
@@ -176,10 +177,9 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     }
 
     override fun finish() {
-        // TODO: 28-Jun-19 It's not doing it
-        /*mainActivityVM.boardAdapter?.getListAdapter(listID)?.onInflate = {
-            scrollToEnd()
-        }*/
+        mainActivityVM.boardAdapter?.getListAdapter(listID)?.onInflate = {
+            smoothScrollToEnd()
+        }
         @GoToFragment
         mainActivity.supportFragmentManager.popBackStack()
     }

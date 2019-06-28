@@ -56,7 +56,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     override fun setUpViews(element: TaskList) {
         setUpAppBar(element)
 
-        taskList_recyclerView.adapter = mainActivityVM.boardAdapter?.getOrCreateListAdapter(listID)
+        taskList_recyclerView.adapter = mainActivityVM.boardAdapter?.getListAdapter(listID)
 
         doInBackground {
 
