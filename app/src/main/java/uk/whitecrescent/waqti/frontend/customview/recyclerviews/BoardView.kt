@@ -252,18 +252,12 @@ class BoardAdapter(val boardID: ID)
         if (::boardView.isInitialized) {
             savedState = boardView.layoutManager?.onSaveInstanceState()
                     as LinearLayoutManager.SavedState
-            taskListAdapters.forEach {
-                it.saveState()
-            }
         }
     }
 
     fun restoreState() {
         if (::boardView.isInitialized) {
             boardView.layoutManager?.onRestoreInstanceState(savedState)
-            taskListAdapters.forEach {
-                it.restoreState()
-            }
         }
     }
 }
