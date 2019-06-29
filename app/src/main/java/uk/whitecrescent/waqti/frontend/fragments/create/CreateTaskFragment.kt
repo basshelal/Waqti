@@ -181,6 +181,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
     override fun finish() {
         mainActivityVM.boardAdapter?.getListAdapter(listID)?.onInflate = {
+            // TODO: 29-Jun-19 This doesn't always work on the ViewListFragment list for some reason
             smoothScrollToEnd()
         }
         @GoToFragment

@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.appearance
 
 import android.graphics.Color
@@ -37,7 +39,6 @@ open class WaqtiColor(val value: String) {
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
 inline fun colorToHex(androidColor: Int) = String.format("#%06X", 0xFFFFFF and androidColor)
 
 inline val String.toColor: WaqtiColor
