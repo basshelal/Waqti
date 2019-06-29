@@ -14,7 +14,7 @@ import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.persistence.Caches
-import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
@@ -74,7 +74,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                     it.mainActivityViewModel.boardListPosition
                             .changeTo(false to boardsList_recyclerView.boardListAdapter.itemCount - 1)
 
-                    it.clearFocusAndHideSoftKeyboard()
+                    it.clearFocusAndHideKeyboard()
 
                     replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
                     addToBackStack(null)
@@ -106,7 +106,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
-                        clearFocusAndHideSoftKeyboard()
+                        clearFocusAndHideKeyboard()
                         true
                     } else false
                 }

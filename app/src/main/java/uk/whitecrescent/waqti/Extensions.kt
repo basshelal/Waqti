@@ -99,24 +99,24 @@ inline val View.mainActivity: MainActivity
 inline val View.mainActivityViewModel: MainActivityViewModel
     get() = mainActivity.viewModel
 
-inline fun View.hideSoftKeyboard() {
+inline fun View.hideKeyboard() {
     (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
             .hideSoftInputFromWindow(this.windowToken, 0)
 }
 
-inline fun View.showSoftKeyboard() {
+inline fun View.showKeyboard() {
     (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
             .showSoftInput(this, 0)
 }
 
-inline fun View.requestFocusAndShowSoftKeyboard() {
+inline fun View.requestFocusAndShowKeyboard() {
     requestFocus()
-    showSoftKeyboard()
+    showKeyboard()
 }
 
-inline fun View.clearFocusAndHideSoftKeyboard() {
+inline fun View.clearFocusAndHideKeyboard() {
     clearFocus()
-    hideSoftKeyboard()
+    hideKeyboard()
 }
 
 inline fun addTasks(amount: Int) {

@@ -23,7 +23,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASK_LISTS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
@@ -294,7 +294,7 @@ class BoardViewHolder(view: View,
 
                         it.mainActivityViewModel.listID = adapter.board[adapterPosition].id
 
-                        it.clearFocusAndHideSoftKeyboard()
+                        it.clearFocusAndHideKeyboard()
 
                         addToBackStack(null)
                         replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
@@ -314,7 +314,7 @@ class BoardViewHolder(view: View,
                         it.mainActivityViewModel.boardID = adapter.boardID
                         it.mainActivityViewModel.listID = taskListView.listAdapter.taskListID
 
-                        it.clearFocusAndHideSoftKeyboard()
+                        it.clearFocusAndHideKeyboard()
 
                         replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
                         addToBackStack(null)

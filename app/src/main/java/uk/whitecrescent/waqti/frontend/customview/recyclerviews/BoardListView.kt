@@ -19,7 +19,7 @@ import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewMode
-import uk.whitecrescent.waqti.hideSoftKeyboard
+import uk.whitecrescent.waqti.hideKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 
@@ -30,43 +30,6 @@ class BoardListView
 
     val boardListAdapter: BoardListAdapter
         get() = this.adapter as BoardListAdapter
-
-    override fun setAdapter(_adapter: Adapter<*>?) {
-        require(_adapter != null &&
-                _adapter is BoardListAdapter
-        ) { "Adapter must be non null and a BoardListAdapter, passed in ${_adapter}" }
-        super.setAdapter(_adapter)
-        changeViewMode(_adapter.viewMode)
-
-        ItemTouchHelper(object : SimpleItemTouchHelperCallback() {
-
-            override fun clearView(recyclerView: RecyclerView, viewHolder: ViewHolder) {
-                super.clearView(recyclerView, viewHolder)
-                if (viewHolder is BoardListViewHolder) {
-                    viewHolder.itemView.alpha = 1F
-                }
-            }
-
-            override fun onSelectedChanged(viewHolder: ViewHolder?, actionState: Int) {
-                super.onSelectedChanged(viewHolder, actionState)
-                if (viewHolder != null && viewHolder is BoardListViewHolder) {
-                    viewHolder.itemView.alpha = 0.7F
-                }
-            }
-
-            override fun onMoved(recyclerView: RecyclerView, viewHolder: ViewHolder, fromPos: Int,
-                                 target: ViewHolder, toPos: Int, x: Int, y: Int) {
-                super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
-
-                boardListAdapter.apply {
-                    boardList.move(fromPos, toPos).update()
-                    notifyItemMoved(fromPos, toPos)
-                }
-                mainActivityViewModel.boardListPosition.changeTo(true to toPos)
-            }
-
-        }).attachToRecyclerView(this)
-    }
 
     fun changeViewMode(viewMode: ViewMode) {
         boardListAdapter.viewMode = viewMode
@@ -86,9 +49,47 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
     : RecyclerView.Adapter<BoardListViewHolder>() {
 
     val boardList = Caches.boardLists[boardListID]
+    lateinit var boardListView: BoardListView
 
     init {
         this.setHasStableIds(true)
+    }
+
+    override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+        require(recyclerView is BoardListView) {
+            "Recycler View attached to a BoardListAdapter must be a BoardListView," +
+                    " passed in ${recyclerView::class}"
+        }
+        boardListView = recyclerView
+        boardListView.changeViewMode(viewMode)
+
+        ItemTouchHelper(object : SimpleItemTouchHelperCallback() {
+
+            override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+                super.clearView(recyclerView, viewHolder)
+                if (viewHolder is BoardListViewHolder) {
+                    viewHolder.itemView.alpha = 1F
+                }
+            }
+
+            override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+                super.onSelectedChanged(viewHolder, actionState)
+                if (viewHolder != null && viewHolder is BoardListViewHolder) {
+                    viewHolder.itemView.alpha = 0.7F
+                }
+            }
+
+            override fun onMoved(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, fromPos: Int,
+                                 target: RecyclerView.ViewHolder, toPos: Int, x: Int, y: Int) {
+                super.onMoved(recyclerView, viewHolder, fromPos, target, toPos, x, y)
+
+                boardList.move(fromPos, toPos).update()
+                notifyItemMoved(fromPos, toPos)
+
+                boardListView.mainActivityViewModel.boardListPosition.changeTo(true to toPos)
+            }
+
+        }).attachToRecyclerView(boardListView)
     }
 
     override fun getItemId(position: Int): Long {
@@ -123,7 +124,7 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
                 @GoToFragment
                 it.mainActivity.supportFragmentManager.commitTransaction {
 
-                    it.hideSoftKeyboard()
+                    it.hideKeyboard()
 
                     it.mainActivityViewModel.apply {
                         boardID = boardList[holder.adapterPosition].id

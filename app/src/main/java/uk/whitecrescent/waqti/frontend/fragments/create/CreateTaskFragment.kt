@@ -27,7 +27,7 @@ import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.isNotDefault
 import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
+import uk.whitecrescent.waqti.requestFocusAndShowKeyboard
 import uk.whitecrescent.waqti.rfcFormatted
 import uk.whitecrescent.waqti.smoothScrollToEnd
 
@@ -81,7 +81,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
                 isEditable = true
                 hint = getString(R.string.taskNameHint)
                 text = SpannableStringBuilder("")
-                requestFocusAndShowSoftKeyboard()
+                requestFocusAndShowKeyboard()
                 addAfterTextChangedListener {
                     if (it != null) {
                         addTask_button.isVisible = !(it.isEmpty() || it.isBlank())

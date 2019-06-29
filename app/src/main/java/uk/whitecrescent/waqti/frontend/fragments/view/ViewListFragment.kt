@@ -16,7 +16,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.fadeIn
@@ -75,7 +75,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                     it.mainActivityViewModel.boardID = boardID
                     it.mainActivityViewModel.listID = listID
 
-                    it.clearFocusAndHideSoftKeyboard()
+                    it.clearFocusAndHideKeyboard()
 
                     replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
                     addToBackStack(null)
@@ -149,7 +149,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
-                        clearFocusAndHideSoftKeyboard()
+                        clearFocusAndHideKeyboard()
                         true
                     } else false
                 }

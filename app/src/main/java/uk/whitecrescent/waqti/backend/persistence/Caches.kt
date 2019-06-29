@@ -13,6 +13,7 @@ import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.backend.task.Template
 import uk.whitecrescent.waqti.backend.task.TimeUnit
 import uk.whitecrescent.waqti.doInBackgroundAsync
+import uk.whitecrescent.waqti.size
 
 
 /*
@@ -64,12 +65,10 @@ object Caches {
 
     inline val boardList: BoardList
         get() {
-            solveBoardList()
-            require(Caches.boardLists.size == 1) {
-                "BoardLists Cache cannot contain ${Caches.boardLists.size}, must be exactly one"
+            require(Database.boardLists.size == 1) {
+                "BoardLists Cache cannot contain ${Database.boardLists.size}, must be exactly one"
             }
-
-            return Caches.boardLists.first()
+            return Database.boardLists.all.first()
         }
 
     val allCaches = listOf(
@@ -77,7 +76,6 @@ object Caches {
     )
 
     fun initialize() {
-        solveBoardList()
         boardLists.initialize()
         doInBackgroundAsync { allCaches.forEach { it.initialize() } }
     }
@@ -88,21 +86,6 @@ object Caches {
 
     fun clearAllCaches() = Committable {
         allCaches.forEach { it.clearAll().commit() }
-    }
-
-    inline fun solveBoardList() {
-        (Caches.boardLists.size).also {
-            if (it == 1) return
-            if (it == 0) {
-                Caches.boardLists.put(BoardList("Default"))
-                Caches.boardLists.first().addAll(Caches.boards.all())
-            }
-            if (it > 1) {
-                Caches.boardLists.clearAll().commit()
-                Caches.boardLists.put(BoardList("Default"))
-                Caches.boardLists.first().addAll(Caches.boards.all())
-            }
-        }
     }
 
     inline fun deleteTask(taskID: ID, listID: ID) {

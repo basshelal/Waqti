@@ -17,7 +17,7 @@ import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
+import uk.whitecrescent.waqti.requestFocusAndShowKeyboard
 
 class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
@@ -51,7 +51,7 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
                 isEditable = true
                 hint = getString(R.string.boardNameHint)
                 text = SpannableStringBuilder("")
-                requestFocusAndShowSoftKeyboard()
+                requestFocusAndShowKeyboard()
                 addAfterTextChangedListener {
                     if (it != null) {
                         addBoard_button.isVisible = !(it.isEmpty() || it.isBlank())

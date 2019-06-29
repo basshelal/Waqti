@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.blank_activity.*
 import org.jetbrains.anko.displayMetrics
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.addOnBackPressedCallback
-import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.doInBackgroundOnceWhen
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout {
             addOnBackPressedCallback {
-                appBar.clearFocusAndHideSoftKeyboard()
+                appBar.clearFocusAndHideKeyboard()
                 if (isDrawerOpen(navigationView)) {
                     closeDrawers()
                     return@addOnBackPressedCallback
@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity() {
                 val viewRect = Rect()
                 appBar.editTextView.getGlobalVisibleRect(viewRect)
                 if (!viewRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    appBar.editTextView.clearFocusAndHideSoftKeyboard()
+                    appBar.editTextView.clearFocusAndHideKeyboard()
                 }
             }
         }

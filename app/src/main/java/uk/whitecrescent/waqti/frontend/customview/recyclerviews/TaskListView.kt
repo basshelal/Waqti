@@ -30,7 +30,7 @@ import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
@@ -507,14 +507,14 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                         it.mainActivityViewModel.taskID = taskID
                         it.mainActivityViewModel.listID = taskListID
 
-                        it.clearFocusAndHideSoftKeyboard()
+                        it.clearFocusAndHideKeyboard()
 
                         addToBackStack(null)
                         replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
                     }
                 }
                 setOnLongClickListener {
-                    it.clearFocusAndHideSoftKeyboard()
+                    it.clearFocusAndHideKeyboard()
                     it.startDragAndDrop(
                             ClipData.newPlainText("", ""),
                             ShadowBuilder(this),

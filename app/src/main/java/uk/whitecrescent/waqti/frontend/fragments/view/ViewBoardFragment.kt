@@ -16,7 +16,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
@@ -89,7 +89,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                         it.mainActivityViewModel.boardPosition
                                 .changeTo(false to boardView.boardAdapter.itemCount - 1)
 
-                        it.clearFocusAndHideSoftKeyboard()
+                        it.clearFocusAndHideKeyboard()
 
                         replace(R.id.fragmentContainer, CreateListFragment(), CREATE_LIST_FRAGMENT)
                         addToBackStack(null)
@@ -166,7 +166,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 setOnEditorActionListener { textView, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
-                        textView.clearFocusAndHideSoftKeyboard()
+                        textView.clearFocusAndHideKeyboard()
                         true
                     } else false
                 }

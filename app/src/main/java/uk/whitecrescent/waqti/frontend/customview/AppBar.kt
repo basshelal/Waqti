@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.view_appbar.view.*
 import org.jetbrains.anko.internals.AnkoInternals
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
-import uk.whitecrescent.waqti.hideSoftKeyboard
+import uk.whitecrescent.waqti.hideKeyboard
 import uk.whitecrescent.waqti.mainActivity
 
 /**
@@ -69,7 +69,7 @@ class AppBar
             leftImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
             setOnClickListener {
                 mainActivity.drawerLayout.apply {
-                    hideSoftKeyboard()
+                    hideKeyboard()
                     openDrawer(GravityCompat.START)
                 }
             }

@@ -18,7 +18,7 @@ import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
+import uk.whitecrescent.waqti.requestFocusAndShowKeyboard
 import uk.whitecrescent.waqti.scrollToEnd
 
 class CreateListFragment : WaqtiCreateFragment<TaskList>() {
@@ -58,7 +58,7 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
                 isEditable = true
                 hint = getString(R.string.listNameHint)
                 text = SpannableStringBuilder("")
-                requestFocusAndShowSoftKeyboard()
+                requestFocusAndShowKeyboard()
                 addAfterTextChangedListener {
                     if (it != null) {
                         addList_button.isVisible = !(it.isEmpty() || it.isBlank())

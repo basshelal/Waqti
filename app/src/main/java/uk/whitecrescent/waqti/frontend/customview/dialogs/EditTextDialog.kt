@@ -4,7 +4,7 @@ import android.text.SpannableStringBuilder
 import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.dialog_edit_text.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 
 class EditTextDialog : MaterialDialog() {
 
@@ -23,7 +23,7 @@ class EditTextDialog : MaterialDialog() {
                 if (initialText != "") text = SpannableStringBuilder(initialText)
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        clearFocusAndHideSoftKeyboard()
+                        clearFocusAndHideKeyboard()
                         true
                     } else false
                 }

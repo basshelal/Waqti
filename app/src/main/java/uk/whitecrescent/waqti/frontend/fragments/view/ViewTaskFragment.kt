@@ -19,7 +19,7 @@ import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION_PROPERTY
 import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME_PROPERTY
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
-import uk.whitecrescent.waqti.clearFocusAndHideSoftKeyboard
+import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
@@ -99,7 +99,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
-                        clearFocusAndHideSoftKeyboard()
+                        clearFocusAndHideKeyboard()
                         true
                     } else false
                 }
