@@ -76,6 +76,7 @@ object Caches {
     )
 
     fun initialize() {
+        Database.solveBoardList()
         boardLists.initialize()
         doInBackgroundAsync { allCaches.forEach { it.initialize() } }
     }

@@ -45,7 +45,7 @@ class WaqtiPreferences(val context: Context) {
         }
         get() = ViewMode.valueOf(sharedPreferences.getString(
                 BOARD_LIST_VIEW_MODE_PREFERENCES_KEY,
-                ViewMode.LIST_VERTICAL.name)!!)
+                ViewMode.GRID_VERTICAL.name)!!)
 
     inline var taskListWidth: Int
         set(value) = sharedPreferences.edit {
