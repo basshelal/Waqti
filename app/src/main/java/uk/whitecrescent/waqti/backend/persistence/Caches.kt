@@ -214,7 +214,7 @@ object Caches {
                                 ),
                                 TaskList("Due this week",
                                         listOf("Web Development assignment 1 on 10-Oct-18",
-                                                "Machine Learninf assignment 1 on 17-Oct-18")
+                                                "Machine Learning assignment 1 on 17-Oct-18")
                                                 .map { Task(it) }
                                 ),
                                 TaskList("Done",

@@ -19,8 +19,6 @@ import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewMode
-import uk.whitecrescent.waqti.frontend.getColorCompat
-import uk.whitecrescent.waqti.frontend.setTextAppearanceCompat
 import uk.whitecrescent.waqti.hideSoftKeyboard
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
@@ -111,13 +109,13 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
             text = boardList[position].name
             when (viewMode) {
                 ViewMode.GRID_VERTICAL -> {
-                    setTextAppearanceCompat(R.style.TextAppearance_MaterialComponents_Headline5)
+                    setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline5)
                 }
                 ViewMode.LIST_VERTICAL -> {
-                    setTextAppearanceCompat(R.style.TextAppearance_MaterialComponents_Headline3)
+                    setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline3)
                 }
             }
-            setTextColor(resources.getColorCompat(R.color.black))
+            setTextColor(resources.getColor(R.color.black, null))
         }
 
         holder.itemView.boardCard_cardView.apply {

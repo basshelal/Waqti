@@ -9,8 +9,6 @@ import android.widget.FrameLayout
 import android.widget.TimePicker
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.Time
-import uk.whitecrescent.waqti.frontend.hourCompat
-import uk.whitecrescent.waqti.frontend.minuteCompat
 import uk.whitecrescent.waqti.time
 
 class DateTimePicker
@@ -34,7 +32,7 @@ class DateTimePicker
 
     fun switchToTimePicker() {
         time = time(datePicker.year, datePicker.month + 1,
-                datePicker.dayOfMonth, timePicker.hourCompat, timePicker.minuteCompat)
+                datePicker.dayOfMonth, timePicker.hour, timePicker.minute)
         timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
             time = time(datePicker.year, datePicker.month + 1, datePicker.dayOfMonth, hourOfDay, minute)
         }
@@ -46,8 +44,8 @@ class DateTimePicker
     fun setInitialTime(time: Time) {
         datePicker.updateDate(time.year, time.monthValue - 1, time.dayOfMonth)
         timePicker.apply {
-            hourCompat = time.hour
-            minuteCompat = time.minute
+            hour = time.hour
+            minute = time.minute
         }
     }
 

@@ -38,7 +38,6 @@ import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
-import uk.whitecrescent.waqti.frontend.startDragCompat
 import uk.whitecrescent.waqti.lastPosition
 import uk.whitecrescent.waqti.locationOnScreen
 import uk.whitecrescent.waqti.mainActivity
@@ -516,7 +515,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                 }
                 setOnLongClickListener {
                     it.clearFocusAndHideSoftKeyboard()
-                    it.startDragCompat(
+                    it.startDragAndDrop(
                             ClipData.newPlainText("", ""),
                             ShadowBuilder(this),
                             DragEventLocalState(taskID, taskListID, adapterPosition),
