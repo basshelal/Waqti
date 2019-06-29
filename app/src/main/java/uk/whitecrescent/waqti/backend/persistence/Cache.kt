@@ -25,7 +25,7 @@ open class Cache<E : Cacheable>(
         get() = map.size
 
     @QueriesDataBase
-    private val isInconsistent: Boolean
+    private inline val isInconsistent: Boolean
         get() = map.asSequence().any { it.key !in db.ids }
 
     val type: String = db.entityInfo.dbName
@@ -46,7 +46,7 @@ open class Cache<E : Cacheable>(
 
     //region Core Modification
 
-    @Throws(ElementNotFoundException::class)
+    @Throws(CacheElementNotFoundException::class)
     private fun safeGet(id: ID): E {
         val mapFound = map[id]
 
@@ -59,7 +59,7 @@ open class Cache<E : Cacheable>(
             @QueriesDataBase
             mapFound == null -> {
                 val dbFound = db[id]
-                if (dbFound == null) throw ElementNotFoundException(id, cache = type)
+                if (dbFound == null) throw CacheElementNotFoundException(id, cacheType = type)
                 else {
                     safeAdd(dbFound)
                     dbFound
@@ -195,7 +195,6 @@ open class Cache<E : Cacheable>(
             map.keys.toList()
                     .filter { it !in db.ids }
                     .forEach { map.remove(it) }
-            check(!isInconsistent)
         }
     }
 
@@ -204,7 +203,6 @@ open class Cache<E : Cacheable>(
             map.keys.toList()
                     .filterIndexed { index, _ -> index < (size - sizeLimit) }
                     .forEach { map.remove(it) }
-            check(map.size == sizeLimit)
         }
     }
 
@@ -240,6 +238,7 @@ open class Cache<E : Cacheable>(
 
     override fun equals(other: Any?) =
             other is Cache<*> &&
+                    other.type == this.type &&
                     other.hashCode() == this.hashCode() &&
                     other.idList() == this.idList()
 

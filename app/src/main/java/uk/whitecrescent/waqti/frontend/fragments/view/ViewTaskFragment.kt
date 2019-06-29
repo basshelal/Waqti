@@ -131,7 +131,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     @SuppressLint("SetTextI18n")
     private inline fun setUpTimeViews(task: Task) {
-        taskTime_propertyCard.apply {
+        taskTime_propertyCard {
             task.time.let {
                 if (it != DEFAULT_TIME_PROPERTY) {
                     if (it.isConstrained) text = getString(R.string.timeColon) + getString(R.string.constraint) + it.value.rfcFormatted
@@ -154,7 +154,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     @SuppressLint("SetTextI18n")
     private inline fun setUpDeadlineViews(task: Task) {
-        taskDeadline_propertyCard.apply {
+        taskDeadline_propertyCard {
             task.deadline.let {
                 if (it != DEFAULT_DEADLINE_PROPERTY) {
                     if (it.isConstrained) text = getString(R.string.deadlineColon) + getString(R.string.constraint) + it.value.rfcFormatted
@@ -177,7 +177,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     @SuppressLint("SetTextI18n")
     private inline fun setUpDescriptionViews(task: Task) {
-        taskDescription_propertyCard.apply {
+        taskDescription_propertyCard {
             task.description.let {
                 if (it != DEFAULT_DESCRIPTION_PROPERTY) {
                     text = getString(R.string.descriptionColon) + it.value

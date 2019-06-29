@@ -329,16 +329,3 @@ class BoardViewHolder(view: View,
 enum class ScrollSnapMode {
     PAGED, LINEAR, NONE
 }
-
-class PreCachingLayoutManager(context: Context,
-                              @RecyclerView.Orientation
-                              orientation: Int = HORIZONTAL,
-                              reverseLayout: Boolean = false,
-                              private val extraLayoutSpacePx: Int = 600) :
-        LinearLayoutManager(context, orientation, reverseLayout) {
-
-
-    override fun calculateExtraLayoutSpace(state: RecyclerView.State, extraLayoutSpace: IntArray) {
-        super.calculateExtraLayoutSpace(state, IntArray(2) { extraLayoutSpacePx })
-    }
-}

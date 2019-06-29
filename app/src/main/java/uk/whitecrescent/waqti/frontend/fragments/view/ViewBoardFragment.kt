@@ -62,7 +62,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     override fun setUpViews(element: Board) {
         setUpAppBar(element)
 
-        boardView?.apply {
+        boardView {
             if (mainActivityVM.settingsChanged) {
                 invalidateBoard()
                 mainActivityVM.settingsChanged = false
@@ -70,7 +70,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         }
 
         doInBackground {
-            boardView?.apply {
+            boardView {
                 adapter = mainActivityVM.boardAdapter
                 if (boardAdapter.board.isEmpty()) {
                     emptyState_scrollView.isVisible = true
@@ -80,7 +80,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
             }
 
-            addList_floatingButton?.apply {
+            addList_floatingButton {
                 setOnClickListener {
                     @GoToFragment
                     it.mainActivity.supportFragmentManager.commitTransaction {
@@ -97,7 +97,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 }
             }
 
-            delete_imageView?.apply {
+            delete_imageView {
                 alpha = 0F
                 setOnDragListener { _, event ->
                     if (event.localState is DragEventLocalState) {

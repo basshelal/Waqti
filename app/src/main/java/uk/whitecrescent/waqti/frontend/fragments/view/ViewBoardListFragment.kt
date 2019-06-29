@@ -50,7 +50,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
     override fun setUpViews(element: BoardList) {
         doInBackground {
-            boardsList_recyclerView?.apply {
+            boardsList_recyclerView {
                 adapter = BoardListAdapter(element.id, viewMode)
                 setUpAppBar(element)
                 if (boardListAdapter.boardList.isEmpty()) {
@@ -111,7 +111,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                     } else false
                 }
             }
-            rightImageView.apply {
+            rightImageView {
                 rightImageView.isVisible = true
                 fun update() {
                     when (viewMode) {

@@ -18,7 +18,7 @@ import uk.whitecrescent.waqti.frontend.fragments.view.ViewMode
  */
 class WaqtiPreferences(val context: Context) {
 
-    // The preferences keys, they're long for a reason, don't use them outside this class
+    // The preferences keys, they're long for a reason, there's no use for them outside this class
     private val WAQTI_SHARED_PREFERENCES = "WaqtiSharedPreferences"
     val BOARD_LIST_NAME_PREFERENCES_KEY = "BoardListName"
     val BOARD_LIST_VIEW_MODE_PREFERENCES_KEY = "BoardListViewMode"

@@ -14,9 +14,9 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.commitTransaction
-import uk.whitecrescent.waqti.frontend.BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
+import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewMode
 import uk.whitecrescent.waqti.hideSoftKeyboard
@@ -130,7 +130,7 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
                         boardListPosition.changeTo(false to position)
                     }
 
-                    replace(R.id.fragmentContainer, ViewBoardFragment(), BOARD_FRAGMENT)
+                    replace(R.id.fragmentContainer, ViewBoardFragment(), VIEW_BOARD_FRAGMENT)
                     addToBackStack(null)
                 }
             }

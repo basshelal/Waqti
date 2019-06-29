@@ -78,8 +78,8 @@ open class FABOnScrollListener(val fab: FloatingActionButton, val orientation: O
     }
 }
 
-data class ChangedPositionPair(var positionChanged: Boolean,
-                               var position: Int) {
+data class ChangedPositionPair(var positionChanged: Boolean = false,
+                               var position: Int = 0) {
 
     inline fun changeTo(pair: Pair<Boolean, Int>) = changeTo(pair.first, pair.second)
 

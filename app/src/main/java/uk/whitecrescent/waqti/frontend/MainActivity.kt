@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         if (supportFragmentManager.fragments.isEmpty()) {
             supportFragmentManager.commitTransaction {
                 @GoToFragment
-                add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
+                add(R.id.fragmentContainer, ViewBoardListFragment(), VIEW_BOARD_LIST_FRAGMENT)
             }
         }
 

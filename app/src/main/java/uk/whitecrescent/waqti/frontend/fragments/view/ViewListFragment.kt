@@ -63,7 +63,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
         doInBackground {
 
-            taskList_recyclerView.apply {
+            taskList_recyclerView {
                 background = Caches.boards[boardID].backgroundColor.toColorDrawable
                 addOnScrollListener(this@ViewListFragment.addTask_floatingButton.verticalFABOnScrollListener)
             }
@@ -82,7 +82,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                 }
             }
 
-            delete_imageView.apply {
+            delete_imageView {
                 bringToFront()
                 alpha = 0F
                 setOnDragListener { _, event ->

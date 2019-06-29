@@ -26,6 +26,9 @@ import uk.whitecrescent.waqti.mainActivity
 
 class SettingsFragment : WaqtiFragment() {
 
+    private val taskListWidthRange = 20 to 80
+    private val cardTextSizeRange = 14 to 30
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_settings, container, false)
     }
@@ -52,36 +55,33 @@ class SettingsFragment : WaqtiFragment() {
         }
         mainActivity.resetNavBarStatusBarColor()
 
-        taskListWidthSetting_seekBar.apply {
-
-            val range = 20 to 80
+        taskListWidthSetting_seekBar {
 
             val fromPreferences = mainActivity.waqtiPreferences.taskListWidth
 
-            progress = range.getPercent(fromPreferences)
+            progress = taskListWidthRange.getPercent(fromPreferences)
             taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + fromPreferences
 
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + range.getValue(progress)
+                    taskListWidthSetting_textView.text = getString(R.string.taskListWidth) +
+                            taskListWidthRange.getValue(progress)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    mainActivity.waqtiPreferences.taskListWidth = range.getValue(progress)
+                    mainActivity.waqtiPreferences.taskListWidth = taskListWidthRange.getValue(progress)
                     mainActivityVM.settingsChanged = true
                 }
             })
         }
 
-        cardTextSizeSetting_seekBar.apply {
-
-            val range = 14 to 30
+        cardTextSizeSetting_seekBar {
 
             val fromPreferences = mainActivity.waqtiPreferences.taskCardTextSize
 
-            progress = range.getPercent(fromPreferences)
+            progress = cardTextSizeRange.getPercent(fromPreferences)
 
             cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) +
                     fromPreferences
@@ -89,19 +89,19 @@ class SettingsFragment : WaqtiFragment() {
             setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) +
-                            range.getValue(progress)
+                            cardTextSizeRange.getValue(progress)
                 }
 
                 override fun onStartTrackingTouch(seekBar: SeekBar?) {}
 
                 override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    mainActivity.waqtiPreferences.taskCardTextSize = range.getValue(progress)
+                    mainActivity.waqtiPreferences.taskCardTextSize = cardTextSizeRange.getValue(progress)
                     mainActivityVM.settingsChanged = true
                 }
             })
         }
 
-        boardScrollSnapMode_spinner.apply {
+        boardScrollSnapMode_spinner {
             adapter = ArrayAdapter.createFromResource(
                     mainActivity,
                     R.array.boardScrollSnapModeOptions,
@@ -123,7 +123,7 @@ class SettingsFragment : WaqtiFragment() {
             }
         }
 
-        resetToDefaults_button.apply {
+        resetToDefaults_button {
             setOnClickListener {
                 ConfirmDialog().apply {
                     title = this@SettingsFragment.mainActivity
@@ -142,33 +142,29 @@ class SettingsFragment : WaqtiFragment() {
 
     @SuppressLint("SetTextI18n")
     private inline fun resetSettingsToDefaults() {
-        taskListWidthSetting_seekBar.apply {
-
-            val range = 20 to 80
+        taskListWidthSetting_seekBar {
 
             val default = 66
 
-            progress = range.getPercent(default)
+            progress = taskListWidthRange.getPercent(default)
             taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + default
 
-            mainActivity.waqtiPreferences.taskListWidth = range.getValue(progress)
+            mainActivity.waqtiPreferences.taskListWidth = taskListWidthRange.getValue(progress)
             mainActivityVM.settingsChanged = true
         }
 
-        cardTextSizeSetting_seekBar.apply {
-
-            val range = 14 to 30
+        cardTextSizeSetting_seekBar {
 
             val default = 18
 
-            progress = range.getPercent(default)
+            progress = cardTextSizeRange.getPercent(default)
             cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) + default
 
-            mainActivity.waqtiPreferences.taskCardTextSize = range.getValue(progress)
+            mainActivity.waqtiPreferences.taskCardTextSize = cardTextSizeRange.getValue(progress)
             mainActivityVM.settingsChanged = true
         }
 
-        boardScrollSnapMode_spinner.apply {
+        boardScrollSnapMode_spinner {
             setSelection(ScrollSnapMode.PAGED.ordinal, true)
 
             mainActivity.waqtiPreferences.boardScrollSnapMode = ScrollSnapMode.PAGED
