@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend
 
 import android.graphics.Point
@@ -21,14 +23,13 @@ import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.getViewModel
+import uk.whitecrescent.waqti.invoke
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel: MainActivityViewModel
-
-    val currentTouchPoint = Point()
-
     lateinit var waqtiPreferences: WaqtiPreferences
+    val currentTouchPoint = Point()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -39,13 +40,20 @@ class MainActivity : AppCompatActivity() {
 
         waqtiPreferences = WaqtiPreferences(this)
 
+        setUpViews()
+
+    }
+
+    private inline fun setUpViews() {
+
         if (supportFragmentManager.fragments.isEmpty()) {
             supportFragmentManager.commitTransaction {
+                @GoToFragment
                 add(R.id.fragmentContainer, ViewBoardListFragment(), BOARD_LIST_FRAGMENT)
             }
         }
 
-        drawerLayout.apply {
+        drawerLayout {
             addOnBackPressedCallback {
                 appBar.clearFocusAndHideSoftKeyboard()
                 if (isDrawerOpen(navigationView)) {
@@ -89,6 +97,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
+        val s = super.dispatchTouchEvent(event)
+        currentTouchPoint.set(event.rawX.toInt(), event.rawY.toInt())
+        if (event.action == MotionEvent.ACTION_DOWN) {
+            if (appBar.editTextView.isVisible) {
+                val viewRect = Rect()
+                appBar.editTextView.getGlobalVisibleRect(viewRect)
+                if (!viewRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    appBar.editTextView.clearFocusAndHideSoftKeyboard()
+                }
+            }
+        }
+        return s
+    }
+
     fun setStatusBarColor(color: WaqtiColor) {
         window.statusBarColor = color.toAndroidColor
     }
@@ -108,21 +131,6 @@ class MainActivity : AppCompatActivity() {
                 popBackStackImmediate()
             }
         }
-    }
-
-    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        val s = super.dispatchTouchEvent(event)
-        currentTouchPoint.set(event.rawX.toInt(), event.rawY.toInt())
-        if (event.action == MotionEvent.ACTION_DOWN) {
-            if (appBar.editTextView.isVisible) {
-                val viewRect = Rect()
-                appBar.editTextView.getGlobalVisibleRect(viewRect)
-                if (!viewRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    appBar.editTextView.clearFocusAndHideSoftKeyboard()
-                }
-            }
-        }
-        return s
     }
 
     inline val appBar: AppBar

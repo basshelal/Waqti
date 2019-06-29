@@ -56,8 +56,6 @@ class EditTextView
         attributes.recycle()
     }
 
-    inline operator fun invoke(apply: EditTextView.() -> Unit) = this.apply(apply)
-
     fun removeAllTextChangedListeners() {
         currentTextChangedListeners.forEach {
             removeTextChangedListener(it)

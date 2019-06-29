@@ -62,8 +62,6 @@ class AppBar
         elevation = DEFAULT_ELEVATION
     }
 
-    inline operator fun invoke(apply: AppBar.() -> Unit): AppBar = this.apply(apply)
-
     inline fun leftImageMenu() {
         leftImageView.apply {
             leftImageView.visibility = View.VISIBLE

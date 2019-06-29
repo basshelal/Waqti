@@ -16,6 +16,7 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.frontend.GoToFragment
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
+import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.requestFocusAndShowSoftKeyboard
 
 class CreateBoardFragment : WaqtiCreateFragment<Board>() {

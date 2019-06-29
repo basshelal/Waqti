@@ -21,6 +21,7 @@ import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 import uk.whitecrescent.waqti.getPercent
 import uk.whitecrescent.waqti.getValue
+import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 
 class SettingsFragment : WaqtiFragment() {
