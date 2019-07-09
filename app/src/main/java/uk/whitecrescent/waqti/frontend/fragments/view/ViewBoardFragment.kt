@@ -11,7 +11,9 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import androidx.drawerlayout.widget.DrawerLayout
 import kotlinx.android.synthetic.main.blank_activity.*
+import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
@@ -291,15 +293,13 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 }
             }
 
-            /*mainActivity.drawerLayout.addView(
-                    LinearLayout(context).also {
-                        it.layoutParams = DrawerLayout.LayoutParams(
-                                WRAP_CONTENT, MATCH_PARENT, GravityCompat.END
-                        )
-                        it.backgroundResource = R.drawable.waqti_icon
-                    }
-            )*/
+            mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
+                    GravityCompat.END)
 
+            LayoutInflater.from(context).inflate(R.layout.board_options,
+                    mainActivity.drawerLayout, false).also {
+                mainActivity.drawerLayout.addView(it)
+            }
 
             rightImageView.setOnClickListener {
                 mainActivity.drawerLayout.openDrawer(GravityCompat.END)
@@ -310,5 +310,13 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
     override fun finish() {
         mainActivity.supportFragmentManager.popBackStack()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        mainActivity.drawerLayout.boardOptions_navigationView {
+            (parent as ViewGroup).removeView(this)
+        }
     }
 }
