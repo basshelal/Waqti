@@ -10,6 +10,8 @@
 
 README last updated on Fri-28-Jun-19
 
+[![Get Waqti on Google Play](https://play.google.com/intl/en_gb/badges/images/generic/en_badge_web_generic.png)](https://play.google.com/store/apps/details?id=uk.whitecrescent.waqti)
+
 ![Waqti Demo Mon-31-Dec-18](WaqtiDemo-31-Dec-18.gif)
 
 [Short Feature Demo Mon-31-Dec-18](https://www.youtube.com/watch?v=M1I4selR5lw)
