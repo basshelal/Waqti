@@ -110,6 +110,8 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
 
     companion object {
 
+        val WAQTI_DEFAULT = getColorScheme(ColorLevel(PURPLE, NINE_HUNDRED))
+
         fun getColorScheme(colorLevel: ColorLevel): ColorScheme {
             when (colorLevel.color) {
                 //region RED

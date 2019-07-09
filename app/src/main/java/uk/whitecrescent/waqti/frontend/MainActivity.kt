@@ -10,14 +10,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.blank_activity.*
+import kotlinx.android.synthetic.main.navigation_header.view.*
 import org.jetbrains.anko.displayMetrics
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.addOnBackPressedCallback
 import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.doInBackgroundOnceWhen
-import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.customview.AppBar
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
@@ -98,7 +100,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
-        val s = super.dispatchTouchEvent(event)
+        val spr = super.dispatchTouchEvent(event)
         currentTouchPoint.set(event.rawX.toInt(), event.rawY.toInt())
         if (event.action == MotionEvent.ACTION_DOWN) {
             if (appBar.editTextView.isVisible) {
@@ -109,20 +111,27 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-        return s
+        return spr
     }
 
-    inline fun setStatusBarColor(color: WaqtiColor) {
-        window.statusBarColor = color.toAndroidColor
-    }
+    fun setAppBarColorScheme(colorScheme: ColorScheme) {
+        appBar {
+            color = colorScheme.main
+            leftImage.setTint(colorScheme.text.toAndroidColor)
+            editTextView.textColor = colorScheme.text.toAndroidColor
+            rightImage.setTint(colorScheme.text.toAndroidColor)
+        }
+        window.statusBarColor = colorScheme.dark.toAndroidColor
+        window.navigationBarColor = colorScheme.main.toAndroidColor
 
-    inline fun setNavigationBarColor(color: WaqtiColor) {
-        window.navigationBarColor = color.toAndroidColor
+        navigationView.getHeaderView(0).apply {
+            setBackgroundColor(colorScheme.main.toAndroidColor)
+            navigation_header_title?.textColor = colorScheme.text.toAndroidColor
+        }
     }
 
     inline fun resetNavBarStatusBarColor() {
-        setStatusBarColor(WaqtiColor("#560027"))
-        setNavigationBarColor(WaqtiColor.WAQTI_DEFAULT)
+        setAppBarColorScheme(ColorScheme.WAQTI_DEFAULT)
     }
 
     inline fun popAllFragmentsInBackStack() {
