@@ -129,11 +129,11 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                     SIX_HUNDRED -> ColorScheme(light = "#FF6F60".c, main = "#E53935".c,
                             dark = "#AB000D".c, text = BLACK)
                     SEVEN_HUNDRED -> ColorScheme(light = "#FF6659".c, main = "#D32F2F".c,
-                            dark = "#9A0007".c, text = WaqtiColor.WHITE)
+                            dark = "#9A0007".c, text = WHITE)
                     EIGHT_HUNDRED -> ColorScheme(light = "#FF5F52".c, main = "#C62828".c,
-                            dark = "#8E0000".c, text = WaqtiColor.WHITE)
+                            dark = "#8E0000".c, text = WHITE)
                     NINE_HUNDRED -> ColorScheme(light = "#F05545".c, main = "#B71C1C".c,
-                            dark = "#7F0000".c, text = WaqtiColor.WHITE)
+                            dark = "#7F0000".c, text = WHITE)
                 }
                 //endregion RED
                 //region PINK
@@ -151,13 +151,13 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                     FIVE_HUNDRED -> ColorScheme(light = "#FF6090".c, main = "#E91E63".c,
                             dark = "#B0003A".c, text = BLACK)
                     SIX_HUNDRED -> ColorScheme(light = "#FF5C8D".c, main = "#D81B60".c,
-                            dark = "#A00037".c, text = WaqtiColor.WHITE)
+                            dark = "#A00037".c, text = WHITE)
                     SEVEN_HUNDRED -> ColorScheme(light = "#FA5788".c, main = "#C2185B".c,
-                            dark = "#8C0032".c, text = WaqtiColor.WHITE)
+                            dark = "#8C0032".c, text = WHITE)
                     EIGHT_HUNDRED -> ColorScheme(light = "#E35183".c, main = "#AD1457".c,
-                            dark = "#78002E".c, text = WaqtiColor.WHITE)
+                            dark = "#78002E".c, text = WHITE)
                     NINE_HUNDRED -> ColorScheme(light = "#BC477B".c, main = "#880E4F".c,
-                            dark = "#560027".c, text = WaqtiColor.WHITE)
+                            dark = "#560027".c, text = WHITE)
                 }
                 //endregion PINK
                 //region PURPLE
@@ -175,13 +175,13 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                     FIVE_HUNDRED -> ColorScheme(light = "#FF6090".c, main = "#E91E63".c,
                             dark = "#B0003A".c, text = BLACK)
                     SIX_HUNDRED -> ColorScheme(light = "#FF5C8D".c, main = "#D81B60".c,
-                            dark = "#A00037".c, text = WaqtiColor.WHITE)
+                            dark = "#A00037".c, text = WHITE)
                     SEVEN_HUNDRED -> ColorScheme(light = "#FA5788".c, main = "#C2185B".c,
-                            dark = "#8C0032".c, text = WaqtiColor.WHITE)
+                            dark = "#8C0032".c, text = WHITE)
                     EIGHT_HUNDRED -> ColorScheme(light = "#E35183".c, main = "#AD1457".c,
-                            dark = "#78002E".c, text = WaqtiColor.WHITE)
+                            dark = "#78002E".c, text = WHITE)
                     NINE_HUNDRED -> ColorScheme(light = "#BC477B".c, main = "#880E4F".c,
-                            dark = "#560027".c, text = WaqtiColor.WHITE)
+                            dark = "#560027".c, text = WHITE)
                 }
                 //endregion PURPLE
                 //region DEEP PURPLE
@@ -195,17 +195,17 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                     THREE_HUNDRED -> ColorScheme(light = "#C7A4FF".c, main = "#9575CD".c,
                             dark = "#65499C".c, text = BLACK)
                     FOUR_HUNDRED -> ColorScheme(light = "#B085F5".c, main = "#7E57C2".c,
-                            dark = "#4D2C91".c, text = WaqtiColor.WHITE)
+                            dark = "#4D2C91".c, text = WHITE)
                     FIVE_HUNDRED -> ColorScheme(light = "#9A67EA".c, main = "#673AB7".c,
-                            dark = "#320B86".c, text = WaqtiColor.WHITE)
+                            dark = "#320B86".c, text = WHITE)
                     SIX_HUNDRED -> ColorScheme(light = "#9162E4".c, main = "#5E35B1".c,
-                            dark = "#280680".c, text = WaqtiColor.WHITE)
+                            dark = "#280680".c, text = WHITE)
                     SEVEN_HUNDRED -> ColorScheme(light = "#8559dA".c, main = "#512DA8".c,
-                            dark = "#140078".c, text = WaqtiColor.WHITE)
+                            dark = "#140078".c, text = WHITE)
                     EIGHT_HUNDRED -> ColorScheme(light = "#7953D2".c, main = "#4527A0".c,
-                            dark = "#000070".c, text = WaqtiColor.WHITE)
+                            dark = "#000070".c, text = WHITE)
                     NINE_HUNDRED -> ColorScheme(light = "#6746C3".c, main = "#311B92".c,
-                            dark = "#000063".c, text = WaqtiColor.WHITE)
+                            dark = "#000063".c, text = WHITE)
                 }
                 //endregion DEEP PURPLE
                 //region INDIGO
@@ -219,17 +219,17 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                     THREE_HUNDRED -> ColorScheme(light = "#AAB6FE".c, main = "#7986CB".c,
                             dark = "#49599A".c, text = BLACK)
                     FOUR_HUNDRED -> ColorScheme(light = "#8E99F3".c, main = "#5C6BC0".c,
-                            dark = "#26418F".c, text = WaqtiColor.WHITE)
+                            dark = "#26418F".c, text = WHITE)
                     FIVE_HUNDRED -> ColorScheme(light = "#757DE8".c, main = "#3F51B5".c,
-                            dark = "#002984".c, text = WaqtiColor.WHITE)
+                            dark = "#002984".c, text = WHITE)
                     SIX_HUNDRED -> ColorScheme(light = "#6F74DD".c, main = "#3949AB".c,
-                            dark = "#00227B".c, text = WaqtiColor.WHITE)
+                            dark = "#00227B".c, text = WHITE)
                     SEVEN_HUNDRED -> ColorScheme(light = "#666AD1".c, main = "#303F9F".c,
-                            dark = "#001970".c, text = WaqtiColor.WHITE)
+                            dark = "#001970".c, text = WHITE)
                     EIGHT_HUNDRED -> ColorScheme(light = "#5F5FC4".c, main = "#283593".c,
-                            dark = "#001064".c, text = WaqtiColor.WHITE)
+                            dark = "#001064".c, text = WHITE)
                     NINE_HUNDRED -> ColorScheme(light = "#534BAE".c, main = "#1A237E".c,
-                            dark = "#000051".c, text = WaqtiColor.WHITE)
+                            dark = "#000051".c, text = WHITE)
                 }
                 //endregion INDIGO
                 //region BLUE
@@ -249,11 +249,11 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                     SIX_HUNDRED -> ColorScheme(light = "#6AB7FF".c, main = "#1E88E5".c,
                             dark = "#005CB2".c, text = BLACK)
                     SEVEN_HUNDRED -> ColorScheme(light = "#63A4FF".c, main = "#1976D2".c,
-                            dark = "#004BA0".c, text = WaqtiColor.WHITE)
+                            dark = "#004BA0".c, text = WHITE)
                     EIGHT_HUNDRED -> ColorScheme(light = "#5E92F3".c, main = "#1565C0".c,
-                            dark = "#003C8F".c, text = WaqtiColor.WHITE)
+                            dark = "#003C8F".c, text = WHITE)
                     NINE_HUNDRED -> ColorScheme(light = "#5472D3".c, main = "#0D47A1".c,
-                            dark = "#002171".c, text = WaqtiColor.WHITE)
+                            dark = "#002171".c, text = WHITE)
                 }
                 //endregion BLUE
                 //region LIGHT BLUE
@@ -275,9 +275,9 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                     SEVEN_HUNDRED -> ColorScheme(light = "#5eb8ff".c, main = "#0288d1".c,
                             dark = "#005B9F".c, text = BLACK)
                     EIGHT_HUNDRED -> ColorScheme(light = "#58A5F0".c, main = "#0277BD".c,
-                            dark = "#004C8C".c, text = WaqtiColor.WHITE)
+                            dark = "#004C8C".c, text = WHITE)
                     NINE_HUNDRED -> ColorScheme(light = "#4F83CC".c, main = "#01579B".c,
-                            dark = "#002F6C".c, text = WaqtiColor.WHITE)
+                            dark = "#002F6C".c, text = WHITE)
                 }
                 //endregion LIGHT BLUE
                 //region CYAN
@@ -299,9 +299,9 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                     SEVEN_HUNDRED -> ColorScheme(light = "#56C8D8".c, main = "#0097A7".c,
                             dark = "#006978".c, text = BLACK)
                     EIGHT_HUNDRED -> ColorScheme(light = "#4FB3BF".c, main = "#00838F".c,
-                            dark = "#005662".c, text = WaqtiColor.WHITE)
+                            dark = "#005662".c, text = WHITE)
                     NINE_HUNDRED -> ColorScheme(light = "#428E92".c, main = "#006064".c,
-                            dark = "#00363A".c, text = WaqtiColor.WHITE)
+                            dark = "#00363A".c, text = WHITE)
                 }
                 //endregion CYAN
                 //region TEAL
@@ -321,11 +321,11 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                     SIX_HUNDRED -> ColorScheme(light = "#4EBAAA".c, main = "#00897B".c,
                             dark = "#005B4F".c, text = BLACK)
                     SEVEN_HUNDRED -> ColorScheme(light = "#48A999".c, main = "#00796B".c,
-                            dark = "#004C40".c, text = WaqtiColor.WHITE)
+                            dark = "#004C40".c, text = WHITE)
                     EIGHT_HUNDRED -> ColorScheme(light = "#439889".c, main = "#00695C".c,
-                            dark = "#003D33".c, text = WaqtiColor.WHITE)
+                            dark = "#003D33".c, text = WHITE)
                     NINE_HUNDRED -> ColorScheme(light = "#39796B".c, main = "#004D40".c,
-                            dark = "#00251A".c, text = WaqtiColor.WHITE)
+                            dark = "#00251A".c, text = WHITE)
                 }
                 //endregion TEAL
                 //region GREEN
@@ -347,9 +347,9 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                     SEVEN_HUNDRED -> ColorScheme(light = "#6ABF69".c, main = "#388E3C".c,
                             dark = "#00600F".c, text = BLACK)
                     EIGHT_HUNDRED -> ColorScheme(light = "#60AD5E".c, main = "#2E7d32".c,
-                            dark = "#005005".c, text = WaqtiColor.WHITE)
+                            dark = "#005005".c, text = WHITE)
                     NINE_HUNDRED -> ColorScheme(light = "#4C8C4A".c, main = "#1B5E20".c,
-                            dark = "#003300".c, text = WaqtiColor.WHITE)
+                            dark = "#003300".c, text = WHITE)
                 }
                 //endregion GREEN
                 //region LIGHT GREEN
@@ -424,138 +424,150 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                             dark = "#BC5100".c, text = BLACK)
                 }
                 //endregion YELLOW
+                //region AMBER
                 AMBER -> return when (colorLevel.level) {
-                    FIFTY -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
+                    FIFTY -> ColorScheme(light = "#FFFFFF".c, main = "#FFF8E1".c,
+                            dark = "#CCC5AF".c, text = BLACK)
+                    ONE_HUNDRED -> ColorScheme(light = "#FFFFE5".c, main = "#FFECB3".c,
+                            dark = "#CBBA83".c, text = BLACK)
+                    TWO_HUNDRED -> ColorScheme(light = "#FFFFB3".c, main = "#FFE082".c,
+                            dark = "#CAAE53".c, text = BLACK)
+                    THREE_HUNDRED -> ColorScheme(light = "#FFFF81".c, main = "#FFD54F".c,
+                            dark = "#C8A415".c, text = BLACK)
+                    FOUR_HUNDRED -> ColorScheme(light = "#FFFD61".c, main = "#FFCA28".c,
+                            dark = "#C79A00".c, text = BLACK)
+                    FIVE_HUNDRED -> ColorScheme(light = "#FFF350".c, main = "#FFC107".c,
+                            dark = "#C79100".c, text = BLACK)
+                    SIX_HUNDRED -> ColorScheme(light = "#FFE54C".c, main = "#FFB300".c,
+                            dark = "#C68400".c, text = BLACK)
+                    SEVEN_HUNDRED -> ColorScheme(light = "#FFD149".c, main = "#FFA000".c,
+                            dark = "#C67100".c, text = BLACK)
+                    EIGHT_HUNDRED -> ColorScheme(light = "#FFC046".c, main = "#FF8F00".c,
+                            dark = "#C56000".c, text = BLACK)
+                    NINE_HUNDRED -> ColorScheme(light = "#FFA040".c, main = "#FF6F00".c,
+                            dark = "#C43E00".c, text = BLACK)
                 }
+                //endregion AMBER
+                //region ORANGE
                 ORANGE -> return when (colorLevel.level) {
-                    FIFTY -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
+                    FIFTY -> ColorScheme(light = "#FFFFFF".c, main = "#FFF3E0".c,
+                            dark = "#CCC0AE".c, text = BLACK)
+                    ONE_HUNDRED -> ColorScheme(light = "#FFFFE4".c, main = "#FFE0B2".c,
+                            dark = "#CBAE82".c, text = BLACK)
+                    TWO_HUNDRED -> ColorScheme(light = "#FFFFB0".c, main = "#FFCC80".c,
+                            dark = "#CA9B52".c, text = BLACK)
+                    THREE_HUNDRED -> ColorScheme(light = "#FFE97D".c, main = "#FFB74D".c,
+                            dark = "#C88719".c, text = BLACK)
+                    FOUR_HUNDRED -> ColorScheme(light = "#FFD95B".c, main = "#FFA726".c,
+                            dark = "#C77800".c, text = BLACK)
+                    FIVE_HUNDRED -> ColorScheme(light = "#FF9800".c, main = "#FF9800".c,
+                            dark = "#C66900".c, text = BLACK)
+                    SIX_HUNDRED -> ColorScheme(light = "#FFBD45".c, main = "#FB8C00".c,
+                            dark = "#C25E00".c, text = BLACK)
+                    SEVEN_HUNDRED -> ColorScheme(light = "#FFAD42".c, main = "#F57C00".c,
+                            dark = "#BB4D00".c, text = BLACK)
+                    EIGHT_HUNDRED -> ColorScheme(light = "#FF9D3F".c, main = "#EF6C00".c,
+                            dark = "#B53D00".c, text = BLACK)
+                    NINE_HUNDRED -> ColorScheme(light = "#FF833A".c, main = "#E65100".c,
+                            dark = "#AC1900".c, text = BLACK)
                 }
+                //endregion ORANGE
+                //region DEEP ORANGE
                 DEEP_ORANGE -> return when (colorLevel.level) {
-                    FIFTY -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
+                    FIFTY -> ColorScheme(light = "#FFFFFF".c, main = "#FBE9E7".c,
+                            dark = "#C8B7B5".c, text = BLACK)
+                    ONE_HUNDRED -> ColorScheme(light = "#FFFFEE".c, main = "#FFCCBC".c,
+                            dark = "#CB9B8C".c, text = BLACK)
+                    TWO_HUNDRED -> ColorScheme(light = "#FFDDC1".c, main = "#FFAB91".c,
+                            dark = "#C97B63".c, text = BLACK)
+                    THREE_HUNDRED -> ColorScheme(light = "#FFBB93".c, main = "#FF8A65".c,
+                            dark = "#C75B39".c, text = BLACK)
+                    FOUR_HUNDRED -> ColorScheme(light = "#FFA270".c, main = "#FF7043".c,
+                            dark = "#C63F17".c, text = BLACK)
+                    FIVE_HUNDRED -> ColorScheme(light = "#FF8A50".c, main = "#FF5722".c,
+                            dark = "#C41C00".c, text = BLACK)
+                    SIX_HUNDRED -> ColorScheme(light = "#FF844C".c, main = "#F4511E".c,
+                            dark = "#B91400".c, text = BLACK)
+                    SEVEN_HUNDRED -> ColorScheme(light = "#FF7D47".c, main = "#E64A19".c,
+                            dark = "#AC0800".c, text = BLACK)
+                    EIGHT_HUNDRED -> ColorScheme(light = "#FF7543".c, main = "#D84315".c,
+                            dark = "#9F0000".c, text = BLACK)
+                    NINE_HUNDRED -> ColorScheme(light = "#F9683A".c, main = "#BF360C".c,
+                            dark = "#870000".c, text = WHITE)
                 }
+                //endregion DEEP ORANGE
+                //region BROWN
                 BROWN -> return when (colorLevel.level) {
-                    FIFTY -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
+                    FIFTY -> ColorScheme(light = "#FFFFFF".c, main = "#EFEBE9".c,
+                            dark = "#BDB9B7".c, text = BLACK)
+                    ONE_HUNDRED -> ColorScheme(light = "#FFFFFB".c, main = "#D7CCC8".c,
+                            dark = "#A69B97".c, text = BLACK)
+                    TWO_HUNDRED -> ColorScheme(light = "#EFDCD5".c, main = "#BCAAA4".c,
+                            dark = "#8C7B75".c, text = BLACK)
+                    THREE_HUNDRED -> ColorScheme(light = "#D3B8AE".c, main = "#A1887F".c,
+                            dark = "#725B53".c, text = BLACK)
+                    FOUR_HUNDRED -> ColorScheme(light = "#BE9C91".c, main = "#8D6E63".c,
+                            dark = "#5F4339".c, text = WHITE)
+                    FIVE_HUNDRED -> ColorScheme(light = "#A98274".c, main = "#795548".c,
+                            dark = "#4B2C20".c, text = WHITE)
+                    SIX_HUNDRED -> ColorScheme(light = "#9C786C".c, main = "#6D4C41".c,
+                            dark = "#40241A".c, text = WHITE)
+                    SEVEN_HUNDRED -> ColorScheme(light = "#8B6B61".c, main = "#5D4037".c,
+                            dark = "#321911".c, text = WHITE)
+                    EIGHT_HUNDRED -> ColorScheme(light = "#7B5E57".c, main = "#4E342E".c,
+                            dark = "#260E04".c, text = WHITE)
+                    NINE_HUNDRED -> ColorScheme(light = "#6A4F4B".c, main = "#3E2723".c,
+                            dark = "#1B0000".c, text = WHITE)
                 }
+                //endregion BROWN
+                //region GREY
                 GREY -> return when (colorLevel.level) {
-                    FIFTY -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
+                    FIFTY -> ColorScheme(light = "#FFFFFF".c, main = "#FAFAFA".c,
+                            dark = "#C7C7C7".c, text = BLACK)
+                    ONE_HUNDRED -> ColorScheme(light = "#FFFFFF".c, main = "#F5F5F5".c,
+                            dark = "#C2C2C2".c, text = BLACK)
+                    TWO_HUNDRED -> ColorScheme(light = "#FFFFFF".c, main = "#EEEEEE".c,
+                            dark = "#BCBCBC".c, text = BLACK)
+                    THREE_HUNDRED -> ColorScheme(light = "#FFFFFF".c, main = "#E0E0E0".c,
+                            dark = "#AEAEAE".c, text = BLACK)
+                    FOUR_HUNDRED -> ColorScheme(light = "#EFEFEF".c, main = "#BDBDBD".c,
+                            dark = "#8D8D8D".c, text = BLACK)
+                    FIVE_HUNDRED -> ColorScheme(light = "#CFCFCF".c, main = "#9E9E9E".c,
+                            dark = "#707070".c, text = BLACK)
+                    SIX_HUNDRED -> ColorScheme(light = "#A4A4A4".c, main = "#757575".c,
+                            dark = "#494949".c, text = WHITE)
+                    SEVEN_HUNDRED -> ColorScheme(light = "#8E8E8E".c, main = "#616161".c,
+                            dark = "#373737".c, text = WHITE)
+                    EIGHT_HUNDRED -> ColorScheme(light = "#6D6D6D".c, main = "#424242".c,
+                            dark = "#1B1B1B".c, text = WHITE)
+                    NINE_HUNDRED -> ColorScheme(light = "#484848".c, main = "#212121".c,
+                            dark = "#000000".c, text = WHITE)
                 }
+                //endregion GREY
+                //region BLUE GREY
                 BLUE_GREY -> return when (colorLevel.level) {
-                    FIFTY -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    ONE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    TWO_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    THREE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FOUR_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    FIVE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SIX_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    SEVEN_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    EIGHT_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
-                    NINE_HUNDRED -> ColorScheme(light = "".c, main = "".c,
-                            dark = "".c, text = "".c)
+                    FIFTY -> ColorScheme(light = "#FFFFFF".c, main = "#ECEFF1".c,
+                            dark = "#BABDBE".c, text = BLACK)
+                    ONE_HUNDRED -> ColorScheme(light = "#FFFFFF".c, main = "#CFD8DC".c,
+                            dark = "#9EA7AA".c, text = BLACK)
+                    TWO_HUNDRED -> ColorScheme(light = "#E2F1F8".c, main = "#B0BEC5".c,
+                            dark = "#808E95".c, text = BLACK)
+                    THREE_HUNDRED -> ColorScheme(light = "#C1D5E0".c, main = "#90A4AE".c,
+                            dark = "#62757F".c, text = BLACK)
+                    FOUR_HUNDRED -> ColorScheme(light = "#A7C0CD".c, main = "#78909C".c,
+                            dark = "#4B636E".c, text = BLACK)
+                    FIVE_HUNDRED -> ColorScheme(light = "#8EACBB".c, main = "#607D8B".c,
+                            dark = "#34515E".c, text = BLACK)
+                    SIX_HUNDRED -> ColorScheme(light = "#819CA9".c, main = "#546E7A".c,
+                            dark = "#29434E".c, text = WHITE)
+                    SEVEN_HUNDRED -> ColorScheme(light = "#718792".c, main = "#455A64".c,
+                            dark = "#1C313A".c, text = WHITE)
+                    EIGHT_HUNDRED -> ColorScheme(light = "#62727B".c, main = "#37474F".c,
+                            dark = "#102027".c, text = WHITE)
+                    NINE_HUNDRED -> ColorScheme(light = "#4F5B62".c, main = "#263238".c,
+                            dark = "#000A12".c, text = WHITE)
                 }
+                //endregion BLUE GREY
             }
         }
 
@@ -573,11 +585,16 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
             }
         }.flatten()
 
-        fun getColorSchemeClosestToColor(color: WaqtiColor): ColorScheme {
+        fun getColorSchemeClosestToColor(mainColor: WaqtiColor): ColorScheme {
             // TODO: 29-Jun-19 Not perfect yet
             return getAllColorSchemes().sortedBy {
-                abs(it.main.toAndroidColor.compareTo(color.toAndroidColor))
+                abs(it.main.toAndroidColor.compareTo(mainColor.toAndroidColor))
             }.first()
+        }
+
+        fun getColorSchemeForMainColor(mainColor: WaqtiColor): ColorScheme {
+            return getAllColorSchemes().find { it.main == mainColor }
+                    ?: getColorSchemeClosestToColor(mainColor)
         }
     }
 }

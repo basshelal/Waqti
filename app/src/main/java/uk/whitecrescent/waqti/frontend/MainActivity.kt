@@ -112,20 +112,20 @@ class MainActivity : AppCompatActivity() {
         return s
     }
 
-    fun setStatusBarColor(color: WaqtiColor) {
+    inline fun setStatusBarColor(color: WaqtiColor) {
         window.statusBarColor = color.toAndroidColor
     }
 
-    fun setNavigationBarColor(color: WaqtiColor) {
+    inline fun setNavigationBarColor(color: WaqtiColor) {
         window.navigationBarColor = color.toAndroidColor
     }
 
-    fun resetNavBarStatusBarColor() {
+    inline fun resetNavBarStatusBarColor() {
         setStatusBarColor(WaqtiColor("#560027"))
         setNavigationBarColor(WaqtiColor.WAQTI_DEFAULT)
     }
 
-    fun popAllFragmentsInBackStack() {
+    inline fun popAllFragmentsInBackStack() {
         supportFragmentManager.doInBackground {
             while (backStackEntryCount > 0) {
                 popBackStackImmediate()

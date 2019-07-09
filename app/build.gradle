@@ -14,13 +14,14 @@ android {
         minSdkVersion 24
         targetSdkVersion 28
         multiDexEnabled true
-        versionCode 2
-        versionName "1.0"
+        versionCode 3
+        versionName "1.0.1"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
             // don't minify because variable names get lost including enum names, things break!
+            // we can fix this eventually by using the progaurd files
             minifyEnabled false
 
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -70,6 +71,8 @@ dependencies {
     implementation 'com.kc.androidunsplash:androidunsplash:1.0.4'
     implementation 'com.github.medyo:android-about-page:1.2.5'
     implementation 'com.afollestad.material-dialogs:core:3.0.1'
+    implementation 'com.afollestad.material-dialogs:input:3.0.1'
+    implementation 'com.afollestad.material-dialogs:files:3.0.1'
     implementation 'com.afollestad.material-dialogs:color:3.0.1'
     implementation 'com.afollestad.material-dialogs:datetime:3.0.1'
     implementation 'com.afollestad.material-dialogs:bottomsheets:3.0.1'
