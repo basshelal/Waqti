@@ -9,7 +9,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
@@ -24,6 +26,7 @@ import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
 import uk.whitecrescent.waqti.frontend.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
@@ -287,7 +290,22 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     else -> false
                 }
             }
+
+            /*mainActivity.drawerLayout.addView(
+                    LinearLayout(context).also {
+                        it.layoutParams = DrawerLayout.LayoutParams(
+                                WRAP_CONTENT, MATCH_PARENT, GravityCompat.END
+                        )
+                        it.backgroundResource = R.drawable.waqti_icon
+                    }
+            )*/
+
+
+            rightImageView.setOnClickListener {
+                mainActivity.drawerLayout.openDrawer(GravityCompat.END)
+            }
         }
+        mainActivity.setAppBarColorScheme(ColorScheme.getAllColorSchemes().random())
     }
 
     override fun finish() {

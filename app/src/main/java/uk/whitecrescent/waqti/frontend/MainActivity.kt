@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity() {
         drawerLayout {
             addOnBackPressedCallback {
                 appBar.clearFocusAndHideKeyboard()
-                if (isDrawerOpen(navigationView)) {
+                if (isDrawerOpen(GravityCompat.START)) {
                     closeDrawers()
                     return@addOnBackPressedCallback
                 }
@@ -72,12 +72,12 @@ class MainActivity : AppCompatActivity() {
             drawerLayout.closeDrawers()
             when (it.itemId) {
                 R.id.allBoards_navDrawerItem -> {
-                    doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(navigationView) }, {
+                    doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
                         popAllFragmentsInBackStack()
                     })
                 }
                 R.id.settings_navDrawerItem -> {
-                    doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(navigationView) }, {
+                    doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
                         supportFragmentManager.commitTransaction {
                             @GoToFragment
                             replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
@@ -137,7 +137,7 @@ class MainActivity : AppCompatActivity() {
     inline fun popAllFragmentsInBackStack() {
         supportFragmentManager.doInBackground {
             while (backStackEntryCount > 0) {
-                popBackStackImmediate()
+                popBackStackImmediate() // TODO: 09-Jul-19 Look into changing this to something more efficient
             }
         }
     }
