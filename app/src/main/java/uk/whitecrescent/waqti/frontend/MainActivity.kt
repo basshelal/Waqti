@@ -52,13 +52,14 @@ class MainActivity : AppCompatActivity() {
             supportFragmentManager.commitTransaction {
                 @GoToFragment
                 add(R.id.fragmentContainer, ViewBoardListFragment(), VIEW_BOARD_LIST_FRAGMENT)
+                navigationView.setCheckedItem(R.id.allBoards_navDrawerItem)
             }
         }
 
         drawerLayout {
             addOnBackPressedCallback {
                 appBar.clearFocusAndHideKeyboard()
-                if (isDrawerOpen(GravityCompat.START)) {
+                if (isDrawerOpen(GravityCompat.START) || isDrawerOpen(GravityCompat.END)) {
                     closeDrawers()
                     return@addOnBackPressedCallback
                 }
@@ -97,6 +98,17 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            val currentFragment = supportFragmentManager.fragments.last()
+            when (currentFragment.tag) {
+                SETTINGS_FRAGMENT -> navigationView.setCheckedItem(R.id.settings_navDrawerItem)
+                ABOUT_FRAGMENT -> navigationView.setCheckedItem(R.id.about_navDrawerItem)
+                else -> navigationView.setCheckedItem(R.id.allBoards_navDrawerItem)
+            }
+        }
+
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {

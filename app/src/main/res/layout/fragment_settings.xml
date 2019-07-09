@@ -49,6 +49,8 @@
                     app:layout_constraintTop_toBottomOf="@id/taskListWidthSetting_textView" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <View style="@style/Divider.Horizontal" />
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -81,6 +83,8 @@
                     app:layout_constraintStart_toStartOf="@id/cardTextSizeSetting_textView"
                     app:layout_constraintTop_toBottomOf="@id/cardTextSizeSetting_textView" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View style="@style/Divider.Horizontal" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
