@@ -150,7 +150,6 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
     private fun setUpAppBar(element: Board) {
         mainActivity.resetNavBarStatusBarColor()
-        mainActivity.setAppBarColorScheme(ColorScheme.getAllColorSchemes().random())
         mainActivity.appBar {
             color = element.barColor
             elevation = DEFAULT_ELEVATION
@@ -295,6 +294,10 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     else -> false
                 }
             }
+        }
+        ColorScheme.getAllColorSchemes().random().also {
+            mainActivity.setAppBarColorScheme(it)
+            boardView.setEdgeEffectColor(it.main)
         }
     }
 

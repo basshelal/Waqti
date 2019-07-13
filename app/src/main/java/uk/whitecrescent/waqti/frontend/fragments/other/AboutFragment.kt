@@ -8,13 +8,16 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.TEXT_ALIGNMENT_CENTER
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.core.view.isInvisible
 import kotlinx.android.synthetic.main.fragment_about.*
 import mehdi.sakout.aboutpage.AboutPage
 import mehdi.sakout.aboutpage.Element
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.frontend.WAQTI_VERSION
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 import uk.whitecrescent.waqti.invoke
@@ -88,6 +91,10 @@ class AboutFragment : WaqtiFragment() {
         view.visibility = View.INVISIBLE
         about_linearLayout.addView(view)
         view.visibility = View.VISIBLE
+        about_linearLayout.addView(TextView(context).also {
+            it.text = WAQTI_VERSION
+            it.textAlignment = TEXT_ALIGNMENT_CENTER
+        })
     }
 
     override fun finish() {

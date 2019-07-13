@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import android.widget.EdgeEffect
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
@@ -32,6 +33,7 @@ import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.LINEAR
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.NONE
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.PAGED
@@ -70,6 +72,14 @@ class BoardView
         this.invalidate()
         (this.adapter as? BoardAdapter)?.taskListAdapters?.forEach {
             it.invalidate()
+        }
+    }
+
+    fun setEdgeEffectColor(color: WaqtiColor) {
+        edgeEffectFactory = object : RecyclerView.EdgeEffectFactory() {
+            override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
+                return EdgeEffect(view.context).also { it.color = color.toAndroidColor }
+            }
         }
     }
 
