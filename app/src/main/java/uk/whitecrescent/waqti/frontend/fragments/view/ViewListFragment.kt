@@ -22,7 +22,9 @@ import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
-import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
+import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
@@ -69,7 +71,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
             }
 
             addTask_floatingButton.setOnClickListener {
-                @GoToFragment
+                @FragmentNavigation(from = VIEW_LIST_FRAGMENT, to = CREATE_TASK_FRAGMENT)
                 it.mainActivity.supportFragmentManager.commitTransaction {
 
                     it.mainActivityViewModel.boardID = boardID
@@ -193,7 +195,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     }
 
     override fun finish() {
-        @GoToFragment
+        @FragmentNavigation(from = VIEW_LIST_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
     }
 }

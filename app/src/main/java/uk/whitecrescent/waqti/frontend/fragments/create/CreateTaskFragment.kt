@@ -18,7 +18,9 @@ import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
-import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
+import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
@@ -184,7 +186,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
             // TODO: 29-Jun-19 This doesn't always work on the ViewListFragment list for some reason
             smoothScrollToEnd()
         }
-        @GoToFragment
+        @FragmentNavigation(from = CREATE_TASK_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
     }
 

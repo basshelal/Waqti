@@ -37,7 +37,6 @@ import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.collections.Tuple
 import uk.whitecrescent.waqti.backend.persistence.Caches
-import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.backend.task.Description
@@ -117,11 +116,6 @@ inline fun View.requestFocusAndShowKeyboard() {
 inline fun View.clearFocusAndHideKeyboard() {
     clearFocus()
     hideKeyboard()
-}
-
-inline fun addTasks(amount: Int) {
-    Database.tasks.put(
-            Array(amount) { Task("Auto Generated Task #$it") }.toList())
 }
 
 inline fun RecyclerView.scrollToEnd() {
@@ -205,6 +199,12 @@ inline fun View.fadeOut(durationMillis: Long = 250) {
 }
 
 inline fun View.removeOnClickListener() = this.setOnClickListener(null)
+
+inline fun View.onClickOutside(crossinline onClickOutside: (View) -> Unit) {
+    mainActivity.onTouchOutSideListeners.putIfAbsent(this) {
+        onClickOutside(this)
+    }
+}
 
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.

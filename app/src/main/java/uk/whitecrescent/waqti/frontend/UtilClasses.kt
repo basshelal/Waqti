@@ -90,8 +90,14 @@ data class ChangedPositionPair(var positionChanged: Boolean = false,
 }
 
 /**
- * Just a utility to show us where there are Fragment changes happening
+ * Utility annotation to show us where any manual navigation between Fragments occurs including
+ * back stack popping, to find them just use "Find Usages" in the IDE.
+ *
+ * The constructor parameters must be one of the strings in [uk.whitecrescent.waqti.frontend.Tags.kt],
+ * such as [uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT]
+ *
+ * You should prefer to use named parameters when using this annotation for better readability
  */
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.EXPRESSION)
-annotation class GoToFragment
+annotation class FragmentNavigation(val from: String, val to: String)

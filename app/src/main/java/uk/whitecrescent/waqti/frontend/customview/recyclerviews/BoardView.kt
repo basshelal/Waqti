@@ -27,9 +27,10 @@ import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
-import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
+import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.LINEAR
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.NONE
@@ -283,7 +284,7 @@ class BoardViewHolder(view: View,
             }
             header.apply {
                 setOnClickListener {
-                    @GoToFragment
+                    @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = VIEW_LIST_FRAGMENT)
                     it.mainActivity.supportFragmentManager.commitTransaction {
 
                         it.mainActivityViewModel.listID = adapter.board[adapterPosition].id
@@ -302,7 +303,7 @@ class BoardViewHolder(view: View,
             addButton.apply {
                 setOnClickListener {
 
-                    @GoToFragment
+                    @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = CREATE_TASK_FRAGMENT)
                     it.mainActivity.supportFragmentManager.commitTransaction {
 
                         it.mainActivityViewModel.boardID = adapter.boardID

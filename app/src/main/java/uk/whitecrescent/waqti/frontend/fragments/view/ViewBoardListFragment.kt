@@ -19,7 +19,8 @@ import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.CREATE_BOARD_FRAGMENT
-import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.VIEW_BOARD_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateBoardFragment
@@ -68,7 +69,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
             }
 
             addBoard_FloatingButton?.setOnClickListener {
-                @GoToFragment
+                @FragmentNavigation(from = VIEW_BOARD_LIST_FRAGMENT, to = CREATE_BOARD_FRAGMENT)
                 it.mainActivity.supportFragmentManager.commitTransaction {
 
                     it.mainActivityViewModel.boardListPosition

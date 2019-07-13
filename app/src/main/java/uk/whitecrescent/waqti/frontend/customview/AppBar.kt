@@ -17,6 +17,8 @@ import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import org.jetbrains.anko.internals.AnkoInternals
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
+import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.hideKeyboard
 import uk.whitecrescent.waqti.mainActivity
@@ -82,6 +84,7 @@ class AppBar
             leftImage = context.getDrawable(R.drawable.back_icon)!!
             leftImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
             setOnClickListener {
+                @FragmentNavigation(from = ANY_FRAGMENT, to = ANY_FRAGMENT)
                 mainActivity.supportFragmentManager.popBackStack()
             }
         }

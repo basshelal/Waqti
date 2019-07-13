@@ -14,7 +14,9 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.CREATE_LIST_FRAGMENT
+import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.invoke
@@ -90,7 +92,7 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 
         mainActivityVM.boardPosition
                 .changeTo(true to mainActivityVM.boardPosition.position + 1)
-        @GoToFragment
+        @FragmentNavigation(from = CREATE_LIST_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
     }
 }

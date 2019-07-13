@@ -11,7 +11,6 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
-import androidx.drawerlayout.widget.DrawerLayout
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
@@ -27,7 +26,9 @@ import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
 import uk.whitecrescent.waqti.frontend.CREATE_LIST_FRAGMENT
-import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
+import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
@@ -40,6 +41,7 @@ import uk.whitecrescent.waqti.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
+import uk.whitecrescent.waqti.onClickOutside
 import uk.whitecrescent.waqti.shortSnackBar
 
 class ViewBoardFragment : WaqtiViewFragment<Board>() {
@@ -87,7 +89,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
             addList_floatingButton {
                 setOnClickListener {
-                    @GoToFragment
+                    @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = CREATE_LIST_FRAGMENT)
                     it.mainActivity.supportFragmentManager.commitTransaction {
 
                         it.mainActivityViewModel.boardID = element.id
@@ -148,6 +150,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
     private fun setUpAppBar(element: Board) {
         mainActivity.resetNavBarStatusBarColor()
+        mainActivity.setAppBarColorScheme(ColorScheme.getAllColorSchemes().random())
         mainActivity.appBar {
             color = element.barColor
             elevation = DEFAULT_ELEVATION
@@ -292,23 +295,30 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     else -> false
                 }
             }
+        }
+    }
 
-            mainActivity.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-                    GravityCompat.END)
+    override fun onResume() {
+        super.onResume()
 
-            LayoutInflater.from(context).inflate(R.layout.board_options,
-                    mainActivity.drawerLayout, false).also {
-                mainActivity.drawerLayout.addView(it)
-            }
+        LayoutInflater.from(context).inflate(R.layout.board_options,
+                mainActivity.drawerLayout, true)
 
+        mainActivity.appBar {
             rightImageView.setOnClickListener {
                 mainActivity.drawerLayout.openDrawer(GravityCompat.END)
             }
         }
-        mainActivity.setAppBarColorScheme(ColorScheme.getAllColorSchemes().random())
+
+        mainActivity.drawerLayout.boardOptions_navigationView {
+            onClickOutside {
+                it.shortSnackBar("Click back button to close options")
+            }
+        }
     }
 
     override fun finish() {
+        @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
     }
 

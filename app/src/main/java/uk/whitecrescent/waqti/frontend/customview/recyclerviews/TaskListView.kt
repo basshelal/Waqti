@@ -34,8 +34,10 @@ import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.frontend.GoToFragment
+import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
+import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
+import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.lastPosition
@@ -501,7 +503,8 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
             cardView.apply {
                 setCardBackgroundColor(Caches.boards[mainActivityViewModel.boardID].cardColor.toAndroidColor)
                 setOnClickListener {
-                    @GoToFragment
+                    @FragmentNavigation(from = VIEW_BOARD_FRAGMENT + VIEW_LIST_FRAGMENT,
+                            to = VIEW_TASK_FRAGMENT)
                     it.mainActivity.supportFragmentManager.commitTransaction {
 
                         it.mainActivityViewModel.taskID = taskID

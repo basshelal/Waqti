@@ -14,3 +14,18 @@ const val CREATE_TASK_FRAGMENT = "CreateTaskFragment"
 // Other Fragments
 const val ABOUT_FRAGMENT = "AboutFragment"
 const val SETTINGS_FRAGMENT = "SettingsFragment"
+
+// Unknown
+/**
+ * Represents any possible Fragment, meaning we don't know which one
+ */
+const val ANY_FRAGMENT = "AnyFragment"
+/**
+ * The previous Fragment in the back stack
+ */
+const val PREVIOUS_FRAGMENT = "PreviousFragment"
+/**
+ * Represents no Fragment, used only when initializing the layout when no Fragment has been added
+ * yet
+ */
+const val NO_FRAGMENT = "NoFragment"

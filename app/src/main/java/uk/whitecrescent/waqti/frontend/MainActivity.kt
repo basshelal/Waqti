@@ -2,13 +2,16 @@
 
 package uk.whitecrescent.waqti.frontend
 
+import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Bundle
 import android.view.MotionEvent
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import androidx.drawerlayout.widget.DrawerLayout
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 import org.jetbrains.anko.displayMetrics
@@ -26,12 +29,14 @@ import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
+import uk.whitecrescent.waqti.onClickOutside
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel: MainActivityViewModel
     lateinit var waqtiPreferences: WaqtiPreferences
     val currentTouchPoint = Point()
+    val onTouchOutSideListeners = HashMap<View, (View) -> Unit>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme)
@@ -50,13 +55,15 @@ class MainActivity : AppCompatActivity() {
 
         if (supportFragmentManager.fragments.isEmpty()) {
             supportFragmentManager.commitTransaction {
-                @GoToFragment
+                @FragmentNavigation(from = NO_FRAGMENT, to = VIEW_BOARD_LIST_FRAGMENT)
                 add(R.id.fragmentContainer, ViewBoardListFragment(), VIEW_BOARD_LIST_FRAGMENT)
                 navigationView.setCheckedItem(R.id.allBoards_navDrawerItem)
             }
         }
 
         drawerLayout {
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, GravityCompat.END)
             addOnBackPressedCallback {
                 appBar.clearFocusAndHideKeyboard()
                 if (isDrawerOpen(GravityCompat.START) || isDrawerOpen(GravityCompat.END)) {
@@ -64,9 +71,38 @@ class MainActivity : AppCompatActivity() {
                     return@addOnBackPressedCallback
                 }
                 if (supportFragmentManager.backStackEntryCount > 0) {
+                    @FragmentNavigation(from = ANY_FRAGMENT, to = PREVIOUS_FRAGMENT)
                     supportFragmentManager.popBackStack()
                 } else this@MainActivity.finish()
             }
+            addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
+
+                private var currentColor: Int = -0x67000000 // Default Scrim color
+                    set(value) {
+                        field = value
+                        setScrimColor(value)
+                    }
+
+                override fun onDrawerClosed(drawerView: View) {
+                    if (!isDrawerOpen(GravityCompat.END)) {
+                        setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.START)
+                        currentColor = -0x67000000
+                    }
+                }
+
+                override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
+                    if (isDrawerVisible(GravityCompat.END) && currentColor != Color.TRANSPARENT) {
+                        currentColor = Color.TRANSPARENT
+                    }
+                }
+
+                override fun onDrawerOpened(drawerView: View) {
+                    if (isDrawerOpen(GravityCompat.END)) {
+                        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, GravityCompat.START)
+                        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
+                    }
+                }
+            })
         }
 
         navigationView.setNavigationItemSelectedListener {
@@ -74,13 +110,14 @@ class MainActivity : AppCompatActivity() {
             when (it.itemId) {
                 R.id.allBoards_navDrawerItem -> {
                     doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
+                        @FragmentNavigation(from = ANY_FRAGMENT, to = VIEW_BOARD_LIST_FRAGMENT)
                         popAllFragmentsInBackStack()
                     })
                 }
                 R.id.settings_navDrawerItem -> {
                     doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
                         supportFragmentManager.commitTransaction {
-                            @GoToFragment
+                            @FragmentNavigation(from = ANY_FRAGMENT, to = SETTINGS_FRAGMENT)
                             replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
                             addToBackStack(null)
                         }
@@ -88,7 +125,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.about_navDrawerItem -> {
                     doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
-                        @GoToFragment
+                        @FragmentNavigation(from = ANY_FRAGMENT, to = ABOUT_FRAGMENT)
                         supportFragmentManager.commitTransaction {
                             replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
                             addToBackStack(null)
@@ -99,7 +136,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-
         supportFragmentManager.addOnBackStackChangedListener {
             val currentFragment = supportFragmentManager.fragments.last()
             when (currentFragment.tag) {
@@ -109,17 +145,23 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        appBar.editTextView.onClickOutside {
+            it.clearFocusAndHideKeyboard()
+        }
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         val spr = super.dispatchTouchEvent(event)
         currentTouchPoint.set(event.rawX.toInt(), event.rawY.toInt())
         if (event.action == MotionEvent.ACTION_DOWN) {
-            if (appBar.editTextView.isVisible) {
-                val viewRect = Rect()
-                appBar.editTextView.getGlobalVisibleRect(viewRect)
-                if (!viewRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
-                    appBar.editTextView.clearFocusAndHideKeyboard()
+            onTouchOutSideListeners.forEach {
+                val (view, onClick) = it
+                if (view.isVisible) {
+                    val viewRect = Rect()
+                    view.getGlobalVisibleRect(viewRect)
+                    if (!viewRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                        onClick(view)
+                    }
                 }
             }
         }
