@@ -124,10 +124,10 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
                             mainActivity.navigationView.menu
                                     .findItem(R.id.allBoards_navDrawerItem)
-                                    .setIcon(R.drawable.list_icon)
+                                    .setIcon(R.drawable.boardlist_icon)
                         }
                         ViewMode.GRID_VERTICAL -> {
-                            rightImage = mainActivity.getDrawable((R.drawable.list_icon))!!
+                            rightImage = mainActivity.getDrawable((R.drawable.boardlist_icon))!!
                             rightImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
                             this@ViewBoardListFragment.boardsList_recyclerView
                                     .changeViewMode(ViewMode.GRID_VERTICAL)

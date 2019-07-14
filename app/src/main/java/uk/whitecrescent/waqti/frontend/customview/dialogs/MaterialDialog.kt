@@ -25,6 +25,8 @@ abstract class MaterialDialog : BottomSheetDialogFragment() {
     abstract val contentView: Int
     lateinit var mainActivity: MainActivity
     lateinit var dialog: BottomSheetDialog
+    lateinit var bottomSheet: FrameLayout
+    lateinit var bottomSheetBehavior: BottomSheetBehavior<FrameLayout>
     open var onCancel: View.OnClickListener = View.OnClickListener {
         dismiss()
     }
@@ -33,8 +35,9 @@ abstract class MaterialDialog : BottomSheetDialogFragment() {
         dialog = BottomSheetDialog(activity!!)
         dialog.setContentView(contentView)
         dialog.setOnShowListener {
-            val bottomSheet = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            BottomSheetBehavior.from(bottomSheet!!).state = BottomSheetBehavior.STATE_EXPANDED
+            bottomSheet = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)!!
+            bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
         }
         return dialog
     }

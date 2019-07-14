@@ -4,9 +4,7 @@ package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.ClipData
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Point
-import android.graphics.PorterDuff
 import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.DragEvent
@@ -40,6 +38,7 @@ import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.lastPosition
@@ -255,6 +254,9 @@ class TaskListAdapter(val taskListID: ID,
                     // Scroll up
                     checkForScrollUp(draggingState, holder)
 
+                    (taskListView.findViewHolderForItemId(draggingState.taskID) as TaskViewHolder)
+                            .updateDragShadowColor(ColorScheme.getAllColorSchemes().random().main)
+
                     true
                 }
             }
@@ -274,6 +276,9 @@ class TaskListAdapter(val taskListID: ID,
 
                     // Scroll up
                     checkForScrollUp(draggingState, holder)
+
+                    (otherAdapter.taskListView.findViewHolderForItemId(draggingState.taskID) as TaskViewHolder)
+                            .updateDragShadowColor(ColorScheme.getAllColorSchemes().random().main)
 
                     true
                 } else false
@@ -482,11 +487,6 @@ private class ShadowBuilder(view: View) : View.DragShadowBuilder(view) {
         outShadowTouchPoint?.set(x, y)
     }
 
-    override fun onDrawShadow(canvas: Canvas?) {
-        super.onDrawShadow(canvas)
-        canvas?.drawColor(view.solidColor, PorterDuff.Mode.DST)
-    }
-
 }
 
 class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHolder(view) {
@@ -532,6 +532,14 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
             }
             textView.visibility = View.VISIBLE
             progressBar.visibility = View.GONE
+        }
+    }
+
+    fun updateDragShadowColor(waqtiColor: WaqtiColor) {
+        cardView {
+            updateDragShadow(ShadowBuilder(this.also {
+                setCardBackgroundColor(waqtiColor.toAndroidColor)
+            }))
         }
     }
 }

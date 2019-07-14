@@ -16,11 +16,13 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import org.jetbrains.anko.internals.AnkoInternals
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.hideKeyboard
+import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 
 /**
@@ -90,12 +92,18 @@ class AppBar
         }
     }
 
-    inline fun rightImageDefault(@MenuRes menuRes: Int,
-                                 noinline popupMenuOnItemClicked: (MenuItem) -> Boolean) {
-        rightImageView.apply {
+    inline fun rightImageDefault() {
+        rightImageView {
             rightImageView.visibility = View.VISIBLE
             rightImage = context.getDrawable(R.drawable.overflow_icon)!!
             rightImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
+        }
+    }
+
+    inline fun rightImageDefault(@MenuRes menuRes: Int,
+                                 noinline popupMenuOnItemClicked: (MenuItem) -> Boolean) {
+        rightImageDefault()
+        rightImageView {
             setOnClickListener {
                 PopupMenu(context, rightImageView).apply {
                     inflate(menuRes)
@@ -108,6 +116,12 @@ class AppBar
 
     override fun setBackgroundColor(color: Int) {
         background = materialShapeDrawable.apply { setTint(color) }
+    }
+
+    inline fun setTint(waqtiColor: WaqtiColor) {
+        leftImage.setTint(waqtiColor.toAndroidColor)
+        editTextView.textColor = waqtiColor.toAndroidColor
+        rightImage.setTint(waqtiColor.toAndroidColor)
     }
 
 }

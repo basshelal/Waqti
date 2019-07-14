@@ -1,5 +1,7 @@
 package uk.whitecrescent.waqti.frontend.customview.dialogs
 
+import android.app.Dialog
+import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.View
 import kotlinx.android.synthetic.main.dialog_confirm.*
@@ -12,8 +14,8 @@ class ConfirmDialog : MaterialDialog() {
     var onConfirm: () -> Unit = { }
     override val contentView = R.layout.dialog_confirm
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        super.onCreateDialog(savedInstanceState)
 
         dialog.apply {
 
@@ -28,6 +30,8 @@ class ConfirmDialog : MaterialDialog() {
 
             cancel_button.setOnClickListener(onCancel)
         }
+
+        return dialog
     }
 
 }

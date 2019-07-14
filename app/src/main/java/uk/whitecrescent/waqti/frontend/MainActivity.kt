@@ -164,9 +164,7 @@ class MainActivity : AppCompatActivity() {
     fun setAppBarColorScheme(colorScheme: ColorScheme) {
         appBar {
             color = colorScheme.main
-            leftImage.setTint(colorScheme.text.toAndroidColor)
-            editTextView.textColor = colorScheme.text.toAndroidColor
-            rightImage.setTint(colorScheme.text.toAndroidColor)
+            setTint(colorScheme.text)
         }
         window.statusBarColor = colorScheme.dark.toAndroidColor
         window.navigationBarColor = colorScheme.main.toAndroidColor

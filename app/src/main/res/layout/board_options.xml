@@ -32,6 +32,19 @@
                 app:text="App Bar Color" />
 
             <uk.whitecrescent.waqti.frontend.customview.OptionsItem
+                android:id="@+id/listColor_boardOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginBottom="4dp"
+                app:color="@color/md_grey_200"
+                app:image="@drawable/list_icon"
+                app:radius="8dp"
+                app:text="List Color" />
+
+            <uk.whitecrescent.waqti.frontend.customview.OptionsItem
                 android:id="@+id/cardColor_boardOption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
