@@ -16,6 +16,7 @@ import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.alsoIfNotNull
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
@@ -41,7 +42,6 @@ import uk.whitecrescent.waqti.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
-import uk.whitecrescent.waqti.onClickOutside
 import uk.whitecrescent.waqti.shortSnackBar
 
 class ViewBoardFragment : WaqtiViewFragment<Board>() {
@@ -83,7 +83,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     emptyState_scrollView.isVisible = true
                     addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
                 }
-                background = element.backgroundColor.toColorDrawable
+                background = ColorScheme.getAllColorSchemes().random().light.toColorDrawable
                 addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
             }
 
@@ -297,7 +297,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         }
         ColorScheme.getAllColorSchemes().random().also {
             mainActivity.setAppBarColorScheme(it)
-            boardView.setEdgeEffectColor(it.main)
+            boardView.setEdgeEffectColor(it.dark)
         }
     }
 
@@ -314,8 +314,37 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         }
 
         mainActivity.drawerLayout.boardOptions_navigationView {
-            onClickOutside {
-                it.shortSnackBar("Click back button to close options")
+            appBarColor_boardOption { setOnClickListener { it.shortSnackBar("Clicked App Bar Color") } }
+            cardColor_boardOption { setOnClickListener { it.shortSnackBar("Clicked Card Color") } }
+            boardColor_boardOption { setOnClickListener { it.shortSnackBar("Clicked Background Color") } }
+            boardImage_boardOption { setOnClickListener { it.shortSnackBar("Clicked Background Image") } }
+            deleteBoard_boardOption {
+                setOnClickListener {
+                    mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
+                    ConfirmDialog().apply {
+                        title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardQuestion)
+                        message = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardDetails)
+                        onConfirm = {
+                            val boardName = Caches.boards[boardID].name
+                            dismiss()
+                            Caches.deleteBoard(boardID)
+                            mainActivity.appBar.shortSnackBar(getString(R.string.deletedBoard)
+                                    + " $boardName")
+                            finish()
+                        }
+                    }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+                }
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        mainActivity.drawerLayout {
+            boardOptions_navigationView.alsoIfNotNull {
+                closeDrawer(it)
+                removeView(it)
             }
         }
     }
@@ -323,13 +352,5 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     override fun finish() {
         @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        mainActivity.drawerLayout.boardOptions_navigationView {
-            (parent as ViewGroup).removeView(this)
-        }
     }
 }

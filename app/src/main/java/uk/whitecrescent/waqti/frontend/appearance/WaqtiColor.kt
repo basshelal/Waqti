@@ -4,14 +4,15 @@ package uk.whitecrescent.waqti.frontend.appearance
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import uk.whitecrescent.waqti.logE
 
 open class WaqtiColor(val value: String) {
     init {
         require(value.startsWith('#')) { "$value is invalid, Color must start with #" }
-        require(value.length != 9) {
+        require(value.length == 7) {
             "$value is invalid, Color must be exactly 9 characters (includes #)"
         }
-        require(value.filterNot { it.isHexChar }.isEmpty()) {
+        require(value.all { it.isHexChar }) {
             "$value is invalid, contains illegal characters," +
                     " allowed characters are 0-9, a-f (upper and lowercase) and #"
         }
@@ -21,7 +22,14 @@ open class WaqtiColor(val value: String) {
         get() = ColorDrawable(Color.parseColor(value))
 
     val toAndroidColor: Int
-        get() = Color.parseColor(value)
+        get() {
+            try {
+                return Color.parseColor(value)
+            } catch (e: IllegalArgumentException) {
+                logE("Cannot parse color $value")
+                throw e
+            }
+        }
 
     override fun hashCode() = value.hashCode()
 

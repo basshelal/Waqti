@@ -54,7 +54,7 @@
     <string name="deleteBoard">Delete Board</string>
     <string name="changeBoardColor">Change Board Color</string>
     <string name="changeCardColor">Change Card Color</string>
-    <string name="changeAppBarColor">Change App Bar Color</string>
+    <string name="changeAppBarColor">Change Bar Color</string>
     <string name="changeBoardImage">Change Board Image</string>
     <string name="clearList">Clear List</string>
 

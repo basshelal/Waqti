@@ -334,7 +334,7 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
                 GREEN -> return when (colorLevel.level) {
                     FIFTY -> ColorScheme(light = "#FFFFFF".c, main = "#E8F5E9".c,
                             dark = "#B6C2B7".c, text = BLACK)
-                    ONE_HUNDRED -> ColorScheme(light = "#FBFFFC".c, main = "#C8E6CC9".c,
+                    ONE_HUNDRED -> ColorScheme(light = "#FBFFFC".c, main = "#C8E6C9".c,
                             dark = "#97B498".c, text = BLACK)
                     TWO_HUNDRED -> ColorScheme(light = "#D7FFD9".c, main = "#A5D6A7".c,
                             dark = "#75A478".c, text = BLACK)

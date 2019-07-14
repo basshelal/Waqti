@@ -12,8 +12,9 @@
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
     <color name="waqtiWhite">#EEEEEE</color>
-    <color name="errorColor">#B71C1C</color>
+    <color name="errorColor">#C62828</color>
     <color name="linkedInColor">#0077B5</color>
+    <color name="transparent">#00FFFFFF</color>
 
     <!-- google's material design colours -->
 

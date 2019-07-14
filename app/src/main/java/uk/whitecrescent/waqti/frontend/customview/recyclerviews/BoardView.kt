@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.widget.EdgeEffect
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -33,12 +34,14 @@ import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.LINEAR
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.NONE
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.PAGED
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
+import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
@@ -211,7 +214,7 @@ class BoardAdapter(val boardID: ID)
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
         holder.taskListView.adapter = getOrCreateListAdapter(board[position].id)
-        holder.header.text = board[position].name
+        holder.headerTextView.text = board[position].name
     }
 
     override fun onViewAttachedToWindow(holder: BoardViewHolder) {
@@ -276,7 +279,8 @@ class BoardAdapter(val boardID: ID)
 
 class BoardViewHolder(view: View,
                       val adapter: BoardAdapter) : ViewHolder(view) {
-    val header: TextView = itemView.taskListHeader_textView
+    val header: CardView = itemView.taskListHeader
+    val headerTextView: TextView = itemView.taskListHeader_textView
     val taskListView: TaskListView = itemView.taskList_recyclerView
     val addButton: FloatingActionButton = itemView.taskListFooter_fab
     val rootView: ConstraintLayout = itemView.taskList_rootView
@@ -289,10 +293,11 @@ class BoardViewHolder(view: View,
             rootView.updateLayoutParams {
                 width = adapter.taskListWidth
             }
-            taskListView.apply {
+            taskListView {
                 addOnScrollListener(addButton.verticalFABOnScrollListener)
             }
-            header.apply {
+            header {
+                setCardBackgroundColor(ColorScheme.getAllColorSchemes().random().main.toAndroidColor)
                 setOnClickListener {
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = VIEW_LIST_FRAGMENT)
                     it.mainActivity.supportFragmentManager.commitTransaction {
@@ -310,7 +315,7 @@ class BoardViewHolder(view: View,
                     true
                 }
             }
-            addButton.apply {
+            addButton {
                 setOnClickListener {
 
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = CREATE_TASK_FRAGMENT)

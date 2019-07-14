@@ -39,7 +39,9 @@ import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
+import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.lastPosition
 import uk.whitecrescent.waqti.locationOnScreen
 import uk.whitecrescent.waqti.mainActivity
@@ -500,8 +502,9 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
     init {
         doInBackground {
             textView.textSize = mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
-            cardView.apply {
-                setCardBackgroundColor(Caches.boards[mainActivityViewModel.boardID].cardColor.toAndroidColor)
+            cardView {
+                setCardBackgroundColor(ColorScheme.getAllColorSchemes().random().main.toAndroidColor)
+                //setCardBackgroundColor(Caches.boards[mainActivityViewModel.boardID].cardColor.toAndroidColor)
                 setOnClickListener {
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT + VIEW_LIST_FRAGMENT,
                             to = VIEW_TASK_FRAGMENT)

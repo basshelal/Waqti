@@ -63,7 +63,6 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout {
             setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
-            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, GravityCompat.END)
             addOnBackPressedCallback {
                 appBar.clearFocusAndHideKeyboard()
                 if (isDrawerOpen(GravityCompat.START) || isDrawerOpen(GravityCompat.END)) {
@@ -77,7 +76,9 @@ class MainActivity : AppCompatActivity() {
             }
             addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
 
-                private var currentColor: Int = -0x67000000 // Default Scrim color
+                private val DEFAULT_SCRIM_COLOR = -0x67000000
+
+                private var currentColor: Int = DEFAULT_SCRIM_COLOR
                     set(value) {
                         field = value
                         setScrimColor(value)
@@ -85,21 +86,13 @@ class MainActivity : AppCompatActivity() {
 
                 override fun onDrawerClosed(drawerView: View) {
                     if (!isDrawerOpen(GravityCompat.END)) {
-                        setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.START)
-                        currentColor = -0x67000000
+                        currentColor = DEFAULT_SCRIM_COLOR
                     }
                 }
 
                 override fun onDrawerSlide(drawerView: View, slideOffset: Float) {
                     if (isDrawerVisible(GravityCompat.END) && currentColor != Color.TRANSPARENT) {
                         currentColor = Color.TRANSPARENT
-                    }
-                }
-
-                override fun onDrawerOpened(drawerView: View) {
-                    if (isDrawerOpen(GravityCompat.END)) {
-                        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_OPEN, GravityCompat.START)
-                        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
                     }
                 }
             })

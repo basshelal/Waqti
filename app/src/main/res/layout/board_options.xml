@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <com.google.android.material.navigation.NavigationView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/boardOptions_navigationView"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
@@ -8,87 +9,84 @@
     android:fitsSystemWindows="false"
     android:orientation="vertical">
 
-    <LinearLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/changeBoardColor_menuItem"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <TextView
+            <uk.whitecrescent.waqti.frontend.customview.OptionsItem
+                android:id="@+id/appBarColor_boardOption"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/changeBoardColor"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-        </FrameLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginBottom="4dp"
+                app:color="@color/md_grey_200"
+                app:image="@drawable/menu_icon"
+                app:radius="8dp"
+                app:text="App Bar Color" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp">
-
-            <TextView
+            <uk.whitecrescent.waqti.frontend.customview.OptionsItem
+                android:id="@+id/cardColor_boardOption"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/changeCardColor"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-        </FrameLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginBottom="4dp"
+                app:color="@color/md_grey_200"
+                app:image="@drawable/card_icon"
+                app:radius="8dp"
+                app:text="Card Color" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp">
-
-            <TextView
+            <uk.whitecrescent.waqti.frontend.customview.OptionsItem
+                android:id="@+id/boardColor_boardOption"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/changeAppBarColor"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-        </FrameLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginBottom="4dp"
+                app:color="@color/md_grey_200"
+                app:image="@drawable/color_icon"
+                app:radius="8dp"
+                app:text="Background Color" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp">
-
-            <TextView
+            <uk.whitecrescent.waqti.frontend.customview.OptionsItem
+                android:id="@+id/boardImage_boardOption"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/changeBoardImage"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-        </FrameLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginBottom="8dp"
+                app:color="@color/md_grey_200"
+                app:image="@drawable/image_icon"
+                app:radius="8dp"
+                app:text="Background Image" />
 
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="4dp">
+            <View style="@style/Divider.Horizontal" />
 
-            <TextView
+            <uk.whitecrescent.waqti.frontend.customview.OptionsItem
+                android:id="@+id/deleteBoard_boardOption"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="@string/deleteBoard"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5" />
-        </FrameLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginBottom="2dp"
+                app:color="@color/errorColor"
+                app:image="@drawable/delete_icon"
+                app:radius="8dp"
+                app:text="@string/deleteBoard" />
 
-    </LinearLayout>
+        </LinearLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </com.google.android.material.navigation.NavigationView>

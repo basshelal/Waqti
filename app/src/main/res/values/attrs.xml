@@ -11,4 +11,12 @@
         <attr name="isMultiline" format="boolean" />
     </declare-styleable>
 
+    <declare-styleable name="OptionsItem">
+        <attr name="image" format="reference" />
+        <attr name="text" format="string" />
+        <attr name="color" format="color" />
+        <attr name="radius" format="dimension" />
+        <attr name="tint" format="color" />
+    </declare-styleable>
+
 </resources>
