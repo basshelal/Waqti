@@ -9,8 +9,8 @@ import uk.whitecrescent.waqti.logE
 open class WaqtiColor(val value: String) {
     init {
         require(value.startsWith('#')) { "$value is invalid, Color must start with #" }
-        require(value.length == 7) {
-            "$value is invalid, Color must be exactly 9 characters (includes #)"
+        require(value.length == 7 || value.length == 9) {
+            "$value is invalid, Color must be either 7 or 9 characters (includes #)"
         }
         require(value.all { it.isHexChar }) {
             "$value is invalid, contains illegal characters," +

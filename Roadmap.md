@@ -2,23 +2,27 @@
 
 Note that we can work on more than one update at once
 
-## Internal Cleanup Update
+## Internal Cleanup
 
-Cleanup code, test and document backend and frontend, no release or effect for users
+Cleanup code, refactor and test and document backend (and frontend)
 
-## Colors Update
+## Colors & Themes Update
 
-Themes, Board appearance, and maybe List appearance all including Unsplash images
+Board Appearance, List Appearance and App Themes
 
 ## Database Update
 
 Repair, export and import database and import data from Trello
 
-## Tasks Update
+## Home-Screen Update
+
+Android Widget and Shortcuts
+
+## Task Properties Update
 
 Task Properties but not all at once, simple properties first
 
-## UI Update
+## UI Improvements Update
 
 Small unrelated UI improvements and features
 
@@ -29,7 +33,3 @@ Add passwords to app and/or Boards
 ## Analytics Update
 
 Search, filter, statistics and analytics
-
-## Widget & Shortcuts Update
-
-Android Widget and Shortcuts

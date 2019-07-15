@@ -1,21 +1,18 @@
 package uk.whitecrescent.waqti.backend.collections
 
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import io.objectbox.converter.PropertyConverter
 import io.reactivex.schedulers.Schedulers
+import uk.whitecrescent.waqti.GSON
 import uk.whitecrescent.waqti.backend.task.ID
-
-private val gson = Gson()
+import uk.whitecrescent.waqti.toJson
 
 class IDArrayListConverter : PropertyConverter<ArrayList<ID>, String> {
 
-    override fun convertToDatabaseValue(entityProperty: ArrayList<ID>?): String {
-        return gson.toJson(entityProperty)
-    }
+    override fun convertToDatabaseValue(entityProperty: ArrayList<ID>?) = entityProperty.toJson
 
     override fun convertToEntityProperty(databaseValue: String?): ArrayList<ID> {
-        return gson.fromJson(databaseValue, object : TypeToken<ArrayList<ID>>() {}.type)
+        return GSON.fromJson(databaseValue, object : TypeToken<ArrayList<ID>>() {}.type)
     }
 }
 
@@ -23,7 +20,6 @@ class ElementNotFoundException(element: Any = "") : NoSuchElementException("Elem
 
 // Threads for Concurrency
 val LIST_OBSERVER_THREAD = Schedulers.newThread()
-val HABIT_OBSERVER_THREAD = Schedulers.newThread()
 
 /**
  * Used to indicate that is either not recommended or not necessary (or both) to override the function, property,

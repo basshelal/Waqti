@@ -1,7 +1,6 @@
 package uk.whitecrescent.waqti.backend.collections
 
 import io.objectbox.annotation.Transient
-import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.backend.persistence.Cache
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -10,15 +9,19 @@ import uk.whitecrescent.waqti.backend.task.Task
 
 @ForLater
 // Name should change to something like Ordering or Series or Sequence
-// TODO: 23-Dec-18 Don't forget to deal with this, either implement it, or more likely, leave it for later
-class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
+class Tuple(name: String = "",
+            tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
 
     override var idList = ArrayList<ID>()
 
     @Transient
     override val cache: Cache<Task> = Caches.tasks
 
-    constructor(vararg tasks: Task) : this(tasks.toList())
+    override var name: String = name
+        set(value) {
+            field = value
+            update()
+        }
 
     init {
         this.growTo(tasks.size)
@@ -33,8 +36,7 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
         return false
     }
 
-    override val id: ID
-        get() = 0
+    override var id: ID = 0
 
     override fun update() {
 
@@ -143,14 +145,6 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
 //        return this
 //    }
 
-    override fun removeFirst(element: Task) = super.removeFirst(element) as Tuple
-
-    override fun removeIf(predicate: (Task) -> Boolean) = super.removeIf(predicate) as Tuple
-
-    override fun clear() = super.clear() as Tuple
-
-    override fun removeRange(fromIndex: Int, toIndex: Int) = super.removeRange(fromIndex, toIndex) as Tuple
-
     //endregion Remove
 
     //region Manipulate
@@ -254,8 +248,6 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
         return this
     }
 
-    fun toHabit(interval: Duration) = Tuple.toHabit(this, interval)
-
     private fun adjust() = forEachIndexed { index, task ->
         if (index == 0) {
             task.hideBefore()
@@ -275,22 +267,12 @@ class Tuple(tasks: Collection<Task>) : AbstractWaqtiList<Task>() {
     companion object {
 
         fun fromTuples(tuples: Collection<Tuple>): Tuple {
-            val result = Tuple()
+            val result = Tuple(tasks = emptyList())
             tuples.forEach { result.addAll(it.toList()) }
             return result
         }
 
         fun fromTuples(vararg tuples: Tuple) = fromTuples(tuples.toList())
-
-        fun toHabit(tuple: Tuple, interval: Duration) = Habit(tuple, interval)
-    }
-
-    // TODO: 08-Apr-18 How do we do Routines?? Like Templates??
-    object Routine {
-
-        fun fromRoutine() {}
-
-        fun toRoutine(tuple: Tuple) {}
 
     }
 

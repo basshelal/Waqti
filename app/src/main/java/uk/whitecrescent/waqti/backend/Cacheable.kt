@@ -47,14 +47,15 @@ interface Cacheable {
      * their actual IDs. Each object inside any Cache will have a unique ID such that no two
      * objects inside the same Cache contain the same ID.
      *
-     * Implementations must declare this as a `var` and give it a default value of 0L.
-     * This is so that ObjectBox can modify it correctly and have the default value be initially
-     * 0, a non-legal value in ObjectBox that indicates this object is still new and no yet
-     * properly initialized
-     *
      * @see ID
      */
-    val id: ID
+    var id: ID
+
+    /**
+     * The name of this object, every [Cacheable] must have a name to be used as a human-readable
+     * identifier, the default name is the blank String ""
+     */
+    var name: String
 
     /**
      * Used to show that this object is not one automatically created by ObjectBox.
@@ -67,7 +68,9 @@ interface Cacheable {
      * the ID is not 0 and the name is not blank (or the default name) in addition to any other
      * fields in the object's constructor, making sure they are not equal to their default values.
      */
-    fun notDefault(): Boolean
+    fun notDefault(): Boolean {
+        return this.name != "" || this.id != 0L
+    }
 
     /**
      * Used to persist or update this object into the Database.

@@ -35,7 +35,7 @@ class Priority(name: String = "", importanceLevel: Int = 0) : Cacheable {
         }
     }
 
-    var name = name
+    override var name = name
         set(value) {
             field = value
             update()

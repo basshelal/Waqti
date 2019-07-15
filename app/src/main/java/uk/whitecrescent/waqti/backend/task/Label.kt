@@ -13,7 +13,7 @@ class Label(name: String = "") : Cacheable {
     @Id
     override var id = 0L
 
-    var name = name
+    override var name = name
         set(value) {
             field = value
             update()

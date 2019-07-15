@@ -34,7 +34,7 @@ open class SimpleItemTouchHelperCallback : ItemTouchHelper.Callback() {
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-        /*This will never be called as we do not support swiping*/
+        /*We do not support swiping*/
     }
 
     override fun interpolateOutOfBoundsScroll(recyclerView: RecyclerView, viewSize: Int,
@@ -50,16 +50,6 @@ open class FABOnScrollListener(val fab: FloatingActionButton, val orientation: O
     : RecyclerView.OnScrollListener() {
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-
-        /*val lastItemPos = recyclerView.adapter?.lastPosition
-        val lastVisiblePos = (recyclerView.layoutManager as LinearLayoutManager?)
-                ?.findLastCompletelyVisibleItemPosition()*/
-
-        // TODO: 12-Jun-19  Issue #57,
-        //  The hiding FABs need to be always showing when the list is not exceeding the size
-        //  limit required to scroll
-        // so something like make sure the last item in the list is fully visible and
-        // is not below the bottom of the list so that a scroll is needed
 
         when (orientation) {
             Orientation.HORIZONTAL -> {

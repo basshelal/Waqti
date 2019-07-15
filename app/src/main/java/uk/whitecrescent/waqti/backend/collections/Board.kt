@@ -26,7 +26,7 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
     @Id
     override var id: Long = 0L
 
-    var name: String = name
+    override var name: String = name
         set(value) {
             field = value
             update()

@@ -16,7 +16,7 @@ class TimeUnit(name: String = "", duration: Duration = Duration.ZERO) : Cacheabl
 
     // TODO: 19-Jun-18 more tests to check for the mutability and other things
 
-    var name = name
+    override var name = name
         set(value) {
             field = value
             update()

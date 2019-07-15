@@ -12,18 +12,21 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.ViewModel
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.addOnBackPressedCallback
+import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.doInBackgroundOnceWhen
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.customview.AppBar
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
@@ -193,4 +196,18 @@ class MainActivity : AppCompatActivity() {
     inline val dimensions: Pair<Int, Int>
         get() = this.resources
                 .let { displayMetrics.widthPixels to displayMetrics.heightPixels }
+}
+
+class MainActivityViewModel : ViewModel() {
+
+    var boardID: ID = 0L
+    var listID: ID = 0L
+    var taskID: ID = 0L
+    var boardListPosition = ChangedPositionPair()
+
+    // TODO: 27-Jun-19 We need to get rid of this guy sometime
+    var boardPosition = ChangedPositionPair()
+    var boardAdapter: BoardAdapter? = null
+    var settingsChanged = false
+
 }

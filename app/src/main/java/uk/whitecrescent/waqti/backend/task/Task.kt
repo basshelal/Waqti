@@ -56,8 +56,8 @@ class Task(name: String = "") : Cacheable {
      *
      * @see notDefault
      */
-    var name = name
-        private set(value) {
+    override var name = name
+        set(value) {
             field = value
             update()
         }

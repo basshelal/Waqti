@@ -20,7 +20,7 @@ class BoardList(name: String = "") : AbstractWaqtiList<Board>() {
     @Id
     override var id: ID = 0L
 
-    var name: String = name
+    override var name: String = name
         set(value) {
             field = value
             update()

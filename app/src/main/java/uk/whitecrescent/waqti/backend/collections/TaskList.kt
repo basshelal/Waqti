@@ -18,7 +18,6 @@ import uk.whitecrescent.waqti.backend.task.TaskState
 import uk.whitecrescent.waqti.frontend.appearance.ListAppearance
 import uk.whitecrescent.waqti.frontend.appearance.ListAppearanceConverter
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
-import uk.whitecrescent.waqti.logE
 
 @Entity
 open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
@@ -33,7 +32,7 @@ open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
     @Id
     override var id: Long = 0L
 
-    open var name: String = name
+    override var name: String = name
         set(value) {
             field = value
             update()
@@ -72,7 +71,6 @@ open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
             this.addAll(tasks)
             this.update()
             this.initialize()
-            logE(appearance.headerColor)
         }
     }
 
