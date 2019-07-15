@@ -31,6 +31,9 @@ open class WaqtiColor(val value: String) {
             }
         }
 
+    inline val colorScheme: ColorScheme
+        get() = ColorScheme.getColorSchemeForMainColor(this)
+
     override fun hashCode() = value.hashCode()
 
     override fun equals(other: Any?) = other.toString() == value

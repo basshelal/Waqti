@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.backend.persistence
 
 import android.content.Context
@@ -89,7 +91,7 @@ object Database {
         allDBs.forEach { it.removeAll() }
     }
 
-    fun applyMigration() {
+    fun applyMigrations() {
 
     }
 

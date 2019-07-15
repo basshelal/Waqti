@@ -15,6 +15,10 @@ import uk.whitecrescent.waqti.backend.task.TIME_CHECKING_PERIOD
 import uk.whitecrescent.waqti.backend.task.TIME_CHECKING_UNIT
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.backend.task.TaskState
+import uk.whitecrescent.waqti.frontend.appearance.ListAppearance
+import uk.whitecrescent.waqti.frontend.appearance.ListAppearanceConverter
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+import uk.whitecrescent.waqti.logE
 
 @Entity
 open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
@@ -41,12 +45,34 @@ open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
             autoRemoveKilled()
         }
 
+    @Convert(converter = ListAppearanceConverter::class, dbType = String::class)
+    var appearance: ListAppearance = ListAppearance.DEFAULT
+        set(value) {
+            field = value
+            update()
+        }
+
+    inline var headerColor: WaqtiColor
+        set(value) {
+            appearance.headerColor = value
+            update()
+        }
+        get() = appearance.headerColor
+
+    inline var cardColor: WaqtiColor
+        set(value) {
+            appearance.cardColor = value
+            update()
+        }
+        get() = appearance.cardColor
+
     init {
         if (this.notDefault()) {
             this.growTo(tasks.size)
             this.addAll(tasks)
             this.update()
             this.initialize()
+            logE(appearance.headerColor)
         }
     }
 

@@ -88,8 +88,10 @@ class TaskListAdapter(val taskListID: ID,
     inline val linearLayoutManager: LinearLayoutManager
         get() = taskListView.layoutManager as LinearLayoutManager
 
-    inline val allCards: List<CardView>
-        get() = taskListView.children.map { it as CardView }.toList()
+    val allCards: List<CardView>
+        get() = if (::taskListView.isInitialized)
+            taskListView.children.map { it as CardView }.toList()
+        else emptyList()
 
     private var savedState: LinearLayoutManager.SavedState? = null
 
@@ -503,8 +505,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
         doInBackground {
             textView.textSize = mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
             cardView {
-                setCardBackgroundColor(ColorScheme.getAllColorSchemes().random().main.toAndroidColor)
-                //setCardBackgroundColor(Caches.boards[mainActivityViewModel.boardID].cardColor.toAndroidColor)
+                setCardBackgroundColor(Caches.boards[mainActivityViewModel.boardID].cardColor.toAndroidColor)
                 setOnClickListener {
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT + VIEW_LIST_FRAGMENT,
                             to = VIEW_TASK_FRAGMENT)

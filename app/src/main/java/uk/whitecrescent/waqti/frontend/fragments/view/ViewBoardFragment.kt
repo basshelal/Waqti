@@ -12,12 +12,13 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import com.afollestad.materialdialogs.LayoutMode
+import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
 import com.afollestad.materialdialogs.color.colorChooser
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
-import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.alsoIfNotNull
 import uk.whitecrescent.waqti.backend.collections.Board
@@ -34,8 +35,7 @@ import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
-import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Companion.getAllColorSchemes
-import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+import uk.whitecrescent.waqti.frontend.appearance.toColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
@@ -46,6 +46,8 @@ import uk.whitecrescent.waqti.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
+import uk.whitecrescent.waqti.setBackgroundTint
+import uk.whitecrescent.waqti.setImageTint
 import uk.whitecrescent.waqti.shortSnackBar
 
 class ViewBoardFragment : WaqtiViewFragment<Board>() {
@@ -87,11 +89,14 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     emptyState_scrollView.isVisible = true
                     addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
                 }
-                background = ColorScheme.getAllColorSchemes().random().light.toColorDrawable
+                background = element.backgroundColor.toColorDrawable
+                setEdgeEffectColor(element.backgroundColor.colorScheme.dark)
                 addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
             }
 
             addList_floatingButton {
+                setBackgroundTint(element.barColor.colorScheme.dark)
+                setImageTint(element.barColor.colorScheme.text)
                 setOnClickListener {
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = CREATE_LIST_FRAGMENT)
                     it.mainActivity.supportFragmentManager.commitTransaction {
@@ -153,13 +158,11 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     }
 
     private fun setUpAppBar(element: Board) {
-        mainActivity.resetNavBarStatusBarColor()
+        mainActivity.setAppBarColorScheme(element.barColor.colorScheme)
         mainActivity.appBar {
-            color = element.barColor
             elevation = DEFAULT_ELEVATION
             leftImageBack()
             editTextView {
-                textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
                 removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.boardNameHint)
@@ -183,111 +186,14 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 }
             }
             rightImageDefault()
-            /*R.id.changeBoardColor_menuItem -> {
-                ColorPickerDialog().apply {
-                    title = this@ViewBoardFragment.getString(R.string.pickBoardColor)
-                    initialColor = Caches.boards[boardID].backgroundColor
-                    onClick = {
-                        this@ViewBoardFragment.boardView.background = it.toColorDrawable
-                    }
-                    onConfirm = {
-                        Caches.boards[boardID].backgroundColor = it
-                        dismiss()
-                    }
-                    onCancel = View.OnClickListener {
-                        Caches.boards[boardID].backgroundColor = initialColor
-                        this@ViewBoardFragment.boardView.background = initialColor.toColorDrawable
-                        dismiss()
-                    }
-                }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
-                true
-            }*/
-            /*R.id.changeCardColor_menuItem -> {
-                ColorPickerDialog().apply {
-                    title = this@ViewBoardFragment.getString(R.string.pickCardColor)
-                    initialColor = Caches.boards[boardID].cardColor
-                    onClick = { color ->
-                        this@ViewBoardFragment.boardView.allCards.forEach {
-                            it.setCardBackgroundColor(color.toAndroidColor)
-                        }
-                    }
-                    onConfirm = {
-                        Caches.boards[boardID].cardColor = it
-                        dismiss()
-                    }
-                    onCancel = View.OnClickListener {
-                        Caches.boards[boardID].cardColor = initialColor
-                        this@ViewBoardFragment.boardView.allCards.forEach {
-                            it.setCardBackgroundColor(initialColor.toAndroidColor)
-                        }
-                        dismiss()
-                    }
-                }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
-                true
-            }*/
-            /*R.id.changeAppBarColor_menuItem -> {
-                ColorPickerDialog().apply {
-                    title = this@ViewBoardFragment.getString(R.string.pickAppBarColor)
-                    initialColor = Caches.boards[boardID].barColor
-                    onClick = { color ->
-                        this@ViewBoardFragment.board_appBar.setBackgroundColor(color)
-                        mainActivity.setNavigationBarColor(color)
-                        mainActivity.setStatusBarColor(color)
-                    }
-                    onConfirm = {
-                        Caches.boards[boardID].barColor = it
-                        dismiss()
-                    }
-                    onCancel = View.OnClickListener {
-                        Caches.boards[boardID].barColor = initialColor
-                        this@ViewBoardFragment.board_appBar.setBackgroundColor(initialColor)
-                        mainActivity.setNavigationBarColor(initialColor)
-                        mainActivity.setStatusBarColor(initialColor)
-                        dismiss()
-                    }
-                }.show(mainActivity.supportFragmentManager, "ColorPickerDialog")
-                true
-            }*/
-            /*R.id.changeBoardPhoto -> {
-                PhotoPickerDialog().apply {
-                    title = this@ViewBoardFragment.getString(R.string.pickBoardBackground)
-                    initialPhoto = Caches.boards[boardID].backgroundPhoto
-                    onClick = { photo ->
-
-                    }
-                    __onClick = {
-                        this@ViewBoardFragment.boardView.background = it
-                    }
-                    __onConfirm = {
-                        this@ViewBoardFragment.boardView.background = it
-                    }
-                    onConfirm = {
-
-                        dismiss()
-                    }
-                    onCancel = View.OnClickListener {
-
-                        dismiss()
-                    }
-                }.show(mainActivity.supportFragmentManager, "PhotoPickerDialog")
-                true
-            }*/
-            /*R.id.boardAppearance_menuItem -> {
-                // here we show a Dialog which allows user to pick which
-                // customization option to change, when picked it will open a dialog
-                // for that one
-                shortSnackBar("Not yet implemented!")
-                true
-            }*/
         }
-        ColorScheme.getAllColorSchemes().random().also {
-            mainActivity.setAppBarColorScheme(it)
-            boardView.setEdgeEffectColor(it.dark)
-        }
+        mainActivity.setAppBarColorScheme(element.barColor.colorScheme)
     }
 
     override fun onResume() {
         super.onResume()
+
+        val board = Caches.boards[boardID]
 
         LayoutInflater.from(context).inflate(R.layout.board_options,
                 mainActivity.drawerLayout, true)
@@ -301,28 +207,91 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         mainActivity.drawerLayout.boardOptions_navigationView {
             appBarColor_boardOption {
                 setOnClickListener {
-                    com.afollestad.materialdialogs.MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
+                    MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
                         cornerRadius(literalDp = 8F)
                         title(text = "App Bar Color")
-                        colorChooser(colors = getAllColorSchemes(ColorScheme.Level.FIVE_HUNDRED)
-                                .map { it.main.toAndroidColor }
-                                .toIntArray(),
-                                subColors = ColorScheme.Color.values().map { color ->
-                                    ColorScheme.Level.values().map { level ->
-                                        ColorScheme.getColorScheme(ColorScheme.ColorLevel(color,
-                                                level)).main.toAndroidColor
-                                    }.toIntArray()
-                                }.toTypedArray())
+                        setPeekHeight(Int.MAX_VALUE)
+                        positiveButton(text = "Confirm")
+                        colorChooser(colors = ColorScheme.materialDialogsMainColors(),
+                                subColors = ColorScheme.materialDialogsAllColors(),
+                                initialSelection = board.barColor.toAndroidColor,
+                                changeActionButtonsColor = true,
+                                waitForPositiveButton = false,
+                                selection = { dialog, colorInt ->
+                                    val colorScheme = colorInt.toColor.colorScheme
+                                    mainActivity.setAppBarColorScheme(colorScheme)
+                                    dialog.window?.navigationBarColor = colorScheme.main.toAndroidColor
+                                    this@ViewBoardFragment.boardView.setEdgeEffectColor(colorScheme.dark)
+                                    this@ViewBoardFragment.addList_floatingButton.setBackgroundTint(colorScheme.dark)
+                                    this@ViewBoardFragment.addList_floatingButton
+                                            .setBackgroundTint(colorScheme.dark)
+                                    this@ViewBoardFragment.addList_floatingButton
+                                            .setImageTint(colorScheme.text)
+                                    Caches.boards[boardID].barColor = colorScheme.main
+                                }
+                        )
                     }
                     mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
                 }
             }
-            cardColor_boardOption { setOnClickListener { } }
-            boardColor_boardOption { setOnClickListener { } }
-            boardImage_boardOption { setOnClickListener { } }
-            deleteBoard_boardOption {
+            listColor_boardOption {
                 setOnClickListener {
 
+                }
+            }
+            cardColor_boardOption {
+                setOnClickListener {
+                    MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
+                        cornerRadius(literalDp = 8F)
+                        title(text = "App Bar Color")
+                        setPeekHeight(Int.MAX_VALUE)
+                        positiveButton(text = "Confirm")
+                        colorChooser(colors = ColorScheme.materialDialogsMainColors(),
+                                subColors = ColorScheme.materialDialogsAllColors(),
+                                initialSelection = board.backgroundColor.toAndroidColor,
+                                changeActionButtonsColor = true,
+                                waitForPositiveButton = false,
+                                selection = { dialog, colorInt ->
+                                    val waqtiColor = colorInt.toColor
+                                    this@ViewBoardFragment.boardView.allCards.forEach {
+                                        it.setCardBackgroundColor(waqtiColor.toAndroidColor)
+                                    }
+                                    Caches.boards[boardID].cardColor = waqtiColor
+                                }
+                        )
+                    }
+                    mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
+                }
+            }
+            boardColor_boardOption {
+                setOnClickListener {
+                    MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
+                        cornerRadius(literalDp = 8F)
+                        title(text = "App Bar Color")
+                        setPeekHeight(Int.MAX_VALUE)
+                        positiveButton(text = "Confirm")
+                        colorChooser(colors = ColorScheme.materialDialogsMainColors(),
+                                subColors = ColorScheme.materialDialogsAllColors(),
+                                initialSelection = board.backgroundColor.toAndroidColor,
+                                changeActionButtonsColor = true,
+                                waitForPositiveButton = false,
+                                selection = { dialog, colorInt ->
+                                    val waqtiColor = colorInt.toColor
+                                    this@ViewBoardFragment.boardView.background = waqtiColor.toColorDrawable
+                                    Caches.boards[boardID].backgroundColor = waqtiColor
+                                }
+                        )
+                    }
+                    mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
+                }
+            }
+            boardImage_boardOption {
+                setOnClickListener {
+                    it.shortSnackBar("Not yet implemented")
+                }
+            }
+            deleteBoard_boardOption {
+                setOnClickListener {
                     ConfirmDialog().apply {
                         title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardQuestion)
                         message = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardDetails)

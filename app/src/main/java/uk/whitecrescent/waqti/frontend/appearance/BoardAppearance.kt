@@ -1,9 +1,10 @@
 package uk.whitecrescent.waqti.frontend.appearance
 
-import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.kc.unsplash.models.Photo
 import io.objectbox.converter.PropertyConverter
+import uk.whitecrescent.waqti.fromJsonTo
+import uk.whitecrescent.waqti.toJson
 
 class BoardAppearance {
 
@@ -26,14 +27,12 @@ class BoardAppearance {
 
 class BoardAppearanceConverter : PropertyConverter<BoardAppearance, String> {
 
-    private val gson = Gson()
+    override fun convertToDatabaseValue(entityProperty: BoardAppearance?) = entityProperty.toJson
 
-    override fun convertToDatabaseValue(entityProperty: BoardAppearance): String {
-        return gson.toJson(entityProperty)
-    }
-
-    override fun convertToEntityProperty(databaseValue: String): BoardAppearance {
-        return gson.fromJson(databaseValue, BoardAppearance::class.java)
+    override fun convertToEntityProperty(databaseValue: String?): BoardAppearance {
+        return if (databaseValue == null) {
+            BoardAppearance.DEFAULT
+        } else databaseValue fromJsonTo BoardAppearance::class.java
     }
 }
 

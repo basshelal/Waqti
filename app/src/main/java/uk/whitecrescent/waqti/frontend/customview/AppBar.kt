@@ -84,7 +84,6 @@ class AppBar
         leftImageView.apply {
             leftImageView.visibility = View.VISIBLE
             leftImage = context.getDrawable(R.drawable.back_icon)!!
-            leftImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
             setOnClickListener {
                 @FragmentNavigation(from = ANY_FRAGMENT, to = ANY_FRAGMENT)
                 mainActivity.supportFragmentManager.popBackStack()
@@ -96,7 +95,6 @@ class AppBar
         rightImageView {
             rightImageView.visibility = View.VISIBLE
             rightImage = context.getDrawable(R.drawable.overflow_icon)!!
-            rightImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
         }
     }
 

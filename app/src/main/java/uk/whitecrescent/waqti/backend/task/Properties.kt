@@ -1,10 +1,11 @@
 package uk.whitecrescent.waqti.backend.task
 
-import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import io.objectbox.converter.PropertyConverter
 import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.Time
+import uk.whitecrescent.waqti.fromJsonTo
+import uk.whitecrescent.waqti.toJson
 
 //region Properties
 
@@ -102,135 +103,107 @@ class LongArrayListProperty(
 
 //region Converters
 
-private val gson = Gson()
-
 class TimePropertyConverter : PropertyConverter<TimeProperty, String> {
 
-    override fun convertToDatabaseValue(entityProperty: TimeProperty?) =
-            gson.toJson(entityProperty)
+    override fun convertToDatabaseValue(entityProperty: TimeProperty?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, TimeProperty::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo TimeProperty::class.java
 
 }
 
 class DurationPropertyConverter : PropertyConverter<DurationProperty, String> {
 
-    override fun convertToDatabaseValue(entityProperty: DurationProperty?) =
-            gson.toJson(entityProperty)
+    override fun convertToDatabaseValue(entityProperty: DurationProperty?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, DurationProperty::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo DurationProperty::class.java
 
 }
 
 class PriorityPropertyConverter : PropertyConverter<PriorityProperty, String> {
 
-    override fun convertToDatabaseValue(entityProperty: PriorityProperty?) =
-            gson.toJson(entityProperty)
+    override fun convertToDatabaseValue(entityProperty: PriorityProperty?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, PriorityProperty::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo PriorityProperty::class.java
 
 }
 
 class LabelArrayListPropertyConverter : PropertyConverter<LabelArrayListProperty, String> {
 
-    override fun convertToDatabaseValue(entityProperty: LabelArrayListProperty?) =
-            gson.toJson(entityProperty)
+    override fun convertToDatabaseValue(entityProperty: LabelArrayListProperty?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, LabelArrayListProperty::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo LabelArrayListProperty::class.java
 
 }
 
 class BooleanPropertyConverter : PropertyConverter<BooleanProperty, String> {
 
-    override fun convertToDatabaseValue(entityProperty: BooleanProperty?) =
-            gson.toJson(entityProperty)
+    override fun convertToDatabaseValue(entityProperty: BooleanProperty?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, BooleanProperty::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo BooleanProperty::class.java
 
 }
 
 class StringPropertyConverter : PropertyConverter<StringProperty, String> {
 
-    override fun convertToDatabaseValue(entityProperty: StringProperty?) =
-            gson.toJson(entityProperty)
+    override fun convertToDatabaseValue(entityProperty: StringProperty?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, StringProperty::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo StringProperty::class.java
 
 }
 
 class ChecklistPropertyConverter : PropertyConverter<ChecklistProperty, String> {
 
-    override fun convertToDatabaseValue(entityProperty: ChecklistProperty?) =
-            gson.toJson(entityProperty)
+    override fun convertToDatabaseValue(entityProperty: ChecklistProperty?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, ChecklistProperty::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo ChecklistProperty::class.java
 
 }
 
 class LongPropertyConverter : PropertyConverter<LongProperty, String> {
 
-    override fun convertToDatabaseValue(entityProperty: LongProperty?) =
-            gson.toJson(entityProperty)
+    override fun convertToDatabaseValue(entityProperty: LongProperty?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, LongProperty::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo LongProperty::class.java
 
 }
 
 class LongArrayListPropertyConverter : PropertyConverter<LongArrayListProperty, String> {
 
-    override fun convertToDatabaseValue(entityProperty: LongArrayListProperty?) =
-            gson.toJson(entityProperty)
+    override fun convertToDatabaseValue(entityProperty: LongArrayListProperty?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, LongArrayListProperty::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo LongArrayListProperty::class.java
 
 }
 
 class TaskStateConverter : PropertyConverter<TaskState, String> {
 
-    override fun convertToDatabaseValue(entityProperty: TaskState?) =
-            gson.toJson(entityProperty)
+    override fun convertToDatabaseValue(entityProperty: TaskState?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, TaskState::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo TaskState::class.java
 }
 
 class TimeArrayList : ArrayList<Time>()
 
 class TimeArrayListConverter : PropertyConverter<TimeArrayList, String> {
 
-    override fun convertToDatabaseValue(entityProperty: TimeArrayList?) =
-            gson.toJson(entityProperty)
+    override fun convertToDatabaseValue(entityProperty: TimeArrayList?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, TimeArrayList::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo TimeArrayList::class.java
 }
 
 class TimeConverter : PropertyConverter<Time, String> {
-    override fun convertToDatabaseValue(entityProperty: Time?) =
-            gson.toJson(entityProperty)
 
+    override fun convertToDatabaseValue(entityProperty: Time?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, Time::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo Time::class.java
 
 }
 
 class DurationConverter : PropertyConverter<Duration, String> {
-    override fun convertToDatabaseValue(entityProperty: Duration?) =
-            gson.toJson(entityProperty)
 
+    override fun convertToDatabaseValue(entityProperty: Duration?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) =
-            gson.fromJson(databaseValue, Duration::class.java)
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo Duration::class.java
 
 }
 

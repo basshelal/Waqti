@@ -598,6 +598,18 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
             return getAllColorSchemes().find { it.main == mainColor }
                     ?: getColorSchemeClosestToColor(mainColor)
         }
+
+        fun materialDialogsMainColors() =
+                getAllColorSchemes(FIVE_HUNDRED)
+                        .map { it.main.toAndroidColor }
+                        .toIntArray()
+
+        fun materialDialogsAllColors() =
+                Color.values().map { color ->
+                    Level.values().map { level ->
+                        ColorScheme.getColorScheme(ColorLevel(color, level)).main.toAndroidColor
+                    }.toIntArray()
+                }.toTypedArray()
     }
 }
 

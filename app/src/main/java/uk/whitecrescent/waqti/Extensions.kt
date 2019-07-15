@@ -7,6 +7,7 @@ import android.app.Activity
 import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
 import android.graphics.Point
 import android.util.DisplayMetrics
 import android.util.Log
@@ -26,6 +27,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import com.google.gson.Gson
 import io.objectbox.Box
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -51,6 +53,7 @@ import uk.whitecrescent.waqti.backend.task.TimeUnit
 import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.MainActivityViewModel
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import java.util.Objects
 import kotlin.math.roundToInt
 
@@ -147,6 +150,14 @@ inline val FloatingActionButton.verticalFABOnScrollListener: FABOnScrollListener
 
 inline val FloatingActionButton.horizontalFABOnScrollListener: FABOnScrollListener
     get() = FABOnScrollListener(this, FABOnScrollListener.Orientation.HORIZONTAL)
+
+inline fun FloatingActionButton.setBackgroundTint(waqtiColor: WaqtiColor) {
+    backgroundTintList = ColorStateList.valueOf(waqtiColor.toAndroidColor)
+}
+
+inline fun FloatingActionButton.setImageTint(waqtiColor: WaqtiColor) {
+    imageTintList = ColorStateList.valueOf(waqtiColor.toAndroidColor)
+}
 
 inline val RecyclerView.Adapter<*>.lastPosition: Int
     get() = this.itemCount - 1
@@ -454,6 +465,15 @@ inline fun <T> Box<T>.forEach(action: (T) -> Unit) =
 
 inline val <T : Cacheable> Box<T>.ids: List<ID>
     get() = this.all.map { it.id }
+
+val GSON = Gson()
+
+inline val <T>T.toJson: String
+    get() = GSON.toJson(this)
+
+inline infix fun <T> String?.fromJsonTo(clazz: Class<T>): T {
+    return GSON.fromJson(this, clazz)
+}
 
 const val CACHE_CHECKING_PERIOD = 10L
 val CACHE_CHECKING_UNIT = java.util.concurrent.TimeUnit.SECONDS

@@ -11,7 +11,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import kotlinx.android.synthetic.main.fragment_view_list.*
-import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -25,7 +24,6 @@ import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
-import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
@@ -127,13 +125,11 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     }
 
     private fun setUpAppBar(element: TaskList) {
-        mainActivity.resetNavBarStatusBarColor()
+        mainActivity.setAppBarColorScheme(Caches.boards[boardID].barColor.colorScheme)
         mainActivity.appBar {
-            color = Caches.boards[boardID].barColor
             elevation = DEFAULT_ELEVATION
             leftImageBack()
             editTextView {
-                textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
                 removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.listNameHint)
@@ -192,6 +188,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                 }
             }
         }
+        mainActivity.setAppBarColorScheme(Caches.boards[boardID].barColor.colorScheme)
     }
 
     override fun finish() {

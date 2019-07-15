@@ -44,6 +44,8 @@ import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
+import uk.whitecrescent.waqti.setBackgroundTint
+import uk.whitecrescent.waqti.setImageTint
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
@@ -62,6 +64,9 @@ class BoardView
 
     inline val boardAdapter: BoardAdapter
         get() = this.adapter as BoardAdapter
+
+    inline val allCards: List<CardView>
+        get() = boardAdapter.taskListAdapters.map { it.allCards }.flatten()
 
     init {
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false).also {
@@ -316,8 +321,9 @@ class BoardViewHolder(view: View,
                 }
             }
             addButton {
+                setBackgroundTint(adapter.board.barColor.colorScheme.main)
+                setImageTint(adapter.board.barColor.colorScheme.text)
                 setOnClickListener {
-
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = CREATE_TASK_FRAGMENT)
                     it.mainActivity.supportFragmentManager.commitTransaction {
 

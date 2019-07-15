@@ -20,8 +20,8 @@ class App : Application() {
         LeakCanary.install(this)*/
         AndroidThreeTen.init(this)
         Database.build(this)
+        Database.applyMigrations()
         Caches.initialize()
-        Database.applyMigration()
     }
 }
 
