@@ -243,12 +243,12 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
                         cornerRadius(literalDp = 8F)
-                        title(text = "App Bar Color")
+                        title(text = "Card Color")
                         setPeekHeight(Int.MAX_VALUE)
                         positiveButton(text = "Confirm")
                         colorChooser(colors = ColorScheme.materialDialogsMainColors(),
                                 subColors = ColorScheme.materialDialogsAllColors(),
-                                initialSelection = board.backgroundColor.toAndroidColor,
+                                initialSelection = board.cardColor.toAndroidColor,
                                 changeActionButtonsColor = true,
                                 waitForPositiveButton = false,
                                 selection = { dialog, colorInt ->
@@ -267,7 +267,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
                         cornerRadius(literalDp = 8F)
-                        title(text = "App Bar Color")
+                        title(text = "Background Color")
                         setPeekHeight(Int.MAX_VALUE)
                         positiveButton(text = "Confirm")
                         colorChooser(colors = ColorScheme.materialDialogsMainColors(),

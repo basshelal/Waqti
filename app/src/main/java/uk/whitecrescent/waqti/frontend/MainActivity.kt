@@ -66,6 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout {
             setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
+            setViewElevation(GravityCompat.END, 1F)
             addOnBackPressedCallback {
                 appBar.clearFocusAndHideKeyboard()
                 if (isDrawerOpen(GravityCompat.START) || isDrawerOpen(GravityCompat.END)) {
@@ -87,9 +88,16 @@ class MainActivity : AppCompatActivity() {
                         setScrimColor(value)
                     }
 
+                override fun onDrawerOpened(drawerView: View) {
+                    if (isDrawerOpen(GravityCompat.END)) {
+                        setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END)
+                    }
+                }
+
                 override fun onDrawerClosed(drawerView: View) {
                     if (!isDrawerOpen(GravityCompat.END)) {
                         currentColor = DEFAULT_SCRIM_COLOR
+                        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
                     }
                 }
 

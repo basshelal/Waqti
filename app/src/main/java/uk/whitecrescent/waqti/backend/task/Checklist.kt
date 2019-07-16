@@ -4,7 +4,7 @@ data class ListItem(val value: String, var isChecked: Boolean = false)
 
 // TODO: 30-Mar-18 Update this to look modern and idiomatic
 // TODO: 14-May-18 Either make this independent of a Task or tightly coupled to Task
-// so either a Collection or a component of Task (cannot exist without a Task)
+//  so either a Collection or a component of Task (cannot exist without a Task)
 class Checklist(vararg itemValues: String) : Iterable<ListItem> {
 
     private val list = ArrayList<ListItem>()

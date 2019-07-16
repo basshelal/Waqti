@@ -1398,7 +1398,7 @@ class Task(name: String = "") : Cacheable {
 
     fun kill() {
         // TODO: 04-Feb-19 Should we block killed Tasks from having any of their Properties changed?
-        // definitely we should block any observing but even block Property changes??
+        //  definitely we should block any observing but even block Property changes??
         if (!isKillable) {
             throw TaskStateException("Kill unsuccessful, ${this.name} is not Killable", this.state)
         }

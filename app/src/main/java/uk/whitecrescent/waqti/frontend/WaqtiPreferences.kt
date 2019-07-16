@@ -39,6 +39,7 @@ class WaqtiPreferences(val context: Context) {
                 BOARD_LIST_NAME_PREFERENCES_KEY,
                 context.getString(R.string.allBoards))!!
 
+    // TODO: 15-Jul-19 We could make this be a property inside of BoardList instead
     inline var boardListViewMode: ViewMode
         set(value) = sharedPreferences.edit {
             putString(BOARD_LIST_VIEW_MODE_PREFERENCES_KEY, value.name)
