@@ -41,7 +41,9 @@ import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
+import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
 import uk.whitecrescent.waqti.frontend.vibrateCompat
+import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
@@ -53,6 +55,7 @@ import uk.whitecrescent.waqti.shortSnackBar
 class ViewBoardFragment : WaqtiViewFragment() {
 
     private var boardID: ID = 0L
+    private lateinit var viewModel: ViewBoardFragmentViewModel
     private lateinit var board: Board
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -66,6 +69,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
         boardID = mainActivityVM.boardID
         board = Caches.boards[boardID]
 
+        viewModel = getViewModel()
+
         if (mainActivityVM.boardAdapter == null ||
                 mainActivityVM.boardAdapter?.boardID != boardID) {
             mainActivityVM.boardAdapter = BoardAdapter(boardID)
@@ -75,25 +80,21 @@ class ViewBoardFragment : WaqtiViewFragment() {
     }
 
     override fun setUpViews() {
-        setUpAppBar()
-
         boardView {
             if (mainActivityVM.settingsChanged) {
                 invalidateBoard()
                 mainActivityVM.settingsChanged = false
             }
-        }
-
-        doInBackground {
-            boardView {
-                background = board.backgroundColor.toColorDrawable
-                adapter = mainActivityVM.boardAdapter
-                if (boardAdapter?.board?.isEmpty() == true) {
-                    emptyState_scrollView.isVisible = true
-                    addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
-                }
-                addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
+            background = board.backgroundColor.toColorDrawable
+            adapter = mainActivityVM.boardAdapter
+            if (boardAdapter?.board?.isEmpty() == true) {
+                emptyState_scrollView.isVisible = true
+                addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
             }
+            addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
+        }
+        doInBackground {
+            setUpAppBar()
             addList_floatingButton {
                 setOnClickListener {
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = CREATE_LIST_FRAGMENT)
@@ -340,3 +341,5 @@ class ViewBoardFragment : WaqtiViewFragment() {
         mainActivity.supportFragmentManager.popBackStack()
     }
 }
+
+class ViewBoardFragmentViewModel : WaqtiViewFragmentViewModel()

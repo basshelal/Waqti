@@ -24,6 +24,8 @@ import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
+import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
+import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
@@ -33,6 +35,7 @@ import uk.whitecrescent.waqti.verticalFABOnScrollListener
 class ViewBoardListFragment : WaqtiViewFragment() {
 
     lateinit var viewMode: ViewMode
+    private lateinit var viewModel: ViewBoardListFragmentViewModel
     private lateinit var boardList: BoardList
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -48,6 +51,8 @@ class ViewBoardListFragment : WaqtiViewFragment() {
         viewMode = mainActivity.waqtiPreferences.boardListViewMode
 
         boardList = Caches.boardList
+
+        viewModel = getViewModel()
 
         setUpViews()
     }
@@ -164,3 +169,5 @@ enum class ViewMode {
         else values()[ordinal + 1]
     }
 }
+
+class ViewBoardListFragmentViewModel : WaqtiViewFragmentViewModel()

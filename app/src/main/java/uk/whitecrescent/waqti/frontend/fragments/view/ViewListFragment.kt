@@ -32,7 +32,9 @@ import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
+import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
 import uk.whitecrescent.waqti.frontend.vibrateCompat
+import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
@@ -43,6 +45,7 @@ class ViewListFragment : WaqtiViewFragment() {
 
     private var listID: ID = 0L
     private var boardID: ID = 0L
+    private lateinit var viewModel: ViewListFragmentViewModel
     private lateinit var taskList: TaskList
     private lateinit var board: Board
 
@@ -59,6 +62,8 @@ class ViewListFragment : WaqtiViewFragment() {
 
         taskList = Caches.taskLists[listID]
         board = Caches.boards[boardID]
+
+        viewModel = getViewModel()
 
         setUpViews()
 
@@ -241,3 +246,5 @@ class ViewListFragment : WaqtiViewFragment() {
         mainActivity.supportFragmentManager.popBackStack()
     }
 }
+
+class ViewListFragmentViewModel : WaqtiViewFragmentViewModel()

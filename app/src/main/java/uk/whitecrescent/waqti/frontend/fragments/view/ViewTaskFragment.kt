@@ -31,6 +31,8 @@ import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
+import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
+import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.rfcFormatted
@@ -41,7 +43,7 @@ class ViewTaskFragment : WaqtiViewFragment() {
     private var taskID: ID = 0L
     private var listID: ID = 0L
     private var boardID: ID = 0L
-
+    private lateinit var viewModel: ViewTaskFragmentViewModel
     private lateinit var task: Task
     private lateinit var taskList: TaskList
     private lateinit var board: Board
@@ -57,6 +59,8 @@ class ViewTaskFragment : WaqtiViewFragment() {
         taskID = mainActivityVM.taskID
         listID = mainActivityVM.listID
         boardID = mainActivityVM.boardID
+
+        viewModel = getViewModel()
 
         task = Caches.tasks[taskID]
         taskList = Caches.taskLists[listID]
@@ -215,3 +219,5 @@ class ViewTaskFragment : WaqtiViewFragment() {
         mainActivity.supportFragmentManager.popBackStack()
     }
 }
+
+class ViewTaskFragmentViewModel : WaqtiViewFragmentViewModel()
