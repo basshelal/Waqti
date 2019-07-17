@@ -94,7 +94,12 @@ class TaskListView
 class TaskListAdapter(val taskListID: ID,
                       val boardAdapter: BoardAdapter) : Adapter<TaskViewHolder>() {
 
+    // TODO: 17-Jul-19 Lateinit sucks donkey's ass, make it nullable instead of lateinit
+    //  so swap taskListViewSafe with taskListView
     lateinit var taskListView: TaskListView
+
+    val taskListViewSafe: TaskListView?
+        get() = if (::taskListView.isInitialized) taskListView else null
 
     val taskList = Caches.taskLists[taskListID]
 

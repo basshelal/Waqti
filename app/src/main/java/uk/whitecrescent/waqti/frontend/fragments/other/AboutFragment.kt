@@ -15,8 +15,10 @@ import androidx.core.view.isInvisible
 import kotlinx.android.synthetic.main.fragment_about.*
 import mehdi.sakout.aboutpage.AboutPage
 import mehdi.sakout.aboutpage.Element
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.WAQTI_VERSION
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 import uk.whitecrescent.waqti.invoke
 
@@ -91,6 +93,7 @@ class AboutFragment : WaqtiFragment() {
         view.visibility = View.VISIBLE
         about_linearLayout.addView(TextView(context).also {
             it.text = WAQTI_VERSION
+            it.textColor = WaqtiColor.WAQTI_DEFAULT.toAndroidColor
             it.textAlignment = TEXT_ALIGNMENT_CENTER
         })
     }

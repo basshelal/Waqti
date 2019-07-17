@@ -234,6 +234,12 @@ inline fun View.fadeOut(durationMillis: Long = 250) {
     })
 }
 
+inline val View.isTransparent: Boolean
+    get() = alpha == 0F
+
+inline val View.isClear: Boolean
+    get() = alpha == 1F
+
 inline fun View.removeOnClickListener() = this.setOnClickListener(null)
 
 inline fun View.onClickOutside(crossinline onClickOutside: (View) -> Unit) {
@@ -241,6 +247,9 @@ inline fun View.onClickOutside(crossinline onClickOutside: (View) -> Unit) {
         onClickOutside(this)
     }
 }
+
+inline val View.parentView: View?
+    get() = parent as? View?
 
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.

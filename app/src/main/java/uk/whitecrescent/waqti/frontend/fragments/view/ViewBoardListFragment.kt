@@ -27,6 +27,7 @@ import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
+import uk.whitecrescent.waqti.setImageTint
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
 class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
@@ -67,17 +68,20 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
                 addOnScrollListener(this@ViewBoardListFragment.addBoard_FloatingButton.verticalFABOnScrollListener)
             }
 
-            addBoard_FloatingButton?.setOnClickListener {
-                @FragmentNavigation(from = VIEW_BOARD_LIST_FRAGMENT, to = CREATE_BOARD_FRAGMENT)
-                it.mainActivity.supportFragmentManager.commitTransaction {
+            addBoard_FloatingButton {
+                setImageTint(WaqtiColor.WHITE)
+                setOnClickListener {
+                    @FragmentNavigation(from = VIEW_BOARD_LIST_FRAGMENT, to = CREATE_BOARD_FRAGMENT)
+                    it.mainActivity.supportFragmentManager.commitTransaction {
 
-                    it.mainActivityViewModel.boardListPosition
-                            .changeTo(false to boardsList_recyclerView.boardListAdapter.itemCount - 1)
+                        it.mainActivityViewModel.boardListPosition
+                                .changeTo(false to boardsList_recyclerView.boardListAdapter.itemCount - 1)
 
-                    it.clearFocusAndHideKeyboard()
+                        it.clearFocusAndHideKeyboard()
 
-                    replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
-                    addToBackStack(null)
+                        replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
+                        addToBackStack(null)
+                    }
                 }
             }
         }

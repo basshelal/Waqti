@@ -44,6 +44,7 @@ import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
+import uk.whitecrescent.waqti.parentView
 import uk.whitecrescent.waqti.setColorScheme
 import uk.whitecrescent.waqti.setEdgeEffectColor
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
@@ -65,6 +66,7 @@ class BoardView
     inline val boardAdapter: BoardAdapter?
         get() = this.adapter as BoardAdapter?
 
+    // this actually only shows all the visible ViewHolders, not too useful to be honest :/
     inline val allViewHolders: List<BoardViewHolder>
         get() = boardAdapter?.board
                 ?.map { findViewHolderForItemId(it.id) as? BoardViewHolder? }
@@ -100,18 +102,16 @@ class BoardView
 
     fun setColorScheme(headerColorScheme: ColorScheme,
                        listColorScheme: ColorScheme) {
-        allViewHolders.forEach { it.setColorScheme(headerColorScheme, listColorScheme) }
+        setHeadersColorScheme(headerColorScheme)
+        setListsColorScheme(listColorScheme)
     }
 
     fun setHeadersColorScheme(colorScheme: ColorScheme) {
-        // TODO: 17-Jul-19 This and the other one dont update properly after changing it
-        //  since the recycled views aren't accessible and don't get onBind called again
-        //  we need to figure out a way to get those recycled views
-        allViewHolders.forEach { it.setHeaderColorScheme(colorScheme) }
+        boardAdapter?.setHeadersColorScheme(colorScheme)
     }
 
     fun setListsColorScheme(colorScheme: ColorScheme) {
-        allViewHolders.forEach { it.setListColorScheme(colorScheme) }
+        boardAdapter?.setListsColorScheme(colorScheme)
     }
 
 }
@@ -311,6 +311,25 @@ class BoardAdapter(val boardID: ID)
     fun restoreState() {
         if (::boardView.isInitialized) {
             boardView.layoutManager?.onRestoreInstanceState(savedState)
+        }
+    }
+
+    fun setHeadersColorScheme(colorScheme: ColorScheme) {
+        taskListAdapters.forEach {
+            it.taskListViewSafe {
+                (parentView as? ConstraintLayout?) {
+                    taskList_recyclerView { setEdgeEffectColor(colorScheme.dark) }
+                    taskListHeader { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
+                    taskListHeader_textView { textColor = colorScheme.text.toAndroidColor }
+                    taskListFooter_fab { setColorScheme(colorScheme) }
+                }
+            }
+        }
+    }
+
+    fun setListsColorScheme(colorScheme: ColorScheme) {
+        taskListAdapters.forEach {
+            it.taskListViewSafe { setColorScheme(colorScheme) }
         }
     }
 }

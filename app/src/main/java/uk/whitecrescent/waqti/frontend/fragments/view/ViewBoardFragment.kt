@@ -201,7 +201,6 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         }
 
         mainActivity.drawerLayout.boardOptions_navigationView {
-            setBackgroundColor(board.barColor.toAndroidColor)
             appBarColor_boardOption {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
@@ -318,6 +317,9 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
     fun setColorScheme(colorScheme: ColorScheme) {
         mainActivity.setColorScheme(colorScheme)
+        mainActivity.drawerLayout.boardOptions_navigationView {
+            setBackgroundColor(colorScheme.main.toAndroidColor)
+        }
         addList_floatingButton.setColorScheme(colorScheme)
         boardView.setEdgeEffectColor(colorScheme.dark)
     }

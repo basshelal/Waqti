@@ -1,6 +1,5 @@
 package uk.whitecrescent.waqti.frontend.fragments.view
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.os.Vibrator
@@ -49,7 +48,6 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
         return inflater.inflate(R.layout.fragment_view_list, container, false)
     }
 
-    @SuppressLint("ClickableViewAccessibility")
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 

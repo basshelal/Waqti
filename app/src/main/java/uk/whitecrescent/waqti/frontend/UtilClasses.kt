@@ -46,8 +46,9 @@ open class SimpleItemTouchHelperCallback : ItemTouchHelper.Callback() {
 
 }
 
-open class FABOnScrollListener(val fab: FloatingActionButton, val orientation: Orientation)
-    : RecyclerView.OnScrollListener() {
+open class FABOnScrollListener(val fab: FloatingActionButton,
+                               val orientation: Orientation
+) : RecyclerView.OnScrollListener() {
 
     override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
 
