@@ -19,10 +19,14 @@ import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
+import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragmentViewModel
+import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.requestFocusAndShowKeyboard
 
 class CreateBoardFragment : WaqtiCreateFragment<Board>() {
+
+    override lateinit var viewModel: CreateBoardFragmentViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -31,6 +35,8 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        viewModel = getViewModel()
 
         setUpViews()
     }
@@ -43,7 +49,7 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
     }
 
-    private inline fun setUpAppBar() {
+    override fun setUpAppBar() {
         mainActivity.appBar {
             backgroundColor = WaqtiColor.TRANSPARENT.toAndroidColor
             elevation = 0F
@@ -84,6 +90,14 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
                 .changeTo(true to mainActivityVM.boardListPosition.position + 1)
         @FragmentNavigation(from = CREATE_BOARD_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
+    }
+
+}
+
+class CreateBoardFragmentViewModel : WaqtiCreateFragmentViewModel<Board>() {
+
+    override fun createElement(fromFragment: Board): Board {
+        TODO()
     }
 
 }

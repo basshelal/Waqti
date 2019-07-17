@@ -50,9 +50,10 @@ import uk.whitecrescent.waqti.setColorScheme
 import uk.whitecrescent.waqti.setEdgeEffectColor
 import uk.whitecrescent.waqti.shortSnackBar
 
-class ViewBoardFragment : WaqtiViewFragment<Board>() {
+class ViewBoardFragment : WaqtiViewFragment() {
 
     private var boardID: ID = 0L
+    private lateinit var board: Board
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -63,17 +64,18 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         super.onActivityCreated(savedInstanceState)
 
         boardID = mainActivityVM.boardID
+        board = Caches.boards[boardID]
 
         if (mainActivityVM.boardAdapter == null ||
                 mainActivityVM.boardAdapter?.boardID != boardID) {
             mainActivityVM.boardAdapter = BoardAdapter(boardID)
         }
 
-        setUpViews(Caches.boards[boardID])
+        setUpViews()
     }
 
-    override fun setUpViews(element: Board) {
-        setUpAppBar(element)
+    override fun setUpViews() {
+        setUpAppBar()
 
         boardView {
             if (mainActivityVM.settingsChanged) {
@@ -84,7 +86,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         doInBackground {
             boardView {
-                background = element.backgroundColor.toColorDrawable
+                background = board.backgroundColor.toColorDrawable
                 adapter = mainActivityVM.boardAdapter
                 if (boardAdapter?.board?.isEmpty() == true) {
                     emptyState_scrollView.isVisible = true
@@ -97,7 +99,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = CREATE_LIST_FRAGMENT)
                     it.mainActivity.supportFragmentManager.commitTransaction {
 
-                        it.mainActivityViewModel.boardID = element.id
+                        it.mainActivityViewModel.boardID = board.id
                         it.mainActivityViewModel.boardPosition
                                 .changeTo(false to (boardView.boardAdapter?.itemCount ?: 0 - 1))
 
@@ -153,8 +155,8 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         }
     }
 
-    private fun setUpAppBar(element: Board) {
-        this.setColorScheme(element.barColor.colorScheme)
+    override fun setUpAppBar() {
+        this.setColorScheme(board.barColor.colorScheme)
         mainActivity.appBar {
             elevation = DEFAULT_ELEVATION
             leftImageBack()
@@ -167,11 +169,11 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                         if (it != null &&
                                 it.isNotBlank() &&
                                 it.isNotEmpty() &&
-                                it.toString() != element.name)
-                            element.name = it.toString()
+                                it.toString() != board.name)
+                            board.name = it.toString()
                     }
                 }
-                text = SpannableStringBuilder(element.name)
+                text = SpannableStringBuilder(board.name)
                 addAfterTextChangedListener { update() }
                 setOnEditorActionListener { textView, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -183,13 +185,11 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
             }
             rightImageOptions()
         }
-        mainActivity.setColorScheme(element.barColor.colorScheme)
+        mainActivity.setColorScheme(board.barColor.colorScheme)
     }
 
     override fun onResume() {
         super.onResume()
-
-        val board = Caches.boards[boardID]
 
         LayoutInflater.from(context).inflate(R.layout.board_options,
                 mainActivity.drawerLayout, true)

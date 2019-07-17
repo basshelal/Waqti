@@ -14,6 +14,8 @@ import kotlinx.android.synthetic.main.fragment_view_task.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.backend.collections.Board
+import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DEADLINE_PROPERTY
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION_PROPERTY
@@ -34,11 +36,15 @@ import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.rfcFormatted
 import uk.whitecrescent.waqti.shortSnackBar
 
-class ViewTaskFragment : WaqtiViewFragment<Task>() {
+class ViewTaskFragment : WaqtiViewFragment() {
 
     private var taskID: ID = 0L
     private var listID: ID = 0L
     private var boardID: ID = 0L
+
+    private lateinit var task: Task
+    private lateinit var taskList: TaskList
+    private lateinit var board: Board
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -52,34 +58,37 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
         listID = mainActivityVM.listID
         boardID = mainActivityVM.boardID
 
-        setUpViews(Caches.tasks[taskID])
+        task = Caches.tasks[taskID]
+        taskList = Caches.taskLists[listID]
+        board = Caches.boards[boardID]
+
+        setUpViews()
 
     }
 
-    @SuppressLint("SetTextI18n")
-    override fun setUpViews(element: Task) {
+    override fun setUpViews() {
 
-        setUpAppBar(element)
+        setUpAppBar()
 
         // TODO: 07-Jun-19 Make background color of the linearLayout be same as Task color
-        Caches.boards[boardID].cardColor.toAndroidColor.also {
+        board.cardColor.toAndroidColor.also {
             viewTaskFragment_constraintLayout.setBackgroundColor(it)
             nestedScrollView.setBackgroundColor(it)
             linearLayout.setBackgroundColor(it)
         }
 
-        setUpTimeViews(element)
+        setUpTimeViews(task)
 
-        setUpDeadlineViews(element)
+        setUpDeadlineViews(task)
 
-        setUpDescriptionViews(element)
+        setUpDescriptionViews(task)
 
     }
 
 
-    private fun setUpAppBar(task: Task) {
+    override fun setUpAppBar() {
         mainActivity.appBar {
-            backgroundColor = Caches.boards[boardID].cardColor.toAndroidColor
+            backgroundColor = board.cardColor.toAndroidColor
             elevation = 0F
             leftImageBack()
             leftImage.setTint(WaqtiColor.BLACK.toAndroidColor)
@@ -94,7 +103,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                                 it.isNotBlank() &&
                                 it.isNotEmpty() &&
                                 it.toString() != task.name)
-                            Caches.tasks[taskID].changeName(text.toString())
+                            task.changeName(text.toString())
                     }
                 }
                 text = SpannableStringBuilder(task.name)
@@ -113,7 +122,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
                         ConfirmDialog().apply {
                             title = this@ViewTaskFragment.mainActivity.getString(R.string.deleteTaskQuestion)
                             onConfirm = {
-                                val taskName = Caches.tasks[taskID].name
+                                val taskName = task.name
                                 this.dismiss()
                                 Caches.deleteTask(taskID, listID)
                                 mainActivity.appBar.shortSnackBar(getString(R.string.deletedTask)

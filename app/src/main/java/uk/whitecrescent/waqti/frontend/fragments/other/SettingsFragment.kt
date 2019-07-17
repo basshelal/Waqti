@@ -41,18 +41,7 @@ class SettingsFragment : WaqtiFragment() {
 
     @SuppressLint("SetTextI18n")
     override fun setUpViews() {
-        mainActivity.appBar {
-            elevation = DEFAULT_ELEVATION
-            leftImageBack()
-            editTextView {
-                textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
-                removeAllTextChangedListeners()
-                isEditable = false
-                text = SpannableStringBuilder(getString(R.string.settings))
-            }
-            rightImageView.isInvisible = true
-        }
-        mainActivity.resetColorScheme()
+        setUpAppBar()
 
         taskListWidthSetting_seekBar {
 
@@ -137,6 +126,21 @@ class SettingsFragment : WaqtiFragment() {
             }
         }
 
+    }
+
+    override fun setUpAppBar() {
+        mainActivity.appBar {
+            elevation = DEFAULT_ELEVATION
+            leftImageBack()
+            editTextView {
+                textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
+                removeAllTextChangedListeners()
+                isEditable = false
+                text = SpannableStringBuilder(getString(R.string.settings))
+            }
+            rightImageView.isInvisible = true
+        }
+        mainActivity.resetColorScheme()
     }
 
     @SuppressLint("SetTextI18n")

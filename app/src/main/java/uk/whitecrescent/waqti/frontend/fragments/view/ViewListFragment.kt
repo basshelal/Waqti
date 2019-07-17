@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.fragment_view_list.*
 import kotlinx.android.synthetic.main.list_options.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.alsoIfNotNull
+import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
@@ -38,10 +39,12 @@ import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.shortSnackBar
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
-class ViewListFragment : WaqtiViewFragment<TaskList>() {
+class ViewListFragment : WaqtiViewFragment() {
 
     private var listID: ID = 0L
     private var boardID: ID = 0L
+    private lateinit var taskList: TaskList
+    private lateinit var board: Board
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -54,19 +57,22 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
         listID = mainActivityVM.listID
         boardID = mainActivityVM.boardID
 
-        setUpViews(Caches.taskLists[listID])
+        taskList = Caches.taskLists[listID]
+        board = Caches.boards[boardID]
+
+        setUpViews()
 
     }
 
-    override fun setUpViews(element: TaskList) {
-        setUpAppBar(element)
+    override fun setUpViews() {
+        setUpAppBar()
 
         taskList_recyclerView.adapter = mainActivityVM.boardAdapter?.getListAdapter(listID)
 
         doInBackground {
 
             taskList_recyclerView {
-                background = Caches.boards[boardID].backgroundColor.toColorDrawable
+                background = board.backgroundColor.toColorDrawable
                 addOnScrollListener(this@ViewListFragment.addTask_floatingButton.verticalFABOnScrollListener)
             }
 
@@ -126,8 +132,8 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
         }
     }
 
-    private fun setUpAppBar(element: TaskList) {
-        mainActivity.setColorScheme(Caches.boards[boardID].barColor.colorScheme)
+    override fun setUpAppBar() {
+        mainActivity.setColorScheme(board.barColor.colorScheme)
         mainActivity.appBar {
             elevation = DEFAULT_ELEVATION
             leftImageBack()
@@ -140,11 +146,11 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                         if (it != null &&
                                 it.isNotBlank() &&
                                 it.isNotEmpty() &&
-                                it.toString() != element.name)
-                            Caches.taskLists[listID].name = it.toString()
+                                it.toString() != taskList.name)
+                            this@ViewListFragment.taskList.name = it.toString()
                     }
                 }
-                text = SpannableStringBuilder(element.name)
+                text = SpannableStringBuilder(taskList.name)
                 addAfterTextChangedListener { update() }
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -161,8 +167,6 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
 
     override fun onResume() {
         super.onResume()
-
-        val taskList = Caches.taskLists[listID]
 
         LayoutInflater.from(context).inflate(R.layout.list_options,
                 mainActivity.drawerLayout, true)

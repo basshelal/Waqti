@@ -30,9 +30,10 @@ import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.setImageTint
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
-class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
+class ViewBoardListFragment : WaqtiViewFragment() {
 
     lateinit var viewMode: ViewMode
+    private lateinit var boardList: BoardList
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -46,14 +47,16 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
 
         viewMode = mainActivity.waqtiPreferences.boardListViewMode
 
-        setUpViews(Caches.boardList)
+        boardList = Caches.boardList
+
+        setUpViews()
     }
 
-    override fun setUpViews(element: BoardList) {
+    override fun setUpViews() {
         doInBackground {
             boardsList_recyclerView {
-                adapter = BoardListAdapter(element.id, viewMode)
-                setUpAppBar(element)
+                adapter = BoardListAdapter(boardList.id, viewMode)
+                setUpAppBar()
                 if (boardListAdapter.boardList.isEmpty()) {
                     emptyState_scrollView.isVisible = true
                     addBoard_FloatingButton.customSize = convertDpToPx(85, mainActivity)
@@ -87,7 +90,7 @@ class ViewBoardListFragment : WaqtiViewFragment<BoardList>() {
         }
     }
 
-    private fun setUpAppBar(element: BoardList) {
+    override fun setUpAppBar() {
         mainActivity.resetColorScheme()
         mainActivity.appBar {
             elevation = DEFAULT_ELEVATION

@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.fragments.create
 
 import android.annotation.SuppressLint
@@ -7,7 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import androidx.lifecycle.ViewModel
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import kotlinx.android.synthetic.main.property_card.view.*
 import org.jetbrains.anko.backgroundColor
@@ -26,6 +27,7 @@ import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
+import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragmentViewModel
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.isNotDefault
@@ -34,10 +36,9 @@ import uk.whitecrescent.waqti.requestFocusAndShowKeyboard
 import uk.whitecrescent.waqti.rfcFormatted
 import uk.whitecrescent.waqti.smoothScrollToEnd
 
-@Suppress("NOTHING_TO_INLINE")
 class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
-    private lateinit var viewModel: CreateTaskFragmentViewModel
+    override lateinit var viewModel: CreateTaskFragmentViewModel
     private var boardID: ID = 0L
     private var listID: ID = 0L
 
@@ -73,7 +74,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
     }
 
-    private inline fun setUpAppBar() {
+    override fun setUpAppBar() {
         mainActivity.appBar {
             backgroundColor = WaqtiColor.TRANSPARENT.toAndroidColor
             elevation = 0F
@@ -169,11 +170,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     }
 
     override fun createElement(): Task {
-        return Task(mainActivity.appBar.editTextView.text.toString()).apply {
-            setTime()
-            setDeadline()
-            setDescription()
-        }
+        return viewModel.createElement(Task(mainActivity.appBar.editTextView.text.toString()))
     }
 
     private inline fun hideProperties() {
@@ -217,10 +214,44 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
 }
 
-class CreateTaskFragmentViewModel : ViewModel() {
+class CreateTaskFragmentViewModel : WaqtiCreateFragmentViewModel<Task>() {
 
     var taskTime: Time = DEFAULT_TIME
     var taskDeadline: Time = DEFAULT_TIME
     var taskDescription: String = DEFAULT_DESCRIPTION
 
+    override fun createElement(fromFragment: Task): Task {
+        return fromFragment.apply {
+            setTime()
+            setDeadline()
+            setDescription()
+        }
+    }
+
+    private inline fun Task.setTime() {
+        taskTime.also {
+            if (it.isNotDefault) {
+                //if (taskTime_propertyCard.constraint_checkBox.isChecked) setTimeConstraintValue (it) else
+                setTimePropertyValue(it)
+            }
+        }
+    }
+
+    private inline fun Task.setDeadline() {
+        taskDeadline.also {
+            if (it.isNotDefault) {
+                //if (taskDeadline_propertyCard.constraint_checkBox.isChecked) setDeadlineConstraintValue(it) else
+                setDeadlinePropertyValue(it)
+            }
+        }
+    }
+
+    private inline fun Task.setDescription() {
+        taskDescription.also {
+            if (it.isNotDefault) setDescriptionValue(it)
+        }
+    }
+
 }
+
+

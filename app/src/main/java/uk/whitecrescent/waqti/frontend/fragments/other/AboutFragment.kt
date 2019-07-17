@@ -34,17 +34,6 @@ class AboutFragment : WaqtiFragment() {
     }
 
     override fun setUpViews() {
-        mainActivity.appBar {
-            elevation = DEFAULT_ELEVATION
-            leftImageBack()
-            editTextView {
-                removeAllTextChangedListeners()
-                isEditable = false
-                text = SpannableStringBuilder(getString(R.string.about))
-            }
-            rightImageView.isInvisible = true
-        }
-        mainActivity.resetColorScheme()
         val view = AboutPage(mainActivity)
                 .isRTL(false)
 
@@ -96,6 +85,20 @@ class AboutFragment : WaqtiFragment() {
             it.textColor = WaqtiColor.WAQTI_DEFAULT.toAndroidColor
             it.textAlignment = TEXT_ALIGNMENT_CENTER
         })
+    }
+
+    override fun setUpAppBar() {
+        mainActivity.appBar {
+            elevation = DEFAULT_ELEVATION
+            leftImageBack()
+            editTextView {
+                removeAllTextChangedListeners()
+                isEditable = false
+                text = SpannableStringBuilder(getString(R.string.about))
+            }
+            rightImageView.isInvisible = true
+        }
+        mainActivity.resetColorScheme()
     }
 
     override fun finish() {

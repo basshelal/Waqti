@@ -2,6 +2,7 @@ package uk.whitecrescent.waqti.frontend.fragments.parents
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
 import androidx.transition.TransitionInflater
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.MainActivity
@@ -44,6 +45,10 @@ abstract class WaqtiFragment(val animate: Boolean = true) : Fragment() {
 
     protected abstract fun setUpViews()
 
+    protected abstract fun setUpAppBar()
+
     protected abstract fun finish()
 
 }
+
+abstract class WaqtiFragmentViewModel : ViewModel()

@@ -20,11 +20,15 @@ import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
+import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragmentViewModel
+import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.requestFocusAndShowKeyboard
 import uk.whitecrescent.waqti.scrollToEnd
 
 class CreateListFragment : WaqtiCreateFragment<TaskList>() {
+
+    override lateinit var viewModel: CreateListFragmentViewModel
 
     var boardID: ID = 0L
 
@@ -38,6 +42,8 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 
         boardID = mainActivityVM.boardID
 
+        viewModel = getViewModel()
+
         setUpViews()
 
     }
@@ -50,7 +56,7 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 
     }
 
-    private inline fun setUpAppBar() {
+    override fun setUpAppBar() {
         mainActivity.appBar {
             backgroundColor = WaqtiColor.TRANSPARENT.toAndroidColor
             elevation = 0F
@@ -96,4 +102,12 @@ class CreateListFragment : WaqtiCreateFragment<TaskList>() {
         @FragmentNavigation(from = CREATE_LIST_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
     }
+}
+
+class CreateListFragmentViewModel : WaqtiCreateFragmentViewModel<TaskList>() {
+
+    override fun createElement(fromFragment: TaskList): TaskList {
+        TODO()
+    }
+
 }
