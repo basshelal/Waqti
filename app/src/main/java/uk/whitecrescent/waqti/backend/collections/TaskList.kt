@@ -20,8 +20,9 @@ import uk.whitecrescent.waqti.frontend.appearance.ListAppearanceConverter
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 
 @Entity
-open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
-    : AbstractWaqtiList<Task>(), Cacheable {
+open class TaskList(name: String = "",
+                    tasks: Collection<Task> = emptyList()
+) : AbstractWaqtiList<Task>(), Cacheable {
 
     @Convert(converter = IDArrayListConverter::class, dbType = String::class)
     override var idList = ArrayList<ID>()
@@ -30,7 +31,7 @@ open class TaskList(name: String = "", tasks: Collection<Task> = emptyList())
     override val cache: Cache<Task> = Caches.tasks
 
     @Id
-    override var id: Long = 0L
+    override var id: ID = 0L
 
     override var name: String = name
         set(value) {

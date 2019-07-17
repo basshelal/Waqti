@@ -23,10 +23,12 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import kotlinx.android.synthetic.main.task_card.view.*
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
+import uk.whitecrescent.waqti.backend.persistence.getParent
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
@@ -46,6 +48,7 @@ import uk.whitecrescent.waqti.locationOnScreen
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.notifySwapped
+import uk.whitecrescent.waqti.setIndeterminateColor
 import kotlin.math.roundToInt
 
 private val taskViewHolderPool = object : RecyclerView.RecycledViewPool() {
@@ -64,8 +67,14 @@ class TaskListView
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
 
-    inline val listAdapter: TaskListAdapter
-        get() = adapter as TaskListAdapter
+    inline val listAdapter: TaskListAdapter?
+        get() = adapter as TaskListAdapter?
+
+    inline val allViewHolders: List<TaskViewHolder>
+        get() = listAdapter?.taskList
+                ?.map { findViewHolderForItemId(it.id) as? TaskViewHolder? }
+                ?.filter { it != null }
+                ?.map { it as TaskViewHolder } ?: emptyList()
 
     init {
         layoutManager = LinearLayoutManager(context, VERTICAL, false).also {
@@ -74,6 +83,10 @@ class TaskListView
         }
         setRecycledViewPool(taskViewHolderPool)
         itemAnimator = TaskListItemAnimator()
+    }
+
+    fun setColorScheme(colorScheme: ColorScheme) {
+        allViewHolders.forEach { it.setColorScheme(colorScheme) }
     }
 
 }
@@ -88,10 +101,11 @@ class TaskListAdapter(val taskListID: ID,
     inline val linearLayoutManager: LinearLayoutManager
         get() = taskListView.layoutManager as LinearLayoutManager
 
-    val allCards: List<CardView>
-        get() = if (::taskListView.isInitialized)
-            taskListView.children.map { it as CardView }.toList()
-        else emptyList()
+    val allViewHolders: List<TaskViewHolder>
+        get() = if (::taskListView.isInitialized) taskListView.allViewHolders else emptyList()
+
+    inline val allCards: List<CardView>
+        get() = allViewHolders.map { it.cardView }
 
     private var savedState: LinearLayoutManager.SavedState? = null
 
@@ -182,21 +196,18 @@ class TaskListAdapter(val taskListID: ID,
         return TaskViewHolder(
                 LayoutInflater.from(parent.context)
                         .inflate(R.layout.task_card, parent, false),
-                this
-        )
+                this)
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
         holder.apply {
             taskID = taskList[position].id
             taskListID = this@TaskListAdapter.taskListID
+            setColorScheme(if (taskList.cardColor == WaqtiColor.INHERIT)
+                taskList.getParent().cardColor.colorScheme
+            else taskList.cardColor.colorScheme)
             textView.text = taskList[position].name
 
-            // TODO: 18-Jun-19 If we remove this from onBind
-            //  we'll have the problem that the holder has the old onDragListener
-            //  the only problem with that is the IDs are incorrect on that one,
-            //  the problem appears when dragging across a few times then dragging down
-            //  the correct list stops behaving and another list will do the correct behaviour
             cardView.setOnDragListener { _, event ->
                 val draggingState = event.localState as DragEventLocalState
                 val draggingView = taskListView
@@ -256,9 +267,6 @@ class TaskListAdapter(val taskListID: ID,
                     // Scroll up
                     checkForScrollUp(draggingState, holder)
 
-                    (taskListView.findViewHolderForItemId(draggingState.taskID) as TaskViewHolder)
-                            .updateDragShadowColor(ColorScheme.getAllColorSchemes().random().main)
-
                     true
                 }
             }
@@ -278,9 +286,6 @@ class TaskListAdapter(val taskListID: ID,
 
                     // Scroll up
                     checkForScrollUp(draggingState, holder)
-
-                    (otherAdapter.taskListView.findViewHolderForItemId(draggingState.taskID) as TaskViewHolder)
-                            .updateDragShadowColor(ColorScheme.getAllColorSchemes().random().main)
 
                     true
                 } else false
@@ -445,8 +450,8 @@ class TaskListAdapter(val taskListID: ID,
 
     fun invalidate() {
         if (::taskListView.isInitialized) {
-            taskListView.invalidate()
             taskListView.children.forEach { it.invalidate() }
+            taskListView.invalidate()
         }
     }
 
@@ -505,7 +510,6 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
         doInBackground {
             textView.textSize = mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
             cardView {
-                setCardBackgroundColor(Caches.boards[mainActivityViewModel.boardID].cardColor.toAndroidColor)
                 setOnClickListener {
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT + VIEW_LIST_FRAGMENT,
                             to = VIEW_TASK_FRAGMENT)
@@ -536,12 +540,20 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
         }
     }
 
-    fun updateDragShadowColor(waqtiColor: WaqtiColor) {
-        cardView {
+    fun updateDragShadowColorScheme(colorScheme: ColorScheme) {
+        (itemView as CardView) {
             updateDragShadow(ShadowBuilder(this.also {
-                setCardBackgroundColor(waqtiColor.toAndroidColor)
+                it.taskCard_progressBar { setIndeterminateColor(colorScheme.text) }
+                it.task_cardView { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
+                it.task_textView { textColor = colorScheme.text.toAndroidColor }
             }))
         }
+    }
+
+    fun setColorScheme(colorScheme: ColorScheme) {
+        progressBar { setIndeterminateColor(colorScheme.text) }
+        cardView { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
+        textView { textColor = colorScheme.text.toAndroidColor }
     }
 }
 

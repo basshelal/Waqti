@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.fragment_view_task.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -78,7 +79,7 @@ class ViewTaskFragment : WaqtiViewFragment<Task>() {
 
     private fun setUpAppBar(task: Task) {
         mainActivity.appBar {
-            color = Caches.boards[boardID].cardColor
+            backgroundColor = Caches.boards[boardID].cardColor.toAndroidColor
             elevation = 0F
             leftImageBack()
             leftImage.setTint(WaqtiColor.BLACK.toAndroidColor)

@@ -2,7 +2,7 @@
 
 <com.google.android.material.navigation.NavigationView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/boardOptions_navigationView"
+    android:id="@+id/listOptions_navigationView"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_gravity="end"
@@ -19,7 +19,7 @@
             android:orientation="vertical">
 
             <uk.whitecrescent.waqti.frontend.customview.OptionsItem
-                android:id="@+id/appBarColor_boardOption"
+                android:id="@+id/listHeaderColor_listOption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
@@ -29,49 +29,10 @@
                 app:color="@color/md_grey_200"
                 app:image="@drawable/menu_icon"
                 app:radius="8dp"
-                app:text="App Bar Color" />
-
-            <uk.whitecrescent.waqti.frontend.customview.OptionsItem
-                android:id="@+id/listHeaderColor_boardOption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="2dp"
-                android:layout_marginBottom="4dp"
-                app:color="@color/md_grey_200"
-                app:image="@drawable/list_icon"
-                app:radius="8dp"
                 app:text="List Header Color" />
 
             <uk.whitecrescent.waqti.frontend.customview.OptionsItem
-                android:id="@+id/cardColor_boardOption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="2dp"
-                android:layout_marginBottom="4dp"
-                app:color="@color/md_grey_200"
-                app:image="@drawable/card_icon"
-                app:radius="8dp"
-                app:text="Card Color" />
-
-            <uk.whitecrescent.waqti.frontend.customview.OptionsItem
-                android:id="@+id/boardColor_boardOption"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="2dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="2dp"
-                android:layout_marginBottom="4dp"
-                app:color="@color/md_grey_200"
-                app:image="@drawable/color_icon"
-                app:radius="8dp"
-                app:text="Background Color" />
-
-            <uk.whitecrescent.waqti.frontend.customview.OptionsItem
-                android:id="@+id/boardImage_boardOption"
+                android:id="@+id/cardColor_listOption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
@@ -79,14 +40,27 @@
                 android:layout_marginEnd="2dp"
                 android:layout_marginBottom="8dp"
                 app:color="@color/md_grey_200"
-                app:image="@drawable/image_icon"
+                app:image="@drawable/card_icon"
                 app:radius="8dp"
-                app:text="Background Image" />
+                app:text="Card Color" />
 
             <View style="@style/Divider.Horizontal" />
 
             <uk.whitecrescent.waqti.frontend.customview.OptionsItem
-                android:id="@+id/deleteBoard_boardOption"
+                android:id="@+id/clearList_listOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="2dp"
+                android:layout_marginBottom="2dp"
+                app:color="@color/md_red_600"
+                app:image="@drawable/clear_icon"
+                app:radius="8dp"
+                app:text="@string/clearList" />
+
+            <uk.whitecrescent.waqti.frontend.customview.OptionsItem
+                android:id="@+id/deleteList_listOption"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
@@ -96,7 +70,7 @@
                 app:color="@color/errorColor"
                 app:image="@drawable/delete_icon"
                 app:radius="8dp"
-                app:text="@string/deleteBoard" />
+                app:text="@string/deleteList" />
 
         </LinearLayout>
 

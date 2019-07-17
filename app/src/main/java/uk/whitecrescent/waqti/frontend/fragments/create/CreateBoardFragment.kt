@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.fragment_create_board.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
@@ -44,7 +45,7 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
     private inline fun setUpAppBar() {
         mainActivity.appBar {
-            color = WaqtiColor.WHITE
+            backgroundColor = WaqtiColor.TRANSPARENT.toAndroidColor
             elevation = 0F
             leftImageView.isVisible = false
             editTextView {

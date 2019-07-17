@@ -25,7 +25,7 @@ import uk.whitecrescent.waqti.hash
 class Priority(name: String = "", importanceLevel: Int = 0) : Cacheable {
 
     @Id
-    override var id = 0L
+    override var id: ID = 0L
 
     companion object {
         fun fromString(string: String): Priority {

@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.board_card.view.*
+import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
@@ -117,7 +119,8 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
                     setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline3)
                 }
             }
-            setTextColor(resources.getColor(R.color.black, null))
+            backgroundColor = boardList[position].barColor.toAndroidColor
+            textColor = boardList[position].barColor.colorScheme.text.toAndroidColor
         }
 
         holder.itemView.boardCard_cardView.apply {

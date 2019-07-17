@@ -11,7 +11,7 @@ import uk.whitecrescent.waqti.hash
 class Label(name: String = "") : Cacheable {
 
     @Id
-    override var id = 0L
+    override var id: ID = 0L
 
     override var name = name
         set(value) {

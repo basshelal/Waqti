@@ -42,7 +42,6 @@ class SettingsFragment : WaqtiFragment() {
     @SuppressLint("SetTextI18n")
     override fun setUpViews() {
         mainActivity.appBar {
-            color = WaqtiColor.WAQTI_DEFAULT
             elevation = DEFAULT_ELEVATION
             leftImageBack()
             editTextView {
@@ -53,7 +52,7 @@ class SettingsFragment : WaqtiFragment() {
             }
             rightImageView.isInvisible = true
         }
-        mainActivity.resetNavBarStatusBarColor()
+        mainActivity.resetColorScheme()
 
         taskListWidthSetting_seekBar {
 

@@ -25,7 +25,7 @@ private const val subTasksIndex = 10
 class Template(name: String = "", task: Task = Task("")) : Cacheable {
 
     @Id
-    override var id = 0L
+    override var id: ID = 0L
 
     override var name = name
         set(value) {

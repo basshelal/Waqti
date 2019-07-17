@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.lifecycle.ViewModel
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import kotlinx.android.synthetic.main.property_card.view.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.Time
@@ -74,7 +75,7 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
     private inline fun setUpAppBar() {
         mainActivity.appBar {
-            color = WaqtiColor.WHITE
+            backgroundColor = WaqtiColor.TRANSPARENT.toAndroidColor
             elevation = 0F
             leftImageView.isVisible = false
             editTextView {

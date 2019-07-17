@@ -172,11 +172,8 @@ class MainActivity : AppCompatActivity() {
         return spr
     }
 
-    fun setAppBarColorScheme(colorScheme: ColorScheme) {
-        appBar {
-            color = colorScheme.main
-            setTint(colorScheme.text)
-        }
+    fun setColorScheme(colorScheme: ColorScheme) {
+        appBar.setColorScheme(colorScheme)
         window.statusBarColor = colorScheme.dark.toAndroidColor
         window.navigationBarColor = colorScheme.main.toAndroidColor
 
@@ -186,8 +183,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    inline fun resetNavBarStatusBarColor() {
-        setAppBarColorScheme(ColorScheme.WAQTI_DEFAULT)
+    inline fun resetColorScheme() {
+        setColorScheme(ColorScheme.WAQTI_DEFAULT)
     }
 
     inline fun popAllFragmentsInBackStack() {

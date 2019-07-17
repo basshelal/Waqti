@@ -46,8 +46,8 @@ import uk.whitecrescent.waqti.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
-import uk.whitecrescent.waqti.setBackgroundTint
-import uk.whitecrescent.waqti.setImageTint
+import uk.whitecrescent.waqti.setColorScheme
+import uk.whitecrescent.waqti.setEdgeEffectColor
 import uk.whitecrescent.waqti.shortSnackBar
 
 class ViewBoardFragment : WaqtiViewFragment<Board>() {
@@ -84,26 +84,22 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
 
         doInBackground {
             boardView {
+                background = element.backgroundColor.toColorDrawable
                 adapter = mainActivityVM.boardAdapter
-                if (boardAdapter.board.isEmpty()) {
+                if (boardAdapter?.board?.isEmpty() == true) {
                     emptyState_scrollView.isVisible = true
                     addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
                 }
-                background = element.backgroundColor.toColorDrawable
-                setEdgeEffectColor(element.backgroundColor.colorScheme.dark)
                 addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
             }
-
             addList_floatingButton {
-                setBackgroundTint(element.barColor.colorScheme.dark)
-                setImageTint(element.barColor.colorScheme.text)
                 setOnClickListener {
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = CREATE_LIST_FRAGMENT)
                     it.mainActivity.supportFragmentManager.commitTransaction {
 
                         it.mainActivityViewModel.boardID = element.id
                         it.mainActivityViewModel.boardPosition
-                                .changeTo(false to boardView.boardAdapter.itemCount - 1)
+                                .changeTo(false to (boardView.boardAdapter?.itemCount ?: 0 - 1))
 
                         it.clearFocusAndHideKeyboard()
 
@@ -133,7 +129,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                         val taskName = Caches.tasks[draggingState.taskID].name
                                         Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
                                         this@ViewBoardFragment.boardView.boardAdapter
-                                                .getListAdapter(draggingState.taskListID)?.apply {
+                                                ?.getListAdapter(draggingState.taskListID)?.apply {
                                                     notifyItemRemoved(taskListView
                                                             .findViewHolderForItemId(draggingState.taskID)
                                                             .adapterPosition)
@@ -158,7 +154,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
     }
 
     private fun setUpAppBar(element: Board) {
-        mainActivity.setAppBarColorScheme(element.barColor.colorScheme)
+        this.setColorScheme(element.barColor.colorScheme)
         mainActivity.appBar {
             elevation = DEFAULT_ELEVATION
             leftImageBack()
@@ -185,9 +181,9 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                     } else false
                 }
             }
-            rightImageDefault()
+            rightImageOptions()
         }
-        mainActivity.setAppBarColorScheme(element.barColor.colorScheme)
+        mainActivity.setColorScheme(element.barColor.colorScheme)
     }
 
     override fun onResume() {
@@ -205,6 +201,7 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
         }
 
         mainActivity.drawerLayout.boardOptions_navigationView {
+            setBackgroundColor(board.barColor.toAndroidColor)
             appBarColor_boardOption {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
@@ -219,24 +216,35 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 waitForPositiveButton = false,
                                 selection = { dialog, colorInt ->
                                     val colorScheme = colorInt.toColor.colorScheme
-                                    mainActivity.setAppBarColorScheme(colorScheme)
                                     dialog.window?.navigationBarColor = colorScheme.main.toAndroidColor
-                                    this@ViewBoardFragment.boardView.setEdgeEffectColor(colorScheme.dark)
-                                    this@ViewBoardFragment.addList_floatingButton.setBackgroundTint(colorScheme.dark)
-                                    this@ViewBoardFragment.addList_floatingButton
-                                            .setBackgroundTint(colorScheme.dark)
-                                    this@ViewBoardFragment.addList_floatingButton
-                                            .setImageTint(colorScheme.text)
-                                    Caches.boards[boardID].barColor = colorScheme.main
+                                    this@ViewBoardFragment.setColorScheme(colorScheme)
+                                    board.barColor = colorScheme.main
                                 }
                         )
                     }
                     mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
                 }
             }
-            listColor_boardOption {
+            listHeaderColor_boardOption {
                 setOnClickListener {
-
+                    MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
+                        cornerRadius(literalDp = 8F)
+                        title(text = "List Header Color")
+                        setPeekHeight(Int.MAX_VALUE)
+                        positiveButton(text = "Confirm")
+                        colorChooser(colors = ColorScheme.materialDialogsMainColors(),
+                                subColors = ColorScheme.materialDialogsAllColors(),
+                                initialSelection = board.listColor.toAndroidColor,
+                                changeActionButtonsColor = true,
+                                waitForPositiveButton = false,
+                                selection = { _, colorInt ->
+                                    val colorScheme = colorInt.toColor.colorScheme
+                                    this@ViewBoardFragment.boardView.setHeadersColorScheme(colorScheme)
+                                    board.listColor = colorScheme.main
+                                }
+                        )
+                    }
+                    mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
                 }
             }
             cardColor_boardOption {
@@ -251,12 +259,10 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 initialSelection = board.cardColor.toAndroidColor,
                                 changeActionButtonsColor = true,
                                 waitForPositiveButton = false,
-                                selection = { dialog, colorInt ->
-                                    val waqtiColor = colorInt.toColor
-                                    this@ViewBoardFragment.boardView.allCards.forEach {
-                                        it.setCardBackgroundColor(waqtiColor.toAndroidColor)
-                                    }
-                                    Caches.boards[boardID].cardColor = waqtiColor
+                                selection = { _, colorInt ->
+                                    val colorScheme = colorInt.toColor.colorScheme
+                                    this@ViewBoardFragment.boardView.setListsColorScheme(colorScheme)
+                                    board.cardColor = colorScheme.main
                                 }
                         )
                     }
@@ -275,10 +281,10 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                                 initialSelection = board.backgroundColor.toAndroidColor,
                                 changeActionButtonsColor = true,
                                 waitForPositiveButton = false,
-                                selection = { dialog, colorInt ->
+                                selection = { _, colorInt ->
                                     val waqtiColor = colorInt.toColor
                                     this@ViewBoardFragment.boardView.background = waqtiColor.toColorDrawable
-                                    Caches.boards[boardID].backgroundColor = waqtiColor
+                                    board.backgroundColor = waqtiColor
                                 }
                         )
                     }
@@ -308,6 +314,12 @@ class ViewBoardFragment : WaqtiViewFragment<Board>() {
                 }
             }
         }
+    }
+
+    fun setColorScheme(colorScheme: ColorScheme) {
+        mainActivity.setColorScheme(colorScheme)
+        addList_floatingButton.setColorScheme(colorScheme)
+        boardView.setEdgeEffectColor(colorScheme.dark)
     }
 
     override fun onStop() {

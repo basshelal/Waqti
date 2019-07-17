@@ -8,10 +8,10 @@ import uk.whitecrescent.waqti.toJson
 class ListAppearance {
 
     @SerializedName("bg")
-    var headerColor: WaqtiColor = WaqtiColor.DEFAULT
+    var headerColor: WaqtiColor = WaqtiColor.INHERIT
 
     @SerializedName("c")
-    var cardColor: WaqtiColor = WaqtiColor.CARD_DEFAULT
+    var cardColor: WaqtiColor = WaqtiColor.INHERIT
 
     companion object {
         val DEFAULT = ListAppearance()

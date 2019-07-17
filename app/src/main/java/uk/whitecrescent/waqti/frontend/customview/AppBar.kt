@@ -15,23 +15,26 @@ import androidx.core.view.GravityCompat
 import com.google.android.material.shape.MaterialShapeDrawable
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
-import org.jetbrains.anko.internals.AnkoInternals
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.UpdateDocumentation
 import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.hideKeyboard
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 
+@UpdateDocumentation
 /**
  * A Material-like AppBar that allows for an ImageView on the start, an [EditTextView] in the
  * center and another ImageView on the end.
  * The ImageView on the start is meant to be the navigation drawer menu, as it will open the
  * navigation drawer by default when clicked.
  * The ImageView on the end is meant to be the options menu, as it will open the passed in menu
- * in [rightImageDefault].
+ * in [rightImageOptions].
  */
 class AppBar
 @JvmOverloads constructor(context: Context,
@@ -46,10 +49,6 @@ class AppBar
     inline val rightImageView: ImageView get() = appBar_rightImageView
     inline val editTextView: EditTextView get() = appBar_editTextView
 
-    inline var color: WaqtiColor
-        @Deprecated(AnkoInternals.NO_GETTER, level = DeprecationLevel.ERROR) get() = AnkoInternals.noGetter()
-        set(value) = setBackgroundColor(value.toAndroidColor)
-
     inline var leftImage: Drawable
         set(value) = leftImageView.setImageDrawable(value)
         get() = leftImageView.drawable
@@ -62,12 +61,12 @@ class AppBar
 
         View.inflate(context, R.layout.view_appbar, this)
 
-        color = WaqtiColor.WHITE
+        setColorScheme(ColorScheme.WAQTI_DEFAULT)
         elevation = DEFAULT_ELEVATION
     }
 
     inline fun leftImageMenu() {
-        leftImageView.apply {
+        leftImageView {
             leftImageView.visibility = View.VISIBLE
             leftImage = context.getDrawable(R.drawable.menu_icon)!!
             leftImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
@@ -81,7 +80,7 @@ class AppBar
     }
 
     inline fun leftImageBack() {
-        leftImageView.apply {
+        leftImageView {
             leftImageView.visibility = View.VISIBLE
             leftImage = context.getDrawable(R.drawable.back_icon)!!
             setOnClickListener {
@@ -91,7 +90,7 @@ class AppBar
         }
     }
 
-    inline fun rightImageDefault() {
+    inline fun rightImageOptions() {
         rightImageView {
             rightImageView.visibility = View.VISIBLE
             rightImage = context.getDrawable(R.drawable.overflow_icon)!!
@@ -100,7 +99,7 @@ class AppBar
 
     inline fun rightImageDefault(@MenuRes menuRes: Int,
                                  noinline popupMenuOnItemClicked: (MenuItem) -> Boolean) {
-        rightImageDefault()
+        rightImageOptions()
         rightImageView {
             setOnClickListener {
                 PopupMenu(context, rightImageView).apply {
@@ -112,14 +111,15 @@ class AppBar
         }
     }
 
-    override fun setBackgroundColor(color: Int) {
-        background = materialShapeDrawable.apply { setTint(color) }
+    fun setColorScheme(colorScheme: ColorScheme) {
+        backgroundColor = colorScheme.main.toAndroidColor
+        leftImage.setTint(colorScheme.text.toAndroidColor)
+        editTextView.textColor = colorScheme.text.toAndroidColor
+        rightImage.setTint(colorScheme.text.toAndroidColor)
     }
 
-    inline fun setTint(waqtiColor: WaqtiColor) {
-        leftImage.setTint(waqtiColor.toAndroidColor)
-        editTextView.textColor = waqtiColor.toAndroidColor
-        rightImage.setTint(waqtiColor.toAndroidColor)
+    override fun setBackgroundColor(color: Int) {
+        background = materialShapeDrawable.apply { setTint(color) }
     }
 
 }

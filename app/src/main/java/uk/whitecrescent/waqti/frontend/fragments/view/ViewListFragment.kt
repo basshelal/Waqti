@@ -10,8 +10,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.GravityCompat
+import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_view_list.*
+import kotlinx.android.synthetic.main.list_options.view.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.alsoIfNotNull
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
@@ -103,7 +107,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                                         val taskName = Caches.tasks[draggingState.taskID].name
                                         Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
                                         this@ViewListFragment.taskList_recyclerView.apply {
-                                            listAdapter.notifyItemRemoved(
+                                            listAdapter?.notifyItemRemoved(
                                                     findViewHolderForItemId(draggingState.taskID).adapterPosition
                                             )
                                         }
@@ -125,7 +129,7 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
     }
 
     private fun setUpAppBar(element: TaskList) {
-        mainActivity.setAppBarColorScheme(Caches.boards[boardID].barColor.colorScheme)
+        mainActivity.setColorScheme(Caches.boards[boardID].barColor.colorScheme)
         mainActivity.appBar {
             elevation = DEFAULT_ELEVATION
             leftImageBack()
@@ -152,43 +156,82 @@ class ViewListFragment : WaqtiViewFragment<TaskList>() {
                     } else false
                 }
             }
-            rightImageDefault(R.menu.menu_list) {
-                when (it.itemId) {
-                    R.id.deleteList_menuItem -> {
-                        ConfirmDialog().apply {
-                            title = this@ViewListFragment.mainActivity.getString(R.string.deleteListQuestion)
-                            message = this@ViewListFragment.mainActivity.getString(R.string.deleteListDetails)
-                            onConfirm = {
-                                val listName = Caches.taskLists[listID].name
-                                dismiss()
-                                Caches.deleteTaskList(listID, boardID)
-                                mainActivity.appBar.shortSnackBar(getString(R.string.deletedList)
-                                        + " $listName")
-                                finish()
-                            }
-                        }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
-                        true
-                    }
-                    R.id.clearList_menuItem -> {
-                        ConfirmDialog().apply {
-                            title = this@ViewListFragment.mainActivity.getString(R.string.clearListQuestion)
-                            message = this@ViewListFragment.mainActivity.getString(R.string.clearListDetails)
-                            onConfirm = {
-                                val listName = Caches.taskLists[listID].name
-                                dismiss()
-                                Caches.taskLists[listID].clear().update()
-                                mainActivity.appBar.shortSnackBar(getString(R.string.clearedList)
-                                        + " $listName")
-                                this@ViewListFragment.taskList_recyclerView.listAdapter.notifyDataSetChanged()
-                            }
-                        }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
-                        true
-                    }
-                    else -> false
+            rightImageOptions()
+        }
+        mainActivity.setColorScheme(Caches.boards[boardID].barColor.colorScheme)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val taskList = Caches.taskLists[listID]
+
+        LayoutInflater.from(context).inflate(R.layout.list_options,
+                mainActivity.drawerLayout, true)
+
+        mainActivity.appBar {
+            rightImageView.setOnClickListener {
+                mainActivity.drawerLayout.openDrawer(GravityCompat.END)
+            }
+        }
+
+        mainActivity.drawerLayout.listOptions_navigationView {
+            listHeaderColor_listOption {
+                setOnClickListener {
+                    it.shortSnackBar("Not yet implemented")
+                }
+            }
+            cardColor_listOption {
+                setOnClickListener {
+                    it.shortSnackBar("Not yet implemented")
+                }
+            }
+            clearList_listOption {
+                setOnClickListener {
+                    ConfirmDialog().apply {
+                        title = this@ViewListFragment.mainActivity.getString(R.string.clearListQuestion)
+                        message = this@ViewListFragment.mainActivity.getString(R.string.clearListDetails)
+                        onConfirm = {
+                            val listName = taskList.name
+                            dismiss()
+                            taskList.clear().update()
+                            mainActivity.appBar.shortSnackBar(getString(R.string.clearedList)
+                                    + " $listName")
+                            this@ViewListFragment.taskList_recyclerView.listAdapter?.notifyDataSetChanged()
+                        }
+                    }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+                    mainActivity.drawerLayout.closeDrawer(this@listOptions_navigationView)
+                }
+            }
+            deleteList_listOption {
+                setOnClickListener {
+                    ConfirmDialog().apply {
+                        title = this@ViewListFragment.mainActivity.getString(R.string.deleteListQuestion)
+                        message = this@ViewListFragment.mainActivity.getString(R.string.deleteListDetails)
+                        onConfirm = {
+                            val listName = taskList.name
+                            dismiss()
+                            Caches.deleteTaskList(listID, boardID)
+                            mainActivity.appBar.shortSnackBar(getString(R.string.deletedList)
+                                    + " $listName")
+                            finish()
+                        }
+                    }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+                    mainActivity.drawerLayout.closeDrawer(this@listOptions_navigationView)
                 }
             }
         }
-        mainActivity.setAppBarColorScheme(Caches.boards[boardID].barColor.colorScheme)
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        mainActivity.drawerLayout {
+            listOptions_navigationView.alsoIfNotNull {
+                closeDrawer(it)
+                removeView(it)
+            }
+        }
     }
 
     override fun finish() {

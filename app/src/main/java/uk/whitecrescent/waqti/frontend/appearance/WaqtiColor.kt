@@ -41,10 +41,13 @@ open class WaqtiColor(val value: String) {
     override fun toString() = value
 
     companion object {
+        val INHERIT = WaqtiColor("#00069420")
         val BLACK = WaqtiColor("#000000")
         val WHITE = WaqtiColor("#FFFFFF")
+        val TRANSPARENT = WaqtiColor("#00000000")
         val WAQTI_WHITE = WaqtiColor("#EEEEEE")
         val CARD_DEFAULT = WaqtiColor("#E0E0E0")
+        val BACKGROUND_DEFAULT = WaqtiColor("#FAFAFA")
         val WAQTI_DEFAULT = WaqtiColor("#880E4F")
         val DEFAULT = WHITE
     }

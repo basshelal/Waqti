@@ -14,6 +14,8 @@ import android.util.Log
 import android.view.View
 import android.view.animation.AlphaAnimation
 import android.view.inputmethod.InputMethodManager
+import android.widget.EdgeEffect
+import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
 import androidx.core.app.ActivityCompat
@@ -53,6 +55,7 @@ import uk.whitecrescent.waqti.backend.task.TimeUnit
 import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.MainActivityViewModel
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import java.util.Objects
 import kotlin.math.roundToInt
@@ -145,6 +148,14 @@ inline fun RecyclerView.smoothScrollToStart() {
     }
 }
 
+inline fun RecyclerView.setEdgeEffectColor(waqtiColor: WaqtiColor) {
+    edgeEffectFactory = object : RecyclerView.EdgeEffectFactory() {
+        override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
+            return EdgeEffect(view.context).also { it.color = waqtiColor.toAndroidColor }
+        }
+    }
+}
+
 inline val FloatingActionButton.verticalFABOnScrollListener: FABOnScrollListener
     get() = FABOnScrollListener(this, FABOnScrollListener.Orientation.VERTICAL)
 
@@ -157,6 +168,20 @@ inline fun FloatingActionButton.setBackgroundTint(waqtiColor: WaqtiColor) {
 
 inline fun FloatingActionButton.setImageTint(waqtiColor: WaqtiColor) {
     imageTintList = ColorStateList.valueOf(waqtiColor.toAndroidColor)
+}
+
+inline fun FloatingActionButton.setRippleColor(waqtiColor: WaqtiColor) {
+    rippleColor = waqtiColor.toAndroidColor
+}
+
+inline fun FloatingActionButton.setColorScheme(colorScheme: ColorScheme) {
+    setBackgroundTint(colorScheme.main)
+    setImageTint(colorScheme.text)
+    setRippleColor(colorScheme.text)
+}
+
+inline fun ProgressBar.setIndeterminateColor(waqtiColor: WaqtiColor) {
+    indeterminateTintList = ColorStateList.valueOf(waqtiColor.toAndroidColor)
 }
 
 inline val RecyclerView.Adapter<*>.lastPosition: Int

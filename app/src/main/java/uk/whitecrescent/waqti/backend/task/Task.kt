@@ -68,7 +68,7 @@ class Task(name: String = "") : Cacheable {
      * @see Cacheable.id
      */
     @Id
-    override var id = 0L
+    override var id: ID = 0L
 
     /**
      * The [TaskState] is the state in which the task is in at this point in time.

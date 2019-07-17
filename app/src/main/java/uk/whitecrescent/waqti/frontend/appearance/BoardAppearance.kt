@@ -9,7 +9,10 @@ import uk.whitecrescent.waqti.toJson
 class BoardAppearance {
 
     @SerializedName("bg")
-    var backgroundColor: WaqtiColor = WaqtiColor.DEFAULT
+    var backgroundColor: WaqtiColor = WaqtiColor.BACKGROUND_DEFAULT
+
+    @SerializedName("l")
+    var listColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT
 
     @SerializedName("c")
     var cardColor: WaqtiColor = WaqtiColor.CARD_DEFAULT

@@ -12,7 +12,7 @@ import uk.whitecrescent.waqti.hash
 class TimeUnit(name: String = "", duration: Duration = Duration.ZERO) : Cacheable {
 
     @Id
-    override var id = 0L
+    override var id: ID = 0L
 
     // TODO: 19-Jun-18 more tests to check for the mutability and other things
 

@@ -24,7 +24,7 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
     override val cache: Cache<TaskList> = Caches.taskLists
 
     @Id
-    override var id: Long = 0L
+    override var id: ID = 0L
 
     override var name: String = name
         set(value) {
@@ -45,6 +45,13 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
             update()
         }
         get() = appearance.backgroundColor
+
+    inline var listColor: WaqtiColor
+        set(value) {
+            appearance.listColor = value
+            update()
+        }
+        get() = appearance.listColor
 
     inline var cardColor: WaqtiColor
         set(value) {

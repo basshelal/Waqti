@@ -291,3 +291,15 @@ object Caches {
     }
 
 }
+
+@Deprecated("Should be removed later with an internal way of storing and getting parent")
+inline fun Task.getParent(): TaskList {
+    return Database.taskLists.all.find { this in it }
+            ?: throw IllegalStateException("Could not find parent for Task of id $id with name $name")
+}
+
+@Deprecated("Should be removed later with an internal way of storing and getting parent")
+inline fun TaskList.getParent(): Board {
+    return Database.boards.all.find { this in it }
+            ?: throw IllegalStateException("Could not find parent for TaskList of id $id with name $name")
+}

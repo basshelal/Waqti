@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
-import android.widget.EdgeEffect
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -21,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASK_LISTS_CACHE_SIZE
@@ -44,8 +44,8 @@ import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
-import uk.whitecrescent.waqti.setBackgroundTint
-import uk.whitecrescent.waqti.setImageTint
+import uk.whitecrescent.waqti.setColorScheme
+import uk.whitecrescent.waqti.setEdgeEffectColor
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
@@ -62,11 +62,14 @@ class BoardView
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
 
-    inline val boardAdapter: BoardAdapter
-        get() = this.adapter as BoardAdapter
+    inline val boardAdapter: BoardAdapter?
+        get() = this.adapter as BoardAdapter?
 
-    inline val allCards: List<CardView>
-        get() = boardAdapter.taskListAdapters.map { it.allCards }.flatten()
+    inline val allViewHolders: List<BoardViewHolder>
+        get() = boardAdapter?.board
+                ?.map { findViewHolderForItemId(it.id) as? BoardViewHolder? }
+                ?.filter { it != null }
+                ?.map { it as BoardViewHolder } ?: emptyList()
 
     init {
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false).also {
@@ -77,18 +80,38 @@ class BoardView
     }
 
     fun invalidateBoard() {
-        this.invalidate()
-        (this.adapter as? BoardAdapter)?.taskListAdapters?.forEach {
-            it.invalidate()
-        }
-    }
-
-    fun setEdgeEffectColor(color: WaqtiColor) {
-        edgeEffectFactory = object : RecyclerView.EdgeEffectFactory() {
-            override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
-                return EdgeEffect(view.context).also { it.color = color.toAndroidColor }
+        allViewHolders.forEach {
+            it.taskListView.recycledViewPool.clear()
+            it.taskListView.allViewHolders.forEach {
+                it.cardView {
+                    this.requestLayout()
+                    this.invalidate()
+                }
+            }
+            it.rootView {
+                this.requestLayout()
+                this.invalidate()
             }
         }
+        recycledViewPool.clear()
+        requestLayout()
+        invalidate()
+    }
+
+    fun setColorScheme(headerColorScheme: ColorScheme,
+                       listColorScheme: ColorScheme) {
+        allViewHolders.forEach { it.setColorScheme(headerColorScheme, listColorScheme) }
+    }
+
+    fun setHeadersColorScheme(colorScheme: ColorScheme) {
+        // TODO: 17-Jul-19 This and the other one dont update properly after changing it
+        //  since the recycled views aren't accessible and don't get onBind called again
+        //  we need to figure out a way to get those recycled views
+        allViewHolders.forEach { it.setHeaderColorScheme(colorScheme) }
+    }
+
+    fun setListsColorScheme(colorScheme: ColorScheme) {
+        allViewHolders.forEach { it.setListColorScheme(colorScheme) }
     }
 
 }
@@ -218,8 +241,19 @@ class BoardAdapter(val boardID: ID)
     }
 
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
-        holder.taskListView.adapter = getOrCreateListAdapter(board[position].id)
-        holder.headerTextView.text = board[position].name
+        val taskList = board[position]
+        holder.taskListView.adapter = getOrCreateListAdapter(taskList.id)
+        holder.headerTextView.text = taskList.name
+
+        val headerColorScheme = if (taskList.headerColor == WaqtiColor.INHERIT)
+            board.listColor.colorScheme
+        else taskList.headerColor.colorScheme
+
+        val cardColorScheme = if (taskList.cardColor == WaqtiColor.INHERIT)
+            board.cardColor.colorScheme
+        else taskList.cardColor.colorScheme
+
+        holder.setColorScheme(headerColorScheme, cardColorScheme)
     }
 
     override fun onViewAttachedToWindow(holder: BoardViewHolder) {
@@ -302,7 +336,6 @@ class BoardViewHolder(view: View,
                 addOnScrollListener(addButton.verticalFABOnScrollListener)
             }
             header {
-                setCardBackgroundColor(ColorScheme.getAllColorSchemes().random().main.toAndroidColor)
                 setOnClickListener {
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = VIEW_LIST_FRAGMENT)
                     it.mainActivity.supportFragmentManager.commitTransaction {
@@ -321,14 +354,12 @@ class BoardViewHolder(view: View,
                 }
             }
             addButton {
-                setBackgroundTint(adapter.board.barColor.colorScheme.main)
-                setImageTint(adapter.board.barColor.colorScheme.text)
                 setOnClickListener {
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = CREATE_TASK_FRAGMENT)
                     it.mainActivity.supportFragmentManager.commitTransaction {
 
                         it.mainActivityViewModel.boardID = adapter.boardID
-                        it.mainActivityViewModel.listID = taskListView.listAdapter.taskListID
+                        it.mainActivityViewModel.listID = taskListView.listAdapter?.taskListID ?: 0
 
                         it.clearFocusAndHideKeyboard()
 
@@ -340,6 +371,26 @@ class BoardViewHolder(view: View,
         }
     }
 
+    fun setColorScheme(headerColorScheme: ColorScheme,
+                       listColorScheme: ColorScheme) {
+        setHeaderColorScheme(headerColorScheme)
+        setListColorScheme(listColorScheme)
+    }
+
+    fun setHeaderColorScheme(colorScheme: ColorScheme) {
+        taskListView {
+            setEdgeEffectColor(colorScheme.dark)
+        }
+        header { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
+        headerTextView { textColor = colorScheme.text.toAndroidColor }
+        addButton { setColorScheme(colorScheme) }
+    }
+
+    fun setListColorScheme(colorScheme: ColorScheme) {
+        taskListView {
+            setColorScheme(colorScheme)
+        }
+    }
 }
 
 enum class ScrollSnapMode {
