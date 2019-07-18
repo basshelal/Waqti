@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.content.Context
@@ -316,7 +318,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
     }
 
-    fun setColorScheme(colorScheme: ColorScheme) {
+    private inline fun setColorScheme(colorScheme: ColorScheme) {
         mainActivity.setColorScheme(colorScheme)
         mainActivity.drawerLayout.boardOptions_navigationView {
             setBackgroundColor(colorScheme.main.toAndroidColor)

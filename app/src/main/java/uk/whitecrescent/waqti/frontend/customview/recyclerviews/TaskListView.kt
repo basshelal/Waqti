@@ -87,6 +87,7 @@ class TaskListView
 
     fun setColorScheme(colorScheme: ColorScheme) {
         allViewHolders.forEach { it.setColorScheme(colorScheme) }
+        listAdapter?.notifyDataSetChanged()
     }
 
 }

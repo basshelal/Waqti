@@ -328,9 +328,7 @@ class BoardAdapter(val boardID: ID)
     }
 
     fun setListsColorScheme(colorScheme: ColorScheme) {
-        taskListAdapters.forEach {
-            it.taskListViewSafe { setColorScheme(colorScheme) }
-        }
+        taskListAdapters.forEach { it.taskListViewSafe { setColorScheme(colorScheme) } }
     }
 }
 

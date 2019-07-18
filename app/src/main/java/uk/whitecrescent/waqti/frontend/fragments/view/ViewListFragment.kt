@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.content.Context
@@ -10,6 +12,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.GravityCompat
+import com.afollestad.materialdialogs.LayoutMode
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.bottomsheets.BottomSheet
+import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
+import com.afollestad.materialdialogs.color.colorChooser
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import kotlinx.android.synthetic.main.list_options.view.*
@@ -28,6 +35,9 @@ import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+import uk.whitecrescent.waqti.frontend.appearance.toColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
@@ -38,6 +48,8 @@ import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
+import uk.whitecrescent.waqti.setColorScheme
+import uk.whitecrescent.waqti.setEdgeEffectColor
 import uk.whitecrescent.waqti.shortSnackBar
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
@@ -48,6 +60,8 @@ class ViewListFragment : WaqtiViewFragment() {
     private lateinit var viewModel: ViewListFragmentViewModel
     private lateinit var taskList: TaskList
     private lateinit var board: Board
+    private lateinit var headerColorScheme: ColorScheme
+    private lateinit var cardColorScheme: ColorScheme
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -63,6 +77,12 @@ class ViewListFragment : WaqtiViewFragment() {
         taskList = Caches.taskLists[listID]
         board = Caches.boards[boardID]
 
+        headerColorScheme = if (taskList.headerColor == WaqtiColor.INHERIT)
+            board.listColor.colorScheme else taskList.headerColor.colorScheme
+
+        cardColorScheme = if (taskList.cardColor == WaqtiColor.INHERIT)
+            board.cardColor.colorScheme else taskList.cardColor.colorScheme
+
         viewModel = getViewModel()
 
         setUpViews()
@@ -70,11 +90,12 @@ class ViewListFragment : WaqtiViewFragment() {
     }
 
     override fun setUpViews() {
-        setUpAppBar()
 
         taskList_recyclerView.adapter = mainActivityVM.boardAdapter?.getListAdapter(listID)
 
         doInBackground {
+
+            setUpAppBar()
 
             taskList_recyclerView {
                 background = board.backgroundColor.toColorDrawable
@@ -138,7 +159,7 @@ class ViewListFragment : WaqtiViewFragment() {
     }
 
     override fun setUpAppBar() {
-        mainActivity.setColorScheme(board.barColor.colorScheme)
+        this.setColorScheme(headerColorScheme)
         mainActivity.appBar {
             elevation = DEFAULT_ELEVATION
             leftImageBack()
@@ -167,7 +188,15 @@ class ViewListFragment : WaqtiViewFragment() {
             }
             rightImageOptions()
         }
-        mainActivity.setColorScheme(Caches.boards[boardID].barColor.colorScheme)
+    }
+
+    private inline fun setColorScheme(colorScheme: ColorScheme) {
+        mainActivity.setColorScheme(colorScheme)
+        mainActivity.drawerLayout.listOptions_navigationView {
+            setBackgroundColor(colorScheme.main.toAndroidColor)
+        }
+        addTask_floatingButton.setColorScheme(colorScheme)
+        taskList_recyclerView.setEdgeEffectColor(colorScheme.dark)
     }
 
     override fun onResume() {
@@ -185,12 +214,48 @@ class ViewListFragment : WaqtiViewFragment() {
         mainActivity.drawerLayout.listOptions_navigationView {
             listHeaderColor_listOption {
                 setOnClickListener {
-                    it.shortSnackBar("Not yet implemented")
+                    MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
+                        cornerRadius(literalDp = 8F)
+                        title(text = "List Header Color")
+                        setPeekHeight(Int.MAX_VALUE)
+                        positiveButton(text = "Confirm")
+                        colorChooser(colors = ColorScheme.materialDialogsMainColors(),
+                                subColors = ColorScheme.materialDialogsAllColors(),
+                                initialSelection = headerColorScheme.main.toAndroidColor,
+                                changeActionButtonsColor = true,
+                                waitForPositiveButton = false,
+                                selection = { dialog, colorInt ->
+                                    val colorScheme = colorInt.toColor.colorScheme
+                                    dialog.window?.navigationBarColor = colorScheme.main.toAndroidColor
+                                    this@ViewListFragment.setColorScheme(colorScheme)
+                                    taskList.headerColor = colorScheme.main
+                                }
+                        )
+                    }
+                    mainActivity.drawerLayout.closeDrawer(this@listOptions_navigationView)
                 }
             }
             cardColor_listOption {
                 setOnClickListener {
-                    it.shortSnackBar("Not yet implemented")
+                    MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
+                        cornerRadius(literalDp = 8F)
+                        title(text = "Card Color")
+                        setPeekHeight(Int.MAX_VALUE)
+                        positiveButton(text = "Confirm")
+                        colorChooser(colors = ColorScheme.materialDialogsMainColors(),
+                                subColors = ColorScheme.materialDialogsAllColors(),
+                                initialSelection = cardColorScheme.main.toAndroidColor,
+                                changeActionButtonsColor = true,
+                                waitForPositiveButton = false,
+                                selection = { _, colorInt ->
+                                    val colorScheme = colorInt.toColor.colorScheme
+                                    this@ViewListFragment.taskList_recyclerView
+                                            .setColorScheme(colorScheme)
+                                    taskList.cardColor = colorScheme.main
+                                }
+                        )
+                    }
+                    mainActivity.drawerLayout.closeDrawer(this@listOptions_navigationView)
                 }
             }
             clearList_listOption {
