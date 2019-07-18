@@ -109,8 +109,8 @@
 
 
     <!--Settings Page-->
-    <string name="taskListWidth">Task List Width:</string>
-    <string name="taskCardTextSize">Task Card Text Size:</string>
+    <string name="taskListWidth">List Width:</string>
+    <string name="taskCardTextSize">Card Text Size:</string>
     <string name="boardScrollSnapMode">Board Scroll Snap Mode:</string>
     <string-array name="boardScrollSnapModeOptions">
         <item>Paged</item>
@@ -130,6 +130,7 @@
     <string name="deletedList">Deleted List:</string>
     <string name="clearedList">Cleared List:</string>
     <string name="deletedBoard">Deleted Board:</string>
+    <string name="listHeaderTextSize">List Header Text Size:</string>
 
 
 </resources>

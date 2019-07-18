@@ -30,6 +30,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import com.google.gson.Gson
+import com.warkiz.widget.IndicatorSeekBar
+import com.warkiz.widget.SeekParams
 import io.objectbox.Box
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -55,6 +57,7 @@ import uk.whitecrescent.waqti.backend.task.TimeUnit
 import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.MainActivityViewModel
+import uk.whitecrescent.waqti.frontend.SimpleOnSeekChangeListener
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import java.util.Objects
@@ -250,6 +253,14 @@ inline fun View.onClickOutside(crossinline onClickOutside: (View) -> Unit) {
 
 inline val View.parentView: View?
     get() = parent as? View?
+
+inline fun IndicatorSeekBar.onSeek(crossinline onSeek: (SeekParams?) -> Unit) {
+    onSeekChangeListener = object : SimpleOnSeekChangeListener() {
+        override fun onSeeking(seekParams: SeekParams?) {
+            onSeek(seekParams)
+        }
+    }
+}
 
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.

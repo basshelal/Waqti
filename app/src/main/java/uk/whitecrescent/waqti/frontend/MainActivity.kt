@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
@@ -37,7 +38,7 @@ import uk.whitecrescent.waqti.onClickOutside
 class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel: MainActivityViewModel
-    lateinit var waqtiPreferences: WaqtiPreferences
+    lateinit var preferences: WaqtiPreferences
     val currentTouchPoint = Point()
     val onTouchOutSideListeners = HashMap<View, (View) -> Unit>()
 
@@ -48,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = getViewModel()
 
-        waqtiPreferences = WaqtiPreferences(this)
+        preferences = WaqtiPreferences(this)
 
         setUpViews()
 
@@ -120,20 +121,22 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.settings_navDrawerItem -> {
                     doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
-                        supportFragmentManager.commitTransaction {
-                            @FragmentNavigation(from = ANY_FRAGMENT, to = SETTINGS_FRAGMENT)
-                            replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
-                            addToBackStack(null)
-                        }
+                        if (currentFragment.tag != SETTINGS_FRAGMENT)
+                            supportFragmentManager.commitTransaction {
+                                @FragmentNavigation(from = ANY_FRAGMENT, to = SETTINGS_FRAGMENT)
+                                replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
+                                addToBackStack(null)
+                            }
                     })
                 }
                 R.id.about_navDrawerItem -> {
                     doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
-                        @FragmentNavigation(from = ANY_FRAGMENT, to = ABOUT_FRAGMENT)
-                        supportFragmentManager.commitTransaction {
-                            replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
-                            addToBackStack(null)
-                        }
+                        if (currentFragment.tag != ABOUT_FRAGMENT)
+                            supportFragmentManager.commitTransaction {
+                                @FragmentNavigation(from = ANY_FRAGMENT, to = ABOUT_FRAGMENT)
+                                replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
+                                addToBackStack(null)
+                            }
                     })
                 }
             }
@@ -141,7 +144,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
-            val currentFragment = supportFragmentManager.fragments.last()
             when (currentFragment.tag) {
                 SETTINGS_FRAGMENT -> navigationView.setCheckedItem(R.id.settings_navDrawerItem)
                 ABOUT_FRAGMENT -> navigationView.setCheckedItem(R.id.about_navDrawerItem)
@@ -201,6 +203,9 @@ class MainActivity : AppCompatActivity() {
     inline val dimensions: Pair<Int, Int>
         get() = this.resources
                 .let { displayMetrics.widthPixels to displayMetrics.heightPixels }
+
+    inline val currentFragment: Fragment
+        get() = supportFragmentManager.fragments.last()
 }
 
 class MainActivityViewModel : ViewModel() {

@@ -8,6 +8,9 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.warkiz.widget.IndicatorSeekBar
+import com.warkiz.widget.OnSeekChangeListener
+import com.warkiz.widget.SeekParams
 
 open class SimpleTextWatcher : TextWatcher {
 
@@ -67,6 +70,12 @@ open class FABOnScrollListener(val fab: FloatingActionButton,
     enum class Orientation {
         HORIZONTAL, VERTICAL
     }
+}
+
+open class SimpleOnSeekChangeListener : OnSeekChangeListener {
+    override fun onSeeking(seekParams: SeekParams?) {}
+    override fun onStartTrackingTouch(seekBar: IndicatorSeekBar?) {}
+    override fun onStopTrackingTouch(seekBar: IndicatorSeekBar?) {}
 }
 
 data class ChangedPositionPair(var positionChanged: Boolean = false,

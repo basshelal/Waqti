@@ -17,11 +17,13 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp">
 
                 <TextView
-                    android:id="@+id/taskListWidthSetting_textView"
+                    android:id="@+id/listWidthSetting_textView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -29,23 +31,33 @@
                     android:text="@string/taskListWidth"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textColor="@color/black"
-                    android:textSize="25sp"
+                    android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <SeekBar
-                    android:id="@+id/taskListWidthSetting_seekBar"
+                <com.warkiz.widget.IndicatorSeekBar
+                    android:id="@+id/listWidthSetting_seekBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:mirrorForRtl="true"
-                    android:progressTint="@color/secondaryColor"
-                    android:thumbTint="@color/secondaryColor"
+                    app:isb_indicator_color="@color/secondaryColor"
+                    app:isb_indicator_text_size="18sp"
+                    app:isb_max="80"
+                    app:isb_min="20"
+                    app:isb_show_indicator="circular_bubble"
+                    app:isb_show_tick_texts="true"
+                    app:isb_thumb_color="@color/secondaryColor"
+                    app:isb_tick_texts_color="@color/secondaryColor"
+                    app:isb_tick_texts_size="14sp"
+                    app:isb_ticks_count="2"
+                    app:isb_track_progress_color="@color/secondaryColor"
+                    app:isb_track_progress_size="3dp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/taskListWidthSetting_textView"
-                    app:layout_constraintStart_toStartOf="@id/taskListWidthSetting_textView"
-                    app:layout_constraintTop_toBottomOf="@id/taskListWidthSetting_textView" />
+                    app:layout_constraintEnd_toEndOf="@id/listWidthSetting_textView"
+                    app:layout_constraintStart_toStartOf="@id/listWidthSetting_textView"
+                    app:layout_constraintTop_toBottomOf="@id/listWidthSetting_textView" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <View style="@style/Divider.Horizontal" />
@@ -53,7 +65,57 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp">
+
+                <TextView
+                    android:id="@+id/headerTextSizeSetting_textView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/listHeaderTextSize"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <com.warkiz.widget.IndicatorSeekBar
+                    android:id="@+id/listHeaderTextSizeSetting_seekBar"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:mirrorForRtl="true"
+                    app:isb_indicator_color="@color/secondaryColor"
+                    app:isb_indicator_text_size="18sp"
+                    app:isb_max="40"
+                    app:isb_min="24"
+                    app:isb_show_indicator="circular_bubble"
+                    app:isb_show_tick_texts="true"
+                    app:isb_thumb_color="@color/secondaryColor"
+                    app:isb_tick_texts_color="@color/secondaryColor"
+                    app:isb_tick_texts_size="14sp"
+                    app:isb_ticks_count="2"
+                    app:isb_track_progress_color="@color/secondaryColor"
+                    app:isb_track_progress_size="3dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@id/headerTextSizeSetting_textView"
+                    app:layout_constraintStart_toStartOf="@id/headerTextSizeSetting_textView"
+                    app:layout_constraintTop_toBottomOf="@id/headerTextSizeSetting_textView" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View style="@style/Divider.Horizontal" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp">
 
                 <TextView
@@ -65,19 +127,29 @@
                     android:text="@string/taskCardTextSize"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textColor="@color/black"
-                    android:textSize="25sp"
+                    android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <SeekBar
+                <com.warkiz.widget.IndicatorSeekBar
                     android:id="@+id/cardTextSizeSetting_seekBar"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:mirrorForRtl="true"
-                    android:progressTint="@color/secondaryColor"
-                    android:thumbTint="@color/secondaryColor"
+                    app:isb_indicator_color="@color/secondaryColor"
+                    app:isb_indicator_text_size="18sp"
+                    app:isb_max="30"
+                    app:isb_min="14"
+                    app:isb_show_indicator="circular_bubble"
+                    app:isb_show_tick_texts="true"
+                    app:isb_thumb_color="@color/secondaryColor"
+                    app:isb_tick_texts_color="@color/secondaryColor"
+                    app:isb_tick_texts_size="14sp"
+                    app:isb_ticks_count="2"
+                    app:isb_track_progress_color="@color/secondaryColor"
+                    app:isb_track_progress_size="3dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@id/cardTextSizeSetting_textView"
                     app:layout_constraintStart_toStartOf="@id/cardTextSizeSetting_textView"
@@ -89,40 +161,49 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="-4dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp">
 
                 <TextView
                     android:id="@+id/boardScrollSnapMode_textView"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="0dp"
                     android:text="@string/boardScrollSnapMode"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
                     android:textColor="@color/black"
-                    android:textSize="25sp"
-                    app:layout_constraintEnd_toEndOf="parent"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/boardScrollSnapMode_spinner"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <Spinner
+                <org.angmarch.views.NiceSpinner
                     android:id="@+id/boardScrollSnapMode_spinner"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:mirrorForRtl="true"
-                    android:spinnerMode="dropdown"
+                    android:textAlignment="textEnd"
+                    android:textSize="20sp"
+                    app:arrowTint="@color/secondaryColor"
+                    app:entries="@array/boardScrollSnapModeOptions"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="@id/boardScrollSnapMode_textView"
-                    app:layout_constraintHorizontal_bias="1.0"
-                    app:layout_constraintStart_toStartOf="@id/boardScrollSnapMode_textView"
-                    app:layout_constraintTop_toBottomOf="@id/boardScrollSnapMode_textView" />
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/boardScrollSnapMode_textView"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:popupTextAlignment="center"
+                    app:textTint="@color/secondaryColor" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View style="@style/Divider.Horizontal" />
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
-
 
     <Button
         android:id="@+id/resetToDefaults_button"

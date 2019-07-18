@@ -8,26 +8,24 @@ import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.SeekBar
 import androidx.core.view.isInvisible
 import kotlinx.android.synthetic.main.fragment_settings.*
+import org.angmarch.views.OnSpinnerItemSelectedListener
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.frontend.WaqtiPreferences
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
-import uk.whitecrescent.waqti.getPercent
-import uk.whitecrescent.waqti.getValue
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
+import uk.whitecrescent.waqti.onSeek
 
 class SettingsFragment : WaqtiFragment() {
 
-    private val taskListWidthRange = 20 to 80
-    private val cardTextSizeRange = 14 to 30
+    private inline val preferences: WaqtiPreferences
+        get() = mainActivity.preferences
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_settings, container, false)
@@ -43,71 +41,53 @@ class SettingsFragment : WaqtiFragment() {
     override fun setUpViews() {
         setUpAppBar()
 
-        taskListWidthSetting_seekBar {
+        listWidthSetting_seekBar {
 
-            val fromPreferences = mainActivity.waqtiPreferences.taskListWidth
+            val fromPrefs = preferences.listWidth
 
-            progress = taskListWidthRange.getPercent(fromPreferences)
-            taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + fromPreferences
+            setProgress(fromPrefs.toFloat())
 
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    taskListWidthSetting_textView.text = getString(R.string.taskListWidth) +
-                            taskListWidthRange.getValue(progress)
-                }
+            listWidthSetting_textView.text = getString(R.string.taskListWidth) + fromPrefs
 
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
-
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    mainActivity.waqtiPreferences.taskListWidth = taskListWidthRange.getValue(progress)
-                    mainActivityVM.settingsChanged = true
-                }
-            })
+            onSeek {
+                listWidthSetting_textView.text = getString(R.string.taskListWidth) + progress
+                preferences.listWidth = progress
+            }
         }
 
         cardTextSizeSetting_seekBar {
 
-            val fromPreferences = mainActivity.waqtiPreferences.taskCardTextSize
+            val fromPrefs = preferences.cardTextSize
 
-            progress = cardTextSizeRange.getPercent(fromPreferences)
+            setProgress(fromPrefs.toFloat())
 
-            cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) +
-                    fromPreferences
+            cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) + fromPrefs
 
-            setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                    cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) +
-                            cardTextSizeRange.getValue(progress)
-                }
+            onSeek {
+                cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) + progress
+                preferences.cardTextSize = progress
+            }
+        }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+        listHeaderTextSizeSetting_seekBar {
 
-                override fun onStopTrackingTouch(seekBar: SeekBar?) {
-                    mainActivity.waqtiPreferences.taskCardTextSize = cardTextSizeRange.getValue(progress)
-                    mainActivityVM.settingsChanged = true
-                }
-            })
+            val fromPrefs = preferences.listHeaderTextSize
+
+            setProgress(fromPrefs.toFloat())
+
+            headerTextSizeSetting_textView.text = getString(R.string.listHeaderTextSize) + fromPrefs
+
+            onSeek {
+                headerTextSizeSetting_textView.text = getString(R.string.listHeaderTextSize) + progress
+                preferences.listHeaderTextSize = progress
+            }
         }
 
         boardScrollSnapMode_spinner {
-            adapter = ArrayAdapter.createFromResource(
-                    mainActivity,
-                    R.array.boardScrollSnapModeOptions,
-                    R.layout.support_simple_spinner_dropdown_item
-            ).also {
-                it.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item)
-            }
-            setSelection(mainActivity.waqtiPreferences.boardScrollSnapMode.ordinal, true)
-            onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-
-                override fun onNothingSelected(parent: AdapterView<*>?) {}
-
-                override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int,
-                                            id: Long) {
-                    mainActivity.waqtiPreferences.boardScrollSnapMode =
-                            ScrollSnapMode.valueOf(selectedItem.toString().toUpperCase())
-                    mainActivityVM.settingsChanged = true
-                }
+            selectedIndex = preferences.boardScrollSnapMode.ordinal
+            onSpinnerItemSelectedListener = OnSpinnerItemSelectedListener { parent, view, position, id ->
+                preferences.boardScrollSnapMode =
+                        ScrollSnapMode.valueOf(selectedItem.toString().toUpperCase())
             }
         }
 
@@ -143,35 +123,16 @@ class SettingsFragment : WaqtiFragment() {
         mainActivity.resetColorScheme()
     }
 
-    @SuppressLint("SetTextI18n")
     private inline fun resetSettingsToDefaults() {
-        taskListWidthSetting_seekBar {
+        listWidthSetting_seekBar { setProgress(66F) }
 
-            val default = 66
+        cardTextSizeSetting_seekBar { setProgress(18F) }
 
-            progress = taskListWidthRange.getPercent(default)
-            taskListWidthSetting_textView.text = getString(R.string.taskListWidth) + default
-
-            mainActivity.waqtiPreferences.taskListWidth = taskListWidthRange.getValue(progress)
-            mainActivityVM.settingsChanged = true
-        }
-
-        cardTextSizeSetting_seekBar {
-
-            val default = 18
-
-            progress = cardTextSizeRange.getPercent(default)
-            cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) + default
-
-            mainActivity.waqtiPreferences.taskCardTextSize = cardTextSizeRange.getValue(progress)
-            mainActivityVM.settingsChanged = true
-        }
+        listHeaderTextSizeSetting_seekBar { setProgress(28F) }
 
         boardScrollSnapMode_spinner {
-            setSelection(ScrollSnapMode.PAGED.ordinal, true)
-
-            mainActivity.waqtiPreferences.boardScrollSnapMode = ScrollSnapMode.PAGED
-            mainActivityVM.settingsChanged = true
+            selectedIndex = ScrollSnapMode.PAGED.ordinal
+            preferences.boardScrollSnapMode = ScrollSnapMode.PAGED
         }
     }
 

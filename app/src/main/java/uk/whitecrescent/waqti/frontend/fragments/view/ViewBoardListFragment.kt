@@ -48,7 +48,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
 
         mainActivityVM.boardPosition.changeTo(false to 0)
 
-        viewMode = mainActivity.waqtiPreferences.boardListViewMode
+        viewMode = mainActivity.preferences.boardListViewMode
 
         boardList = Caches.boardList
 
@@ -106,13 +106,13 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                 hint = getString(R.string.allBoards)
                 fun update() {
                     if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
-                        if (text.toString() != mainActivity.waqtiPreferences.boardListName) {
-                            mainActivity.waqtiPreferences.boardListName = text.toString()
+                        if (text.toString() != mainActivity.preferences.boardListName) {
+                            mainActivity.preferences.boardListName = text.toString()
                         }
                     }
                 }
                 addAfterTextChangedListener { update() }
-                text = SpannableStringBuilder(mainActivity.waqtiPreferences.boardListName)
+                text = SpannableStringBuilder(mainActivity.preferences.boardListName)
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
@@ -145,7 +145,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                                     .setIcon(R.drawable.grid_icon)
                         }
                     }
-                    mainActivity.waqtiPreferences.boardListViewMode = viewMode
+                    mainActivity.preferences.boardListViewMode = viewMode
                 }
                 update()
                 setOnClickListener {

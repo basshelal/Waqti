@@ -82,22 +82,14 @@ class BoardView
     }
 
     fun invalidateBoard() {
-        allViewHolders.forEach {
-            it.taskListView.recycledViewPool.clear()
-            it.taskListView.allViewHolders.forEach {
-                it.cardView {
-                    this.requestLayout()
-                    this.invalidate()
-                }
-            }
-            it.rootView {
-                this.requestLayout()
-                this.invalidate()
-            }
-        }
         recycledViewPool.clear()
         requestLayout()
         invalidate()
+        boardAdapter?.taskListAdapters?.forEach {
+            it.notifyDataSetChanged()
+            it.onInflate = { listAdapter?.notifyDataSetChanged() }
+        }
+        boardAdapter?.notifyDataSetChanged()
     }
 
     fun setColorScheme(headerColorScheme: ColorScheme,
@@ -125,6 +117,7 @@ class BoardAdapter(val boardID: ID)
     lateinit var itemTouchHelper: ItemTouchHelper
     private var snapHelper: SnapHelper? = null
     var taskListWidth: Int = 600
+    var listHeaderTextSize: Int = 28
 
     val taskListAdapters = ArrayList<TaskListAdapter>()
 
@@ -151,8 +144,9 @@ class BoardAdapter(val boardID: ID)
         onInflate(boardView)
         onInflate = {}
 
-        val percent = boardView.mainActivity.waqtiPreferences.taskListWidth / 100.0
+        val percent = boardView.mainActivity.preferences.listWidth / 100.0
         taskListWidth = (boardView.mainActivity.dimensions.first.toFloat() * percent).roundToInt()
+        listHeaderTextSize = boardView.mainActivity.preferences.listHeaderTextSize
 
         doInBackground {
             board.forEach {
@@ -210,7 +204,7 @@ class BoardAdapter(val boardID: ID)
             snapHelper?.attachToRecyclerView(null)
         }
 
-        when (boardView.mainActivity.waqtiPreferences.boardScrollSnapMode) {
+        when (boardView.mainActivity.preferences.boardScrollSnapMode) {
             PAGED -> {
                 snapHelper = PagerSnapHelper()
             }
@@ -349,6 +343,7 @@ class BoardViewHolder(view: View,
             rootView.updateLayoutParams {
                 width = adapter.taskListWidth
             }
+            headerTextView { textSize = adapter.listHeaderTextSize.toFloat() }
             taskListView {
                 addOnScrollListener(addButton.verticalFABOnScrollListener)
             }
@@ -404,9 +399,7 @@ class BoardViewHolder(view: View,
     }
 
     fun setListColorScheme(colorScheme: ColorScheme) {
-        taskListView {
-            setColorScheme(colorScheme)
-        }
+        taskListView { setColorScheme(colorScheme) }
     }
 }
 

@@ -514,7 +514,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
 
     init {
         doInBackground {
-            textView.textSize = mainActivity.waqtiPreferences.taskCardTextSize.toFloat()
+            textView.textSize = mainActivity.preferences.cardTextSize.toFloat()
             cardView {
                 setOnClickListener {
                     @FragmentNavigation(from = VIEW_BOARD_FRAGMENT + VIEW_LIST_FRAGMENT,

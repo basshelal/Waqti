@@ -191,8 +191,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
         mainActivity.setColorScheme(board.barColor.colorScheme)
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
 
         LayoutInflater.from(context).inflate(R.layout.board_options,
                 mainActivity.drawerLayout, true)
@@ -204,6 +204,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
 
         mainActivity.drawerLayout.boardOptions_navigationView {
+            setBackgroundColor(board.barColor.toAndroidColor)
             appBarColor_boardOption {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
@@ -318,15 +319,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
     }
 
-    private inline fun setColorScheme(colorScheme: ColorScheme) {
-        mainActivity.setColorScheme(colorScheme)
-        mainActivity.drawerLayout.boardOptions_navigationView {
-            setBackgroundColor(colorScheme.main.toAndroidColor)
-        }
-        addList_floatingButton.setColorScheme(colorScheme)
-        boardView.setEdgeEffectColor(colorScheme.dark)
-    }
-
     override fun onStop() {
         super.onStop()
 
@@ -341,6 +333,15 @@ class ViewBoardFragment : WaqtiViewFragment() {
     override fun finish() {
         @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
+    }
+
+    private inline fun setColorScheme(colorScheme: ColorScheme) {
+        mainActivity.setColorScheme(colorScheme)
+        mainActivity.drawerLayout.boardOptions_navigationView {
+            setBackgroundColor(colorScheme.main.toAndroidColor)
+        }
+        addList_floatingButton.setColorScheme(colorScheme)
+        boardView.setEdgeEffectColor(colorScheme.dark)
     }
 }
 

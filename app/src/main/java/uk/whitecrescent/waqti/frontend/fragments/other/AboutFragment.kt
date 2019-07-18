@@ -34,6 +34,7 @@ class AboutFragment : WaqtiFragment() {
     }
 
     override fun setUpViews() {
+        setUpAppBar()
         val view = AboutPage(mainActivity)
                 .isRTL(false)
 
@@ -71,6 +72,8 @@ class AboutFragment : WaqtiFragment() {
                 .addLibrary("TakuSemba/Spotlight", "Spotlight")
                 .addLibrary("TakuSemba/Spotlight", "Spotlight")
                 .addLibrary("shiburagi/Drawer-Behavior", "Drawer Behavior")
+                .addLibrary("arcadefire/nice-spinner", "Nice Spinner")
+                .addLibrary("warkiz/IndicatorSeekBar", "IndicatorSeekBar")
 
                 // About the Developer
                 .addHeading(getString(R.string.aboutTheDeveloper))
@@ -92,6 +95,7 @@ class AboutFragment : WaqtiFragment() {
             elevation = DEFAULT_ELEVATION
             leftImageBack()
             editTextView {
+                textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
                 removeAllTextChangedListeners()
                 isEditable = false
                 text = SpannableStringBuilder(getString(R.string.about))

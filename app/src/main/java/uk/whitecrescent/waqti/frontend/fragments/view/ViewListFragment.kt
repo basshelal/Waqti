@@ -190,17 +190,8 @@ class ViewListFragment : WaqtiViewFragment() {
         }
     }
 
-    private inline fun setColorScheme(colorScheme: ColorScheme) {
-        mainActivity.setColorScheme(colorScheme)
-        mainActivity.drawerLayout.listOptions_navigationView {
-            setBackgroundColor(colorScheme.main.toAndroidColor)
-        }
-        addTask_floatingButton.setColorScheme(colorScheme)
-        taskList_recyclerView.setEdgeEffectColor(colorScheme.dark)
-    }
-
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
 
         LayoutInflater.from(context).inflate(R.layout.list_options,
                 mainActivity.drawerLayout, true)
@@ -212,6 +203,7 @@ class ViewListFragment : WaqtiViewFragment() {
         }
 
         mainActivity.drawerLayout.listOptions_navigationView {
+            setBackgroundColor(headerColorScheme.main.toAndroidColor)
             listHeaderColor_listOption {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
@@ -309,6 +301,15 @@ class ViewListFragment : WaqtiViewFragment() {
     override fun finish() {
         @FragmentNavigation(from = VIEW_LIST_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
+    }
+
+    private inline fun setColorScheme(colorScheme: ColorScheme) {
+        mainActivity.setColorScheme(colorScheme)
+        mainActivity.drawerLayout.listOptions_navigationView {
+            setBackgroundColor(colorScheme.main.toAndroidColor)
+        }
+        addTask_floatingButton.setColorScheme(colorScheme)
+        taskList_recyclerView.setEdgeEffectColor(colorScheme.dark)
     }
 }
 
