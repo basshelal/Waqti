@@ -28,7 +28,7 @@ class ColorPicker
 }
 
 class ColorPickerAdapter(val onClick: (WaqtiColor) -> Unit,
-                         var color: WaqtiColor = WaqtiColor.DEFAULT)
+                         var color: WaqtiColor = WaqtiColor.WHITE)
     : RecyclerView.Adapter<ColorViewHolder>() {
 
     private val colors = ColorScheme.getAllColorSchemes(ColorScheme.Level.FIVE_HUNDRED)

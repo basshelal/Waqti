@@ -9,6 +9,8 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.AppCompatEditText
+import org.jetbrains.anko.colorAttr
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.SimpleTextWatcher
 
@@ -61,6 +63,11 @@ class EditTextView
             removeTextChangedListener(it)
         }
     }
+
+    fun resetTextColor() {
+        textColor = context.colorAttr(R.attr.colorOnSurface)
+    }
+
 
     fun addAfterTextChangedListener(func: (Editable?) -> Unit) {
         object : SimpleTextWatcher() {

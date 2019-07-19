@@ -9,13 +9,13 @@ import uk.whitecrescent.waqti.toJson
 class BoardAppearance {
 
     @SerializedName("bg")
-    var backgroundColor: WaqtiColor = WaqtiColor.BACKGROUND_DEFAULT
+    var backgroundColor: WaqtiColor = WaqtiColor.LIGHT_BACKGROUND_DEFAULT
 
     @SerializedName("l")
     var listColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT
 
     @SerializedName("c")
-    var cardColor: WaqtiColor = WaqtiColor.CARD_DEFAULT
+    var cardColor: WaqtiColor = WaqtiColor.LIGHT_CARD_DEFAULT
 
     @SerializedName("b")
     var barColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT
@@ -24,7 +24,12 @@ class BoardAppearance {
     var backgroundPhoto: Photo = DEFAULT_PHOTO
 
     companion object {
-        val DEFAULT = BoardAppearance()
+        val DEFAULT_DARK = BoardAppearance().apply {
+            backgroundColor = WaqtiColor.DARK_BACKGROUND_DEFAULT
+            cardColor = WaqtiColor.DARK_CARD_DEFAULT
+        }
+        val DEFAULT_LIGHT = BoardAppearance()
+        val DEFAULT = DEFAULT_LIGHT
     }
 }
 

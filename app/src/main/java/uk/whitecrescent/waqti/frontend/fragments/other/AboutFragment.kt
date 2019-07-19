@@ -15,6 +15,9 @@ import androidx.core.view.isInvisible
 import kotlinx.android.synthetic.main.fragment_about.*
 import mehdi.sakout.aboutpage.AboutPage
 import mehdi.sakout.aboutpage.Element
+import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.childrenRecursiveSequence
+import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.WAQTI_VERSION
@@ -80,14 +83,17 @@ class AboutFragment : WaqtiFragment() {
                 .addGitHub("basshelal", "Bassam Helal on GitHub")
                 .addLinkedIn("bassamhelal", "Bassam Helal on LinkedIn")
                 .create()
-        view.visibility = View.INVISIBLE
         about_linearLayout.addView(view)
-        view.visibility = View.VISIBLE
         about_linearLayout.addView(TextView(context).also {
             it.text = WAQTI_VERSION
-            it.textColor = WaqtiColor.WAQTI_DEFAULT.toAndroidColor
+            it.textColor = context!!.colorAttr(R.attr.colorOnSurface)
             it.textAlignment = TEXT_ALIGNMENT_CENTER
         })
+        about_linearLayout.childrenRecursiveSequence().forEach {
+            val color = context!!.colorAttr(R.attr.colorSurface)
+            it.backgroundColor = color
+            if (it is TextView) it.textColor = context!!.colorAttr(R.attr.colorOnSurface)
+        }
     }
 
     override fun setUpAppBar() {

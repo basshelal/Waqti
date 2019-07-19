@@ -11,8 +11,8 @@ class ColorPickerDialog : MaterialDialog() {
     var title = "Pick Color"
     var onConfirm: (WaqtiColor) -> Unit = { }
     var onClick: (WaqtiColor) -> Unit = { }
-    var initialColor: WaqtiColor = WaqtiColor.DEFAULT
-    var pickedColor: WaqtiColor = WaqtiColor.DEFAULT
+    var initialColor: WaqtiColor = WaqtiColor.WHITE
+    var pickedColor: WaqtiColor = WaqtiColor.WHITE
 
     override fun onResume() {
         super.onResume()
@@ -26,7 +26,7 @@ class ColorPickerDialog : MaterialDialog() {
 
             confirm_button.setOnClickListener {
                 val color = (colorPicker?.adapter as? ColorPickerAdapter)?.color
-                        ?: WaqtiColor.DEFAULT
+                        ?: WaqtiColor.WHITE
                 pickedColor = color
                 onConfirm(color)
             }

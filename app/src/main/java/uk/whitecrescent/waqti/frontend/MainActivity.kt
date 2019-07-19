@@ -2,6 +2,7 @@
 
 package uk.whitecrescent.waqti.frontend
 
+import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
@@ -16,6 +17,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
+import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.colorAttr
+import org.jetbrains.anko.configuration
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
@@ -33,6 +37,8 @@ import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
+import uk.whitecrescent.waqti.logE
+import uk.whitecrescent.waqti.longSnackBar
 import uk.whitecrescent.waqti.onClickOutside
 
 class MainActivity : AppCompatActivity() {
@@ -53,6 +59,13 @@ class MainActivity : AppCompatActivity() {
 
         setUpViews()
 
+        if (isNightMode) {
+            logE("Night Mode on!")
+            appBar.longSnackBar("Night Mode on!")
+        } else {
+            logE("Night Mode off!")
+            appBar.longSnackBar("Night Mode off!")
+        }
     }
 
     private inline fun setUpViews() {
@@ -109,6 +122,8 @@ class MainActivity : AppCompatActivity() {
                 }
             })
         }
+
+        navigationView.backgroundColor = colorAttr(R.attr.colorSurface)
 
         navigationView.setNavigationItemSelectedListener {
             drawerLayout.closeDrawers()
@@ -206,6 +221,9 @@ class MainActivity : AppCompatActivity() {
 
     inline val currentFragment: Fragment
         get() = supportFragmentManager.fragments.last()
+
+    inline val isNightMode: Boolean
+        get() = (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 }
 
 class MainActivityViewModel : ViewModel() {

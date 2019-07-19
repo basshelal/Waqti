@@ -4,6 +4,12 @@ package uk.whitecrescent.waqti.frontend.appearance
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Color.GREY
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Level.FIFTY
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Level.NINE_HUNDRED
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Level.SEVEN_HUNDRED
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Level.THREE_HUNDRED
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Level.TWO_HUNDRED
 import uk.whitecrescent.waqti.logE
 
 open class WaqtiColor(val value: String) {
@@ -45,11 +51,14 @@ open class WaqtiColor(val value: String) {
         val BLACK = WaqtiColor("#000000")
         val WHITE = WaqtiColor("#FFFFFF")
         val TRANSPARENT = WaqtiColor("#00000000")
-        val WAQTI_WHITE = WaqtiColor("#EEEEEE")
-        val CARD_DEFAULT = WaqtiColor("#E0E0E0")
-        val BACKGROUND_DEFAULT = WaqtiColor("#FAFAFA")
-        val WAQTI_DEFAULT = WaqtiColor("#880E4F")
-        val DEFAULT = WHITE
+
+        val LIGHT_CARD_DEFAULT = ColorScheme.getColorScheme(GREY, THREE_HUNDRED).main
+        val LIGHT_BACKGROUND_DEFAULT = ColorScheme.getColorScheme(GREY, FIFTY).main
+        val DARK_CARD_DEFAULT = ColorScheme.getColorScheme(GREY, SEVEN_HUNDRED).main
+        val DARK_BACKGROUND_DEFAULT = ColorScheme.getColorScheme(GREY, NINE_HUNDRED).main
+
+        val WAQTI_DEFAULT = ColorScheme.WAQTI_DEFAULT.main
+        val WAQTI_WHITE = ColorScheme.getColorScheme(GREY, TWO_HUNDRED).main
     }
 }
 

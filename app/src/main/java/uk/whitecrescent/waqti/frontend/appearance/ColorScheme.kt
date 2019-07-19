@@ -514,6 +514,8 @@ data class ColorScheme(val light: WaqtiColor, val main: WaqtiColor,
             }
         }
 
+        fun getColorScheme(color: Color, level: Level) = getColorScheme(ColorLevel(color, level))
+
         fun getAllColorSchemes(color: Color) = Level.values().map {
             getColorScheme(ColorLevel(color, it))
         }
