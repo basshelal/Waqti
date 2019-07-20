@@ -19,7 +19,53 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="4dp">
+
+                <TextView
+                    android:id="@+id/appTheme_textView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="0dp"
+                    android:text="@string/appTheme"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="24sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/appTheme_spinner"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <org.angmarch.views.NiceSpinner
+                    android:id="@+id/appTheme_spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:backgroundTint="?attr/colorSurface"
+                    android:mirrorForRtl="true"
+                    android:textAlignment="textEnd"
+                    android:textSize="20sp"
+                    app:arrowTint="@color/primaryColor"
+                    app:entries="@array/appThemes"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="1"
+                    app:layout_constraintStart_toEndOf="@id/appTheme_textView"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0"
+                    app:popupTextAlignment="center"
+                    app:textTint="@color/primaryColor" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View style="@style/Divider.Horizontal" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp">
 
@@ -31,6 +77,7 @@
                     android:layout_marginEnd="16dp"
                     android:text="@string/taskListWidth"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -78,6 +125,7 @@
                     android:layout_marginEnd="16dp"
                     android:text="@string/listHeaderTextSize"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -125,6 +173,7 @@
                     android:layout_marginEnd="16dp"
                     android:text="@string/taskCardTextSize"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="24sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -160,18 +209,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="-4dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp">
+                android:layout_marginBottom="4dp">
 
                 <TextView
                     android:id="@+id/boardScrollSnapMode_textView"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="0dp"
                     android:text="@string/boardScrollSnapMode"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="24sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toStartOf="@id/boardScrollSnapMode_spinner"
@@ -180,7 +230,7 @@
 
                 <org.angmarch.views.NiceSpinner
                     android:id="@+id/boardScrollSnapMode_spinner"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:backgroundTint="?attr/colorSurface"
@@ -194,6 +244,7 @@
                     app:layout_constraintHorizontal_bias="1"
                     app:layout_constraintStart_toEndOf="@id/boardScrollSnapMode_textView"
                     app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0"
                     app:popupTextAlignment="center"
                     app:textTint="@color/primaryColor" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -208,8 +259,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:backgroundTint="@color/primaryDarkColor"
+        android:backgroundTint="@color/primaryColor"
         android:text="@string/resetToDefaults"
+        android:textColor="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

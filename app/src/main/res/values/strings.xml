@@ -109,7 +109,14 @@
 
 
     <!--Settings Page-->
+    <string name="appTheme">App Theme:</string>
+    <string-array name="appThemes">
+        <item>Light</item>
+        <item>Dark</item>
+        <item>Black</item>
+    </string-array>
     <string name="taskListWidth">List Width:</string>
+    <string name="listHeaderTextSize">List Header Text Size:</string>
     <string name="taskCardTextSize">Card Text Size:</string>
     <string name="boardScrollSnapMode">Board Scroll Snap Mode:</string>
     <string-array name="boardScrollSnapModeOptions">
@@ -130,7 +137,6 @@
     <string name="deletedList">Deleted List:</string>
     <string name="clearedList">Cleared List:</string>
     <string name="deletedBoard">Deleted Board:</string>
-    <string name="listHeaderTextSize">List Header Text Size:</string>
 
 
 </resources>

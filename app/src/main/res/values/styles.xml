@@ -1,22 +1,45 @@
 <resources>
 
     <!-- Main App Theme -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
         <item name="colorAccent">@color/primaryLightColor</item>
+        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
+        <item name="android:textColorSecondary">?attr/colorOnSurface</item>
+        <item name="md_background_color">?attr/colorSurface</item>
     </style>
 
     <!-- Launcher used just for the splash screen -->
-    <style name="AppTheme.Launcher" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="AppTheme.Launcher" parent="AppTheme">
         <item name="android:windowBackground">@drawable/launch_screen</item>
-        <item name="colorPrimary">@color/primaryColor</item>
-        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
-        <item name="colorAccent">@color/secondaryLightColor</item>
+        <item name="android:statusBarColor">@color/primaryColor</item>
     </style>
 
+    <style name="AppTheme.Light" parent="AppTheme">
+        <item name="colorSurface">@color/lightSurfaceColor</item>
+        <item name="colorOnSurface">@color/lightColorOnSurface</item>
+        <item name="android:listDivider">@color/lightListDivider</item>
+    </style>
+
+    <style name="AppTheme.Dark" parent="AppTheme">
+        <item name="colorSurface">@color/darkSurfaceColor</item>
+        <item name="colorOnSurface">@color/darkColorOnSurface</item>
+        <item name="android:listDivider">@color/darkListDivider</item>
+    </style>
+
+    <style name="AppTheme.Black" parent="AppTheme">
+        <item name="colorSurface">@color/blackSurfaceColor</item>
+        <item name="colorOnSurface">@color/blackColorOnSurface</item>
+        <item name="android:listDivider">@color/blackListDivider</item>
+    </style>
+
+
+    <style name="ScrollBar">
+        <item name="android:background">@color/primaryColor</item>
+    </style>
 
     <!-- Dividers -->
     <style name="Divider">

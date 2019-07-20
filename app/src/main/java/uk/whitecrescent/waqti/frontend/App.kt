@@ -20,9 +20,12 @@ class App : Application() {
         LeakCanary.install(this)*/
         AndroidThreeTen.init(this)
         Database.build(this)
-        Database.applyMigrations()
         Caches.initialize()
     }
+}
+
+enum class AppTheme {
+    LIGHT, DARK, BLACK
 }
 
 const val WAQTI_VERSION = "$BUILD_TYPE $VERSION_NAME $VERSION_CODE"

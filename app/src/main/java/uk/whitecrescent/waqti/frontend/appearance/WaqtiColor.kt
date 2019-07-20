@@ -40,6 +40,24 @@ open class WaqtiColor(val value: String) {
     inline val colorScheme: ColorScheme
         get() = ColorScheme.getColorSchemeForMainColor(this)
 
+    inline fun withTransparency(string: String): WaqtiColor {
+        require(string.length == 2) { "$string is invalid, length must be exactly 2" }
+        require(string.all { it.isHexChar }) {
+            "$value is invalid, contains illegal characters," +
+                    " allowed characters are 0-9, a-f (upper and lowercase)"
+        }
+        var newValue = ""
+
+        if (value.length == 9) {
+            newValue = "#$string${value.substring(3)}"
+        }
+        if (value.length == 7) {
+            newValue = "#$string${value.substring(1)}"
+        }
+
+        return WaqtiColor(newValue)
+    }
+
     override fun hashCode() = value.hashCode()
 
     override fun equals(other: Any?) = other.toString() == value

@@ -91,10 +91,6 @@ object Database {
         allDBs.forEach { it.removeAll() }
     }
 
-    fun applyMigrations() {
-
-    }
-
     fun needsRepair(): Boolean {
         return when {
             boardLists.size != 1 -> true

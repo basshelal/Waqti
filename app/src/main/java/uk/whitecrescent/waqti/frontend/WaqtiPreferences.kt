@@ -28,6 +28,7 @@ class WaqtiPreferences(val mainActivity: MainActivity) {
     private val WAQTI_SHARED_PREFERENCES = "WaqtiSharedPreferences"
     val BOARD_LIST_NAME_PREFERENCES_KEY = "BoardListName"
     val BOARD_LIST_VIEW_MODE_PREFERENCES_KEY = "BoardListViewMode"
+    val APP_THEME_PREFERENCES_KEY = "AppTheme"
     val LIST_WIDTH_PREFERENCES_KEY = "ListWidth"
     val CARD_TEXT_SIZE_PREFERENCES_KEY = "CardTextSize"
     val LIST_HEADER_TEXT_SIZE_PREFERENCES_KEY = "ListHeaderTextSize"
@@ -54,6 +55,14 @@ class WaqtiPreferences(val mainActivity: MainActivity) {
         get() = ViewMode.valueOf(sharedPreferences.getString(
                 BOARD_LIST_VIEW_MODE_PREFERENCES_KEY,
                 ViewMode.GRID_VERTICAL.name)!!)
+
+    inline var appTheme: AppTheme
+        set(value) = sharedPreferences.edit {
+            putString(APP_THEME_PREFERENCES_KEY, value.name)
+        }
+        get() = AppTheme.valueOf(sharedPreferences.getString(
+                APP_THEME_PREFERENCES_KEY,
+                AppTheme.LIGHT.name)!!)
 
     inline var listWidth: Int
         set(value) = sharedPreferences.edit {

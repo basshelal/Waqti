@@ -16,6 +16,7 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.frontend.CREATE_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
+import uk.whitecrescent.waqti.frontend.appearance.BoardAppearance
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragmentViewModel
@@ -81,7 +82,9 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
     }
 
     override fun createElement(): Board {
-        return Board(mainActivity.appBar.editTextView.text.toString())
+        return Board(mainActivity.appBar.editTextView.text.toString()).apply {
+            if (mainActivity.isDarkTheme) appearance = BoardAppearance.DEFAULT_DARK
+        }
     }
 
     override fun finish() {

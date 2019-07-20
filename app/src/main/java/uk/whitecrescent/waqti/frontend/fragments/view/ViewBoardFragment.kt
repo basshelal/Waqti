@@ -21,6 +21,7 @@ import com.afollestad.materialdialogs.color.colorChooser
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
+import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.alsoIfNotNull
 import uk.whitecrescent.waqti.backend.collections.Board
@@ -90,6 +91,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
             background = board.backgroundColor.toColorDrawable
             adapter = mainActivityVM.boardAdapter
             if (boardAdapter?.board?.isEmpty() == true) {
+                emptyTitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
+                emptySubtitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
                 emptyState_scrollView.isVisible = true
                 addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
             }

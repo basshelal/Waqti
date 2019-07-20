@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.fragment_settings.*
 import org.angmarch.views.OnSpinnerItemSelectedListener
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.frontend.AppTheme
 import uk.whitecrescent.waqti.frontend.WaqtiPreferences
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
@@ -40,6 +41,13 @@ class SettingsFragment : WaqtiFragment() {
     @SuppressLint("SetTextI18n")
     override fun setUpViews() {
         setUpAppBar()
+
+        appTheme_spinner {
+            selectedIndex = preferences.appTheme.ordinal
+            onSpinnerItemSelectedListener = OnSpinnerItemSelectedListener { parent, view, position, id ->
+                mainActivity.setTheme(AppTheme.valueOf(selectedItem.toString().toUpperCase()))
+            }
+        }
 
         listWidthSetting_seekBar {
 
@@ -86,8 +94,7 @@ class SettingsFragment : WaqtiFragment() {
         boardScrollSnapMode_spinner {
             selectedIndex = preferences.boardScrollSnapMode.ordinal
             onSpinnerItemSelectedListener = OnSpinnerItemSelectedListener { parent, view, position, id ->
-                preferences.boardScrollSnapMode =
-                        ScrollSnapMode.valueOf(selectedItem.toString().toUpperCase())
+                preferences.boardScrollSnapMode = ScrollSnapMode.valueOf(selectedItem.toString().toUpperCase())
             }
         }
 
@@ -124,6 +131,11 @@ class SettingsFragment : WaqtiFragment() {
     }
 
     private inline fun resetSettingsToDefaults() {
+        boardScrollSnapMode_spinner {
+            selectedIndex = AppTheme.LIGHT.ordinal
+            mainActivity.setTheme(AppTheme.LIGHT)
+        }
+
         listWidthSetting_seekBar { setProgress(66F) }
 
         cardTextSizeSetting_seekBar { setProgress(18F) }

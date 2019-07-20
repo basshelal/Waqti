@@ -10,9 +10,11 @@ import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.AppCompatEditText
 import org.jetbrains.anko.colorAttr
+import org.jetbrains.anko.hintTextColor
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.SimpleTextWatcher
+import uk.whitecrescent.waqti.frontend.appearance.toColor
 
 /**
  * The most basic version of an Editable TextView, used across the app especially in the [AppBar]
@@ -45,17 +47,15 @@ class EditTextView
 
     init {
 
-        val attributes = context.obtainStyledAttributes(attributeSet, R.styleable.EditTextView)
+        val attrs = context.obtainStyledAttributes(attributeSet, R.styleable.EditTextView)
 
-        attributes.getBoolean(R.styleable.EditTextView_isEditable, true).also {
-            isEditable = it
-        }
+        isEditable = attrs.getBoolean(R.styleable.EditTextView_isEditable, true)
 
-        attributes.getBoolean(R.styleable.EditTextView_isMultiline, true).also {
-            isMultiLine = it
-        }
+        isMultiLine = attrs.getBoolean(R.styleable.EditTextView_isMultiline, true)
 
-        attributes.recycle()
+        hintTextColor = colorAttr(R.attr.colorOnSurface).toColor.withTransparency("7F").toAndroidColor
+
+        attrs.recycle()
     }
 
     fun removeAllTextChangedListeners() {

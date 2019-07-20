@@ -37,8 +37,6 @@ import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.logE
-import uk.whitecrescent.waqti.longSnackBar
 import uk.whitecrescent.waqti.onClickOutside
 
 class MainActivity : AppCompatActivity() {
@@ -49,23 +47,16 @@ class MainActivity : AppCompatActivity() {
     val onTouchOutSideListeners = HashMap<View, (View) -> Unit>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        setTheme(R.style.AppTheme)
+        preferences = WaqtiPreferences(this)
+        setTheme(preferences.appTheme)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.blank_activity)
 
         viewModel = getViewModel()
 
-        preferences = WaqtiPreferences(this)
 
         setUpViews()
 
-        if (isNightMode) {
-            logE("Night Mode on!")
-            appBar.longSnackBar("Night Mode on!")
-        } else {
-            logE("Night Mode off!")
-            appBar.longSnackBar("Night Mode off!")
-        }
     }
 
     private inline fun setUpViews() {
@@ -200,6 +191,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun setTheme(appTheme: AppTheme) {
+        when (appTheme) {
+            AppTheme.LIGHT -> setTheme(R.style.AppTheme_Light)
+            AppTheme.DARK -> setTheme(R.style.AppTheme_Dark)
+            AppTheme.BLACK -> setTheme(R.style.AppTheme_Black)
+        }
+        val needsRecreate = appTheme != preferences.appTheme
+        preferences.appTheme = appTheme
+        if (needsRecreate) recreate()
+    }
+
     inline fun resetColorScheme() {
         setColorScheme(ColorScheme.WAQTI_DEFAULT)
     }
@@ -224,6 +226,9 @@ class MainActivity : AppCompatActivity() {
 
     inline val isNightMode: Boolean
         get() = (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
+    inline val isDarkTheme: Boolean
+        get() = preferences.appTheme == AppTheme.DARK || preferences.appTheme == AppTheme.BLACK
 }
 
 class MainActivityViewModel : ViewModel() {

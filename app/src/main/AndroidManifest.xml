@@ -16,8 +16,7 @@
         tools:replace="android:label">
         <activity
             android:name=".frontend.MainActivity"
-            android:label="@string/waqti"
-            android:theme="@style/AppTheme.Launcher">
+            android:label="@string/waqti">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

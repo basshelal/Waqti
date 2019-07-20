@@ -48,9 +48,8 @@ class AboutFragment : WaqtiFragment() {
 
                 // Waqti is free and open source
                 .addHeading(getString(R.string.waqtiOpenSource))
-                .addGitHub("basshelal/Waqti-Android", "Fork Waqti on GitHub")
-                .addLink("MIT License",
-                        "https://github.com/basshelal/Waqti-Android/blob/master/LICENSE")
+                .addGitHubExt("basshelal/Waqti-Android", "Fork Waqti on GitHub")
+                .addLicense()
 
                 // Open Source Libraries Used
                 .addHeading(getString(R.string.openSourceLibraries))
@@ -80,7 +79,7 @@ class AboutFragment : WaqtiFragment() {
 
                 // About the Developer
                 .addHeading(getString(R.string.aboutTheDeveloper))
-                .addGitHub("basshelal", "Bassam Helal on GitHub")
+                .addGitHubExt("basshelal", "Bassam Helal on GitHub")
                 .addLinkedIn("bassamhelal", "Bassam Helal on LinkedIn")
                 .create()
         about_linearLayout.addView(view)
@@ -118,34 +117,44 @@ class AboutFragment : WaqtiFragment() {
 
 inline fun AboutPage.addHeading(title: String) = addGroup(title)
 
-inline fun AboutPage.addLink(title: String, url: String): AboutPage {
+inline fun AboutPage.addLicense(): AboutPage {
     return addItem(Element().apply {
-        this.title = title
-        iconDrawable = null
-        iconTint = null
-        value = url
+        this.title = "MIT License"
+        iconDrawable = R.drawable.opensource_icon
+        iconTint = R.color.primaryColor
+        iconNightTint = R.color.primaryColor
+        value = "https://github.com/basshelal/Waqti-Android/blob/master/LICENSE"
         intent = Intent().apply {
             action = Intent.ACTION_VIEW
             addCategory(Intent.CATEGORY_BROWSABLE)
-            data = Uri.parse(url)
+            data = Uri.parse("https://github.com/basshelal/Waqti-Android/blob/master/LICENSE")
         }
     })
 }
 
-inline fun AboutPage.addLibrary(id: String, title: String) = addGitHub(id, title)
-
-inline fun AboutPage.addParagraph(text: String): AboutPage {
+inline fun AboutPage.addGitHubExt(id: String, title: String): AboutPage {
     return addItem(Element().apply {
-        title = text
-        value = text
+        this.title = title
+        iconDrawable = mehdi.sakout.aboutpage.R.drawable.about_icon_github
+        iconTint = R.color.primaryColor
+        iconNightTint = R.color.primaryColor
+        value = id
+        intent = Intent().apply {
+            action = Intent.ACTION_VIEW
+            addCategory(Intent.CATEGORY_BROWSABLE)
+            data = Uri.parse(String.format("https://github.com/%s", id))
+        }
     })
 }
+
+inline fun AboutPage.addLibrary(id: String, title: String) = addGitHubExt(id, title)
 
 inline fun AboutPage.addLinkedIn(id: String, title: String): AboutPage {
     return addItem(Element().apply {
         this.title = title
         iconDrawable = R.drawable.linkedin_icon
-        iconTint = R.color.linkedInColor
+        iconTint = R.color.primaryColor
+        iconNightTint = R.color.primaryColor
         value = id
         intent = Intent().apply {
             action = Intent.ACTION_VIEW
