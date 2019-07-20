@@ -31,6 +31,7 @@ class WaqtiPreferences(val mainActivity: MainActivity) {
     val CARD_TEXT_SIZE_PREFERENCES_KEY = "CardTextSize"
     val LIST_HEADER_TEXT_SIZE_PREFERENCES_KEY = "ListHeaderTextSize"
     val BOARD_SCROLL_SNAP_MODE_PREFERENCES_KEY = "BoardScrollSnapMode"
+    val CHANGE_NAV_BAR_COLOR_PREFERENCES_KEY = "ChangeNavBarColor"
 
     val sharedPreferences: SharedPreferences =
             mainActivity.getSharedPreferences(WAQTI_SHARED_PREFERENCES, Context.MODE_PRIVATE)
@@ -83,6 +84,14 @@ class WaqtiPreferences(val mainActivity: MainActivity) {
         get() = ScrollSnapMode.valueOf(sharedPreferences.getString(
                 BOARD_SCROLL_SNAP_MODE_PREFERENCES_KEY,
                 ScrollSnapMode.PAGED.name)!!)
+
+    inline var changeNavBarColor: Boolean
+        set(value) = sharedPreferences.edit {
+            putBoolean(CHANGE_NAV_BAR_COLOR_PREFERENCES_KEY, value)
+            settingsChanged()
+        }
+        get() = sharedPreferences.getBoolean(
+                CHANGE_NAV_BAR_COLOR_PREFERENCES_KEY, true)
 
     inline fun settingsChanged() {
         mainActivity.viewModel.settingsChanged = true

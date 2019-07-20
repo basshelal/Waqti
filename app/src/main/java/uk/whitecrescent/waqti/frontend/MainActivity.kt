@@ -30,6 +30,7 @@ import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.doInBackgroundOnceWhen
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
@@ -114,39 +115,40 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-        navigationView.backgroundColor = colorAttr(R.attr.colorSurface)
-
-        navigationView.setNavigationItemSelectedListener {
-            drawerLayout.closeDrawers()
-            when (it.itemId) {
-                R.id.allBoards_navDrawerItem -> {
-                    doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
-                        @FragmentNavigation(from = ANY_FRAGMENT, to = VIEW_BOARD_LIST_FRAGMENT)
-                        popAllFragmentsInBackStack()
-                    })
+        navigationView {
+            backgroundColor = colorAttr(R.attr.colorSurface)
+            setNavigationItemSelectedListener {
+                drawerLayout.closeDrawers()
+                when (it.itemId) {
+                    R.id.allBoards_navDrawerItem -> {
+                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
+                            @FragmentNavigation(from = ANY_FRAGMENT, to = VIEW_BOARD_LIST_FRAGMENT)
+                            popAllFragmentsInBackStack()
+                        })
+                    }
+                    R.id.settings_navDrawerItem -> {
+                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
+                            if (currentFragment.tag != SETTINGS_FRAGMENT)
+                                supportFragmentManager.commitTransaction {
+                                    @FragmentNavigation(from = ANY_FRAGMENT, to = SETTINGS_FRAGMENT)
+                                    replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
+                                    addToBackStack(null)
+                                }
+                        })
+                    }
+                    R.id.about_navDrawerItem -> {
+                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
+                            if (currentFragment.tag != ABOUT_FRAGMENT)
+                                supportFragmentManager.commitTransaction {
+                                    @FragmentNavigation(from = ANY_FRAGMENT, to = ABOUT_FRAGMENT)
+                                    replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
+                                    addToBackStack(null)
+                                }
+                        })
+                    }
                 }
-                R.id.settings_navDrawerItem -> {
-                    doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
-                        if (currentFragment.tag != SETTINGS_FRAGMENT)
-                            supportFragmentManager.commitTransaction {
-                                @FragmentNavigation(from = ANY_FRAGMENT, to = SETTINGS_FRAGMENT)
-                                replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
-                                addToBackStack(null)
-                            }
-                    })
-                }
-                R.id.about_navDrawerItem -> {
-                    doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
-                        if (currentFragment.tag != ABOUT_FRAGMENT)
-                            supportFragmentManager.commitTransaction {
-                                @FragmentNavigation(from = ANY_FRAGMENT, to = ABOUT_FRAGMENT)
-                                replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
-                                addToBackStack(null)
-                            }
-                    })
-                }
+                true
             }
-            true
         }
 
         supportFragmentManager.addOnBackStackChangedListener {
@@ -183,7 +185,9 @@ class MainActivity : AppCompatActivity() {
     fun setColorScheme(colorScheme: ColorScheme) {
         appBar.setColorScheme(colorScheme)
         window.statusBarColor = colorScheme.dark.toAndroidColor
-        window.navigationBarColor = colorScheme.main.toAndroidColor
+        if (preferences.changeNavBarColor)
+            window.navigationBarColor = colorScheme.main.toAndroidColor
+        else window.navigationBarColor = WaqtiColor.BLACK.toAndroidColor
 
         navigationView.getHeaderView(0).apply {
             setBackgroundColor(colorScheme.main.toAndroidColor)

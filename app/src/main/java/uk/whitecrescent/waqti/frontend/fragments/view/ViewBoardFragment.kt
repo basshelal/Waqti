@@ -222,7 +222,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                 waitForPositiveButton = false,
                                 selection = { dialog, colorInt ->
                                     val colorScheme = colorInt.toColor.colorScheme
-                                    dialog.window?.navigationBarColor = colorScheme.main.toAndroidColor
+                                    if (mainActivity.preferences.changeNavBarColor)
+                                        dialog.window?.navigationBarColor = colorScheme.main.toAndroidColor
                                     this@ViewBoardFragment.setColorScheme(colorScheme)
                                     board.barColor = colorScheme.main
                                 }

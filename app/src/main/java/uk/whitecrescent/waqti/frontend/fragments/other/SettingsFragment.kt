@@ -55,10 +55,10 @@ class SettingsFragment : WaqtiFragment() {
 
             setProgress(fromPrefs.toFloat())
 
-            listWidthSetting_textView.text = getString(R.string.taskListWidth) + fromPrefs
+            listWidthSetting_textView.text = getString(R.string.taskListWidth) + " " + fromPrefs
 
             onSeek {
-                listWidthSetting_textView.text = getString(R.string.taskListWidth) + progress
+                listWidthSetting_textView.text = getString(R.string.taskListWidth) + " " + progress
                 preferences.listWidth = progress
             }
         }
@@ -69,10 +69,10 @@ class SettingsFragment : WaqtiFragment() {
 
             setProgress(fromPrefs.toFloat())
 
-            cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) + fromPrefs
+            cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) + " " + fromPrefs
 
             onSeek {
-                cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) + progress
+                cardTextSizeSetting_textView.text = getString(R.string.taskCardTextSize) + " " + progress
                 preferences.cardTextSize = progress
             }
         }
@@ -83,10 +83,10 @@ class SettingsFragment : WaqtiFragment() {
 
             setProgress(fromPrefs.toFloat())
 
-            headerTextSizeSetting_textView.text = getString(R.string.listHeaderTextSize) + fromPrefs
+            headerTextSizeSetting_textView.text = getString(R.string.listHeaderTextSize) + " " + fromPrefs
 
             onSeek {
-                headerTextSizeSetting_textView.text = getString(R.string.listHeaderTextSize) + progress
+                headerTextSizeSetting_textView.text = getString(R.string.listHeaderTextSize) + " " + progress
                 preferences.listHeaderTextSize = progress
             }
         }
@@ -95,6 +95,14 @@ class SettingsFragment : WaqtiFragment() {
             selectedIndex = preferences.boardScrollSnapMode.ordinal
             onSpinnerItemSelectedListener = OnSpinnerItemSelectedListener { parent, view, position, id ->
                 preferences.boardScrollSnapMode = ScrollSnapMode.valueOf(selectedItem.toString().toUpperCase())
+            }
+        }
+
+        changeNavBarColor_checkBox {
+            isChecked = preferences.changeNavBarColor
+            setOnCheckedChangeListener { _, isChecked ->
+                preferences.changeNavBarColor = isChecked
+                mainActivity.resetColorScheme()
             }
         }
 
@@ -131,7 +139,7 @@ class SettingsFragment : WaqtiFragment() {
     }
 
     private inline fun resetSettingsToDefaults() {
-        boardScrollSnapMode_spinner {
+        appTheme_spinner {
             selectedIndex = AppTheme.LIGHT.ordinal
             mainActivity.setTheme(AppTheme.LIGHT)
         }
@@ -141,6 +149,8 @@ class SettingsFragment : WaqtiFragment() {
         cardTextSizeSetting_seekBar { setProgress(18F) }
 
         listHeaderTextSizeSetting_seekBar { setProgress(28F) }
+
+        changeNavBarColor_checkBox { isChecked = true }
 
         boardScrollSnapMode_spinner {
             selectedIndex = ScrollSnapMode.PAGED.ordinal

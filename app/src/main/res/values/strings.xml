@@ -124,6 +124,7 @@
         <item>Linear</item>
         <item>None</item>
     </string-array>
+    <string name="changeNavBarColor">Change Navigation Bar Color?</string>
     <string name="resetToDefaults">Reset to defaults?</string>
     <string name="resetToDefaultsQuestion">Are you sure you want to reset settings to
         defaults?</string>
