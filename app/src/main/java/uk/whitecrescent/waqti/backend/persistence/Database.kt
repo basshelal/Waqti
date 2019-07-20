@@ -105,12 +105,12 @@ object Database {
         (Database.boardLists.size).also {
             if (it == 1) return
             if (it == 0) {
-                Database.boardLists.put(BoardList("Default"))
+                Database.boardLists.put(BoardList("All Boards"))
                 Database.boardLists.all.first().addAll(Caches.boards.all())
             }
             if (it > 1) {
                 Database.boardLists.removeAll()
-                Database.boardLists.put(BoardList("Default"))
+                Database.boardLists.put(BoardList("All Boards"))
                 Database.boardLists.all.first().addAll(Caches.boards.all())
             }
         }

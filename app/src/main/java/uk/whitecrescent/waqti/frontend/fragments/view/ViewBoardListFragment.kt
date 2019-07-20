@@ -106,13 +106,13 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                 hint = getString(R.string.allBoards)
                 fun update() {
                     if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
-                        if (text.toString() != mainActivity.preferences.boardListName) {
-                            mainActivity.preferences.boardListName = text.toString()
+                        if (text.toString() != boardList.name) {
+                            boardList.name = text.toString()
                         }
                     }
                 }
                 addAfterTextChangedListener { update() }
-                text = SpannableStringBuilder(mainActivity.preferences.boardListName)
+                text = SpannableStringBuilder(boardList.name)
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()

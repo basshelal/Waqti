@@ -5,7 +5,6 @@ package uk.whitecrescent.waqti.frontend
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewMode
 
@@ -26,7 +25,6 @@ class WaqtiPreferences(val mainActivity: MainActivity) {
 
     // The preferences keys, they're long for a reason, there's no use for them outside this class
     private val WAQTI_SHARED_PREFERENCES = "WaqtiSharedPreferences"
-    val BOARD_LIST_NAME_PREFERENCES_KEY = "BoardListName"
     val BOARD_LIST_VIEW_MODE_PREFERENCES_KEY = "BoardListViewMode"
     val APP_THEME_PREFERENCES_KEY = "AppTheme"
     val LIST_WIDTH_PREFERENCES_KEY = "ListWidth"
@@ -37,17 +35,6 @@ class WaqtiPreferences(val mainActivity: MainActivity) {
     val sharedPreferences: SharedPreferences =
             mainActivity.getSharedPreferences(WAQTI_SHARED_PREFERENCES, Context.MODE_PRIVATE)
 
-
-    // TODO: 29-Jun-19 Remove this and let us use the BoardList.name property
-    inline var boardListName: String
-        set(value) = sharedPreferences.edit {
-            putString(BOARD_LIST_NAME_PREFERENCES_KEY, value)
-        }
-        get() = sharedPreferences.getString(
-                BOARD_LIST_NAME_PREFERENCES_KEY,
-                mainActivity.getString(R.string.allBoards))!!
-
-    // TODO: 15-Jul-19 We could make this be a property inside of BoardList instead
     inline var boardListViewMode: ViewMode
         set(value) = sharedPreferences.edit {
             putString(BOARD_LIST_VIEW_MODE_PREFERENCES_KEY, value.name)
