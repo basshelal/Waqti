@@ -55,7 +55,6 @@ class MainActivity : AppCompatActivity() {
 
         viewModel = getViewModel()
 
-
         setUpViews()
 
     }
@@ -121,30 +120,30 @@ class MainActivity : AppCompatActivity() {
                 drawerLayout.closeDrawers()
                 when (it.itemId) {
                     R.id.allBoards_navDrawerItem -> {
-                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
+                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }) {
                             @FragmentNavigation(from = ANY_FRAGMENT, to = VIEW_BOARD_LIST_FRAGMENT)
                             popAllFragmentsInBackStack()
-                        })
+                        }
                     }
                     R.id.settings_navDrawerItem -> {
-                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
+                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }) {
                             if (currentFragment.tag != SETTINGS_FRAGMENT)
                                 supportFragmentManager.commitTransaction {
                                     @FragmentNavigation(from = ANY_FRAGMENT, to = SETTINGS_FRAGMENT)
                                     replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
                                     addToBackStack(null)
                                 }
-                        })
+                        }
                     }
                     R.id.about_navDrawerItem -> {
-                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }, {
+                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }) {
                             if (currentFragment.tag != ABOUT_FRAGMENT)
                                 supportFragmentManager.commitTransaction {
                                     @FragmentNavigation(from = ANY_FRAGMENT, to = ABOUT_FRAGMENT)
                                     replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
                                     addToBackStack(null)
                                 }
-                        })
+                        }
                     }
                 }
                 true
@@ -189,7 +188,7 @@ class MainActivity : AppCompatActivity() {
             window.navigationBarColor = colorScheme.main.toAndroidColor
         else window.navigationBarColor = WaqtiColor.BLACK.toAndroidColor
 
-        navigationView.getHeaderView(0).apply {
+        (navigationView.getHeaderView(0)) {
             setBackgroundColor(colorScheme.main.toAndroidColor)
             navigation_header_title?.textColor = colorScheme.text.toAndroidColor
         }

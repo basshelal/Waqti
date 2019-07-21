@@ -5,7 +5,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -112,21 +111,19 @@ class BoardAdapter(val boardID: ID)
     : RecyclerView.Adapter<BoardViewHolder>() {
 
     val board = Caches.boards[boardID]
-
     lateinit var boardView: BoardView
     lateinit var itemTouchHelper: ItemTouchHelper
-    private var snapHelper: SnapHelper? = null
+    var snapHelper: SnapHelper? = null
     var taskListWidth: Int = 600
     var listHeaderTextSize: Int = 28
-
     val taskListAdapters = ArrayList<TaskListAdapter>()
+    var savedState: LinearLayoutManager.SavedState? = null
+    var horizontalScrollOffset: Int = 0
+    var onInflate: BoardView.() -> Unit = {}
+    var onScrolled: (Int, Int) -> Unit = { dx, dy -> }
 
     private inline val linearLayoutManager: LinearLayoutManager
         get() = boardView.layoutManager as LinearLayoutManager
-
-    private var savedState: LinearLayoutManager.SavedState? = null
-
-    var onInflate: BoardView.() -> Unit = {}
 
     init {
         this.setHasStableIds(true)
@@ -166,6 +163,11 @@ class BoardAdapter(val boardID: ID)
                     val currentBoardPos = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
                     boardView.mainActivityViewModel.boardPosition.changeTo(true to currentBoardPos)
                 }
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                horizontalScrollOffset += dx
+                onScrolled(dx, dy)
             }
         })
 
@@ -251,8 +253,8 @@ class BoardAdapter(val boardID: ID)
     }
 
     override fun onViewAttachedToWindow(holder: BoardViewHolder) {
-        holder.itemView.startAnimation(AnimationUtils.loadAnimation(boardView.context,
-                R.anim.task_list_show_anim))
+        /*holder.itemView.startAnimation(AnimationUtils.loadAnimation(boardView.context,
+                R.anim.task_list_show_anim))*/
     }
 
     private fun matchOrder() {

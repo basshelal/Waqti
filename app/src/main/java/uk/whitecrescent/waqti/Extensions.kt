@@ -151,6 +151,22 @@ inline fun RecyclerView.smoothScrollToStart() {
     }
 }
 
+inline fun RecyclerView.onScrolled(crossinline onScroll: (RecyclerView, Int, Int) -> Unit) {
+    addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            onScroll(recyclerView, dx, dy)
+        }
+    })
+}
+
+inline fun RecyclerView.onScrollStateChanged(crossinline onScroll: (RecyclerView, Int) -> Unit) {
+    addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            onScroll(recyclerView, newState)
+        }
+    })
+}
+
 inline fun RecyclerView.setEdgeEffectColor(waqtiColor: WaqtiColor) {
     edgeEffectFactory = object : RecyclerView.EdgeEffectFactory() {
         override fun createEdgeEffect(view: RecyclerView, direction: Int): EdgeEffect {
@@ -353,10 +369,10 @@ inline fun <reified T> T.doInBackgroundWhen(crossinline predicate: (T) -> Boolea
  * [androidObservable].
  */
 inline fun <reified T> T.doInBackgroundOnceWhen(crossinline predicate: (T) -> Boolean,
-                                                crossinline onNext: T.() -> Unit,
                                                 period: Number = 100,
                                                 timeUnit: java.util.concurrent.TimeUnit =
-                                                        java.util.concurrent.TimeUnit.MILLISECONDS): Disposable {
+                                                        java.util.concurrent.TimeUnit.MILLISECONDS,
+                                                crossinline onNext: T.() -> Unit): Disposable {
     var done = false
     return Observable.interval(period.toLong(), timeUnit, Schedulers.computation())
             .observeOn(AndroidSchedulers.mainThread())

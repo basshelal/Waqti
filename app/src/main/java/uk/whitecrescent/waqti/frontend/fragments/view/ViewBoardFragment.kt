@@ -3,6 +3,7 @@
 package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.os.Vibrator
 import android.text.SpannableStringBuilder
@@ -13,17 +14,20 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
 import com.afollestad.materialdialogs.color.colorChooser
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.alsoIfNotNull
+import uk.whitecrescent.waqti.applyIfNotNull
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
@@ -38,7 +42,9 @@ import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.appearance.toColor
+import uk.whitecrescent.waqti.frontend.customview.WIDE_PICTURES
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
@@ -54,6 +60,7 @@ import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.setColorScheme
 import uk.whitecrescent.waqti.setEdgeEffectColor
 import uk.whitecrescent.waqti.shortSnackBar
+import kotlin.math.roundToInt
 
 class ViewBoardFragment : WaqtiViewFragment() {
 
@@ -80,6 +87,46 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
 
         setUpViews()
+
+        image()
+
+    }
+
+    private fun image() {
+        doInBackground {
+            boardView.background = WaqtiColor.TRANSPARENT.toColorDrawable
+
+            val x = (boardView.layoutManager as? LinearLayoutManager)
+                    ?.findFirstVisibleItemPosition()
+
+            mainActivity.appBar.shortSnackBar("$x")
+
+            /* TODO
+              * We should force the background image to be only landscape?
+              */
+
+            Glide.with(this)
+                    .load(Uri.parse(WIDE_PICTURES.random()))
+                    .into(background_imageView)
+
+
+            /* TODO
+              * The scrollBy will differ based on how wide the image is
+              * the wider the image the smaller the number.
+              * Or the number of lists??
+              * Actually I think its based on number of lists not image width!
+              * What if it's based on a relation between both?
+              */
+            boardView.boardAdapter.applyIfNotNull {
+                mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
+                onScrolled = { dx, _ ->
+                    // below prevents over-scrolling leftwards which shows white space
+                    if (horizontalScrollOffset > 0)
+                        background_imageView.scrollBy((dx * 0.25).roundToInt(), 0)
+                    mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
+                }
+            }
+        }
     }
 
     override fun setUpViews() {
@@ -292,6 +339,10 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                     val waqtiColor = colorInt.toColor
                                     this@ViewBoardFragment.boardView.background = waqtiColor.toColorDrawable
                                     board.backgroundColor = waqtiColor
+                                    if (this@ViewBoardFragment.emptyState_scrollView.isVisible) {
+                                        this@ViewBoardFragment.emptyTitle_textView.textColor = waqtiColor.colorScheme.text.toAndroidColor
+                                        this@ViewBoardFragment.emptySubtitle_textView.textColor = waqtiColor.colorScheme.text.toAndroidColor
+                                    }
                                 }
                         )
                     }
