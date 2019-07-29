@@ -1,6 +1,6 @@
 package uk.whitecrescent.waqti.backend.collections
 
-import com.kc.unsplash.models.Photo
+import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
@@ -67,7 +67,7 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
         }
         get() = appearance.barColor
 
-    inline var backgroundPhoto: Photo
+    inline var backgroundPhoto: UnsplashPhoto
         set(value) {
             appearance.backgroundPhoto = value
             update()

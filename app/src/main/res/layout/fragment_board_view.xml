@@ -13,6 +13,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardView
+        android:background="@color/transparent"
         android:id="@+id/boardView"
         android:layout_width="0dp"
         android:layout_height="0dp"

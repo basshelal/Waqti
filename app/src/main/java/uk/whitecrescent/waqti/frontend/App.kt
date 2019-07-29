@@ -1,12 +1,15 @@
 package uk.whitecrescent.waqti.frontend
 
 import android.app.Application
+import com.github.basshelal.unsplashpicker.UnsplashPhotoPickerConfig
 import com.jakewharton.threetenabp.AndroidThreeTen
 import uk.whitecrescent.waqti.BuildConfig.BUILD_TYPE
 import uk.whitecrescent.waqti.BuildConfig.VERSION_CODE
 import uk.whitecrescent.waqti.BuildConfig.VERSION_NAME
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.Database
+import uk.whitecrescent.waqti.keys.UNSPLASH_ACCESS_KEY
+import uk.whitecrescent.waqti.keys.UNSPLASH_SECRET_KEY
 
 class App : Application() {
 
@@ -21,6 +24,12 @@ class App : Application() {
         AndroidThreeTen.init(this)
         Database.build(this)
         Caches.initialize()
+        UnsplashPhotoPickerConfig.init(
+                this,
+                UNSPLASH_ACCESS_KEY,
+                UNSPLASH_SECRET_KEY,
+                "Waqti"
+        )
     }
 }
 

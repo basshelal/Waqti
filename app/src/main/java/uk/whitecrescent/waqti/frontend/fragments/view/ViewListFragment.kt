@@ -207,7 +207,6 @@ class ViewListFragment : WaqtiViewFragment() {
             listHeaderColor_listOption {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                        cornerRadius(literalDp = 8F)
                         title(text = "List Header Color")
                         setPeekHeight(Int.MAX_VALUE)
                         positiveButton(text = "Confirm")
@@ -231,7 +230,6 @@ class ViewListFragment : WaqtiViewFragment() {
             cardColor_listOption {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                        cornerRadius(literalDp = 8F)
                         title(text = "Card Color")
                         setPeekHeight(Int.MAX_VALUE)
                         positiveButton(text = "Confirm")
@@ -310,7 +308,10 @@ class ViewListFragment : WaqtiViewFragment() {
             setBackgroundColor(colorScheme.main.toAndroidColor)
         }
         addTask_floatingButton.setColorScheme(colorScheme)
-        taskList_recyclerView.setEdgeEffectColor(colorScheme.dark)
+        taskList_recyclerView {
+            scrollBarColor = colorScheme.dark
+            setEdgeEffectColor(colorScheme.dark)
+        }
     }
 }
 

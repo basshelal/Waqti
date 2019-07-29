@@ -1,7 +1,10 @@
 package uk.whitecrescent.waqti.frontend.appearance
 
+import com.github.basshelal.unsplashpicker.data.UnsplashLinks
+import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
+import com.github.basshelal.unsplashpicker.data.UnsplashUrls
+import com.github.basshelal.unsplashpicker.data.UnsplashUser
 import com.google.gson.annotations.SerializedName
-import com.kc.unsplash.models.Photo
 import io.objectbox.converter.PropertyConverter
 import uk.whitecrescent.waqti.fromJsonTo
 import uk.whitecrescent.waqti.toJson
@@ -21,7 +24,7 @@ class BoardAppearance {
     var barColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT
 
     @SerializedName("p")
-    var backgroundPhoto: Photo = DEFAULT_PHOTO
+    var backgroundPhoto: UnsplashPhoto = DEFAULT_PHOTO
 
     companion object {
         val DEFAULT_DARK = BoardAppearance().apply {
@@ -44,4 +47,9 @@ class BoardAppearanceConverter : PropertyConverter<BoardAppearance, String> {
     }
 }
 
-val DEFAULT_PHOTO: Photo = Photo()
+val DEFAULT_URLS = UnsplashUrls("", "", "", "", "", "", "")
+val DEFAULT_LINKS = UnsplashLinks("", "", "", "", "", "", "")
+val DEFAULT_USER = UnsplashUser("", "", "", "", "", "", 0, 0, 0, DEFAULT_URLS, DEFAULT_LINKS)
+
+val DEFAULT_PHOTO = UnsplashPhoto("", "", 0, 0, "", 0, "",
+        DEFAULT_URLS, DEFAULT_LINKS, DEFAULT_USER)

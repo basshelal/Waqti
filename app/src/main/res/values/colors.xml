@@ -14,6 +14,7 @@
     <color name="errorColor">#C62828</color>
     <color name="linkedInColor">#0077B5</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="translucentBlack">#8F000000</color>
 
     <color name="lightSurfaceColor">#FAFAFA</color>
     <color name="lightColorOnSurface">@color/black</color>

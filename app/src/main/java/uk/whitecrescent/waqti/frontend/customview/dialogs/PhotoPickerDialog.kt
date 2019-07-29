@@ -1,48 +1,84 @@
 package uk.whitecrescent.waqti.frontend.customview.dialogs
 
-import android.graphics.drawable.Drawable
-import com.kc.unsplash.models.Photo
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
 import kotlinx.android.synthetic.main.dialog_photopicker.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.frontend.appearance.DEFAULT_PHOTO
-import uk.whitecrescent.waqti.frontend.customview.PhotoPickerAdapter
+import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
+import uk.whitecrescent.waqti.invoke
 
-class PhotoPickerDialog : MaterialDialog() {
+/**
+ * This is actually not a [MaterialDialog], just a regular [Fragment]
+ */
+class PhotoPickerDialog : WaqtiFragment() {
 
-    override val contentView = R.layout.dialog_photopicker
-    var title = "Pick Color"
-    var onConfirm: (Photo) -> Unit = { }
-    var onClick: (Photo) -> Unit = { }
-    var initialPhoto: Photo = DEFAULT_PHOTO
-    var pickedPhoto: Photo = DEFAULT_PHOTO
-
-    var __onConfirm: (Drawable) -> Unit = { }
-    var __onClick: (Drawable) -> Unit = { }
-    lateinit var __pickedDrawable: Drawable
-
-    override fun onResume() {
-        super.onResume()
-
-        dialog.apply {
-
-            photoPicker.apply {
-                adapter = PhotoPickerAdapter(onClick, initialPhoto, __onClick)
+    var onConfirm: (UnsplashPhoto) -> Unit = { }
+    var onClick: (UnsplashPhoto) -> Unit = { }
+    var selectedPhoto: UnsplashPhoto? = null
+        set(value) {
+            field = value
+            confirm_button {
+                alpha = if (value == null) 0.5F else 1F
+                isEnabled = value != null
             }
-
-            confirm_button.setOnClickListener {
-                val __drawable = (photoPicker?.adapter as? PhotoPickerAdapter)?.__drawable
-                __pickedDrawable = __drawable!!
-                __onConfirm(__drawable)
-
-
-                val photo = (photoPicker?.adapter as? PhotoPickerAdapter)?.photo
-                        ?: DEFAULT_PHOTO
-                pickedPhoto = photo
-                onConfirm(photo)
-            }
-
-            cancel_button.setOnClickListener(onCancel)
         }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.dialog_photopicker, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        setUpAppBar()
+        setUpViews()
+    }
+
+    override fun setUpViews() {
+        selectedPhoto = null
+
+        photoPicker {
+            onClickPhoto = { photo, _ ->
+                selectedPhoto = photo
+                onClick(photo)
+            }
+        }
+
+        confirm_button {
+            setOnClickListener {
+                selectedPhoto?.also {
+                    onConfirm(it)
+                }
+            }
+        }
+        cancel_button {
+            setOnClickListener {
+                dismiss()
+            }
+        }
+    }
+
+    override fun setUpAppBar() {
+        mainActivity.appBar.isVisible = false
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        mainActivity.appBar.isVisible = true
+    }
+
+    fun dismiss() {
+        finish()
+    }
+
+    override fun finish() {
+        mainActivity.supportFragmentManager.popBackStack()
     }
 
 }

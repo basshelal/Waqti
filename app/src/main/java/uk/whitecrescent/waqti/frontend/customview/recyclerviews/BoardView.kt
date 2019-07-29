@@ -1,6 +1,9 @@
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -62,6 +65,7 @@ class BoardView
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
 
+    var scrollBarColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT.colorScheme.text
     inline val boardAdapter: BoardAdapter?
         get() = this.adapter as BoardAdapter?
 
@@ -79,6 +83,22 @@ class BoardView
         }
         setRecycledViewPool(listViewHolderPool)
     }
+
+    @Suppress("unused")
+    protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
+        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
+        scrollBar.setBounds(l, t, r, b)
+        scrollBar.draw(canvas)
+    }
+
+
+    @Suppress("unused")
+    protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
+        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
+        scrollBar.setBounds(l, t, r, b)
+        scrollBar.draw(canvas)
+    }
+
 
     fun invalidateBoard() {
         recycledViewPool.clear()
@@ -314,7 +334,10 @@ class BoardAdapter(val boardID: ID)
         taskListAdapters.forEach {
             it.taskListViewSafe {
                 (parentView as? ConstraintLayout?) {
-                    taskList_recyclerView { setEdgeEffectColor(colorScheme.dark) }
+                    taskList_recyclerView {
+                        scrollBarColor = colorScheme.text
+                        setEdgeEffectColor(colorScheme.dark)
+                    }
                     taskListHeader { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
                     taskListHeader_textView { textColor = colorScheme.text.toAndroidColor }
                     taskListFooter_fab { setColorScheme(colorScheme) }
@@ -393,6 +416,7 @@ class BoardViewHolder(view: View,
 
     fun setHeaderColorScheme(colorScheme: ColorScheme) {
         taskListView {
+            scrollBarColor = colorScheme.text
             setEdgeEffectColor(colorScheme.dark)
         }
         header { setCardBackgroundColor(colorScheme.main.toAndroidColor) }

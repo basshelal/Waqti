@@ -11,10 +11,13 @@ import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.EditorInfo
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.core.view.updateLayoutParams
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -44,8 +47,8 @@ import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.appearance.toColor
-import uk.whitecrescent.waqti.frontend.customview.WIDE_PICTURES
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
+import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateListFragment
@@ -88,28 +91,42 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
         setUpViews()
 
-        image()
 
+        //=================================================================================
+        //=================================New stuff=======================================
+        //=================================================================================
+
+        color()
+
+        //image()
+
+        //parallaxImage()
     }
 
-    private fun image() {
+    private inline fun color() {
+        background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            width = MATCH_PARENT
+        }
+        background_imageView.background = board.backgroundColor.toColorDrawable
+    }
+
+    private inline fun image() {
         doInBackground {
-            boardView.background = WaqtiColor.TRANSPARENT.toColorDrawable
 
-            val x = (boardView.layoutManager as? LinearLayoutManager)
-                    ?.findFirstVisibleItemPosition()
-
-            mainActivity.appBar.shortSnackBar("$x")
-
-            /* TODO
-              * We should force the background image to be only landscape?
-              */
+            background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                width = MATCH_PARENT
+            }
 
             Glide.with(this)
                     .load(Uri.parse(WIDE_PICTURES.random()))
+                    .centerCrop()
                     .into(background_imageView)
 
+        }
+    }
 
+    private inline fun parallaxImage() {
+        doInBackground {
             /* TODO
               * The scrollBy will differ based on how wide the image is
               * the wider the image the smaller the number.
@@ -117,6 +134,17 @@ class ViewBoardFragment : WaqtiViewFragment() {
               * Actually I think its based on number of lists not image width!
               * What if it's based on a relation between both?
               */
+
+            background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                width = WRAP_CONTENT
+            }
+
+            Glide.with(this)
+                    .load(Uri.parse(WIDE_PICTURES.random()))
+                    .centerCrop()
+                    .into(background_imageView)
+
+            // below is only if we want parallax!
             boardView.boardAdapter.applyIfNotNull {
                 mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
                 onScrolled = { dx, _ ->
@@ -135,7 +163,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 invalidateBoard()
                 mainActivityVM.settingsChanged = false
             }
-            background = board.backgroundColor.toColorDrawable
             adapter = mainActivityVM.boardAdapter
             if (boardAdapter?.board?.isEmpty() == true) {
                 emptyTitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
@@ -258,7 +285,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
             appBarColor_boardOption {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                        cornerRadius(literalDp = 8F)
                         title(text = "App Bar Color")
                         setPeekHeight(Int.MAX_VALUE)
                         positiveButton(text = "Confirm")
@@ -282,7 +308,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
             listHeaderColor_boardOption {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                        cornerRadius(literalDp = 8F)
                         title(text = "List Header Color")
                         setPeekHeight(Int.MAX_VALUE)
                         positiveButton(text = "Confirm")
@@ -304,7 +329,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
             cardColor_boardOption {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                        cornerRadius(literalDp = 8F)
                         title(text = "Card Color")
                         setPeekHeight(Int.MAX_VALUE)
                         positiveButton(text = "Confirm")
@@ -326,7 +350,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
             boardColor_boardOption {
                 setOnClickListener {
                     MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                        cornerRadius(literalDp = 8F)
                         title(text = "Background Color")
                         setPeekHeight(Int.MAX_VALUE)
                         positiveButton(text = "Confirm")
@@ -337,7 +360,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                 waitForPositiveButton = false,
                                 selection = { _, colorInt ->
                                     val waqtiColor = colorInt.toColor
-                                    this@ViewBoardFragment.boardView.background = waqtiColor.toColorDrawable
+                                    this@ViewBoardFragment.background_imageView.background = waqtiColor.toColorDrawable
                                     board.backgroundColor = waqtiColor
                                     if (this@ViewBoardFragment.emptyState_scrollView.isVisible) {
                                         this@ViewBoardFragment.emptyTitle_textView.textColor = waqtiColor.colorScheme.text.toAndroidColor
@@ -351,7 +374,20 @@ class ViewBoardFragment : WaqtiViewFragment() {
             }
             boardImage_boardOption {
                 setOnClickListener {
-                    it.shortSnackBar("Not yet implemented")
+                    val photoPicker = PhotoPickerDialog().apply {
+                        onClick = {
+                            this@ViewBoardFragment.background_imageView.background =
+                                    WaqtiColor(it.color!!).toColorDrawable
+                        }
+                        onConfirm = {
+                            dismiss()
+                        }
+                    }
+                    mainActivity.supportFragmentManager.commitTransaction {
+                        add(R.id.fragmentContainer, photoPicker, "PhotoPicker")
+                        addToBackStack(null)
+                    }
+                    mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
                 }
             }
             deleteBoard_boardOption {
@@ -397,7 +433,29 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
         addList_floatingButton.setColorScheme(colorScheme)
         boardView.setEdgeEffectColor(colorScheme.dark)
+        boardView.scrollBarColor = colorScheme.dark
     }
 }
 
 class ViewBoardFragmentViewModel : WaqtiViewFragmentViewModel()
+
+val TALL_PICTURE1 = "https://images.unsplash.com/photo-1548764959-bcab742d6724?ixlib=rb-1.2.1&q=80&fm=jpg"
+val TALL_PICTURE2 = "https://images.unsplash.com/photo-1549317935-48ecdbd71bd5?ixlib=rb-1.2.1&q=80&fm=jpg"
+val TALL_PICTURE3 = "https://images.unsplash.com/photo-1548722318-8537fb197868?ixlib=rb-1.2.1&q=80&fm=jpg"
+val TALL_PICTURE4 = "https://images.unsplash.com/photo-1548282638-266858867ed5?ixlib=rb-1.2.1&q=80&fm=jpg"
+val WIDE_PICTURE1 = "https://images.unsplash.com/photo-1548617335-c1b176388c65?ixlib=rb-1.2.1&q=80&fm=jpg"
+val WIDE_PICTURE2 = "https://images.unsplash.com/photo-1548440914-fcd7b0878ca0?ixlib=rb-1.2.1&q=80&fm=jpg"
+val WIDE_PICTURE3 = "https://images.unsplash.com/photo-1548165036-e241c64aa5b6?ixlib=rb-1.2.1&q=80&fm=jpg"
+val WIDE_PICTURE4 = "https://images.unsplash.com/photo-1549253924-6e94dc79ad0d?ixlib=rb-1.2.1&q=80&fm=jpg"
+val WIDE_PICTURE5 = "https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-1.2.1&fm=jpg"
+val WIDE_PICTURE6 = "https://images.unsplash.com/photo-1544198365-f5d60b6d8190?ixlib=rb-1.2.1&fm=jpg"
+val WIDE_PICTURE7 = "https://images.unsplash.com/photo-1495147334217-fcb3445babd5?ixlib=rb-1.2.1&fm=jpg"
+val WIDE_PICTURE8 = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&fm=jpg"
+val WIDE_PICTURE9 = "https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&fm=jpg"
+val WIDE_PICTURE10 = "https://images.unsplash.com/photo-1526527994352-86c690c2e666"
+
+val TALL_PICTURES = listOf(TALL_PICTURE1, TALL_PICTURE2, TALL_PICTURE3, TALL_PICTURE4)
+val WIDE_PICTURES = listOf(WIDE_PICTURE1, WIDE_PICTURE2, WIDE_PICTURE3, WIDE_PICTURE4,
+        WIDE_PICTURE5, WIDE_PICTURE6, WIDE_PICTURE7, WIDE_PICTURE8, WIDE_PICTURE9, WIDE_PICTURE10)
+
+val PICTURES = TALL_PICTURES + WIDE_PICTURES

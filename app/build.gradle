@@ -81,5 +81,5 @@ dependencies {
     implementation 'com.infideap.drawerbehavior:drawer-behavior:0.2.2'
     implementation 'com.github.arcadefire:nice-spinner:1.4.3'
     implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.2'
-    implementation 'com.gjiazhe:scrollparallaximageview:1.0'
+    implementation 'com.github.basshelal:UnsplashPhotoPicker:1.1.1'
 }

@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
                 if (supportFragmentManager.backStackEntryCount > 0) {
                     @FragmentNavigation(from = ANY_FRAGMENT, to = PREVIOUS_FRAGMENT)
                     supportFragmentManager.popBackStack()
-                } else this@MainActivity.finish()
+                } else this@MainActivity.supportFinishAfterTransition()
             }
             addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
 

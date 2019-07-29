@@ -4,8 +4,11 @@ package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.ClipData
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Point
+import android.graphics.PorterDuff
 import android.graphics.Rect
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.DragEvent
 import android.view.LayoutInflater
@@ -67,6 +70,8 @@ class TaskListView
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
 
+    var scrollBarColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT.colorScheme.text
+
     inline val listAdapter: TaskListAdapter?
         get() = adapter as TaskListAdapter?
 
@@ -88,6 +93,20 @@ class TaskListView
     fun setColorScheme(colorScheme: ColorScheme) {
         allViewHolders.forEach { it.setColorScheme(colorScheme) }
         listAdapter?.notifyDataSetChanged()
+    }
+
+    @Suppress("unused")
+    protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
+        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
+        scrollBar.setBounds(l, t, r, b)
+        scrollBar.draw(canvas)
+    }
+
+    @Suppress("unused")
+    protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
+        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
+        scrollBar.setBounds(l, t, r, b)
+        scrollBar.draw(canvas)
     }
 
 }
