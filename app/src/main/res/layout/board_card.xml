@@ -3,6 +3,7 @@
 <com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/boardCard_cardView"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -23,10 +24,9 @@
             android:paddingStart="8dp"
             android:paddingTop="8dp"
             android:paddingEnd="8dp"
-            android:text="@string/boardNameHint"
             android:textAlignment="center"
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline3"
-            android:textColor="@color/black" />
+            tools:text="@string/boardNameHint" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

@@ -43,6 +43,7 @@ class PhotoPickerDialog : WaqtiFragment() {
         selectedPhoto = null
 
         photoPicker {
+            clickOpensPhoto = false
             onClickPhoto = { photo, _ ->
                 selectedPhoto = photo
                 onClick(photo)

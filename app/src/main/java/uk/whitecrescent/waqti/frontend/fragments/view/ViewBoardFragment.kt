@@ -24,10 +24,12 @@ import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
 import com.afollestad.materialdialogs.color.colorChooser
 import com.bumptech.glide.Glide
+import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import org.jetbrains.anko.textColor
+import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.alsoIfNotNull
 import uk.whitecrescent.waqti.applyIfNotNull
@@ -44,6 +46,7 @@ import uk.whitecrescent.waqti.frontend.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
+import uk.whitecrescent.waqti.frontend.appearance.BackgroundType
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.appearance.toColor
@@ -91,73 +94,10 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
         setUpViews()
 
-
-        //=================================================================================
-        //=================================New stuff=======================================
-        //=================================================================================
-
-        color()
-
-        //image()
-
-        //parallaxImage()
-    }
-
-    private inline fun color() {
-        background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            width = MATCH_PARENT
-        }
-        background_imageView.background = board.backgroundColor.toColorDrawable
-    }
-
-    private inline fun image() {
-        doInBackground {
-
-            background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                width = MATCH_PARENT
-            }
-
-            Glide.with(this)
-                    .load(Uri.parse(WIDE_PICTURES.random()))
-                    .centerCrop()
-                    .into(background_imageView)
-
-        }
-    }
-
-    private inline fun parallaxImage() {
-        doInBackground {
-            /* TODO
-              * The scrollBy will differ based on how wide the image is
-              * the wider the image the smaller the number.
-              * Or the number of lists??
-              * Actually I think its based on number of lists not image width!
-              * What if it's based on a relation between both?
-              */
-
-            background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                width = WRAP_CONTENT
-            }
-
-            Glide.with(this)
-                    .load(Uri.parse(WIDE_PICTURES.random()))
-                    .centerCrop()
-                    .into(background_imageView)
-
-            // below is only if we want parallax!
-            boardView.boardAdapter.applyIfNotNull {
-                mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
-                onScrolled = { dx, _ ->
-                    // below prevents over-scrolling leftwards which shows white space
-                    if (horizontalScrollOffset > 0)
-                        background_imageView.scrollBy((dx * 0.25).roundToInt(), 0)
-                    mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
-                }
-            }
-        }
     }
 
     override fun setUpViews() {
+        setBackground()
         boardView {
             if (mainActivityVM.settingsChanged) {
                 invalidateBoard()
@@ -360,8 +300,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                 waitForPositiveButton = false,
                                 selection = { _, colorInt ->
                                     val waqtiColor = colorInt.toColor
-                                    this@ViewBoardFragment.background_imageView.background = waqtiColor.toColorDrawable
+                                    setBackgroundColor(waqtiColor)
                                     board.backgroundColor = waqtiColor
+                                    board.backgroundType = BackgroundType.COLOR
                                     if (this@ViewBoardFragment.emptyState_scrollView.isVisible) {
                                         this@ViewBoardFragment.emptyTitle_textView.textColor = waqtiColor.colorScheme.text.toAndroidColor
                                         this@ViewBoardFragment.emptySubtitle_textView.textColor = waqtiColor.colorScheme.text.toAndroidColor
@@ -376,8 +317,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 setOnClickListener {
                     val photoPicker = PhotoPickerDialog().apply {
                         onClick = {
-                            this@ViewBoardFragment.background_imageView.background =
-                                    WaqtiColor(it.color!!).toColorDrawable
+                            setBackgroundImage(it)
+                            board.backgroundPhoto = it
+                            board.backgroundType = BackgroundType.UNSPLASH_PHOTO
                         }
                         onConfirm = {
                             dismiss()
@@ -426,6 +368,75 @@ class ViewBoardFragment : WaqtiViewFragment() {
         mainActivity.supportFragmentManager.popBackStack()
     }
 
+    private inline fun setBackground() {
+        doInBackground {
+            when (board.backgroundType) {
+                BackgroundType.COLOR -> {
+                    setBackgroundColor(board.backgroundColor)
+                }
+                BackgroundType.UNSPLASH_PHOTO -> {
+                    setBackgroundImage(board.backgroundPhoto)
+                }
+            }
+        }
+    }
+
+    private inline fun setBackgroundImage(photo: UnsplashPhoto) {
+        background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            width = MATCH_PARENT
+        }
+        Glide.with(this)
+                .load(Uri.parse(photo.urls.regular))
+                .centerCrop()
+                .into(background_imageView)
+
+    }
+
+    @ForLater
+    private inline fun parallaxImage(photo: UnsplashPhoto) {
+        doInBackground {
+            /* TODO
+              * The scrollBy will differ based on how wide the image is
+              * the wider the image the smaller the number.
+              * Or the number of lists??
+              * Actually I think its based on number of lists not image width!
+              * What if it's based on a relation between both?
+              */
+
+            background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+                width = WRAP_CONTENT
+            }
+
+            /*
+            * Log from Glide:
+            *
+            * Glide treats LayoutParams.WRAP_CONTENT as a request for an image the size of this
+            * device's screen dimensions. If you want to load the original image and are ok with
+            * the corresponding memory cost and OOMs (depending on the input size), use
+            * .override(Target.SIZE_ORIGINAL). Otherwise, use LayoutParams.MATCH_PARENT, set
+            * layout_width and layout_height to fixed dimension, or use .override() with fixed
+            * dimensions.
+            *
+            * */
+
+            Glide.with(this)
+                    .load(Uri.parse(photo.urls.regular))
+                    .centerCrop()
+                    .into(background_imageView)
+
+            // below is only if we want parallax!
+            boardView.boardAdapter.applyIfNotNull {
+                mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
+                onScrolled = { dx, _ ->
+                    // below prevents over-scrolling leftwards which shows white space
+                    if (horizontalScrollOffset > 0)
+                        background_imageView.scrollBy((dx * 0.25).roundToInt(), 0)
+                    mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
+                }
+            }
+        }
+    }
+
     private inline fun setColorScheme(colorScheme: ColorScheme) {
         mainActivity.setColorScheme(colorScheme)
         mainActivity.drawerLayout.boardOptions_navigationView {
@@ -433,29 +444,17 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
         addList_floatingButton.setColorScheme(colorScheme)
         boardView.setEdgeEffectColor(colorScheme.dark)
-        boardView.scrollBarColor = colorScheme.dark
+    }
+
+    private inline fun setBackgroundColor(waqtiColor: WaqtiColor) {
+        background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            width = MATCH_PARENT
+        }
+
+        background_imageView.setImageDrawable(null)
+        background_imageView.background = waqtiColor.toColorDrawable
+        boardView.scrollBarColor = waqtiColor.colorScheme.text
     }
 }
 
 class ViewBoardFragmentViewModel : WaqtiViewFragmentViewModel()
-
-val TALL_PICTURE1 = "https://images.unsplash.com/photo-1548764959-bcab742d6724?ixlib=rb-1.2.1&q=80&fm=jpg"
-val TALL_PICTURE2 = "https://images.unsplash.com/photo-1549317935-48ecdbd71bd5?ixlib=rb-1.2.1&q=80&fm=jpg"
-val TALL_PICTURE3 = "https://images.unsplash.com/photo-1548722318-8537fb197868?ixlib=rb-1.2.1&q=80&fm=jpg"
-val TALL_PICTURE4 = "https://images.unsplash.com/photo-1548282638-266858867ed5?ixlib=rb-1.2.1&q=80&fm=jpg"
-val WIDE_PICTURE1 = "https://images.unsplash.com/photo-1548617335-c1b176388c65?ixlib=rb-1.2.1&q=80&fm=jpg"
-val WIDE_PICTURE2 = "https://images.unsplash.com/photo-1548440914-fcd7b0878ca0?ixlib=rb-1.2.1&q=80&fm=jpg"
-val WIDE_PICTURE3 = "https://images.unsplash.com/photo-1548165036-e241c64aa5b6?ixlib=rb-1.2.1&q=80&fm=jpg"
-val WIDE_PICTURE4 = "https://images.unsplash.com/photo-1549253924-6e94dc79ad0d?ixlib=rb-1.2.1&q=80&fm=jpg"
-val WIDE_PICTURE5 = "https://images.unsplash.com/photo-1485470733090-0aae1788d5af?ixlib=rb-1.2.1&fm=jpg"
-val WIDE_PICTURE6 = "https://images.unsplash.com/photo-1544198365-f5d60b6d8190?ixlib=rb-1.2.1&fm=jpg"
-val WIDE_PICTURE7 = "https://images.unsplash.com/photo-1495147334217-fcb3445babd5?ixlib=rb-1.2.1&fm=jpg"
-val WIDE_PICTURE8 = "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&fm=jpg"
-val WIDE_PICTURE9 = "https://images.unsplash.com/photo-1463453091185-61582044d556?ixlib=rb-1.2.1&fm=jpg"
-val WIDE_PICTURE10 = "https://images.unsplash.com/photo-1526527994352-86c690c2e666"
-
-val TALL_PICTURES = listOf(TALL_PICTURE1, TALL_PICTURE2, TALL_PICTURE3, TALL_PICTURE4)
-val WIDE_PICTURES = listOf(WIDE_PICTURE1, WIDE_PICTURE2, WIDE_PICTURE3, WIDE_PICTURE4,
-        WIDE_PICTURE5, WIDE_PICTURE6, WIDE_PICTURE7, WIDE_PICTURE8, WIDE_PICTURE9, WIDE_PICTURE10)
-
-val PICTURES = TALL_PICTURES + WIDE_PICTURES

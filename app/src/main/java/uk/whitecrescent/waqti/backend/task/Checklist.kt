@@ -10,7 +10,7 @@ class Checklist(vararg itemValues: String) : Iterable<ListItem> {
     private val list = ArrayList<ListItem>()
 
     init {
-        addAll(*itemValues)
+        addAll(itemValues.map { ListItem(it) })
     }
 
     fun size() = list.size
@@ -22,6 +22,8 @@ class Checklist(vararg itemValues: String) : Iterable<ListItem> {
     fun addItem(listItemValue: String) = this.list.add(ListItem(listItemValue))
 
     fun addAll(vararg listItems: ListItem) = this.list.addAll(listItems)
+
+    fun addAll(listItems: List<ListItem>) = this.list.addAll(listItems)
 
     fun addAll(vararg listItemValues: String) {
         for (itemValue in listItemValues) {

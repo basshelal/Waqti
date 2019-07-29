@@ -9,6 +9,7 @@ import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.persistence.Cache
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.frontend.appearance.BackgroundType
 import uk.whitecrescent.waqti.frontend.appearance.BoardAppearance
 import uk.whitecrescent.waqti.frontend.appearance.BoardAppearanceConverter
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
@@ -73,6 +74,13 @@ class Board(name: String = "", lists: Collection<TaskList> = emptyList())
             update()
         }
         get() = appearance.backgroundPhoto
+
+    inline var backgroundType: BackgroundType
+        set(value) {
+            appearance.backgroundType = value
+            update()
+        }
+        get() = appearance.backgroundType
 
     init {
         if (this.notDefault()) {

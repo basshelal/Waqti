@@ -11,8 +11,8 @@ import uk.whitecrescent.waqti.toJson
 
 class BoardAppearance {
 
-    @SerializedName("bg")
-    var backgroundColor: WaqtiColor = WaqtiColor.LIGHT_BACKGROUND_DEFAULT
+    @SerializedName("b")
+    var barColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT
 
     @SerializedName("l")
     var listColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT
@@ -20,11 +20,14 @@ class BoardAppearance {
     @SerializedName("c")
     var cardColor: WaqtiColor = WaqtiColor.LIGHT_CARD_DEFAULT
 
-    @SerializedName("b")
-    var barColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT
+    @SerializedName("bg")
+    var backgroundColor: WaqtiColor = WaqtiColor.LIGHT_BACKGROUND_DEFAULT
 
     @SerializedName("p")
     var backgroundPhoto: UnsplashPhoto = DEFAULT_PHOTO
+
+    @SerializedName("t")
+    var backgroundType: BackgroundType = BackgroundType.COLOR
 
     companion object {
         val DEFAULT_DARK = BoardAppearance().apply {
@@ -45,6 +48,10 @@ class BoardAppearanceConverter : PropertyConverter<BoardAppearance, String> {
             BoardAppearance.DEFAULT
         } else databaseValue fromJsonTo BoardAppearance::class.java
     }
+}
+
+enum class BackgroundType {
+    COLOR, UNSPLASH_PHOTO
 }
 
 val DEFAULT_URLS = UnsplashUrls("", "", "", "", "", "", "")

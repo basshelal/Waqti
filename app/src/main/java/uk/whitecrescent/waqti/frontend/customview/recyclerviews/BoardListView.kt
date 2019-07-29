@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.Context
+import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.board_card.view.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.textColor
@@ -20,9 +22,11 @@ import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_LIST_FRAGMENT
+import uk.whitecrescent.waqti.frontend.appearance.BackgroundType
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewMode
 import uk.whitecrescent.waqti.hideKeyboard
+import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 
@@ -109,40 +113,51 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
     }
 
     override fun onBindViewHolder(holder: BoardListViewHolder, position: Int) {
-        holder.itemView.boardName_textView.apply {
-            text = boardList[position].name
-            when (viewMode) {
-                ViewMode.GRID_VERTICAL -> {
-                    setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline5)
-                }
-                ViewMode.LIST_VERTICAL -> {
-                    setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline3)
-                }
-            }
-            backgroundColor = boardList[position].barColor.toAndroidColor
-            textColor = boardList[position].barColor.colorScheme.text.toAndroidColor
-        }
-
-        holder.itemView.boardCard_cardView.apply {
-            setOnClickListener {
-                @FragmentNavigation(from = VIEW_BOARD_LIST_FRAGMENT, to = VIEW_BOARD_FRAGMENT)
-                it.mainActivity.supportFragmentManager.commitTransaction {
-
-                    it.hideKeyboard()
-
-                    it.mainActivityViewModel.apply {
-                        boardID = boardList[holder.adapterPosition].id
-                        boardListPosition.changeTo(false to position)
+        val board = boardList[position]
+        holder.itemView {
+            boardImage_imageView {
+                when (board.backgroundType) {
+                    BackgroundType.COLOR -> {
+                        setImageDrawable(board.backgroundColor.toColorDrawable)
                     }
-
-                    replace(R.id.fragmentContainer, ViewBoardFragment(), VIEW_BOARD_FRAGMENT)
-                    addToBackStack(null)
+                    BackgroundType.UNSPLASH_PHOTO -> {
+                        Glide.with(this)
+                                .load(Uri.parse(board.backgroundPhoto.urls.regular))
+                                .centerCrop()
+                                .into(boardImage_imageView)
+                    }
                 }
             }
-        }
+            boardName_textView {
+                text = board.name
+                when (viewMode) {
+                    ViewMode.GRID_VERTICAL -> {
+                        setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline5)
+                    }
+                    ViewMode.LIST_VERTICAL -> {
+                        setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline3)
+                    }
+                }
+                backgroundColor = board.barColor.toAndroidColor
+                textColor = board.barColor.colorScheme.text.toAndroidColor
+            }
+            boardCard_cardView {
+                setOnClickListener {
+                    @FragmentNavigation(from = VIEW_BOARD_LIST_FRAGMENT, to = VIEW_BOARD_FRAGMENT)
+                    it.mainActivity.supportFragmentManager.commitTransaction {
 
-        holder.itemView.boardImage_imageView.apply {
-            setImageDrawable(boardList[position].backgroundColor.toColorDrawable)
+                        it.hideKeyboard()
+
+                        it.mainActivityViewModel.apply {
+                            boardID = board.id
+                            boardListPosition.changeTo(false to position)
+                        }
+
+                        replace(R.id.fragmentContainer, ViewBoardFragment(), VIEW_BOARD_FRAGMENT)
+                        addToBackStack(null)
+                    }
+                }
+            }
         }
     }
 

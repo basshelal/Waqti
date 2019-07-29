@@ -171,6 +171,24 @@ class BoardAdapter(val boardID: ID)
             }
             matchOrder()
             attachHelpers()
+
+
+            /*
+            How many lists can fit into one screen?
+            screenWidth / tasklistWidth = ~1.4
+            How many full screens will show, remember that the pointer will never
+            reach the last list!
+
+            val screenWidth = boardView.mainActivity.dimensions.first.toFloat()
+            val lists = screenWidth.toDouble() / taskListWidth.toDouble()
+
+            logE("ScreenWidth: $screenWidth")
+            logE("Percent: $percent")
+            logE("TaskListWidth: $taskListWidth")
+            logE("Lists in 1 screen: $lists")
+            logE("Number of Lists: ${taskListAdapters.size}")
+
+            */
         }
     }
 
