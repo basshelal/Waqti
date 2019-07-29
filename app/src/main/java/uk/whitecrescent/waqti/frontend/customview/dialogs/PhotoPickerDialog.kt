@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
+import com.github.basshelal.unsplashpicker.presentation.PhotoSize
+import com.github.basshelal.unsplashpicker.presentation.UnsplashPhotoPicker
 import kotlinx.android.synthetic.main.dialog_photopicker.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
@@ -48,12 +50,16 @@ class PhotoPickerDialog : WaqtiFragment() {
                 selectedPhoto = photo
                 onClick(photo)
             }
+            onLongClickPhoto = { photo, _ ->
+                showPhoto(photo, PhotoSize.REGULAR)
+            }
         }
 
         confirm_button {
             setOnClickListener {
                 selectedPhoto?.also {
                     onConfirm(it)
+                    UnsplashPhotoPicker.downloadPhotos(listOf(it))
                 }
             }
         }
