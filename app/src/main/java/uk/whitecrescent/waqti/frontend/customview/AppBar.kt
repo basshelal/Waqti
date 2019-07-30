@@ -5,11 +5,8 @@ package uk.whitecrescent.waqti.frontend.customview
 import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.view.MenuItem
 import android.view.View
 import android.widget.ImageView
-import androidx.annotation.MenuRes
-import androidx.appcompat.widget.PopupMenu
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -94,20 +91,6 @@ class AppBar
         rightImageView {
             rightImageView.visibility = View.VISIBLE
             rightImage = context.getDrawable(R.drawable.overflow_icon)!!
-        }
-    }
-
-    inline fun rightImageDefault(@MenuRes menuRes: Int,
-                                 noinline popupMenuOnItemClicked: (MenuItem) -> Boolean) {
-        rightImageOptions()
-        rightImageView {
-            setOnClickListener {
-                PopupMenu(context, rightImageView).apply {
-                    inflate(menuRes)
-                    setOnMenuItemClickListener(popupMenuOnItemClicked)
-                    show()
-                }
-            }
         }
     }
 

@@ -71,7 +71,9 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout {
             setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
-            setViewElevation(GravityCompat.END, 1F)
+            useCustomBehavior(GravityCompat.END)
+            setViewScrimColor(GravityCompat.END, Color.TRANSPARENT)
+            setViewElevation(GravityCompat.END, 0F)
             addOnBackPressedCallback {
                 appBar.clearFocusAndHideKeyboard()
                 if (isDrawerOpen(GravityCompat.START) || isDrawerOpen(GravityCompat.END)) {

@@ -18,8 +18,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <View style="@style/Divider.Horizontal" />
-
             <uk.whitecrescent.waqti.frontend.customview.OptionsItem
                 android:id="@+id/deleteTask_taskOption"
                 android:layout_width="match_parent"

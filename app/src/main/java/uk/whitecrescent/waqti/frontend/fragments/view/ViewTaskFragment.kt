@@ -9,11 +9,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import kotlinx.android.synthetic.main.blank_activity.*
+import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_view_task.*
-import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.textColor
+import kotlinx.android.synthetic.main.task_options.view.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.alsoIfNotNull
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -26,7 +29,7 @@ import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
-import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
@@ -74,13 +77,6 @@ class ViewTaskFragment : WaqtiViewFragment() {
 
         setUpAppBar()
 
-        // TODO: 07-Jun-19 Make background color of the linearLayout be same as Task color
-        board.cardColor.toAndroidColor.also {
-            viewTaskFragment_constraintLayout.setBackgroundColor(it)
-            nestedScrollView.setBackgroundColor(it)
-            linearLayout.setBackgroundColor(it)
-        }
-
         setUpTimeViews(task)
 
         setUpDeadlineViews(task)
@@ -91,13 +87,11 @@ class ViewTaskFragment : WaqtiViewFragment() {
 
 
     override fun setUpAppBar() {
+        this.setColorScheme(board.cardColor.colorScheme)
         mainActivity.appBar {
-            backgroundColor = board.cardColor.toAndroidColor
             elevation = 0F
             leftImageBack()
-            leftImage.setTint(WaqtiColor.BLACK.toAndroidColor)
             editTextView {
-                textColor = WaqtiColor.BLACK.toAndroidColor
                 removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.taskNameHint)
@@ -107,41 +101,89 @@ class ViewTaskFragment : WaqtiViewFragment() {
                                 it.isNotBlank() &&
                                 it.isNotEmpty() &&
                                 it.toString() != task.name)
-                            task.changeName(text.toString())
+                            task.name = it.toString()
                     }
                 }
                 text = SpannableStringBuilder(task.name)
                 addAfterTextChangedListener { update() }
-                setOnEditorActionListener { _, actionId, _ ->
+                setOnEditorActionListener { textView, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
-                        clearFocusAndHideKeyboard()
+                        textView.clearFocusAndHideKeyboard()
                         true
                     } else false
                 }
             }
-            rightImageDefault(R.menu.menu_task) {
-                when (it.itemId) {
-                    R.id.deleteTask_menuItem -> {
-                        ConfirmDialog().apply {
-                            title = this@ViewTaskFragment.mainActivity.getString(R.string.deleteTaskQuestion)
-                            onConfirm = {
-                                val taskName = task.name
-                                this.dismiss()
-                                Caches.deleteTask(taskID, listID)
-                                mainActivity.appBar.shortSnackBar(getString(R.string.deletedTask)
-                                        + " $taskName")
-                                finish()
-                            }
-                        }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+            rightImageOptions()
+        }
+        mainActivity.setColorScheme(board.cardColor.colorScheme)
+    }
 
+    override fun onStart() {
+        super.onStart()
 
-                        true
-                    }
-                    else -> false
+        createOptionsMenu()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        destroyOptionsMenu()
+    }
+
+    override fun finish() {
+        @FragmentNavigation(from = VIEW_TASK_FRAGMENT, to = PREVIOUS_FRAGMENT)
+        mainActivity.supportFragmentManager.popBackStack()
+    }
+
+    private inline fun setColorScheme(colorScheme: ColorScheme) {
+        mainActivity.setColorScheme(colorScheme)
+        mainActivity.drawerLayout.boardOptions_navigationView {
+            setBackgroundColor(colorScheme.main.toAndroidColor)
+        }
+        viewTaskFragment_constraintLayout.setBackgroundColor(colorScheme.main.toAndroidColor)
+        nestedScrollView.setBackgroundColor(colorScheme.main.toAndroidColor)
+        linearLayout.setBackgroundColor(colorScheme.main.toAndroidColor)
+    }
+
+    private inline fun createOptionsMenu() {
+
+        LayoutInflater.from(context).inflate(R.layout.task_options,
+                mainActivity.drawerLayout, true)
+
+        mainActivity.appBar {
+            rightImageView.setOnClickListener {
+                mainActivity.drawerLayout.openDrawer(GravityCompat.END)
+            }
+        }
+
+        mainActivity.drawerLayout.taskOptions_navigationView {
+            setBackgroundColor(board.cardColor.toAndroidColor)
+            deleteTask_taskOption {
+                setOnClickListener {
+                    ConfirmDialog().apply {
+                        title = this@ViewTaskFragment.mainActivity.getString(R.string.deleteTaskQuestion)
+                        onConfirm = {
+                            val taskName = task.name
+                            this.dismiss()
+                            Caches.deleteTask(taskID, listID)
+                            mainActivity.appBar.shortSnackBar(getString(R.string.deletedTask)
+                                    + " $taskName")
+                            finish()
+                        }
+                    }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
+                    mainActivity.drawerLayout.closeDrawer(this@taskOptions_navigationView)
                 }
             }
-            rightImage.setTint(WaqtiColor.BLACK.toAndroidColor)
+        }
+    }
+
+    private inline fun destroyOptionsMenu() {
+        mainActivity.drawerLayout {
+            taskOptions_navigationView.alsoIfNotNull {
+                closeDrawer(it)
+                removeView(it)
+            }
         }
     }
 
@@ -214,10 +256,6 @@ class ViewTaskFragment : WaqtiViewFragment() {
         }
     }
 
-    override fun finish() {
-        @FragmentNavigation(from = VIEW_TASK_FRAGMENT, to = PREVIOUS_FRAGMENT)
-        mainActivity.supportFragmentManager.popBackStack()
-    }
 }
 
 class ViewTaskFragmentViewModel : WaqtiViewFragmentViewModel()

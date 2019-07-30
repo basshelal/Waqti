@@ -193,6 +193,22 @@ class ViewListFragment : WaqtiViewFragment() {
     override fun onStart() {
         super.onStart()
 
+        createOptionsMenu()
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        destroyOptionsMenu()
+    }
+
+    override fun finish() {
+        @FragmentNavigation(from = VIEW_LIST_FRAGMENT, to = PREVIOUS_FRAGMENT)
+        mainActivity.supportFragmentManager.popBackStack()
+    }
+
+    private inline fun createOptionsMenu() {
+
         LayoutInflater.from(context).inflate(R.layout.list_options,
                 mainActivity.drawerLayout, true)
 
@@ -286,20 +302,13 @@ class ViewListFragment : WaqtiViewFragment() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-
+    private inline fun destroyOptionsMenu() {
         mainActivity.drawerLayout {
             listOptions_navigationView.alsoIfNotNull {
                 closeDrawer(it)
                 removeView(it)
             }
         }
-    }
-
-    override fun finish() {
-        @FragmentNavigation(from = VIEW_LIST_FRAGMENT, to = PREVIOUS_FRAGMENT)
-        mainActivity.supportFragmentManager.popBackStack()
     }
 
     private inline fun setColorScheme(colorScheme: ColorScheme) {
