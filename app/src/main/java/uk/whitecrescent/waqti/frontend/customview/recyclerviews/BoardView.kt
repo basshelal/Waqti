@@ -52,7 +52,6 @@ import uk.whitecrescent.waqti.setEdgeEffectColor
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
-
 private val listViewHolderPool = object : RecyclerView.RecycledViewPool() {
 
     override fun setMaxRecycledViews(viewType: Int, max: Int) {
@@ -65,16 +64,16 @@ class BoardView
                           attributeSet: AttributeSet? = null,
                           defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
 
+    /**
+     * The color of the scrollbar of the [BoardView]
+     */
     var scrollBarColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT.colorScheme.text
-    inline val boardAdapter: BoardAdapter?
-        get() = this.adapter as BoardAdapter?
 
-    // this actually only shows all the visible ViewHolders, not too useful to be honest :/
-    inline val allViewHolders: List<BoardViewHolder>
-        get() = boardAdapter?.board
-                ?.map { findViewHolderForItemId(it.id) as? BoardViewHolder? }
-                ?.filter { it != null }
-                ?.map { it as BoardViewHolder } ?: emptyList()
+    /**
+     * Gets the adapter as a [BoardAdapter] or `null` if there is no adapter
+     */
+    inline val boardAdapter: BoardAdapter?
+        get() = this.adapter as? BoardAdapter?
 
     init {
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false).also {
@@ -84,22 +83,10 @@ class BoardView
         setRecycledViewPool(listViewHolderPool)
     }
 
-    @Suppress("unused")
-    protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
-    }
-
-
-    @Suppress("unused")
-    protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
-    }
-
-
+    /**
+     * Redraws all elements and entities in this [BoardView] essentially recreating the whole
+     * thing,this is an expensive operation so use sparingly
+     */
     fun invalidateBoard() {
         recycledViewPool.clear()
         requestLayout()
@@ -111,20 +98,25 @@ class BoardView
         boardAdapter?.notifyDataSetChanged()
     }
 
-    fun setColorScheme(headerColorScheme: ColorScheme,
-                       listColorScheme: ColorScheme) {
-        setHeadersColorScheme(headerColorScheme)
-        setListsColorScheme(listColorScheme)
+    /**
+     * Called automatically by the Android framework in [onDrawScrollBars]
+     */
+    @Suppress("unused")
+    protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
+        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
+        scrollBar.setBounds(l, t, r, b)
+        scrollBar.draw(canvas)
     }
 
-    fun setHeadersColorScheme(colorScheme: ColorScheme) {
-        boardAdapter?.setHeadersColorScheme(colorScheme)
+    /**
+     * Called automatically by the Android framework in [onDrawScrollBars]
+     */
+    @Suppress("unused")
+    protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
+        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
+        scrollBar.setBounds(l, t, r, b)
+        scrollBar.draw(canvas)
     }
-
-    fun setListsColorScheme(colorScheme: ColorScheme) {
-        boardAdapter?.setListsColorScheme(colorScheme)
-    }
-
 }
 
 class BoardAdapter(val boardID: ID)
@@ -283,11 +275,12 @@ class BoardAdapter(val boardID: ID)
             board.listColor.colorScheme
         else taskList.headerColor.colorScheme
 
-        val cardColorScheme = if (taskList.cardColor == WaqtiColor.INHERIT)
+        val listColorScheme = if (taskList.cardColor == WaqtiColor.INHERIT)
             board.cardColor.colorScheme
         else taskList.cardColor.colorScheme
 
-        holder.setColorScheme(headerColorScheme, cardColorScheme)
+        holder.setHeaderColorScheme(headerColorScheme)
+        holder.setListColorScheme(listColorScheme)
     }
 
     override fun onViewAttachedToWindow(holder: BoardViewHolder) {
@@ -313,7 +306,6 @@ class BoardAdapter(val boardID: ID)
 
     private fun doesNotMatchOrder(): Boolean {
         val adapterIDs = taskListAdapters.map { it.taskListID }
-
         return adapterIDs != board.take(adapterIDs.size).map { it.id }
     }
 
@@ -424,12 +416,6 @@ class BoardViewHolder(view: View,
                 }
             }
         }
-    }
-
-    fun setColorScheme(headerColorScheme: ColorScheme,
-                       listColorScheme: ColorScheme) {
-        setHeaderColorScheme(headerColorScheme)
-        setListColorScheme(listColorScheme)
     }
 
     fun setHeaderColorScheme(colorScheme: ColorScheme) {

@@ -359,6 +359,7 @@ inline fun <reified T> T.doInBackgroundWhen(crossinline predicate: (T) -> Boolea
             }, {
                 logE("Error on doInBackgroundAsync, provided ${T::class.java}")
                 logE(it.message)
+                it.printStackTrace()
                 throw it
             })
 }
@@ -386,6 +387,7 @@ inline fun <reified T> T.doInBackgroundOnceWhen(crossinline predicate: (T) -> Bo
             }, {
                 logE("Error on doInBackgroundAsync, provided ${T::class.java}")
                 logE(it.message)
+                it.printStackTrace()
                 throw it
             })
 }
@@ -399,6 +401,7 @@ inline fun <reified T> T.doInBackgroundAsync(crossinline onNext: T.() -> Unit): 
             }, {
                 logE("Error on doInBackgroundAsync, provided ${T::class.java}")
                 logE(it.message)
+                it.printStackTrace()
                 throw it
             })
 }
@@ -410,6 +413,7 @@ inline fun <reified T> T.doInBackground(crossinline onNext: T.() -> Unit): Dispo
             }, {
                 logE("Error on doInBackground, provided ${T::class.java}")
                 logE(it.message)
+                it.printStackTrace()
                 throw it
             })
 }
@@ -423,6 +427,7 @@ inline fun <reified T> T.doInBackgroundDelayed(delayMillis: Long,
             }, {
                 logE("Error on doInBackgroundDelayed, provided ${T::class.java} with delay $delayMillis")
                 logE(it.message)
+                it.printStackTrace()
                 throw it
             })
 }

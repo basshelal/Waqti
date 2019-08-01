@@ -274,7 +274,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                 waitForPositiveButton = false,
                                 selection = { _, colorInt ->
                                     val colorScheme = colorInt.toColor.colorScheme
-                                    this@ViewBoardFragment.boardView.setHeadersColorScheme(colorScheme)
+                                    this@ViewBoardFragment.boardView
+                                            .boardAdapter?.setHeadersColorScheme(colorScheme)
                                     board.listColor = colorScheme.main
                                 }
                         )
@@ -295,7 +296,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                 waitForPositiveButton = false,
                                 selection = { _, colorInt ->
                                     val colorScheme = colorInt.toColor.colorScheme
-                                    this@ViewBoardFragment.boardView.setListsColorScheme(colorScheme)
+                                    this@ViewBoardFragment.boardView
+                                            .boardAdapter?.setListsColorScheme(colorScheme)
                                     board.cardColor = colorScheme.main
                                 }
                         )
@@ -401,6 +403,25 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
     }
 
+    private inline fun setBackgroundColor(waqtiColor: WaqtiColor) {
+        background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
+            width = MATCH_PARENT
+        }
+
+        background_imageView.setImageDrawable(null)
+        background_imageView.background = waqtiColor.toColorDrawable
+        boardView.scrollBarColor = waqtiColor.colorScheme.text
+    }
+
+    private inline fun setColorScheme(colorScheme: ColorScheme) {
+        mainActivity.setColorScheme(colorScheme)
+        mainActivity.drawerLayout.boardOptions_navigationView {
+            setBackgroundColor(colorScheme.main.toAndroidColor)
+        }
+        addList_floatingButton.setColorScheme(colorScheme)
+        boardView.setEdgeEffectColor(colorScheme.dark)
+    }
+
     @ForLater
     private inline fun parallaxImage(photo: UnsplashPhoto) {
         doInBackground {
@@ -444,25 +465,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
             }
         }
-    }
-
-    private inline fun setColorScheme(colorScheme: ColorScheme) {
-        mainActivity.setColorScheme(colorScheme)
-        mainActivity.drawerLayout.boardOptions_navigationView {
-            setBackgroundColor(colorScheme.main.toAndroidColor)
-        }
-        addList_floatingButton.setColorScheme(colorScheme)
-        boardView.setEdgeEffectColor(colorScheme.dark)
-    }
-
-    private inline fun setBackgroundColor(waqtiColor: WaqtiColor) {
-        background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            width = MATCH_PARENT
-        }
-
-        background_imageView.setImageDrawable(null)
-        background_imageView.background = waqtiColor.toColorDrawable
-        boardView.scrollBarColor = waqtiColor.colorScheme.text
     }
 }
 

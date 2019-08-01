@@ -15,23 +15,18 @@ import kotlinx.android.synthetic.main.view_appbar.view.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.UpdateDocumentation
 import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
-import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.hideKeyboard
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 
-@UpdateDocumentation
 /**
  * A Material-like AppBar that allows for an ImageView on the start, an [EditTextView] in the
  * center and another ImageView on the end.
- * The ImageView on the start is meant to be the navigation drawer menu, as it will open the
- * navigation drawer by default when clicked.
- * The ImageView on the end is meant to be the options menu, as it will open the passed in menu
- * in [rightImageOptions].
+ * The ImageView on the start is meant to be the navigation drawer menu and back button.
+ * The ImageView on the end is meant to be the options menu.
  */
 class AppBar
 @JvmOverloads constructor(context: Context,
@@ -55,7 +50,6 @@ class AppBar
         get() = rightImageView.drawable
 
     init {
-
         View.inflate(context, R.layout.view_appbar, this)
 
         setColorScheme(ColorScheme.WAQTI_DEFAULT)
@@ -66,7 +60,6 @@ class AppBar
         leftImageView {
             leftImageView.visibility = View.VISIBLE
             leftImage = context.getDrawable(R.drawable.menu_icon)!!
-            leftImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
             setOnClickListener {
                 mainActivity.drawerLayout.apply {
                     hideKeyboard()

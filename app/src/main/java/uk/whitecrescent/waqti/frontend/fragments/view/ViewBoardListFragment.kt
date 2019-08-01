@@ -140,6 +140,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                             rightImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
                             this@ViewBoardListFragment.boardsList_recyclerView
                                     .changeViewMode(ViewMode.GRID_VERTICAL)
+
                             mainActivity.navigationView.menu
                                     .findItem(R.id.allBoards_navDrawerItem)
                                     .setIcon(R.drawable.grid_icon)
@@ -154,6 +155,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                 }
             }
         }
+        mainActivity.resetColorScheme()
     }
 
     override fun finish() {

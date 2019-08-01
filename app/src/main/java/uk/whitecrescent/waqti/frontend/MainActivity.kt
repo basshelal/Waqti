@@ -2,7 +2,6 @@
 
 package uk.whitecrescent.waqti.frontend
 
-import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.Rect
@@ -19,7 +18,6 @@ import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.colorAttr
-import org.jetbrains.anko.configuration
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
@@ -228,9 +226,6 @@ class MainActivity : AppCompatActivity() {
 
     inline val currentFragment: Fragment
         get() = supportFragmentManager.fragments.last()
-
-    inline val isNightMode: Boolean
-        get() = (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
 
     inline val isDarkTheme: Boolean
         get() = preferences.appTheme == AppTheme.DARK || preferences.appTheme == AppTheme.BLACK
