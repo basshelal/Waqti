@@ -47,17 +47,13 @@ import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.parentView
+import uk.whitecrescent.waqti.recycledViewPool
 import uk.whitecrescent.waqti.setColorScheme
 import uk.whitecrescent.waqti.setEdgeEffectColor
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
-private val listViewHolderPool = object : RecyclerView.RecycledViewPool() {
-
-    override fun setMaxRecycledViews(viewType: Int, max: Int) {
-        super.setMaxRecycledViews(viewType, TASK_LISTS_CACHE_SIZE)
-    }
-}
+private val listViewHolderPool = recycledViewPool(TASK_LISTS_CACHE_SIZE)
 
 class BoardView
 @JvmOverloads constructor(context: Context,
@@ -75,12 +71,13 @@ class BoardView
     inline val boardAdapter: BoardAdapter?
         get() = this.adapter as? BoardAdapter?
 
-    init {
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        setRecycledViewPool(listViewHolderPool)
         layoutManager = LinearLayoutManager(context, HORIZONTAL, false).also {
             it.isItemPrefetchEnabled = true
             it.initialPrefetchItemCount = 5
         }
-        setRecycledViewPool(listViewHolderPool)
     }
 
     /**

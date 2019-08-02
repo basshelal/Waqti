@@ -175,6 +175,12 @@ inline fun RecyclerView.setEdgeEffectColor(waqtiColor: WaqtiColor) {
     }
 }
 
+inline fun recycledViewPool(maxCount: Int) =
+        object : RecyclerView.RecycledViewPool() {
+            override fun setMaxRecycledViews(viewType: Int, max: Int) =
+                    super.setMaxRecycledViews(viewType, maxCount)
+        }
+
 inline val FloatingActionButton.verticalFABOnScrollListener: FABOnScrollListener
     get() = FABOnScrollListener(this, FABOnScrollListener.Orientation.VERTICAL)
 

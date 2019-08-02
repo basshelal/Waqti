@@ -15,11 +15,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.view.animation.AnimationUtils
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.core.view.children
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -51,16 +49,11 @@ import uk.whitecrescent.waqti.locationOnScreen
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.notifySwapped
+import uk.whitecrescent.waqti.recycledViewPool
 import uk.whitecrescent.waqti.setIndeterminateColor
 import kotlin.math.roundToInt
 
-private val taskViewHolderPool = object : RecyclerView.RecycledViewPool() {
-
-    override fun setMaxRecycledViews(viewType: Int, max: Int) {
-        super.setMaxRecycledViews(viewType, TASKS_CACHE_SIZE)
-    }
-}
-
+private val taskViewHolderPool = recycledViewPool(TASKS_CACHE_SIZE)
 private const val scrollAmount = 1.718281828459045 // E - 1
 private const val draggingViewAlpha = 0F
 private val defaultInterpolator = AccelerateDecelerateInterpolator()
@@ -81,13 +74,20 @@ class TaskListView
                 ?.filter { it != null }
                 ?.map { it as TaskViewHolder } ?: emptyList()
 
-    init {
+    override fun onFinishInflate() {
+        super.onFinishInflate()
+        setRecycledViewPool(taskViewHolderPool)
         layoutManager = LinearLayoutManager(context, VERTICAL, false).also {
             it.isItemPrefetchEnabled = true
-            it.initialPrefetchItemCount = 25
+            it.initialPrefetchItemCount = 15
         }
-        setRecycledViewPool(taskViewHolderPool)
-        itemAnimator = TaskListItemAnimator()
+        itemAnimator = object : DefaultItemAnimator() {
+            override fun animateAdd(holder: ViewHolder?): Boolean {
+                holder?.itemView?.alpha = draggingViewAlpha
+                dispatchAddFinished(holder)
+                return true
+            }
+        }
     }
 
     fun setColorScheme(colorScheme: ColorScheme) {
@@ -270,8 +270,8 @@ class TaskListAdapter(val taskListID: ID,
     }
 
     override fun onViewAttachedToWindow(holder: TaskViewHolder) {
-        holder.itemView.startAnimation(AnimationUtils.loadAnimation(taskListView.context,
-                R.anim.task_list_item_show_anim))
+        /*holder.itemView.startAnimation(AnimationUtils.loadAnimation(taskListView.context,
+                R.anim.task_list_item_show_anim))*/
     }
 
     private inline fun onDrag(draggingState: DragEventLocalState, holder: TaskViewHolder): Boolean {
@@ -473,52 +473,6 @@ class TaskListAdapter(val taskListID: ID,
         }
     }
 
-    fun invalidate() {
-        if (::taskListView.isInitialized) {
-            taskListView.children.forEach { it.invalidate() }
-            taskListView.invalidate()
-        }
-    }
-
-}
-
-data class DragEventLocalState(
-        var taskID: ID,
-        var taskListID: ID,
-        var adapterPosition: Int) {
-
-    inline fun updateToMatch(viewHolder: TaskViewHolder) {
-        this.taskID = viewHolder.taskID
-        this.taskListID = viewHolder.taskListID
-        this.adapterPosition = viewHolder.adapterPosition
-    }
-
-    inline infix fun doesNotMatch(viewHolder: TaskViewHolder): Boolean {
-        return this.taskID != viewHolder.taskID ||
-                this.taskListID != viewHolder.taskListID ||
-                this.adapterPosition != viewHolder.adapterPosition
-    }
-
-    inline infix fun matches(viewHolder: TaskViewHolder): Boolean {
-        return this.taskID == viewHolder.taskID &&
-                this.taskListID == viewHolder.taskListID &&
-                this.adapterPosition == viewHolder.adapterPosition
-    }
-
-}
-
-private class ShadowBuilder(view: View) : View.DragShadowBuilder(view) {
-
-    override fun onProvideShadowMetrics(outShadowSize: Point?, outShadowTouchPoint: Point?) {
-        super.onProvideShadowMetrics(outShadowSize, outShadowTouchPoint)
-
-        val viewPoint = view.locationOnScreen
-
-        val x = view.mainActivity.currentTouchPoint.x - viewPoint.x
-        val y = view.mainActivity.currentTouchPoint.y - viewPoint.y
-        outShadowTouchPoint?.set(x, y)
-    }
-
 }
 
 class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHolder(view) {
@@ -582,11 +536,41 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
     }
 }
 
-class TaskListItemAnimator : DefaultItemAnimator() {
+data class DragEventLocalState(
+        var taskID: ID,
+        var taskListID: ID,
+        var adapterPosition: Int) {
 
-    override fun animateAdd(holder: ViewHolder?): Boolean {
-        holder?.itemView?.alpha = draggingViewAlpha
-        dispatchAddFinished(holder)
-        return true
+    inline fun updateToMatch(viewHolder: TaskViewHolder) {
+        this.taskID = viewHolder.taskID
+        this.taskListID = viewHolder.taskListID
+        this.adapterPosition = viewHolder.adapterPosition
     }
+
+    inline infix fun doesNotMatch(viewHolder: TaskViewHolder): Boolean {
+        return this.taskID != viewHolder.taskID ||
+                this.taskListID != viewHolder.taskListID ||
+                this.adapterPosition != viewHolder.adapterPosition
+    }
+
+    inline infix fun matches(viewHolder: TaskViewHolder): Boolean {
+        return this.taskID == viewHolder.taskID &&
+                this.taskListID == viewHolder.taskListID &&
+                this.adapterPosition == viewHolder.adapterPosition
+    }
+
+}
+
+private class ShadowBuilder(view: View) : View.DragShadowBuilder(view) {
+
+    override fun onProvideShadowMetrics(outShadowSize: Point?, outShadowTouchPoint: Point?) {
+        super.onProvideShadowMetrics(outShadowSize, outShadowTouchPoint)
+
+        val viewPoint = view.locationOnScreen
+
+        val x = view.mainActivity.currentTouchPoint.x - viewPoint.x
+        val y = view.mainActivity.currentTouchPoint.y - viewPoint.y
+        outShadowTouchPoint?.set(x, y)
+    }
+
 }
