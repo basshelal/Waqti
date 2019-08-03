@@ -7,7 +7,6 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Point
 import android.graphics.PorterDuff
-import android.graphics.Rect
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.DragEvent
@@ -33,7 +32,6 @@ import uk.whitecrescent.waqti.backend.persistence.getParent
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
-import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
@@ -129,8 +127,11 @@ class TaskListAdapter(val taskListID: ID,
     val allViewHolders: List<TaskViewHolder>
         get() = if (::taskListView.isInitialized) taskListView.allViewHolders else emptyList()
 
-    inline val allCards: List<CardView>
+    inline val allListCards: List<CardView>
         get() = allViewHolders.map { it.cardView }
+
+    inline val allBoardCards: List<CardView>
+        get() = boardAdapter.allCards
 
     private var savedState: LinearLayoutManager.SavedState? = null
 
@@ -176,43 +177,6 @@ class TaskListAdapter(val taskListID: ID,
         }
     }
 
-    // This can be used to find the closest ViewHolder to the current touch position
-    // so that we can do stuff with it.
-    // This was made as a way to possibly replace the current dragging method but more importantly
-    // to fix the dragging over an empty area problem, this function will essentially return
-    // the ViewHolder vertically closest to the given point but within the margin offset,
-    // currently 8dp.
-    // If we call this and it returns null, but our list is not empty, we can safely assume the
-    // user is dragging over the empty part of a list at the bottom, (not an empty list though)
-    // we can then act accordingly
-    private inline fun RecyclerView.findVerticallyClosestChildViewHolderUnderTouchPoint(
-            touchPoint: Point): ViewHolder? {
-        val margin = convertDpToPx(8, context)
-        val localPoint = Point()
-
-        val rvRect = Rect()
-        this.getGlobalVisibleRect(rvRect)
-        localPoint.apply {
-            x = touchPoint.x - rvRect.left
-            y = touchPoint.y - rvRect.top
-        }
-        (0..margin).forEach {
-            findChildViewUnder(localPoint.x.toFloat(), localPoint.y.toFloat() + it).also {
-                if (it != null) return findContainingViewHolder(it)
-            }
-            findChildViewUnder(localPoint.x.toFloat(), localPoint.y.toFloat() - it).also {
-                if (it != null) return findContainingViewHolder(it)
-            }
-            findChildViewUnder(localPoint.x.toFloat() + it, localPoint.y.toFloat()).also {
-                if (it != null) return findContainingViewHolder(it)
-            }
-            findChildViewUnder(localPoint.x.toFloat() - it, localPoint.y.toFloat()).also {
-                if (it != null) return findContainingViewHolder(it)
-            }
-        }
-        return null
-    }
-
     override fun getItemCount() = taskList.size
 
     override fun getItemId(position: Int) = taskList[position].id
@@ -242,6 +206,11 @@ class TaskListAdapter(val taskListID: ID,
                         if (adapterPosition != RecyclerView.NO_POSITION) {
                             onDrag(draggingState, this)
                         }
+                        // Safety measure just in case
+                        doInBackground {
+                            allBoardCards.filter { it != draggingView && it.alpha < 1F }
+                                    .forEach { it.alpha = 1F }
+                        }
                     }
                     DragEvent.ACTION_DRAG_LOCATION -> {
                         if (draggingView?.alpha != draggingViewAlpha)
@@ -250,7 +219,7 @@ class TaskListAdapter(val taskListID: ID,
                     DragEvent.ACTION_DRAG_EXITED -> {
                         // Safety measure just in case
                         doInBackground {
-                            allCards.filter { it != draggingView && it.alpha < 1F }
+                            allBoardCards.filter { it != draggingView && it.alpha < 1F }
                                     .forEach { it.alpha = 1F }
                         }
                     }
@@ -260,7 +229,7 @@ class TaskListAdapter(val taskListID: ID,
                     DragEvent.ACTION_DRAG_ENDED -> {
                         draggingView?.alpha = 1F
                         // Safety measure just in case
-                        doInBackground { allCards.forEach { it.alpha = 1F } }
+                        doInBackground { allBoardCards.forEach { it.alpha = 1F } }
                     }
                 }
                 return@setOnDragListener true

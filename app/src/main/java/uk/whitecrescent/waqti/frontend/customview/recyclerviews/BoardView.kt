@@ -134,6 +134,9 @@ class BoardAdapter(val boardID: ID)
     private inline val linearLayoutManager: LinearLayoutManager
         get() = boardView.layoutManager as LinearLayoutManager
 
+    inline val allCards: List<CardView>
+        get() = taskListAdapters.flatMap { it.allListCards }
+
     init {
         this.setHasStableIds(true)
     }
