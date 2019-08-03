@@ -336,10 +336,14 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     val photoPicker = PhotoPickerDialog().apply {
                         onClick = {
                             setBackgroundImage(it)
-                            board.backgroundPhoto = it
-                            board.backgroundType = BackgroundType.UNSPLASH_PHOTO
+                        }
+                        onCancel = {
+                            setBackground()
+                            dismiss()
                         }
                         onConfirm = {
+                            board.backgroundPhoto = it
+                            board.backgroundType = BackgroundType.UNSPLASH_PHOTO
                             dismiss()
                         }
                     }

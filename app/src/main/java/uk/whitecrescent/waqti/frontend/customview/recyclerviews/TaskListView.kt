@@ -189,14 +189,15 @@ class TaskListAdapter(val taskListID: ID,
     }
 
     override fun onBindViewHolder(holder: TaskViewHolder, position: Int) {
-        holder.apply {
+        holder.doInBackground {
             taskID = taskList[position].id
             taskListID = this@TaskListAdapter.taskListID
             setColorScheme(if (taskList.cardColor == WaqtiColor.INHERIT)
                 taskList.getParent().cardColor.colorScheme
             else taskList.cardColor.colorScheme)
             textView.text = taskList[position].name
-
+        }
+        holder.apply {
             cardView.setOnDragListener { _, event ->
                 val draggingState = event.localState as DragEventLocalState
                 val draggingView = taskListView
@@ -478,7 +479,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                             ClipData.newPlainText("", ""),
                             ShadowBuilder(this),
                             DragEventLocalState(taskID, taskListID, adapterPosition),
-                            View.DRAG_FLAG_OPAQUE
+                            0
                     )
                     return@setOnLongClickListener true
                 }

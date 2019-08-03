@@ -271,13 +271,15 @@ class BoardAdapter(val boardID: ID)
         holder.taskListView.adapter = getOrCreateListAdapter(taskList.id)
         holder.headerTextView.text = taskList.name
 
-        val headerColorScheme = if (taskList.headerColor == WaqtiColor.INHERIT)
-            board.listColor.colorScheme
-        else taskList.headerColor.colorScheme
+        val headerColorScheme =
+                if (taskList.headerColor == WaqtiColor.INHERIT)
+                    board.listColor.colorScheme
+                else taskList.headerColor.colorScheme
 
-        val listColorScheme = if (taskList.cardColor == WaqtiColor.INHERIT)
-            board.cardColor.colorScheme
-        else taskList.cardColor.colorScheme
+        val listColorScheme =
+                if (taskList.cardColor == WaqtiColor.INHERIT)
+                    board.cardColor.colorScheme
+                else taskList.cardColor.colorScheme
 
         holder.setHeaderColorScheme(headerColorScheme)
         holder.setListColorScheme(listColorScheme)

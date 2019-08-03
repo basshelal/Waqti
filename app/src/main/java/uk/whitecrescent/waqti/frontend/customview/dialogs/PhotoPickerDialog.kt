@@ -20,6 +20,7 @@ import uk.whitecrescent.waqti.invoke
 class PhotoPickerDialog : WaqtiFragment() {
 
     var onConfirm: (UnsplashPhoto) -> Unit = { }
+    var onCancel: () -> Unit = { }
     var onClick: (UnsplashPhoto) -> Unit = { }
     var selectedPhoto: UnsplashPhoto? = null
         set(value) {
@@ -65,7 +66,7 @@ class PhotoPickerDialog : WaqtiFragment() {
         }
         cancel_button {
             setOnClickListener {
-                dismiss()
+                onCancel()
             }
         }
     }
