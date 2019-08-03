@@ -48,7 +48,7 @@ class AboutFragment : WaqtiFragment() {
 
                 // Waqti is free and open source
                 .addHeading(getString(R.string.waqtiOpenSource))
-                .addGitHubExt("basshelal/Waqti-Android", "Fork Waqti on GitHub")
+                .addGitHubExt("basshelal/Waqti-Android", "Waqti on GitHub")
                 .addLicense()
 
                 // Open Source Libraries Used
@@ -72,10 +72,10 @@ class AboutFragment : WaqtiFragment() {
                 .addLibrary("afollestad/material-dialogs", "Material Dialogs")
                 .addLibrary("aritraroy/Flashbar", "Flashbar")
                 .addLibrary("TakuSemba/Spotlight", "Spotlight")
-                .addLibrary("TakuSemba/Spotlight", "Spotlight")
                 .addLibrary("shiburagi/Drawer-Behavior", "Drawer Behavior")
                 .addLibrary("arcadefire/nice-spinner", "Nice Spinner")
                 .addLibrary("warkiz/IndicatorSeekBar", "IndicatorSeekBar")
+                .addLibrary("basshelal/UnsplashPhotoPicker", "Unsplash Photo Picker")
 
                 // About the Developer
                 .addHeading(getString(R.string.aboutTheDeveloper))
