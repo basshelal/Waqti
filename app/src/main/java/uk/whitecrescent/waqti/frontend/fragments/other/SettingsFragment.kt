@@ -13,7 +13,12 @@ import kotlinx.android.synthetic.main.fragment_settings.*
 import org.angmarch.views.OnSpinnerItemSelectedListener
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
 import uk.whitecrescent.waqti.frontend.AppTheme
+import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.MainActivity
+import uk.whitecrescent.waqti.frontend.SETTINGS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.WaqtiPreferences
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
@@ -160,6 +165,17 @@ class SettingsFragment : WaqtiFragment() {
 
     override fun finish() {
 
+    }
+
+    companion object {
+        inline fun show(mainActivity: MainActivity) {
+            mainActivity.supportFragmentManager.commitTransaction {
+                @FragmentNavigation(from = ANY_FRAGMENT, to = SETTINGS_FRAGMENT)
+                replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
+                addToBackStack(null)
+
+            }
+        }
     }
 
 }

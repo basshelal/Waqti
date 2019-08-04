@@ -12,3 +12,11 @@ import org.junit.jupiter.api.Assumptions
 inline infix fun <T> T?.shouldEqual(other: T?) {
     Assumptions.assumeTrue(this == other)
 }
+
+inline fun assumingThat(boolean: Boolean, noinline func: () -> Unit) {
+    Assumptions.assumingThat(boolean, func)
+}
+
+inline fun assumingThat(noinline predicate: () -> Boolean, noinline func: () -> Unit) {
+    Assumptions.assumingThat(predicate, func)
+}

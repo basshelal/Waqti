@@ -40,10 +40,11 @@ import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
-import uk.whitecrescent.waqti.frontend.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
+import uk.whitecrescent.waqti.frontend.VIEW_BOARD_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.BackgroundType
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
@@ -114,18 +115,12 @@ class ViewBoardFragment : WaqtiViewFragment() {
             setUpAppBar()
             addList_floatingButton {
                 setOnClickListener {
-                    @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = CREATE_LIST_FRAGMENT)
-                    it.mainActivity.supportFragmentManager.commitTransaction {
+                    mainActivityViewModel.boardID = board.id
+                    mainActivityViewModel.boardPosition
+                            .changeTo(false to (boardView.boardAdapter?.itemCount ?: 0 - 1))
 
-                        it.mainActivityViewModel.boardID = board.id
-                        it.mainActivityViewModel.boardPosition
-                                .changeTo(false to (boardView.boardAdapter?.itemCount ?: 0 - 1))
-
-                        it.clearFocusAndHideKeyboard()
-
-                        replace(R.id.fragmentContainer, CreateListFragment(), CREATE_LIST_FRAGMENT)
-                        addToBackStack(null)
-                    }
+                    clearFocusAndHideKeyboard()
+                    CreateListFragment.show(mainActivity)
                 }
             }
 
@@ -467,6 +462,16 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         background_imageView.scrollBy((dx * 0.25).roundToInt(), 0)
                     mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
                 }
+            }
+        }
+    }
+
+    companion object {
+        inline fun show(mainActivity: MainActivity) {
+            mainActivity.supportFragmentManager.commitTransaction {
+                @FragmentNavigation(from = VIEW_BOARD_LIST_FRAGMENT, to = VIEW_BOARD_FRAGMENT)
+                replace(R.id.fragmentContainer, ViewBoardFragment(), VIEW_BOARD_FRAGMENT)
+                addToBackStack(null)
             }
         }
     }

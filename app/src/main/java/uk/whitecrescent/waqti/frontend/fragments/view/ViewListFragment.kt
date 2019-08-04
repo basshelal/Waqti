@@ -30,9 +30,10 @@ import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
-import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
+import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
@@ -101,20 +102,15 @@ class ViewListFragment : WaqtiViewFragment() {
                 addOnScrollListener(this@ViewListFragment.addTask_floatingButton.verticalFABOnScrollListener)
             }
 
-            addTask_floatingButton.setOnClickListener {
-                @FragmentNavigation(from = VIEW_LIST_FRAGMENT, to = CREATE_TASK_FRAGMENT)
-                it.mainActivity.supportFragmentManager.commitTransaction {
+            addTask_floatingButton {
+                setOnClickListener {
+                    mainActivityViewModel.boardID = boardID
+                    mainActivityViewModel.listID = listID
 
-                    it.mainActivityViewModel.boardID = boardID
-                    it.mainActivityViewModel.listID = listID
-
-                    it.clearFocusAndHideKeyboard()
-
-                    replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
-                    addToBackStack(null)
+                    clearFocusAndHideKeyboard()
+                    CreateTaskFragment.show(mainActivity)
                 }
             }
-
             delete_imageView {
                 bringToFront()
                 alpha = 0F
@@ -319,6 +315,16 @@ class ViewListFragment : WaqtiViewFragment() {
         taskList_recyclerView {
             scrollBarColor = colorScheme.dark
             setEdgeEffectColor(colorScheme.dark)
+        }
+    }
+
+    companion object {
+        inline fun show(mainActivity: MainActivity) {
+            mainActivity.supportFragmentManager.commitTransaction {
+                @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = VIEW_LIST_FRAGMENT)
+                replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
+                addToBackStack(null)
+            }
         }
     }
 }

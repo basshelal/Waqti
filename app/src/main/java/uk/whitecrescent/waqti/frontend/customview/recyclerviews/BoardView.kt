@@ -28,14 +28,9 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASK_LISTS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
-import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
-import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
-import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
-import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.LINEAR
@@ -383,16 +378,9 @@ class BoardViewHolder(view: View,
             }
             header {
                 setOnClickListener {
-                    @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = VIEW_LIST_FRAGMENT)
-                    it.mainActivity.supportFragmentManager.commitTransaction {
-
-                        it.mainActivityViewModel.listID = adapter.board[adapterPosition].id
-
-                        it.clearFocusAndHideKeyboard()
-
-                        addToBackStack(null)
-                        replace(R.id.fragmentContainer, ViewListFragment(), VIEW_LIST_FRAGMENT)
-                    }
+                    mainActivityViewModel.listID = adapter.board[adapterPosition].id
+                    clearFocusAndHideKeyboard()
+                    ViewListFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
                     adapter.itemTouchHelper.startDrag(this@BoardViewHolder)
@@ -401,17 +389,11 @@ class BoardViewHolder(view: View,
             }
             addButton {
                 setOnClickListener {
-                    @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = CREATE_TASK_FRAGMENT)
-                    it.mainActivity.supportFragmentManager.commitTransaction {
+                    mainActivityViewModel.boardID = adapter.boardID
+                    mainActivityViewModel.listID = taskListView.listAdapter?.taskListID ?: 0
 
-                        it.mainActivityViewModel.boardID = adapter.boardID
-                        it.mainActivityViewModel.listID = taskListView.listAdapter?.taskListID ?: 0
-
-                        it.clearFocusAndHideKeyboard()
-
-                        replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
-                        addToBackStack(null)
-                    }
+                    clearFocusAndHideKeyboard()
+                    CreateTaskFragment.show(mainActivity)
                 }
             }
         }

@@ -24,7 +24,6 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.addOnBackPressedCallback
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
-import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.doInBackgroundOnceWhen
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
@@ -60,11 +59,8 @@ class MainActivity : AppCompatActivity() {
     private inline fun setUpViews() {
 
         if (supportFragmentManager.fragments.isEmpty()) {
-            supportFragmentManager.commitTransaction {
-                @FragmentNavigation(from = NO_FRAGMENT, to = VIEW_BOARD_LIST_FRAGMENT)
-                add(R.id.fragmentContainer, ViewBoardListFragment(), VIEW_BOARD_LIST_FRAGMENT)
-                navigationView.setCheckedItem(R.id.allBoards_navDrawerItem)
-            }
+            ViewBoardListFragment.show(this)
+            navigationView.setCheckedItem(R.id.allBoards_navDrawerItem)
         }
 
         drawerLayout {
@@ -121,28 +117,19 @@ class MainActivity : AppCompatActivity() {
                 when (it.itemId) {
                     R.id.allBoards_navDrawerItem -> {
                         doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }) {
-                            @FragmentNavigation(from = ANY_FRAGMENT, to = VIEW_BOARD_LIST_FRAGMENT)
                             popAllFragmentsInBackStack()
                         }
                     }
                     R.id.settings_navDrawerItem -> {
                         doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }) {
                             if (currentFragment.tag != SETTINGS_FRAGMENT)
-                                supportFragmentManager.commitTransaction {
-                                    @FragmentNavigation(from = ANY_FRAGMENT, to = SETTINGS_FRAGMENT)
-                                    replace(R.id.fragmentContainer, SettingsFragment(), SETTINGS_FRAGMENT)
-                                    addToBackStack(null)
-                                }
+                                SettingsFragment.show(this@MainActivity)
                         }
                     }
                     R.id.about_navDrawerItem -> {
                         doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }) {
                             if (currentFragment.tag != ABOUT_FRAGMENT)
-                                supportFragmentManager.commitTransaction {
-                                    @FragmentNavigation(from = ANY_FRAGMENT, to = ABOUT_FRAGMENT)
-                                    replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
-                                    addToBackStack(null)
-                                }
+                                AboutFragment.show(this@MainActivity)
                         }
                     }
                 }
@@ -212,6 +199,7 @@ class MainActivity : AppCompatActivity() {
     inline fun popAllFragmentsInBackStack() {
         supportFragmentManager.doInBackground {
             while (backStackEntryCount > 0) {
+                @FragmentNavigation(from = ANY_FRAGMENT, to = VIEW_BOARD_LIST_FRAGMENT)
                 popBackStackImmediate() // TODO: 09-Jul-19 Look into changing this to something more efficient
             }
         }

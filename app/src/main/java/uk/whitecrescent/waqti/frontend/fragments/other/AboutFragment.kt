@@ -20,6 +20,11 @@ import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.frontend.ABOUT_FRAGMENT
+import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
+import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.WAQTI_VERSION
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
@@ -113,6 +118,17 @@ class AboutFragment : WaqtiFragment() {
     override fun finish() {
 
     }
+
+    companion object {
+        inline fun show(mainActivity: MainActivity) {
+            mainActivity.supportFragmentManager.commitTransaction {
+                @FragmentNavigation(from = ANY_FRAGMENT, to = ABOUT_FRAGMENT)
+                replace(R.id.fragmentContainer, AboutFragment(), ABOUT_FRAGMENT)
+                addToBackStack(null)
+            }
+        }
+    }
+
 }
 
 inline fun AboutPage.addHeading(title: String) = addGroup(title)

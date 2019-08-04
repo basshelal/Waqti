@@ -11,7 +11,7 @@ import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.keys.UNSPLASH_ACCESS_KEY
 import uk.whitecrescent.waqti.keys.UNSPLASH_SECRET_KEY
 
-class App : Application() {
+class Waqti : Application() {
 
     override fun onCreate() {
         super.onCreate()

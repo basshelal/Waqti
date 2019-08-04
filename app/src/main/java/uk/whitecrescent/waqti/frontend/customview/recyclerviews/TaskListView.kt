@@ -31,13 +31,8 @@ import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.persistence.getParent
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
-import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
-import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
-import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
-import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
@@ -444,22 +439,14 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
             textView.textSize = mainActivity.preferences.cardTextSize.toFloat()
             cardView {
                 setOnClickListener {
-                    @FragmentNavigation(from = VIEW_BOARD_FRAGMENT + VIEW_LIST_FRAGMENT,
-                            to = VIEW_TASK_FRAGMENT)
-                    it.mainActivity.supportFragmentManager.commitTransaction {
-
-                        it.mainActivityViewModel.taskID = taskID
-                        it.mainActivityViewModel.listID = taskListID
-
-                        it.clearFocusAndHideKeyboard()
-
-                        addToBackStack(null)
-                        replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
-                    }
+                    mainActivityViewModel.taskID = taskID
+                    mainActivityViewModel.listID = taskListID
+                    clearFocusAndHideKeyboard()
+                    ViewTaskFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
-                    it.clearFocusAndHideKeyboard()
-                    it.startDragAndDrop(
+                    clearFocusAndHideKeyboard()
+                    startDragAndDrop(
                             ClipData.newPlainText("", ""),
                             ShadowBuilder(this),
                             DragEventLocalState(taskID, taskListID, adapterPosition),

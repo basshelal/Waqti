@@ -25,8 +25,12 @@ import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME_PROPERTY
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
+import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
+import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
+import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
@@ -251,6 +255,17 @@ class ViewTaskFragment : WaqtiViewFragment() {
                         dismiss()
                     }
                 }.show(mainActivity.supportFragmentManager, "")
+            }
+        }
+    }
+
+    companion object {
+        inline fun show(mainActivity: MainActivity) {
+            mainActivity.supportFragmentManager.commitTransaction {
+                @FragmentNavigation(from = VIEW_BOARD_FRAGMENT + VIEW_LIST_FRAGMENT,
+                        to = VIEW_TASK_FRAGMENT)
+                replace(R.id.fragmentContainer, ViewTaskFragment(), VIEW_TASK_FRAGMENT)
+                addToBackStack(null)
             }
         }
     }

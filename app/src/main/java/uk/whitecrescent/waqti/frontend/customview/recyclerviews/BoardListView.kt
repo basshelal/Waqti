@@ -17,11 +17,7 @@ import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.commitTransaction
-import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
-import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
-import uk.whitecrescent.waqti.frontend.VIEW_BOARD_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.BackgroundType
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewMode
@@ -143,19 +139,14 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
             }
             boardCard_cardView {
                 setOnClickListener {
-                    @FragmentNavigation(from = VIEW_BOARD_LIST_FRAGMENT, to = VIEW_BOARD_FRAGMENT)
-                    it.mainActivity.supportFragmentManager.commitTransaction {
+                    hideKeyboard()
 
-                        it.hideKeyboard()
-
-                        it.mainActivityViewModel.apply {
-                            boardID = board.id
-                            boardListPosition.changeTo(false to position)
-                        }
-
-                        replace(R.id.fragmentContainer, ViewBoardFragment(), VIEW_BOARD_FRAGMENT)
-                        addToBackStack(null)
+                    mainActivityViewModel.apply {
+                        boardID = board.id
+                        boardListPosition.changeTo(false to position)
                     }
+
+                    ViewBoardFragment.show(mainActivity)
                 }
             }
         }

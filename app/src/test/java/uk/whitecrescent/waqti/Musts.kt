@@ -88,14 +88,19 @@ inline fun <T : () -> Any?> T.mustNotThrowAnyException() {
 }
 
 inline infix fun Boolean.mustBe(boolean: Boolean) {
-    when (boolean) {
-        true -> {
-            this.assertTrue
-        }
-        else -> {
-            this.assertFalse
-        }
-    }
+    if (boolean) assertTrue else assertFalse
+}
+
+inline infix fun (() -> Boolean).mustBe(boolean: Boolean) {
+    this.invoke() mustBe boolean
+}
+
+inline infix fun (() -> Boolean).mustBe(predicate: () -> Boolean) {
+    this.invoke() mustBe predicate()
+}
+
+inline infix fun Boolean.mustBe(predicate: () -> Boolean) {
+    this mustBe predicate()
 }
 
 inline fun <T> Collection<T>.mustBeEmpty() {

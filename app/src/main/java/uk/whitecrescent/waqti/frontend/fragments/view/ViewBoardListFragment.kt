@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.os.Bundle
@@ -17,8 +19,9 @@ import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.frontend.CREATE_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.MainActivity
+import uk.whitecrescent.waqti.frontend.NO_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
@@ -79,24 +82,16 @@ class ViewBoardListFragment : WaqtiViewFragment() {
             addBoard_FloatingButton {
                 setImageTint(WaqtiColor.WHITE)
                 setOnClickListener {
-                    @FragmentNavigation(from = VIEW_BOARD_LIST_FRAGMENT, to = CREATE_BOARD_FRAGMENT)
-                    it.mainActivity.supportFragmentManager.commitTransaction {
-
-                        it.mainActivityViewModel.boardListPosition
-                                .changeTo(false to boardsList_recyclerView.boardListAdapter.itemCount - 1)
-
-                        it.clearFocusAndHideKeyboard()
-
-                        replace(R.id.fragmentContainer, CreateBoardFragment(), CREATE_BOARD_FRAGMENT)
-                        addToBackStack(null)
-                    }
+                    mainActivityViewModel.boardListPosition
+                            .changeTo(false to boardsList_recyclerView.boardListAdapter.itemCount - 1)
+                    clearFocusAndHideKeyboard()
+                    CreateBoardFragment.show(mainActivity)
                 }
             }
         }
     }
 
     override fun setUpAppBar() {
-        mainActivity.resetColorScheme()
         mainActivity.appBar {
             elevation = DEFAULT_ELEVATION
             leftImageMenu()
@@ -126,8 +121,8 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                 fun update() {
                     when (viewMode) {
                         ViewMode.LIST_VERTICAL -> {
-                            rightImage = mainActivity.getDrawable(R.drawable.grid_icon)!!
-                            rightImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
+                            rightImage = mainActivity.getDrawable(R.drawable.grid_icon)
+                            rightImage?.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
                             this@ViewBoardListFragment.boardsList_recyclerView
                                     .changeViewMode(ViewMode.LIST_VERTICAL)
 
@@ -136,8 +131,8 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                                     .setIcon(R.drawable.boardlist_icon)
                         }
                         ViewMode.GRID_VERTICAL -> {
-                            rightImage = mainActivity.getDrawable((R.drawable.boardlist_icon))!!
-                            rightImage.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
+                            rightImage = mainActivity.getDrawable((R.drawable.boardlist_icon))
+                            rightImage?.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
                             this@ViewBoardListFragment.boardsList_recyclerView
                                     .changeViewMode(ViewMode.GRID_VERTICAL)
 
@@ -160,6 +155,15 @@ class ViewBoardListFragment : WaqtiViewFragment() {
 
     override fun finish() {
 
+    }
+
+    companion object {
+        inline fun show(mainActivity: MainActivity) {
+            mainActivity.supportFragmentManager.commitTransaction {
+                @FragmentNavigation(from = NO_FRAGMENT, to = VIEW_BOARD_LIST_FRAGMENT)
+                add(R.id.fragmentContainer, ViewBoardListFragment(), VIEW_BOARD_LIST_FRAGMENT)
+            }
+        }
     }
 }
 

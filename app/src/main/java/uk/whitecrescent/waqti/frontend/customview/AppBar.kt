@@ -18,7 +18,6 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
-import uk.whitecrescent.waqti.hideKeyboard
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 
@@ -29,9 +28,11 @@ import uk.whitecrescent.waqti.mainActivity
  * The ImageView on the end is meant to be the options menu.
  */
 class AppBar
-@JvmOverloads constructor(context: Context,
-                          attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) : Toolbar(context, attributeSet, defStyle) {
+@JvmOverloads constructor(
+        context: Context,
+        attributeSet: AttributeSet? = null,
+        defStyle: Int = 0
+) : Toolbar(context, attributeSet, defStyle) {
 
     val DEFAULT_ELEVATION = 16F
 
@@ -41,11 +42,11 @@ class AppBar
     inline val rightImageView: ImageView get() = appBar_rightImageView
     inline val editTextView: EditTextView get() = appBar_editTextView
 
-    inline var leftImage: Drawable
+    inline var leftImage: Drawable?
         set(value) = leftImageView.setImageDrawable(value)
         get() = leftImageView.drawable
 
-    inline var rightImage: Drawable
+    inline var rightImage: Drawable?
         set(value) = rightImageView.setImageDrawable(value)
         get() = rightImageView.drawable
 
@@ -59,10 +60,9 @@ class AppBar
     inline fun leftImageMenu() {
         leftImageView {
             leftImageView.visibility = View.VISIBLE
-            leftImage = context.getDrawable(R.drawable.menu_icon)!!
+            leftImage = context.getDrawable(R.drawable.menu_icon)
             setOnClickListener {
                 mainActivity.drawerLayout.apply {
-                    hideKeyboard()
                     openDrawer(GravityCompat.START)
                 }
             }
@@ -72,7 +72,7 @@ class AppBar
     inline fun leftImageBack() {
         leftImageView {
             leftImageView.visibility = View.VISIBLE
-            leftImage = context.getDrawable(R.drawable.back_icon)!!
+            leftImage = context.getDrawable(R.drawable.back_icon)
             setOnClickListener {
                 @FragmentNavigation(from = ANY_FRAGMENT, to = ANY_FRAGMENT)
                 mainActivity.supportFragmentManager.popBackStack()
@@ -83,15 +83,15 @@ class AppBar
     inline fun rightImageOptions() {
         rightImageView {
             rightImageView.visibility = View.VISIBLE
-            rightImage = context.getDrawable(R.drawable.overflow_icon)!!
+            rightImage = context.getDrawable(R.drawable.overflow_icon)
         }
     }
 
     fun setColorScheme(colorScheme: ColorScheme) {
         backgroundColor = colorScheme.main.toAndroidColor
-        leftImage.setTint(colorScheme.text.toAndroidColor)
+        leftImage?.setTint(colorScheme.text.toAndroidColor)
         editTextView.textColor = colorScheme.text.toAndroidColor
-        rightImage.setTint(colorScheme.text.toAndroidColor)
+        rightImage?.setTint(colorScheme.text.toAndroidColor)
     }
 
     override fun setBackgroundColor(color: Int) {

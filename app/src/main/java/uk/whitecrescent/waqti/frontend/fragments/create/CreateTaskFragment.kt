@@ -19,9 +19,13 @@ import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
+import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
+import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
+import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
+import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
@@ -208,6 +212,17 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
     private inline fun Task.setDescription() {
         viewModel.taskDescription.also {
             if (it.isNotDefault) setDescriptionValue(it)
+        }
+    }
+
+    companion object {
+        inline fun show(mainActivity: MainActivity) {
+            mainActivity.supportFragmentManager.commitTransaction {
+                @FragmentNavigation(from = VIEW_BOARD_FRAGMENT + VIEW_LIST_FRAGMENT,
+                        to = CREATE_TASK_FRAGMENT)
+                replace(R.id.fragmentContainer, CreateTaskFragment(), CREATE_TASK_FRAGMENT)
+                addToBackStack(null)
+            }
         }
     }
 
