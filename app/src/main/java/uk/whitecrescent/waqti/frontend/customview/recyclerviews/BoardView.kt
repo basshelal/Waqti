@@ -130,7 +130,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     var onInflate: BoardView.() -> Unit = {}
     var onScrolled: (Int, Int) -> Unit = { dx, dy -> }
 
-    inline val linearLayoutManager: LinearLayoutManager get() = boardView.layoutManager as LinearLayoutManager
+    inline val linearLayoutManager: LinearLayoutManager? get() = boardView.layoutManager as? LinearLayoutManager?
     inline val allCards: List<CardView> get() = taskListAdapters.flatMap { it.allListCards }
 
     init {
@@ -186,7 +186,8 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 if (newState == SCROLL_STATE_IDLE) {
                     saveState()
-                    val currentBoardPos = linearLayoutManager.findFirstCompletelyVisibleItemPosition()
+                    val currentBoardPos = linearLayoutManager
+                            ?.findFirstCompletelyVisibleItemPosition() ?: 0
                     boardView.mainActivityViewModel.boardPosition.changeTo(true to currentBoardPos)
                 }
             }
