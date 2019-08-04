@@ -116,8 +116,7 @@ class BoardView
     }
 }
 
-class BoardAdapter(val boardID: ID)
-    : RecyclerView.Adapter<BoardViewHolder>() {
+class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     val board = Caches.boards[boardID]
     lateinit var boardView: BoardView
@@ -131,11 +130,8 @@ class BoardAdapter(val boardID: ID)
     var onInflate: BoardView.() -> Unit = {}
     var onScrolled: (Int, Int) -> Unit = { dx, dy -> }
 
-    private inline val linearLayoutManager: LinearLayoutManager
-        get() = boardView.layoutManager as LinearLayoutManager
-
-    inline val allCards: List<CardView>
-        get() = taskListAdapters.flatMap { it.allListCards }
+    inline val linearLayoutManager: LinearLayoutManager get() = boardView.layoutManager as LinearLayoutManager
+    inline val allCards: List<CardView> get() = taskListAdapters.flatMap { it.allListCards }
 
     init {
         this.setHasStableIds(true)
@@ -344,7 +340,7 @@ class BoardAdapter(val boardID: ID)
 
     fun setHeadersColorScheme(colorScheme: ColorScheme) {
         taskListAdapters.forEach {
-            it.taskListViewSafe {
+            it.taskListView {
                 (parentView as? ConstraintLayout?) {
                     taskList_recyclerView {
                         scrollBarColor = colorScheme.text
@@ -359,7 +355,7 @@ class BoardAdapter(val boardID: ID)
     }
 
     fun setListsColorScheme(colorScheme: ColorScheme) {
-        taskListAdapters.forEach { it.taskListViewSafe { setColorScheme(colorScheme) } }
+        taskListAdapters.forEach { it.taskListView { setColorScheme(colorScheme) } }
     }
 }
 

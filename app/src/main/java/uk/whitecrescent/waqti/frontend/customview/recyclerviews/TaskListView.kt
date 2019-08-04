@@ -112,30 +112,16 @@ class TaskListView
 class TaskListAdapter(val taskListID: ID,
                       val boardAdapter: BoardAdapter) : Adapter<TaskViewHolder>() {
 
-    // TODO: 17-Jul-19 Lateinit sucks donkey's ass, make it nullable instead of lateinit
-    //  so swap taskListViewSafe with taskListView
-    lateinit var taskListView: TaskListView
-
-    val taskListViewSafe: TaskListView?
-        get() = if (::taskListView.isInitialized) taskListView else null
-
     val taskList = Caches.taskLists[taskListID]
+    var taskListView: TaskListView? = null
+    var savedState: LinearLayoutManager.SavedState? = null
+    var onInflate: TaskListView.() -> Unit = { }
 
-    inline val linearLayoutManager: LinearLayoutManager
-        get() = taskListView.layoutManager as LinearLayoutManager
-
-    val allViewHolders: List<TaskViewHolder>
-        get() = if (::taskListView.isInitialized) taskListView.allViewHolders else emptyList()
-
-    inline val allListCards: List<CardView>
-        get() = allViewHolders.map { it.cardView }
-
-    inline val allBoardCards: List<CardView>
-        get() = boardAdapter.allCards
-
-    private var savedState: LinearLayoutManager.SavedState? = null
-
-    var onInflate: TaskListView.() -> Unit = {}
+    inline val linearLayoutManager: LinearLayoutManager? get() = taskListView?.layoutManager as? LinearLayoutManager?
+    inline val allViewHolders: List<TaskViewHolder>
+        get() = taskListView?.allViewHolders ?: emptyList()
+    inline val allListCards: List<CardView> get() = allViewHolders.map { it.cardView }
+    inline val allBoardCards: List<CardView> get() = boardAdapter.allCards
 
     init {
         this.setHasStableIds(true)
@@ -145,7 +131,7 @@ class TaskListAdapter(val taskListID: ID,
         check(recyclerView is TaskListView)
         taskListView = recyclerView
 
-        taskListView.apply {
+        taskListView {
             restoreState()
             onInflate(this)
             onInflate = {}
@@ -161,7 +147,8 @@ class TaskListAdapter(val taskListID: ID,
                 when (event.action) {
                     DragEvent.ACTION_DRAG_LOCATION -> {
                         if (this@TaskListAdapter.taskListID != draggingState.taskListID) {
-                            val lastViewHolderY = taskListView.findViewHolderForAdapterPosition(lastPosition)?.itemView?.y
+                            val lastViewHolderY = findViewHolderForAdapterPosition(lastPosition)
+                                    ?.itemView?.y
                             if (taskList.isEmpty() || (lastViewHolderY != null && event.y > lastViewHolderY)) {
                                 val otherAdapter = boardAdapter.getListAdapter(draggingState.taskListID)
                                 if (otherAdapter != null) {
@@ -201,7 +188,7 @@ class TaskListAdapter(val taskListID: ID,
             cardView.setOnDragListener { _, event ->
                 val draggingState = event.localState as DragEventLocalState
                 val draggingView = taskListView
-                        .findViewHolderForAdapterPosition(draggingState.adapterPosition)?.itemView
+                        ?.findViewHolderForAdapterPosition(draggingState.adapterPosition)?.itemView
                 when (event.action) {
                     DragEvent.ACTION_DRAG_ENTERED -> {
                         if (adapterPosition != RecyclerView.NO_POSITION) {
@@ -225,7 +212,7 @@ class TaskListAdapter(val taskListID: ID,
                         }
                     }
                     DragEvent.ACTION_DROP -> {
-                        draggingState.updateToMatch(this)
+                        draggingState updateToMatch this
                     }
                     DragEvent.ACTION_DRAG_ENDED -> {
                         draggingView?.alpha = 1F
@@ -306,18 +293,20 @@ class TaskListAdapter(val taskListID: ID,
 
     private inline fun checkForScrollDown(draggingState: DragEventLocalState, holder: TaskViewHolder) {
 
-        if (draggingState.adapterPosition >= linearLayoutManager.findLastCompletelyVisibleItemPosition()) {
+        if (draggingState.adapterPosition >=
+                (linearLayoutManager?.findLastCompletelyVisibleItemPosition() ?: -1)) {
             val scrollBy = (holder.itemView.height * scrollAmount).roundToInt()
-            taskListView.smoothScrollBy(0, scrollBy, defaultInterpolator)
+            taskListView?.smoothScrollBy(0, scrollBy, defaultInterpolator)
         }
 
     }
 
     private inline fun checkForScrollUp(draggingState: DragEventLocalState, holder: TaskViewHolder) {
 
-        if (draggingState.adapterPosition <= linearLayoutManager.findFirstCompletelyVisibleItemPosition()) {
+        if (draggingState.adapterPosition <=
+                (linearLayoutManager?.findFirstCompletelyVisibleItemPosition() ?: -1)) {
             val scrollBy = (holder.itemView.height * -scrollAmount).roundToInt()
-            taskListView.smoothScrollBy(0, scrollBy, defaultInterpolator)
+            taskListView?.smoothScrollBy(0, scrollBy, defaultInterpolator)
         }
 
     }
@@ -368,7 +357,7 @@ class TaskListAdapter(val taskListID: ID,
 
     private inline fun onScrollAcrossFilledList() {
 
-        taskListView.apply {
+        taskListView {
             // The list that we will be scrolling to
             val newBoardPosition = boardAdapter.indexOfAdapter(this@TaskListAdapter)
 
@@ -384,7 +373,7 @@ class TaskListAdapter(val taskListID: ID,
 
     private inline fun onScrollAcrossEmptyList() {
 
-        taskListView.apply {
+        taskListView {
             // The list that we will be scrolling to
             val newBoardPosition = boardAdapter.indexOfAdapter(this@TaskListAdapter)
 
@@ -399,7 +388,7 @@ class TaskListAdapter(val taskListID: ID,
     }
 
     private inline fun scrollLeft(currentBoardPosition: Int) {
-        taskListView.apply {
+        taskListView {
             val scrollBy: Int
 
             val screenWidth = mainActivity.dimensions.first
@@ -415,7 +404,7 @@ class TaskListAdapter(val taskListID: ID,
     }
 
     private inline fun scrollRight(currentBoardPosition: Int) {
-        taskListView.apply {
+        taskListView {
             val scrollBy: Int
 
             val screenWidth = mainActivity.dimensions.first
@@ -431,16 +420,11 @@ class TaskListAdapter(val taskListID: ID,
     }
 
     fun saveState() {
-        if (::taskListView.isInitialized) {
-            savedState = taskListView.layoutManager?.onSaveInstanceState()
-                    as LinearLayoutManager.SavedState
-        }
+        savedState = linearLayoutManager?.onSaveInstanceState() as? LinearLayoutManager.SavedState?
     }
 
     fun restoreState() {
-        if (::taskListView.isInitialized) {
-            taskListView.layoutManager?.onRestoreInstanceState(savedState)
-        }
+        linearLayoutManager?.onRestoreInstanceState(savedState)
     }
 
 }
@@ -511,7 +495,7 @@ data class DragEventLocalState(
         var taskListID: ID,
         var adapterPosition: Int) {
 
-    inline fun updateToMatch(viewHolder: TaskViewHolder) {
+    inline infix fun updateToMatch(viewHolder: TaskViewHolder) {
         this.taskID = viewHolder.taskID
         this.taskListID = viewHolder.taskListID
         this.adapterPosition = viewHolder.adapterPosition

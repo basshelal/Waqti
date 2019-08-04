@@ -229,7 +229,7 @@ inline fun FragmentManager.commitTransaction(block: FragmentTransaction.() -> Un
     this.beginTransaction().apply(block).commit()
 }
 
-inline operator fun <reified V : View?> V?.invoke(block: V.() -> Unit) = this.applyIfNotNull(block)
+inline operator fun <reified V : View?> V?.invoke(block: V.() -> Unit) = this?.apply(block)
 
 inline fun ComponentActivity.addOnBackPressedCallback(crossinline onBackPressed: () -> Unit) {
     onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
@@ -314,16 +314,6 @@ inline fun Pair<Int, Int>.getValue(percent: Int): Int {
 
 inline fun Pair<Int, Int>.getPercent(value: Int): Int {
     return (((value - first).toDouble() / (second - first).toDouble()) * 100.0).roundToInt()
-}
-
-inline fun <T> T?.applyIfNotNull(func: T.() -> Unit): T? {
-    if (this != null) this.apply(func)
-    return this
-}
-
-inline fun <T> T?.alsoIfNotNull(func: (T) -> Unit): T? {
-    if (this != null) this.also(func)
-    return this
 }
 
 //endregion Android Utils

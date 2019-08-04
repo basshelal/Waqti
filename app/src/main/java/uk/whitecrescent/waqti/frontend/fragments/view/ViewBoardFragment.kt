@@ -31,8 +31,6 @@ import kotlinx.android.synthetic.main.fragment_board_view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.alsoIfNotNull
-import uk.whitecrescent.waqti.applyIfNotNull
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
@@ -142,7 +140,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                 fadeIn(200)
                             }
                             DragEvent.ACTION_DRAG_ENTERED -> {
-                                (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrateCompat(50)
+                                (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator?)
+                                        ?.vibrateCompat(50)
                             }
                             DragEvent.ACTION_DROP -> {
                                 ConfirmDialog().apply {
@@ -152,9 +151,10 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                         Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
                                         this@ViewBoardFragment.boardView.boardAdapter
                                                 ?.getListAdapter(draggingState.taskListID)?.apply {
-                                                    notifyItemRemoved(taskListView
-                                                            .findViewHolderForItemId(draggingState.taskID)
-                                                            .adapterPosition)
+                                                    taskListView?.findViewHolderForItemId(draggingState.taskID)
+                                                            ?.adapterPosition?.also {
+                                                        notifyItemRemoved(it)
+                                                    }
                                                 }
                                         mainActivity.appBar.shortSnackBar(getString(R.string.deletedTask)
                                                 + " $taskName")
@@ -376,7 +376,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
     private inline fun destroyOptionsMenu() {
         mainActivity.drawerLayout {
-            boardOptions_navigationView.alsoIfNotNull {
+            boardOptions_navigationView?.also {
                 closeDrawer(it)
                 removeView(it)
             }
@@ -459,7 +459,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     .into(background_imageView)
 
             // below is only if we want parallax!
-            boardView.boardAdapter.applyIfNotNull {
+            boardView.boardAdapter?.apply {
                 mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
                 onScrolled = { dx, _ ->
                     // below prevents over-scrolling leftwards which shows white space

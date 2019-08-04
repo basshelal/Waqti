@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import kotlinx.android.synthetic.main.list_options.view.*
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.alsoIfNotNull
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -304,7 +303,7 @@ class ViewListFragment : WaqtiViewFragment() {
 
     private inline fun destroyOptionsMenu() {
         mainActivity.drawerLayout {
-            listOptions_navigationView.alsoIfNotNull {
+            listOptions_navigationView?.also {
                 closeDrawer(it)
                 removeView(it)
             }
