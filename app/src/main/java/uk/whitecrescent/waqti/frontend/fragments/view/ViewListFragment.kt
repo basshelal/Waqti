@@ -106,8 +106,6 @@ class ViewListFragment : WaqtiViewFragment() {
                 setOnClickListener {
                     mainActivityViewModel.boardID = boardID
                     mainActivityViewModel.listID = listID
-
-                    clearFocusAndHideKeyboard()
                     CreateTaskFragment.show(mainActivity)
                 }
             }

@@ -119,7 +119,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     mainActivityViewModel.boardPosition
                             .changeTo(false to (boardView.boardAdapter?.itemCount ?: 0 - 1))
 
-                    clearFocusAndHideKeyboard()
                     CreateListFragment.show(mainActivity)
                 }
             }
@@ -193,7 +192,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 setOnEditorActionListener { textView, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
-                        textView.clearFocusAndHideKeyboard()
+                        clearFocusAndHideKeyboard()
                         true
                     } else false
                 }

@@ -84,7 +84,6 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                 setOnClickListener {
                     mainActivityViewModel.boardListPosition
                             .changeTo(false to boardsList_recyclerView.boardListAdapter.itemCount - 1)
-                    clearFocusAndHideKeyboard()
                     CreateBoardFragment.show(mainActivity)
                 }
             }

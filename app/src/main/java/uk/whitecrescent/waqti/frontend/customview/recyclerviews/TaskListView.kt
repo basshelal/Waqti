@@ -30,7 +30,6 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.persistence.getParent
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
@@ -441,11 +440,9 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                 setOnClickListener {
                     mainActivityViewModel.taskID = taskID
                     mainActivityViewModel.listID = taskListID
-                    clearFocusAndHideKeyboard()
                     ViewTaskFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
-                    clearFocusAndHideKeyboard()
                     startDragAndDrop(
                             ClipData.newPlainText("", ""),
                             ShadowBuilder(this),

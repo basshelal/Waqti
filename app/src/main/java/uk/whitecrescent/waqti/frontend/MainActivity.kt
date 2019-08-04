@@ -25,7 +25,7 @@ import uk.whitecrescent.waqti.addOnBackPressedCallback
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.doInBackgroundOnceWhen
+import uk.whitecrescent.waqti.doInBackgroundDelayed
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar
@@ -36,6 +36,8 @@ import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.onClickOutside
+
+const val DRAWER_DELAY_MILLIS = 250L
 
 class MainActivity : AppCompatActivity() {
 
@@ -69,7 +71,6 @@ class MainActivity : AppCompatActivity() {
             setViewScrimColor(GravityCompat.END, Color.TRANSPARENT)
             setViewElevation(GravityCompat.END, 0F)
             addOnBackPressedCallback {
-                appBar.clearFocusAndHideKeyboard()
                 if (isDrawerOpen(GravityCompat.START) || isDrawerOpen(GravityCompat.END)) {
                     closeDrawers()
                     return@addOnBackPressedCallback
@@ -116,18 +117,18 @@ class MainActivity : AppCompatActivity() {
                 drawerLayout.closeDrawers()
                 when (it.itemId) {
                     R.id.allBoards_navDrawerItem -> {
-                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }) {
+                        doInBackgroundDelayed(DRAWER_DELAY_MILLIS) {
                             popAllFragmentsInBackStack()
                         }
                     }
                     R.id.settings_navDrawerItem -> {
-                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }) {
+                        doInBackgroundDelayed(DRAWER_DELAY_MILLIS) {
                             if (currentFragment.tag != SETTINGS_FRAGMENT)
                                 SettingsFragment.show(this@MainActivity)
                         }
                     }
                     R.id.about_navDrawerItem -> {
-                        doInBackgroundOnceWhen({ !drawerLayout.isDrawerOpen(GravityCompat.START) }) {
+                        doInBackgroundDelayed(DRAWER_DELAY_MILLIS) {
                             if (currentFragment.tag != ABOUT_FRAGMENT)
                                 AboutFragment.show(this@MainActivity)
                         }

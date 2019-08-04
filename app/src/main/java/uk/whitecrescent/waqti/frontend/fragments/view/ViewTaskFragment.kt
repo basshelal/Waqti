@@ -112,7 +112,7 @@ class ViewTaskFragment : WaqtiViewFragment() {
                 setOnEditorActionListener { textView, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
-                        textView.clearFocusAndHideKeyboard()
+                        clearFocusAndHideKeyboard()
                         true
                     } else false
                 }
