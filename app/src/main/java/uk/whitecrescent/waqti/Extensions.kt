@@ -12,6 +12,7 @@ import android.graphics.Point
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
 import android.view.inputmethod.InputMethodManager
 import android.widget.EdgeEffect
@@ -275,6 +276,9 @@ inline fun View.onClickOutside(crossinline onClickOutside: (View) -> Unit) {
 
 inline val View.parentView: View?
     get() = parent as? View?
+
+inline val View.parentViewGroup: ViewGroup?
+    get() = parent as? ViewGroup?
 
 inline fun IndicatorSeekBar.onSeek(crossinline onSeek: (SeekParams?) -> Unit) {
     onSeekChangeListener = object : SimpleOnSeekChangeListener() {
