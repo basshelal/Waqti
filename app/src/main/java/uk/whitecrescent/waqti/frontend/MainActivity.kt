@@ -14,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 import org.jetbrains.anko.backgroundColor
@@ -30,6 +31,7 @@ import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListView
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
@@ -225,7 +227,8 @@ class MainActivityViewModel : ViewModel() {
     var boardID: ID = 0L
     var listID: ID = 0L
     var taskID: ID = 0L
-    var boardListPosition = ChangedPositionPair()
+    var boardListState: RecyclerView.SavedState? = null
+    var onInflateBoardListView: (BoardListView) -> Unit = { }
 
     // TODO: 27-Jun-19 We need to get rid of this guy sometime
     var boardPosition = ChangedPositionPair()

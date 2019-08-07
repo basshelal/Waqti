@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
-import androidx.core.view.postDelayed
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
 import uk.whitecrescent.waqti.R
@@ -31,7 +30,6 @@ import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewMo
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.setImageTint
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
@@ -63,27 +61,22 @@ class ViewBoardListFragment : WaqtiViewFragment() {
     override fun setUpViews() {
         doInBackground {
             boardsList_recyclerView {
-                adapter = BoardListAdapter(boardList.id, viewMode)
+                adapter = BoardListAdapter(boardList.id).also {
+                    it.viewMode = viewMode
+                }
                 setUpAppBar()
-                if (boardListAdapter.boardList.isEmpty()) {
+                if (boardListAdapter?.boardList?.isEmpty() == true) {
                     emptyState_scrollView.isVisible = true
                     addBoard_FloatingButton.customSize = convertDpToPx(85, mainActivity)
                 }
-                if (this.boardListAdapter.itemCount > 0) {
-                    postDelayed(100L) {
-                        mainActivityViewModel.boardListPosition.apply {
-                            if (positionChanged) smoothScrollToPosition(position)
-                        }
-                    }
-                }
+                restoreState(mainActivityVM.boardListState)
                 addOnScrollListener(this@ViewBoardListFragment.addBoard_FloatingButton.verticalFABOnScrollListener)
+                mainActivityVM.onInflateBoardListView(this)
             }
 
             addBoard_FloatingButton {
                 setImageTint(WaqtiColor.WHITE)
                 setOnClickListener {
-                    mainActivityViewModel.boardListPosition
-                            .changeTo(false to boardsList_recyclerView.boardListAdapter.itemCount - 1)
                     CreateBoardFragment.show(mainActivity)
                 }
             }
@@ -154,6 +147,12 @@ class ViewBoardListFragment : WaqtiViewFragment() {
 
     override fun finish() {
 
+    }
+
+    override fun onStop() {
+        super.onStop()
+
+        mainActivityVM.boardListState = boardsList_recyclerView.saveState()
     }
 
     companion object {

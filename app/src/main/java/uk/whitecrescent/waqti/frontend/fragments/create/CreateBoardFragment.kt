@@ -26,6 +26,7 @@ import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragmentView
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.requestFocusAndShowKeyboard
+import uk.whitecrescent.waqti.smoothScrollToEnd
 
 class CreateBoardFragment : WaqtiCreateFragment<Board>() {
 
@@ -91,8 +92,9 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
     }
 
     override fun finish() {
-        mainActivityVM.boardListPosition
-                .changeTo(true to mainActivityVM.boardListPosition.position + 1)
+        mainActivityVM.onInflateBoardListView = {
+            it.smoothScrollToEnd()
+        }
         @FragmentNavigation(from = CREATE_BOARD_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
     }

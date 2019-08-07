@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.Context
+import android.content.res.Configuration
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -13,12 +14,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.board_card.view.*
 import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.appearance.BackgroundType
+import uk.whitecrescent.waqti.frontend.appearance.toColor
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewMode
 import uk.whitecrescent.waqti.hideKeyboard
@@ -27,31 +30,49 @@ import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 
 class BoardListView
-@JvmOverloads constructor(context: Context,
-                          attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
+@JvmOverloads
+constructor(context: Context,
+            attributeSet: AttributeSet? = null,
+            defStyle: Int = 0
+) : WaqtiRecyclerView(context, attributeSet, defStyle) {
 
-    val boardListAdapter: BoardListAdapter
-        get() = this.adapter as BoardListAdapter
+    val boardListAdapter: BoardListAdapter?
+        get() = this.adapter as? BoardListAdapter
+
+    init {
+        scrollBarColor = mainActivity.colorAttr(R.attr.colorOnSurface).toColor
+    }
 
     fun changeViewMode(viewMode: ViewMode) {
-        boardListAdapter.viewMode = viewMode
+        boardListAdapter?.viewMode = viewMode
+        val currentPosition = this.currentPosition
         when (viewMode) {
             ViewMode.LIST_VERTICAL -> {
-                layoutManager = LinearLayoutManager(this.context, VERTICAL, false)
+                when (mainActivity.resources.configuration.orientation) {
+                    Configuration.ORIENTATION_PORTRAIT ->
+                        layoutManager = LinearLayoutManager(this.context, VERTICAL, false)
+                    Configuration.ORIENTATION_LANDSCAPE ->
+                        layoutManager = GridLayoutManager(this.context, 2, VERTICAL, false)
+                }
+                scrollToPosition(currentPosition)
             }
             ViewMode.GRID_VERTICAL -> {
-                layoutManager = GridLayoutManager(this.context, 2, VERTICAL, false)
+                when (mainActivity.resources.configuration.orientation) {
+                    Configuration.ORIENTATION_PORTRAIT ->
+                        layoutManager = GridLayoutManager(this.context, 2, VERTICAL, false)
+                    Configuration.ORIENTATION_LANDSCAPE ->
+                        layoutManager = GridLayoutManager(this.context, 3, VERTICAL, false)
+                }
+                scrollToPosition(currentPosition)
             }
         }
     }
-
 }
 
-class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LIST_VERTICAL)
-    : RecyclerView.Adapter<BoardListViewHolder>() {
+class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHolder>() {
 
     val boardList = Caches.boardLists[boardListID]
+    var viewMode: ViewMode = ViewMode.LIST_VERTICAL
     lateinit var boardListView: BoardListView
 
     init {
@@ -89,7 +110,6 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
                 boardList.move(fromPos, toPos).update()
                 notifyItemMoved(fromPos, toPos)
 
-                boardListView.mainActivityViewModel.boardListPosition.changeTo(true to toPos)
             }
 
         }).attachToRecyclerView(boardListView)
@@ -129,9 +149,11 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
                 when (viewMode) {
                     ViewMode.GRID_VERTICAL -> {
                         setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline5)
+                        textSize = 24F
                     }
                     ViewMode.LIST_VERTICAL -> {
                         setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline3)
+                        textSize = 40F
                     }
                 }
                 backgroundColor = board.barColor.toAndroidColor
@@ -141,10 +163,7 @@ class BoardListAdapter(val boardListID: ID, var viewMode: ViewMode = ViewMode.LI
                 setOnClickListener {
                     hideKeyboard()
 
-                    mainActivityViewModel.apply {
-                        boardID = board.id
-                        boardListPosition.changeTo(false to position)
-                    }
+                    mainActivityViewModel.boardID = board.id
 
                     ViewBoardFragment.show(mainActivity)
                 }
