@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import kotlinx.android.synthetic.main.board_card.view.*
@@ -41,31 +40,22 @@ constructor(context: Context,
 
     init {
         scrollBarColor = mainActivity.colorAttr(R.attr.colorOnSurface).toColor
+        layoutManager = GridLayoutManager(context, 1, VERTICAL, false)
     }
 
     fun changeViewMode(viewMode: ViewMode) {
         boardListAdapter?.viewMode = viewMode
-        val currentPosition = this.currentPosition
         when (viewMode) {
-            ViewMode.LIST_VERTICAL -> {
-                when (mainActivity.resources.configuration.orientation) {
-                    Configuration.ORIENTATION_PORTRAIT ->
-                        layoutManager = LinearLayoutManager(this.context, VERTICAL, false)
-                    Configuration.ORIENTATION_LANDSCAPE ->
-                        layoutManager = GridLayoutManager(this.context, 2, VERTICAL, false)
-                }
-                scrollToPosition(currentPosition)
+            ViewMode.LIST_VERTICAL -> when (mainActivity.resources.configuration.orientation) {
+                Configuration.ORIENTATION_PORTRAIT -> (layoutManager as? GridLayoutManager)?.spanCount = 1
+                Configuration.ORIENTATION_LANDSCAPE -> (layoutManager as? GridLayoutManager)?.spanCount = 2
             }
-            ViewMode.GRID_VERTICAL -> {
-                when (mainActivity.resources.configuration.orientation) {
-                    Configuration.ORIENTATION_PORTRAIT ->
-                        layoutManager = GridLayoutManager(this.context, 2, VERTICAL, false)
-                    Configuration.ORIENTATION_LANDSCAPE ->
-                        layoutManager = GridLayoutManager(this.context, 3, VERTICAL, false)
-                }
-                scrollToPosition(currentPosition)
+            ViewMode.GRID_VERTICAL -> when (mainActivity.resources.configuration.orientation) {
+                Configuration.ORIENTATION_PORTRAIT -> (layoutManager as? GridLayoutManager)?.spanCount = 2
+                Configuration.ORIENTATION_LANDSCAPE -> (layoutManager as? GridLayoutManager)?.spanCount = 3
             }
         }
+        adapter?.notifyDataSetChanged()
     }
 }
 
