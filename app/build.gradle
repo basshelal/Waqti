@@ -82,4 +82,5 @@ dependencies {
     implementation 'com.github.arcadefire:nice-spinner:1.4.3'
     implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.2'
     implementation 'com.github.basshelal:UnsplashPhotoPicker:1.1.2'
+    implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
 }
