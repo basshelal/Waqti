@@ -32,7 +32,9 @@ class AppBar
         context: Context,
         attributeSet: AttributeSet? = null,
         defStyle: Int = 0
-) : Toolbar(context, attributeSet, defStyle) {
+) : Toolbar(context, attributeSet, defStyle), StatefulView<AppBar.State> {
+
+    override val state = State()
 
     val DEFAULT_ELEVATION = 16F
 
@@ -94,8 +96,27 @@ class AppBar
         rightImage?.setTint(colorScheme.text.toAndroidColor)
     }
 
+    @Suppress("OVERRIDE_BY_INLINE")
+    override inline fun updateState(apply: State.() -> Unit): AppBar {
+        state.apply(apply)
+        return updateUI()
+    }
+
+    @Suppress("OVERRIDE_BY_INLINE")
+    override inline fun updateUI(): AppBar {
+        // TODO update UI
+        return this
+    }
+
     override fun setBackgroundColor(color: Int) {
         background = materialShapeDrawable.apply { setTint(color) }
+    }
+
+    inner class State : StatefulView.ViewState() {
+        var leftImage: Drawable? = null
+        var rightImage: Drawable? = null
+        var elevation: Float = DEFAULT_ELEVATION
+        var colorScheme: ColorScheme = ColorScheme.WAQTI_DEFAULT
     }
 
 }

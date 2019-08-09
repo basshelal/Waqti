@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.customview
 
 import android.content.Context
@@ -20,9 +22,13 @@ import uk.whitecrescent.waqti.frontend.appearance.toColor
  * The most basic version of an Editable TextView, used across the app especially in the [AppBar]
  */
 class EditTextView
-@JvmOverloads constructor(context: Context,
-                          attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) : AppCompatEditText(context, attributeSet, defStyle) {
+@JvmOverloads constructor(
+        context: Context,
+        attributeSet: AttributeSet? = null,
+        defStyle: Int = 0
+) : AppCompatEditText(context, attributeSet, defStyle), StatefulView<EditTextView.State> {
+
+    override val state = State()
 
     var isEditable: Boolean = true
         set(value) {
@@ -79,5 +85,19 @@ class EditTextView
             currentTextChangedListeners.add(it)
         }
     }
+
+    @Suppress("OVERRIDE_BY_INLINE")
+    override inline fun updateState(apply: State.() -> Unit): EditTextView {
+        state.apply(apply)
+        return updateUI()
+    }
+
+    @Suppress("OVERRIDE_BY_INLINE")
+    override inline fun updateUI(): EditTextView {
+        // TODO update UI
+        return this
+    }
+
+    inner class State : StatefulView.ViewState()
 
 }
