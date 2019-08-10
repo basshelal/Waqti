@@ -60,16 +60,15 @@ class CreateBoardFragment : WaqtiCreateFragment<Board>() {
             leftImageView.isVisible = false
             editTextView {
                 resetTextColor()
-                removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.boardNameHint)
-                text = SpannableStringBuilder("")
-                requestFocusAndShowKeyboard()
-                addAfterTextChangedListener {
+                textChangedListener = {
                     if (it != null) {
                         addBoard_button.isVisible = !(it.isEmpty() || it.isBlank())
                     }
                 }
+                text = SpannableStringBuilder("")
+                requestFocusAndShowKeyboard()
             }
             rightImageView.isVisible = false
         }

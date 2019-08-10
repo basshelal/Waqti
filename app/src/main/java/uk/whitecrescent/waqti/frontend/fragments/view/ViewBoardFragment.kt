@@ -175,7 +175,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
             elevation = DEFAULT_ELEVATION
             leftImageBack()
             editTextView {
-                removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.boardNameHint)
                 fun update() {
@@ -187,8 +186,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
                             board.name = it.toString()
                     }
                 }
+                textChangedListener = { update() }
                 text = SpannableStringBuilder(board.name)
-                addAfterTextChangedListener { update() }
                 setOnEditorActionListener { textView, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()

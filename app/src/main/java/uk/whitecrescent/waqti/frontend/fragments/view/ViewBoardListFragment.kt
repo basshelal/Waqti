@@ -88,7 +88,6 @@ class ViewBoardListFragment : WaqtiViewFragment() {
             elevation = DEFAULT_ELEVATION
             leftImageMenu()
             editTextView {
-                removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.allBoards)
                 fun update() {
@@ -98,7 +97,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                         }
                     }
                 }
-                addAfterTextChangedListener { update() }
+                textChangedListener = { update() }
                 text = SpannableStringBuilder(boardList.name)
                 setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
@@ -114,7 +113,6 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                     when (viewMode) {
                         ViewMode.LIST_VERTICAL -> {
                             rightImage = mainActivity.getDrawable(R.drawable.grid_icon)
-                            rightImage?.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
                             this@ViewBoardListFragment.boardsList_recyclerView
                                     .changeViewMode(ViewMode.LIST_VERTICAL)
 
@@ -124,7 +122,6 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                         }
                         ViewMode.GRID_VERTICAL -> {
                             rightImage = mainActivity.getDrawable((R.drawable.boardlist_icon))
-                            rightImage?.setTint(WaqtiColor.WAQTI_WHITE.toAndroidColor)
                             this@ViewBoardListFragment.boardsList_recyclerView
                                     .changeViewMode(ViewMode.GRID_VERTICAL)
 

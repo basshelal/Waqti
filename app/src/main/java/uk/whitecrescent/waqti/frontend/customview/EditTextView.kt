@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "OVERRIDE_BY_INLINE")
 
 package uk.whitecrescent.waqti.frontend.customview
 
@@ -11,12 +11,14 @@ import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.widget.doAfterTextChanged
 import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.hintTextColor
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.frontend.SimpleTextWatcher
+import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.appearance.toColor
+import uk.whitecrescent.waqti.toEditable
 
 /**
  * The most basic version of an Editable TextView, used across the app especially in the [AppBar]
@@ -49,7 +51,14 @@ class EditTextView
                         TYPE_TEXT_FLAG_CAP_SENTENCES)
             }
         }
-    private var currentTextChangedListeners = ArrayList<TextWatcher>()
+
+    private var currentWatcher: TextWatcher? = null
+
+    var textChangedListener: (Editable?) -> Unit = { }
+        set(value) {
+            removeTextChangedListener(currentWatcher)
+            currentWatcher = doAfterTextChanged(value)
+        }
 
     init {
 
@@ -64,40 +73,36 @@ class EditTextView
         attrs.recycle()
     }
 
-    fun removeAllTextChangedListeners() {
-        currentTextChangedListeners.forEach {
-            removeTextChangedListener(it)
-        }
-    }
-
     fun resetTextColor() {
         textColor = context.colorAttr(R.attr.colorOnSurface)
     }
 
-
-    fun addAfterTextChangedListener(func: (Editable?) -> Unit) {
-        object : SimpleTextWatcher() {
-            override fun afterTextChanged(editable: Editable?) {
-                func(editable)
-            }
-        }.also {
-            addTextChangedListener(it)
-            currentTextChangedListeners.add(it)
-        }
-    }
-
-    @Suppress("OVERRIDE_BY_INLINE")
     override inline fun updateState(apply: State.() -> Unit): EditTextView {
         state.apply(apply)
         return updateUI()
     }
 
-    @Suppress("OVERRIDE_BY_INLINE")
     override inline fun updateUI(): EditTextView {
-        // TODO update UI
+        with(state) {
+            this@EditTextView.textChangedListener = textChangedListener
+            this@EditTextView.isEditable = isEditable
+            this@EditTextView.isMultiLine = isMultiLine
+            this@EditTextView.hint = hint
+            this@EditTextView.text = text.toEditable()
+            this@EditTextView.hintTextColor = hintTextColor.toAndroidColor
+            this@EditTextView.textColor = textColor.toAndroidColor
+        }
         return this
     }
 
-    inner class State : StatefulView.ViewState()
+    inner class State : StatefulView.ViewState() {
+        var isEditable: Boolean = true
+        var isMultiLine: Boolean = false
+        var hint: String = ""
+        var text: String = ""
+        var hintTextColor: WaqtiColor = WaqtiColor.WHITE
+        var textColor: WaqtiColor = WaqtiColor.WHITE
+        var textChangedListener: (Editable?) -> Unit = { }
+    }
 
 }

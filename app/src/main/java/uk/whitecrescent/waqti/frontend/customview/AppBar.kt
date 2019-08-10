@@ -1,4 +1,4 @@
-@file:Suppress("NOTHING_TO_INLINE")
+@file:Suppress("NOTHING_TO_INLINE", "OVERRIDE_BY_INLINE")
 
 package uk.whitecrescent.waqti.frontend.customview
 
@@ -9,10 +9,12 @@ import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import com.google.android.material.shape.MaterialShapeDrawable
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.image
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
@@ -52,11 +54,19 @@ class AppBar
         set(value) = rightImageView.setImageDrawable(value)
         get() = rightImageView.drawable
 
+    var colorScheme: ColorScheme = ColorScheme.WAQTI_DEFAULT
+        set(value) {
+            field = value
+            backgroundColor = colorScheme.main.toAndroidColor
+            leftImage?.setTint(colorScheme.text.toAndroidColor)
+            editTextView.textColor = colorScheme.text.toAndroidColor
+            rightImage?.setTint(colorScheme.text.toAndroidColor)
+        }
+
     init {
         View.inflate(context, R.layout.view_appbar, this)
 
-        setColorScheme(ColorScheme.WAQTI_DEFAULT)
-        elevation = DEFAULT_ELEVATION
+        updateUI()
     }
 
     inline fun leftImageMenu() {
@@ -89,22 +99,31 @@ class AppBar
         }
     }
 
-    fun setColorScheme(colorScheme: ColorScheme) {
-        backgroundColor = colorScheme.main.toAndroidColor
-        leftImage?.setTint(colorScheme.text.toAndroidColor)
-        editTextView.textColor = colorScheme.text.toAndroidColor
-        rightImage?.setTint(colorScheme.text.toAndroidColor)
-    }
-
-    @Suppress("OVERRIDE_BY_INLINE")
     override inline fun updateState(apply: State.() -> Unit): AppBar {
         state.apply(apply)
         return updateUI()
     }
 
-    @Suppress("OVERRIDE_BY_INLINE")
     override inline fun updateUI(): AppBar {
-        // TODO update UI
+        with(state) {
+            leftImageView.image = leftImage
+            rightImageView.image = rightImage
+            leftImageView.isVisible = leftImageVisible
+            rightImageView.isVisible = rightImageVisible
+            this@AppBar.elevation = elevation
+            this@AppBar.colorScheme = colorScheme
+        }
+        if (leftImageView.isVisible) {
+            when (leftImageView.image) {
+                context.getDrawable(R.drawable.menu_icon) -> leftImageView.setOnClickListener {
+                    mainActivity.drawerLayout.openDrawer(GravityCompat.START)
+                }
+                context.getDrawable(R.drawable.back_icon) -> leftImageView.setOnClickListener {
+                    @FragmentNavigation(from = ANY_FRAGMENT, to = ANY_FRAGMENT)
+                    mainActivity.supportFragmentManager.popBackStack()
+                }
+            }
+        }
         return this
     }
 
@@ -115,6 +134,8 @@ class AppBar
     inner class State : StatefulView.ViewState() {
         var leftImage: Drawable? = null
         var rightImage: Drawable? = null
+        var leftImageVisible: Boolean = true
+        var rightImageVisible: Boolean = true
         var elevation: Float = DEFAULT_ELEVATION
         var colorScheme: ColorScheme = ColorScheme.WAQTI_DEFAULT
     }

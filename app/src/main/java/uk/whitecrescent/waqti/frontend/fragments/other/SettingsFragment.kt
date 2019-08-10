@@ -134,7 +134,7 @@ class SettingsFragment : WaqtiFragment() {
             leftImageBack()
             editTextView {
                 textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
-                removeAllTextChangedListeners()
+                textChangedListener = {}
                 isEditable = false
                 text = SpannableStringBuilder(getString(R.string.settings))
             }

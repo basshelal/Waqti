@@ -13,7 +13,7 @@ import uk.whitecrescent.waqti.frontend.customview.StatefulView.ViewState
  *
  * Your custom [ViewState] type should be the type parameter [S] of this [StatefulView]
  */
-interface StatefulView<S : StatefulView.ViewState> {
+interface StatefulView<out S : ViewState> {
 
     /** The state of this [View] */
     val state: S

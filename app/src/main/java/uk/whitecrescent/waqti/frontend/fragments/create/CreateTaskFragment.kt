@@ -84,16 +84,15 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
             leftImageView.isVisible = false
             editTextView {
                 resetTextColor()
-                removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.taskNameHint)
-                text = SpannableStringBuilder("")
-                requestFocusAndShowKeyboard()
-                addAfterTextChangedListener {
+                textChangedListener = {
                     if (it != null) {
                         addTask_button.isVisible = !(it.isEmpty() || it.isBlank())
                     }
                 }
+                text = SpannableStringBuilder("")
+                requestFocusAndShowKeyboard()
             }
             rightImageView.isVisible = false
         }

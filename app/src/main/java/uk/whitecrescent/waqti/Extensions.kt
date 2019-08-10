@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Point
+import android.text.SpannableStringBuilder
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.View
@@ -274,6 +275,17 @@ inline fun View.onClickOutside(crossinline onClickOutside: (View) -> Unit) {
     }
 }
 
+val View.parents: List<ViewGroup>
+    get() {
+        val result = ArrayList<ViewGroup>()
+        var current = parent
+        while (current != null && current is ViewGroup) {
+            result.add(current)
+            current = current.parent
+        }
+        return result
+    }
+
 inline val View.parentView: View?
     get() = parent as? View?
 
@@ -287,6 +299,8 @@ inline fun IndicatorSeekBar.onSeek(crossinline onSeek: (SeekParams?) -> Unit) {
         }
     }
 }
+
+inline fun String.toEditable() = SpannableStringBuilder(this)
 
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.

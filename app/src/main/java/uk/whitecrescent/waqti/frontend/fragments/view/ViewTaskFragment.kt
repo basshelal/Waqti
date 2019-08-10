@@ -95,7 +95,6 @@ class ViewTaskFragment : WaqtiViewFragment() {
             elevation = 0F
             leftImageBack()
             editTextView {
-                removeAllTextChangedListeners()
                 isEditable = true
                 hint = getString(R.string.taskNameHint)
                 fun update() {
@@ -107,8 +106,8 @@ class ViewTaskFragment : WaqtiViewFragment() {
                             task.name = it.toString()
                     }
                 }
+                textChangedListener = { update() }
                 text = SpannableStringBuilder(task.name)
-                addAfterTextChangedListener { update() }
                 setOnEditorActionListener { textView, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
