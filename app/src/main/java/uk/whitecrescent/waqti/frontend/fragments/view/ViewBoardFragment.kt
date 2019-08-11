@@ -172,7 +172,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
     override fun setUpAppBar() {
         this.setColorScheme(board.barColor.colorScheme)
         mainActivity.appBar {
-            elevation = DEFAULT_ELEVATION
+            elevation = default
             leftImageBack()
             editTextView {
                 isEditable = true

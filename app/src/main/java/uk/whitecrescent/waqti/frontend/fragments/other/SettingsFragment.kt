@@ -130,7 +130,7 @@ class SettingsFragment : WaqtiFragment() {
 
     override fun setUpAppBar() {
         mainActivity.appBar {
-            elevation = DEFAULT_ELEVATION
+            elevation = default
             leftImageBack()
             editTextView {
                 textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor

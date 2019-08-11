@@ -5,12 +5,15 @@ import android.graphics.Canvas
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 
 /**
  * Contains common [RecyclerView] functionality that is desired across the entire application.
+ *
+ * Don't directly use a [WaqtiRecyclerView], only extend it.
  */
 open class WaqtiRecyclerView
 @JvmOverloads
@@ -58,5 +61,13 @@ constructor(context: Context,
 
 /**
  * Contains common [RecyclerView.Adapter] functionality that is desired across the entire application.
+ *
+ * Don't directly use [WaqtiAdapter], only extend it.
  */
 abstract class WaqtiAdapter<VH : RecyclerView.ViewHolder> : RecyclerView.Adapter<VH>()
+
+abstract class WaqtiViewHolder<V : View>(view: V) : RecyclerView.ViewHolder(view) {
+
+    abstract fun bind(adapterPosition: Int): V
+
+}

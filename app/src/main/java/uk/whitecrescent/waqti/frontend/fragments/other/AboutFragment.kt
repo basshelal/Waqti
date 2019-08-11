@@ -5,7 +5,6 @@ package uk.whitecrescent.waqti.frontend.fragments.other
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.TEXT_ALIGNMENT_CENTER
@@ -29,6 +28,7 @@ import uk.whitecrescent.waqti.frontend.WAQTI_VERSION
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 import uk.whitecrescent.waqti.invoke
+import uk.whitecrescent.waqti.toEditable
 
 class AboutFragment : WaqtiFragment() {
 
@@ -102,13 +102,13 @@ class AboutFragment : WaqtiFragment() {
 
     override fun setUpAppBar() {
         mainActivity.appBar {
-            elevation = DEFAULT_ELEVATION
+            elevation = default
             leftImageBack()
             editTextView {
                 textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
                 textChangedListener = {}
                 isEditable = false
-                text = SpannableStringBuilder(getString(R.string.about))
+                text = getString(R.string.about).toEditable()
             }
             rightImageView.isInvisible = true
         }

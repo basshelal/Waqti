@@ -10,22 +10,25 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import androidx.core.view.children
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
+import com.google.android.material.card.MaterialCardView
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.IDLE
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.SETTLING
 import kotlin.math.roundToInt
 
+// TODO: 08-Aug-19 Callback or event when View bounds go out of bounds of Parent
+//  and when they reach a certain percentage of proximity to the Parent's bounds,
+//  this allows to take scrolling action
 class DragView
 @JvmOverloads
 constructor(context: Context,
             attributeSet: AttributeSet? = null,
             defStyle: Int = 0
-) : FrameLayout(context, attributeSet, defStyle) {
+) : MaterialCardView(context, attributeSet, defStyle) {
 
     private var dx = 0F
     private var dy = 0F
@@ -58,8 +61,8 @@ constructor(context: Context,
 
     private inline val parentViewGroup: ViewGroup
         get() = this.parent as? ViewGroup?
-                ?: throw IllegalStateException("Parent must be a ViewGroup" +
-                        "parent is ${parent::class.simpleName}")
+                ?: throw IllegalStateException("Parent must be a non null ViewGroup" +
+                        " parent is $parent")
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -96,7 +99,7 @@ constructor(context: Context,
                     onDown(event)
                     onMove(event)
                 }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                MotionEvent.ACTION_UP -> {
                     endDrag()
                 }
                 else -> return super.onTouchEvent(event)
@@ -151,11 +154,18 @@ constructor(context: Context,
     }
 
     private inline fun getViewUnder(pointX: Float, pointY: Float): View? {
-        parentViewGroup.childrenRecursiveSequence().toList().forEachReversedByIndex {
+        parentViewGroup.children.toList().forEachReversedByIndex {
             if (it.getGlobalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
-                    && it != this && it !in this.children)
+                    && it != this && it !in this.childrenRecursiveSequence()) {
                 return it
+            }
         }
+        /*parentViewGroup.childrenRecursiveSequence().toList().forEachReversedByIndex {
+            if (it.getGlobalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
+                    && it != this && it !in this.childrenRecursiveSequence()) {
+                return it
+            }
+        }*/
         return null
     }
 
@@ -191,6 +201,8 @@ constructor(context: Context,
      * To start dragging from a View that is not a descendant of this DragView, use [startDragFromView]
      */
     fun startDrag() {
+        returnX = this.x
+        returnY = this.y
         dragState = DragState.DRAGGING
         dragListener?.onStartDrag(this)
         isDragging = true
@@ -212,13 +224,13 @@ constructor(context: Context,
 
         bringToFront()
 
-        // TODO possible problems with padding but this is not very important
-
         val parentBounds = parentViewGroup.getGlobalVisibleRect
         val viewBounds = view.getGlobalVisibleRect
 
         this.x = viewBounds.left.toFloat() - parentBounds.left.toFloat()
         this.y = viewBounds.top.toFloat() - parentBounds.top.toFloat()
+        returnX = this.x
+        returnY = this.y
         view.setOnTouchListener { v, event ->
             touchPoint.set(event.rawX, event.rawY)
             return@setOnTouchListener this.onTouchEvent(event)
@@ -339,6 +351,55 @@ constructor(context: Context,
         override fun onEnteredParentBounds(dragView: DragView, touchPoint: PointF) {}
         override fun onReleaseDrag(dragView: DragView, touchPoint: PointF) {}
         override fun onEndDrag(dragView: DragView) {}
+
+        companion object {
+            @Suppress("UNUSED_ANONYMOUS_PARAMETER")
+            inline operator fun invoke(
+                    crossinline onStartDrag: (dragView: DragView) -> Unit =
+                            { dragView -> },
+                    crossinline onUpdateLocation: (dragView: DragView,
+                                                   touchPoint: PointF) -> Unit =
+                            { dragView, touchPoint -> },
+                    crossinline onEnteredView: (DragView, View,
+                                                View?, PointF) -> Boolean =
+                            { dragView, newView, oldView, touchPoint -> false },
+
+                    crossinline onExitedParentBounds: (dragView: DragView,
+                                                       touchPoint: PointF) -> Unit =
+                            { dragView, touchPoint -> },
+                    crossinline onEnteredParentBounds: (dragView: DragView,
+                                                        touchPoint: PointF) -> Unit =
+                            { dragView, touchPoint -> },
+                    crossinline onReleaseDrag: (dragView: DragView,
+                                                touchPoint: PointF) -> Unit =
+                            { dragView, touchPoint -> },
+                    crossinline onEndDrag: (dragView: DragView) -> Unit = { dragView -> }
+            ): DragListener {
+                return object : SimpleDragListener() {
+                    override fun onStartDrag(dragView: DragView) =
+                            onStartDrag(dragView)
+
+                    override fun onUpdateLocation(dragView: DragView, touchPoint: PointF) =
+                            onUpdateLocation(dragView, touchPoint)
+
+                    override fun onEnteredView(dragView: DragView, newView: View,
+                                               oldView: View?, touchPoint: PointF) =
+                            onEnteredView(dragView, newView, oldView, touchPoint)
+
+                    override fun onExitedParentBounds(dragView: DragView, touchPoint: PointF) =
+                            onExitedParentBounds(dragView, touchPoint)
+
+                    override fun onEnteredParentBounds(dragView: DragView, touchPoint: PointF) =
+                            onEnteredParentBounds(dragView, touchPoint)
+
+                    override fun onReleaseDrag(dragView: DragView, touchPoint: PointF) =
+                            onReleaseDrag(dragView, touchPoint)
+
+                    override fun onEndDrag(dragView: DragView) =
+                            onEndDrag(dragView)
+                }
+            }
+        }
     }
 
 }

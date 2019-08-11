@@ -9,6 +9,7 @@ import android.text.InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
 import android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
 import android.text.TextWatcher
 import android.util.AttributeSet
+import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.doAfterTextChanged
@@ -85,11 +86,14 @@ class EditTextView
     override inline fun updateUI(): EditTextView {
         with(state) {
             this@EditTextView.textChangedListener = textChangedListener
+            this@EditTextView.setOnEditorActionListener { v, actionId, event ->
+                onEditorAction(actionId, event)
+            }
             this@EditTextView.isEditable = isEditable
             this@EditTextView.isMultiLine = isMultiLine
             this@EditTextView.hint = hint
             this@EditTextView.text = text.toEditable()
-            this@EditTextView.hintTextColor = hintTextColor.toAndroidColor
+            this@EditTextView.hintTextColor = textColor.withTransparency("7F").toAndroidColor
             this@EditTextView.textColor = textColor.toAndroidColor
         }
         return this
@@ -100,9 +104,9 @@ class EditTextView
         var isMultiLine: Boolean = false
         var hint: String = ""
         var text: String = ""
-        var hintTextColor: WaqtiColor = WaqtiColor.WHITE
         var textColor: WaqtiColor = WaqtiColor.WHITE
         var textChangedListener: (Editable?) -> Unit = { }
+        var onEditorAction: (Int, KeyEvent?) -> Boolean = { actionId: Int, keyEvent: KeyEvent? -> false }
     }
 
 }

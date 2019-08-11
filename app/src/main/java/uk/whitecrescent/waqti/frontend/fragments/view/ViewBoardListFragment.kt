@@ -3,7 +3,6 @@
 package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.os.Bundle
-import android.text.SpannableStringBuilder
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import android.view.inputmethod.EditorInfo
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
+import org.jetbrains.anko.image
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -23,21 +23,28 @@ import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.NO_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+import uk.whitecrescent.waqti.frontend.customview.AppBar
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.invoke
+import uk.whitecrescent.waqti.isValid
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.setImageTint
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
 class ViewBoardListFragment : WaqtiViewFragment() {
 
-    lateinit var viewMode: ViewMode
     private lateinit var viewModel: ViewBoardListFragmentViewModel
     private lateinit var boardList: BoardList
+
+    private inline var viewMode: ViewMode
+        set(value) {
+            mainActivity.preferences.boardListViewMode = value
+        }
+        get() = mainActivity.preferences.boardListViewMode
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -48,8 +55,6 @@ class ViewBoardListFragment : WaqtiViewFragment() {
         super.onActivityCreated(savedInstanceState)
 
         mainActivityVM.boardPosition.changeTo(false to 0)
-
-        viewMode = mainActivity.preferences.boardListViewMode
 
         boardList = Caches.boardList
 
@@ -84,52 +89,43 @@ class ViewBoardListFragment : WaqtiViewFragment() {
     }
 
     override fun setUpAppBar() {
-        mainActivity.appBar {
-            elevation = DEFAULT_ELEVATION
-            leftImageMenu()
-            editTextView {
+        mainActivity.appBar.updateState {
+            elevation = AppBar.DEFAULT_ELEVATION
+            leftImage = R.drawable.menu_icon
+        }.apply {
+            editTextView.updateState {
                 isEditable = true
                 hint = getString(R.string.allBoards)
-                fun update() {
-                    if (text != null && text!!.isNotBlank() && text!!.isNotEmpty()) {
-                        if (text.toString() != boardList.name) {
-                            boardList.name = text.toString()
-                        }
-                    }
+                textChangedListener = {
+                    if (it.isValid && it.toString() != boardList.name) boardList.name = it.toString()
                 }
-                textChangedListener = { update() }
-                text = SpannableStringBuilder(boardList.name)
-                setOnEditorActionListener { _, actionId, _ ->
+                text = boardList.name
+                onEditorAction = { actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        update()
                         clearFocusAndHideKeyboard()
                         true
                     } else false
                 }
             }
             rightImageView {
-                rightImageView.isVisible = true
                 fun update() {
                     when (viewMode) {
                         ViewMode.LIST_VERTICAL -> {
-                            rightImage = mainActivity.getDrawable(R.drawable.grid_icon)
-                            this@ViewBoardListFragment.boardsList_recyclerView
-                                    .changeViewMode(ViewMode.LIST_VERTICAL)
-
+                            image = mainActivity.getDrawable(R.drawable.grid_icon)
                             mainActivity.navigationView.menu
                                     .findItem(R.id.allBoards_navDrawerItem)
                                     .setIcon(R.drawable.boardlist_icon)
                         }
                         ViewMode.GRID_VERTICAL -> {
-                            rightImage = mainActivity.getDrawable((R.drawable.boardlist_icon))
-                            this@ViewBoardListFragment.boardsList_recyclerView
-                                    .changeViewMode(ViewMode.GRID_VERTICAL)
-
+                            image = mainActivity.getDrawable(R.drawable.boardlist_icon)
                             mainActivity.navigationView.menu
                                     .findItem(R.id.allBoards_navDrawerItem)
                                     .setIcon(R.drawable.grid_icon)
                         }
                     }
+                    mainActivity.resetColorScheme()
+                    this@ViewBoardListFragment.boardsList_recyclerView
+                            .changeViewMode(viewMode)
                     mainActivity.preferences.boardListViewMode = viewMode
                 }
                 update()

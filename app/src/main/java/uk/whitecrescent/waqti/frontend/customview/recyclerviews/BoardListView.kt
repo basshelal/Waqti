@@ -33,10 +33,13 @@ class BoardListView
 constructor(context: Context,
             attributeSet: AttributeSet? = null,
             defStyle: Int = 0
-) : WaqtiRecyclerView(context, attributeSet, defStyle) {
+) : DragRecyclerView(context, attributeSet, defStyle) {
 
     val boardListAdapter: BoardListAdapter?
         get() = this.adapter as? BoardListAdapter
+
+    inline val gridLayoutManager: GridLayoutManager?
+        get() = layoutManager as? GridLayoutManager
 
     init {
         scrollBarColor = mainActivity.colorAttr(R.attr.colorOnSurface).toColor
@@ -47,12 +50,12 @@ constructor(context: Context,
         boardListAdapter?.viewMode = viewMode
         when (viewMode) {
             ViewMode.LIST_VERTICAL -> when (mainActivity.resources.configuration.orientation) {
-                Configuration.ORIENTATION_PORTRAIT -> (layoutManager as? GridLayoutManager)?.spanCount = 1
-                Configuration.ORIENTATION_LANDSCAPE -> (layoutManager as? GridLayoutManager)?.spanCount = 2
+                Configuration.ORIENTATION_PORTRAIT -> gridLayoutManager?.spanCount = 1
+                Configuration.ORIENTATION_LANDSCAPE -> gridLayoutManager?.spanCount = 2
             }
             ViewMode.GRID_VERTICAL -> when (mainActivity.resources.configuration.orientation) {
-                Configuration.ORIENTATION_PORTRAIT -> (layoutManager as? GridLayoutManager)?.spanCount = 2
-                Configuration.ORIENTATION_LANDSCAPE -> (layoutManager as? GridLayoutManager)?.spanCount = 3
+                Configuration.ORIENTATION_PORTRAIT -> gridLayoutManager?.spanCount = 2
+                Configuration.ORIENTATION_LANDSCAPE -> gridLayoutManager?.spanCount = 3
             }
         }
         adapter?.notifyDataSetChanged()
@@ -72,7 +75,7 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         require(recyclerView is BoardListView) {
             "Recycler View attached to a BoardListAdapter must be a BoardListView," +
-                    " passed in ${recyclerView::class}"
+                    " passed in ${recyclerView::class.simpleName}"
         }
         boardListView = recyclerView
         boardListView.changeViewMode(viewMode)
@@ -105,18 +108,13 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
         }).attachToRecyclerView(boardListView)
     }
 
-    override fun getItemId(position: Int): Long {
-        return boardList[position].id
-    }
+    override fun getItemId(position: Int) = boardList[position].id
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BoardListViewHolder {
-        return BoardListViewHolder(LayoutInflater.from(parent.context)
-                .inflate(R.layout.board_card, parent, false))
-    }
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+            BoardListViewHolder(LayoutInflater.from(parent.context)
+                    .inflate(R.layout.board_card, parent, false))
 
-    override fun getItemCount(): Int {
-        return boardList.size
-    }
+    override fun getItemCount() = boardList.size
 
     override fun onBindViewHolder(holder: BoardListViewHolder, position: Int) {
         val board = boardList[position]

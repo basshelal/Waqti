@@ -154,7 +154,7 @@ class ViewListFragment : WaqtiViewFragment() {
     override fun setUpAppBar() {
         this.setColorScheme(headerColorScheme)
         mainActivity.appBar {
-            elevation = DEFAULT_ELEVATION
+            elevation = default
             leftImageBack()
             editTextView {
                 isEditable = true

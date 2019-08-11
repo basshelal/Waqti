@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Point
+import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.util.DisplayMetrics
 import android.util.Log
@@ -301,6 +302,8 @@ inline fun IndicatorSeekBar.onSeek(crossinline onSeek: (SeekParams?) -> Unit) {
 }
 
 inline fun String.toEditable() = SpannableStringBuilder(this)
+
+inline val Editable?.isValid: Boolean get() = this != null && this.isNotBlank()
 
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.

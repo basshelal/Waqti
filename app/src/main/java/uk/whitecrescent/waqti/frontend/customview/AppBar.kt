@@ -6,8 +6,8 @@ import android.content.Context
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import com.google.android.material.shape.MaterialShapeDrawable
@@ -15,7 +15,6 @@ import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.image
-import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
@@ -34,11 +33,15 @@ class AppBar
         context: Context,
         attributeSet: AttributeSet? = null,
         defStyle: Int = 0
-) : Toolbar(context, attributeSet, defStyle), StatefulView<AppBar.State> {
+) : FrameLayout(context, attributeSet, defStyle), StatefulView<AppBar.State> {
+
+    companion object {
+        val DEFAULT_ELEVATION = 16F
+    }
 
     override val state = State()
 
-    val DEFAULT_ELEVATION = 16F
+    val default = 16F
 
     private val materialShapeDrawable = MaterialShapeDrawable(context, attributeSet, defStyle, 0)
 
@@ -59,7 +62,7 @@ class AppBar
             field = value
             backgroundColor = colorScheme.main.toAndroidColor
             leftImage?.setTint(colorScheme.text.toAndroidColor)
-            editTextView.textColor = colorScheme.text.toAndroidColor
+            editTextView.updateState { textColor = colorScheme.text }
             rightImage?.setTint(colorScheme.text.toAndroidColor)
         }
 
@@ -100,27 +103,27 @@ class AppBar
     }
 
     override inline fun updateState(apply: State.() -> Unit): AppBar {
-        state.apply(apply)
+        state.reset().apply(apply)
         return updateUI()
     }
 
     override inline fun updateUI(): AppBar {
         with(state) {
-            leftImageView.image = leftImage
-            rightImageView.image = rightImage
+            leftImageView.image = if (leftImage != Int.MIN_VALUE) context.getDrawable(leftImage) else null
+            rightImageView.image = if (rightImage != Int.MIN_VALUE) context.getDrawable(rightImage) else null
             leftImageView.isVisible = leftImageVisible
             rightImageView.isVisible = rightImageVisible
             this@AppBar.elevation = elevation
             this@AppBar.colorScheme = colorScheme
-        }
-        if (leftImageView.isVisible) {
-            when (leftImageView.image) {
-                context.getDrawable(R.drawable.menu_icon) -> leftImageView.setOnClickListener {
-                    mainActivity.drawerLayout.openDrawer(GravityCompat.START)
-                }
-                context.getDrawable(R.drawable.back_icon) -> leftImageView.setOnClickListener {
-                    @FragmentNavigation(from = ANY_FRAGMENT, to = ANY_FRAGMENT)
-                    mainActivity.supportFragmentManager.popBackStack()
+            if (leftImageView.isVisible) {
+                when (leftImage) {
+                    R.drawable.menu_icon -> leftImageView.setOnClickListener {
+                        mainActivity.drawerLayout.openDrawer(GravityCompat.START)
+                    }
+                    R.drawable.back_icon -> leftImageView.setOnClickListener {
+                        @FragmentNavigation(from = ANY_FRAGMENT, to = ANY_FRAGMENT)
+                        mainActivity.supportFragmentManager.popBackStack()
+                    }
                 }
             }
         }
@@ -132,12 +135,22 @@ class AppBar
     }
 
     inner class State : StatefulView.ViewState() {
-        var leftImage: Drawable? = null
-        var rightImage: Drawable? = null
+        var leftImage: Int = Int.MIN_VALUE
+        var rightImage: Int = Int.MIN_VALUE
         var leftImageVisible: Boolean = true
         var rightImageVisible: Boolean = true
-        var elevation: Float = DEFAULT_ELEVATION
+        var elevation: Float = default
         var colorScheme: ColorScheme = ColorScheme.WAQTI_DEFAULT
+
+        fun reset(): State {
+            leftImage = Int.MIN_VALUE
+            rightImage = Int.MIN_VALUE
+            leftImageVisible = true
+            rightImageVisible = true
+            elevation = default
+            colorScheme = ColorScheme.WAQTI_DEFAULT
+            return this
+        }
     }
 
 }
