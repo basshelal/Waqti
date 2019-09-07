@@ -172,7 +172,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun setColorScheme(colorScheme: ColorScheme) {
-        appBar.colorScheme = colorScheme
+        appBar.setColorScheme(colorScheme)
         window.statusBarColor = colorScheme.dark.toAndroidColor
         if (preferences.changeNavBarColor)
             window.navigationBarColor = colorScheme.main.toAndroidColor

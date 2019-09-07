@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.GravityCompat
+import androidx.core.view.isVisible
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -38,6 +39,7 @@ import uk.whitecrescent.waqti.frontend.VIEW_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.appearance.toColor
+import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVATION
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
@@ -154,7 +156,7 @@ class ViewListFragment : WaqtiViewFragment() {
     override fun setUpAppBar() {
         this.setColorScheme(headerColorScheme)
         mainActivity.appBar {
-            elevation = default
+            elevation = DEFAULT_ELEVATION
             leftImageBack()
             editTextView {
                 isEditable = true
@@ -178,7 +180,8 @@ class ViewListFragment : WaqtiViewFragment() {
                     } else false
                 }
             }
-            rightImageOptions()
+            rightImageView.isVisible = true
+            rightImage = R.drawable.overflow_icon
         }
     }
 

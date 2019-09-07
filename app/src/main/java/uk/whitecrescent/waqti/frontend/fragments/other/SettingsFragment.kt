@@ -21,6 +21,7 @@ import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.SETTINGS_FRAGMENT
 import uk.whitecrescent.waqti.frontend.WaqtiPreferences
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVATION
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
@@ -130,7 +131,7 @@ class SettingsFragment : WaqtiFragment() {
 
     override fun setUpAppBar() {
         mainActivity.appBar {
-            elevation = default
+            elevation = DEFAULT_ELEVATION
             leftImageBack()
             editTextView {
                 textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor

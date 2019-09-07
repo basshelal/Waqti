@@ -116,7 +116,8 @@ class ViewTaskFragment : WaqtiViewFragment() {
                     } else false
                 }
             }
-            rightImageOptions()
+            rightImageView.isVisible = true
+            rightImage = R.drawable.overflow_icon
         }
         mainActivity.setColorScheme(board.cardColor.colorScheme)
     }

@@ -33,6 +33,7 @@ import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.isValid
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.setImageTint
+import uk.whitecrescent.waqti.toEditable
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
 class ViewBoardListFragment : WaqtiViewFragment() {
@@ -89,18 +90,17 @@ class ViewBoardListFragment : WaqtiViewFragment() {
     }
 
     override fun setUpAppBar() {
-        mainActivity.appBar.updateState {
+        mainActivity.appBar {
             elevation = AppBar.DEFAULT_ELEVATION
             leftImage = R.drawable.menu_icon
-        }.apply {
-            editTextView.updateState {
+            editTextView {
                 isEditable = true
                 hint = getString(R.string.allBoards)
                 textChangedListener = {
                     if (it.isValid && it.toString() != boardList.name) boardList.name = it.toString()
                 }
-                text = boardList.name
-                onEditorAction = { actionId, _ ->
+                text = boardList.name.toEditable()
+                setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         clearFocusAndHideKeyboard()
                         true
@@ -108,6 +108,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                 }
             }
             rightImageView {
+                isVisible = true
                 fun update() {
                     when (viewMode) {
                         ViewMode.LIST_VERTICAL -> {

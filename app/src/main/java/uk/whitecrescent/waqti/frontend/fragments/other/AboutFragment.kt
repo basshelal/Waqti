@@ -26,6 +26,7 @@ import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.WAQTI_VERSION
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVATION
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.toEditable
@@ -102,7 +103,7 @@ class AboutFragment : WaqtiFragment() {
 
     override fun setUpAppBar() {
         mainActivity.appBar {
-            elevation = default
+            elevation = DEFAULT_ELEVATION
             leftImageBack()
             editTextView {
                 textColor = WaqtiColor.WAQTI_WHITE.toAndroidColor
