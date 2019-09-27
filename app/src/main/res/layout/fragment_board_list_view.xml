@@ -26,7 +26,7 @@
         android:layout_marginBottom="16dp"
         android:src="@drawable/add_icon"
         app:backgroundTint="@color/primaryColor"
-        app:elevation="14dp"
+        app:elevation="28dp"
         app:fabSize="normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

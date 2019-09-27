@@ -11,6 +11,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
 import com.warkiz.widget.SeekParams
+import uk.whitecrescent.waqti.doInBackgroundDelayed
 
 open class SimpleTextWatcher : TextWatcher {
 
@@ -63,6 +64,25 @@ open class FABOnScrollListener(val fab: FloatingActionButton,
             Orientation.VERTICAL -> {
                 if (dy > 0 && fab.isVisible) fab.hide()
                 else if (dy < 0 && !fab.isVisible) fab.show()
+            }
+        }
+    }
+
+    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        when (orientation) {
+            Orientation.HORIZONTAL -> {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    doInBackgroundDelayed(2000) {
+                        if (fab.isVisible) fab.hide()
+                    }
+                }
+            }
+            Orientation.VERTICAL -> {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    doInBackgroundDelayed(2000) {
+                        if (fab.isVisible) fab.hide()
+                    }
+                }
             }
         }
     }

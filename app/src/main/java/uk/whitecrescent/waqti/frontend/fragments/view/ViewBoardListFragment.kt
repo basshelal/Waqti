@@ -92,6 +92,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
     override fun setUpAppBar() {
         mainActivity.appBar {
             elevation = AppBar.DEFAULT_ELEVATION
+            leftImageView.isVisible = true
             leftImage = R.drawable.menu_icon
             editTextView {
                 isEditable = true

@@ -1,12 +1,18 @@
 package uk.whitecrescent.waqti.frontend.fragments.parents
 
 import uk.whitecrescent.waqti.backend.Cacheable
+import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 
 abstract class WaqtiCreateFragment<E : Cacheable> : WaqtiFragment(true) {
 
     protected abstract val viewModel: WaqtiCreateFragmentViewModel<E>
 
     protected abstract fun createElement(): E
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mainActivity.appBar.editTextView.clearFocusAndHideKeyboard()
+    }
 
 }
 

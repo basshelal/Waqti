@@ -64,13 +64,14 @@ class EditTextView
 
         isMultiLine = attrs.getBoolean(R.styleable.EditTextView_isMultiline, true)
 
-        hintTextColor = colorAttr(R.attr.colorOnSurface).toColor.withTransparency("7F").toAndroidColor
+        resetTextColor()
 
         attrs.recycle()
     }
 
     fun resetTextColor() {
-        textColor = context.colorAttr(R.attr.colorOnSurface)
+        textColor = colorAttr(R.attr.colorOnSurface)
+        hintTextColor = colorAttr(R.attr.colorOnSurface).toColor.withTransparency("7F").toAndroidColor
     }
 
 }
