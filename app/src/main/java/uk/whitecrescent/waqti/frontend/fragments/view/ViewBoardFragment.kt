@@ -61,6 +61,7 @@ import uk.whitecrescent.waqti.frontend.vibrateCompat
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.invoke
+import uk.whitecrescent.waqti.longSnackBar
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
 import uk.whitecrescent.waqti.setColorScheme
@@ -346,6 +347,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         add(R.id.fragmentContainer, photoPicker, "PhotoPicker")
                         addToBackStack(null)
                     }
+                    mainActivity.appBar.longSnackBar("Long click to View, touch to select ")
                     mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
                 }
             }

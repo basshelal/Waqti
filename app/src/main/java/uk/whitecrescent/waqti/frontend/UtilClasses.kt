@@ -69,20 +69,9 @@ open class FABOnScrollListener(val fab: FloatingActionButton,
     }
 
     override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-        when (orientation) {
-            Orientation.HORIZONTAL -> {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    doInBackgroundDelayed(2000) {
-                        if (fab.isVisible) fab.hide()
-                    }
-                }
-            }
-            Orientation.VERTICAL -> {
-                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                    doInBackgroundDelayed(2000) {
-                        if (fab.isVisible) fab.hide()
-                    }
-                }
+        if (newState == RecyclerView.SCROLL_STATE_IDLE && fab.isVisible) {
+            doInBackgroundDelayed(2000) {
+                if (fab.isVisible) fab.hide()
             }
         }
     }
