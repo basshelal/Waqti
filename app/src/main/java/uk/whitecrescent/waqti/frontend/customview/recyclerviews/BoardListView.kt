@@ -42,6 +42,12 @@ constructor(context: Context,
     inline val gridLayoutManager: GridLayoutManager?
         get() = layoutManager as? GridLayoutManager
 
+    inline var dragListener: DragRecyclerViewNew.DragListener?
+        set(value) {
+            boardListAdapter?.dragListener = value
+        }
+        get() = boardListAdapter?.dragListener
+
     init {
         scrollBarColor = mainActivity.colorAttr(R.attr.colorOnSurface).toColor
         layoutManager = GridLayoutManager(context, 1, VERTICAL, false)
@@ -69,6 +75,8 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
     var viewMode: ViewMode = ViewMode.LIST_VERTICAL
     lateinit var boardListView: BoardListView
 
+    var dragListener: DragRecyclerViewNew.DragListener? = null
+
     init {
         this.setHasStableIds(true)
     }
@@ -86,8 +94,6 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
 
-                viewHolder.itemView.shortSnackBar("Ended dragging")
-
                 if (viewHolder is BoardListViewHolder) {
                     viewHolder.itemView.alpha = 1F
                 }
@@ -95,8 +101,6 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
 
             override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
                 super.onSelectedChanged(viewHolder, actionState)
-
-                viewHolder?.itemView?.shortSnackBar("Started dragging")
 
                 if (viewHolder != null && viewHolder is BoardListViewHolder) {
                     viewHolder.itemView.alpha = 0.7F
@@ -161,6 +165,11 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
                     mainActivityViewModel.boardID = board.id
 
                     ViewBoardFragment.show(mainActivity)
+                }
+
+                setOnLongClickListener {
+                    shortSnackBar("Started dragging from Long Click Listener")
+                    false
                 }
             }
         }

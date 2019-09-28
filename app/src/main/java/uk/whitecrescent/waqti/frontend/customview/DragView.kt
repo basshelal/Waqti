@@ -9,12 +9,12 @@ import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.core.view.children
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
-import androidx.recyclerview.widget.RecyclerView
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.IDLE
@@ -272,6 +272,11 @@ constructor(context: Context,
         }
 
     companion object {
+
+        // TODO: 28-Sep-19 Use this later so we make long press have a nice fade before starting maybe
+        val longPressTime: Int
+            get() = ViewConfiguration.getLongPressTimeout()
+
         fun fromView(view: View): DragView {
             return (DragView(view.context)) { addView(view) }!!
         }
@@ -412,11 +417,20 @@ constructor(context: Context,
 
 }
 
-abstract class DragViewHolder(itemView: View) : RecyclerView.ViewHolder(DragView.fromView(itemView)) {
 
-    inline val dragView: DragView
-        get() = itemView as DragView
+/* TODO: 28-Sep-19 For new Drag Implementation:
+ *  Make a dragListener in each possible draggable RecyclerView
+ *  then make any Fragment with any draggables implement listeners for each recyclerView
+ *  independently. The DragViews are actually in the Fragment as separate Views and not
+ *  actually part of the RecyclerViews
+ */
 
+
+abstract class DragViewHolder<V : View>(val itemView: V) {
+
+    val dragView: DragView = DragView.fromView(itemView)
+
+    /* Here you change the the itemView's look */
     abstract fun bind()
 }
 

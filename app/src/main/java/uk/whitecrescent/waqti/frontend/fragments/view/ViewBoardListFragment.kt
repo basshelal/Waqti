@@ -29,6 +29,7 @@ import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar
 import uk.whitecrescent.waqti.frontend.customview.DragView
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragRecyclerViewNew
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
 import uk.whitecrescent.waqti.getViewModel
@@ -99,6 +100,11 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                 adapter = BoardListAdapter(boardList.id).also {
                     it.viewMode = viewMode
                 }
+
+                dragListener = object : DragRecyclerViewNew.SimpleDragListener() {
+
+                }
+
                 setUpAppBar()
                 if (boardListAdapter?.boardList?.isEmpty() == true) {
                     emptyState_scrollView.isVisible = true
