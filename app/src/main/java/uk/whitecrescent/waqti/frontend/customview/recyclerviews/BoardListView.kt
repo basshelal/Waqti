@@ -27,6 +27,7 @@ import uk.whitecrescent.waqti.hideKeyboard
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
+import uk.whitecrescent.waqti.shortSnackBar
 
 class BoardListView
 @JvmOverloads
@@ -84,6 +85,9 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
+
+                viewHolder.itemView.shortSnackBar("Ended dragging")
+
                 if (viewHolder is BoardListViewHolder) {
                     viewHolder.itemView.alpha = 1F
                 }
@@ -91,6 +95,9 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
 
             override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
                 super.onSelectedChanged(viewHolder, actionState)
+
+                viewHolder?.itemView?.shortSnackBar("Started dragging")
+
                 if (viewHolder != null && viewHolder is BoardListViewHolder) {
                     viewHolder.itemView.alpha = 0.7F
                 }

@@ -84,5 +84,13 @@
 
     </androidx.core.widget.NestedScrollView>
 
+    <uk.whitecrescent.waqti.frontend.customview.DragView
+        android:id="@+id/dragView"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:background="@color/md_red_700"
+        android:visibility="gone"
+        tools:ignore="MissingConstraints" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

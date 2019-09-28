@@ -10,14 +10,16 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.core.view.children
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
-import com.google.android.material.card.MaterialCardView
+import androidx.recyclerview.widget.RecyclerView
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.IDLE
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.SETTLING
+import uk.whitecrescent.waqti.invoke
 import kotlin.math.roundToInt
 
 // TODO: 08-Aug-19 Callback or event when View bounds go out of bounds of Parent
@@ -28,7 +30,7 @@ class DragView
 constructor(context: Context,
             attributeSet: AttributeSet? = null,
             defStyle: Int = 0
-) : MaterialCardView(context, attributeSet, defStyle) {
+) : FrameLayout(context, attributeSet, defStyle) {
 
     private var dx = 0F
     private var dy = 0F
@@ -269,6 +271,12 @@ constructor(context: Context,
             return result
         }
 
+    companion object {
+        fun fromView(view: View): DragView {
+            return (DragView(view.context)) { addView(view) }!!
+        }
+    }
+
     enum class DragState {
         /** View is idle, no movement */
         IDLE,
@@ -402,6 +410,14 @@ constructor(context: Context,
         }
     }
 
+}
+
+abstract class DragViewHolder(itemView: View) : RecyclerView.ViewHolder(DragView.fromView(itemView)) {
+
+    inline val dragView: DragView
+        get() = itemView as DragView
+
+    abstract fun bind()
 }
 
 /*
