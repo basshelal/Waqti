@@ -23,7 +23,7 @@ import org.jetbrains.anko.collections.forEachReversedByIndex
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.IDLE
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.SETTLING
 import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.logE
+import uk.whitecrescent.waqti.parentViewGroup
 import kotlin.math.roundToInt
 
 // TODO: 08-Aug-19 Callback or event when View bounds go out of bounds of Parent
@@ -99,11 +99,6 @@ constructor(context: Context,
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         touchPoint.set(event.rawX, event.rawY)
-
-        /* TODO: 03-Oct-19 Event is being cancelled when called from another View in startDragFromView*/
-
-        logE(MotionEvent.actionToString(event.action))
-
         if (isDragging) {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
@@ -257,7 +252,8 @@ constructor(context: Context,
         stealChildrenTouchEvents = true
         view.setOnTouchListener { v, event ->
             touchPoint.set(event.rawX, event.rawY)
-            this.onTouchEvent(event)
+            this.dispatchTouchEvent(event)
+            v.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
             return@setOnTouchListener true
         }
     }
