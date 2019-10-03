@@ -4,6 +4,7 @@ package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
 import android.os.Vibrator
@@ -67,9 +68,11 @@ import uk.whitecrescent.waqti.frontend.vibrateCompat
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.invoke
+import uk.whitecrescent.waqti.logE
 import uk.whitecrescent.waqti.longSnackBar
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
+import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.setColorScheme
 import uk.whitecrescent.waqti.setEdgeEffectColor
 import uk.whitecrescent.waqti.shortSnackBar
@@ -108,22 +111,23 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 DragView.DragState.IDLE -> {
                     task_dragView.backgroundColor = Color.RED
                     task_dragView.updateLayoutParams {
-                        width = 200
-                        height = 200
+                        width = 100
+                        height = 100
                     }
                 }
                 DragView.DragState.DRAGGING -> {
                     task_dragView.backgroundColor = Color.CYAN
+                    task_dragView.itemView!!.backgroundColor = Color.LTGRAY
                     task_dragView.updateLayoutParams {
-                        width = 400
-                        height = 400
+                        width = 700
+                        height = 150
                     }
                 }
                 DragView.DragState.SETTLING -> {
                     task_dragView.backgroundColor = Color.RED
                     task_dragView.updateLayoutParams {
-                        width = 200
-                        height = 200
+                        width = 100
+                        height = 100
                     }
                 }
             }
@@ -132,6 +136,23 @@ class ViewBoardFragment : WaqtiViewFragment() {
         task_dragView.setOnLongClickListener {
             task_dragView.startDrag()
             true
+        }
+
+        task_dragView.dragListener = object : DragView.SimpleDragListener() {
+            override fun onStartDrag(dragView: DragView) {
+                this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Start Drag Task")
+                logE("Start Drag Task @ $now")
+            }
+
+            override fun onReleaseDrag(dragView: DragView, touchPoint: PointF) {
+                this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Release Drag Task")
+                logE("Release Drag Task @ $now")
+            }
+
+            override fun onEndDrag(dragView: DragView) {
+                this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("End Drag Task")
+                logE("End Drag Task @ $now")
+            }
         }
 
     }
@@ -147,8 +168,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
 
             boardAdapter?.onStartDragTask = {
-                this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Start Drag Task")
-
                 task_dragView.find<ProgressBar>(R.id.taskCard_progressBar).isVisible = false
                 task_dragView.find<TextView>(R.id.task_textView).apply {
                     isVisible = true

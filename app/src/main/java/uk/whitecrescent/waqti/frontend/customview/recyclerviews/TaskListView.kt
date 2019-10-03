@@ -448,7 +448,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                     adapter.onStartDragTask(this@TaskViewHolder)
 
 
-                    return@setOnLongClickListener false
+                    return@setOnLongClickListener true
                 }
             }
             textView.visibility = View.VISIBLE

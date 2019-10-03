@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.core.view.children
-import androidx.core.view.isVisible
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.recyclerview.widget.RecyclerView
@@ -24,6 +23,7 @@ import org.jetbrains.anko.collections.forEachReversedByIndex
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.IDLE
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.SETTLING
 import uk.whitecrescent.waqti.invoke
+import uk.whitecrescent.waqti.logE
 import kotlin.math.roundToInt
 
 // TODO: 08-Aug-19 Callback or event when View bounds go out of bounds of Parent
@@ -77,30 +77,10 @@ constructor(context: Context,
         }
         get() = getChildAt(0)
 
-    private inline val parentViewGroup: ViewGroup
-        get() = this.parent as? ViewGroup?
-                ?: throw IllegalStateException("Parent must be a non null ViewGroup" +
-                        " parent is $parent")
-
-    init {
-        if (attributeSet == null && defStyle == 0) {
-            this.isVisible = false
-
-        }
-    }
-
     override fun onFinishInflate() {
         super.onFinishInflate()
-        init()
-    }
-
-    private inline fun init() {
         returnX = this.x
         returnY = this.y
-    }
-
-    fun setItemViewId(@LayoutRes itemViewId: Int) {
-        itemView = LayoutInflater.from(context).inflate(itemViewId, parentViewGroup, false)
     }
 
     override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
@@ -119,6 +99,11 @@ constructor(context: Context,
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         touchPoint.set(event.rawX, event.rawY)
+
+        /* TODO: 03-Oct-19 Event is being cancelled when called from another View in startDragFromView*/
+
+        logE(MotionEvent.actionToString(event.action))
+
         if (isDragging) {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
@@ -202,13 +187,16 @@ constructor(context: Context,
         dragListener?.onReleaseDrag(this, touchPoint)
         dragState = SETTLING
 
+        val dampingRatio = 0.6F
+        val stiffness = 1000F
+
         SpringAnimation(this, DynamicAnimation.X, returnX).also {
-            it.spring.dampingRatio = 0.6F
-            it.spring.stiffness = 1000F
+            it.spring.dampingRatio = dampingRatio
+            it.spring.stiffness = stiffness
         }.start()
         SpringAnimation(this, DynamicAnimation.Y, returnY).also {
-            it.spring.dampingRatio = 0.6F
-            it.spring.stiffness = 1000F
+            it.spring.dampingRatio = dampingRatio
+            it.spring.stiffness = stiffness
             it.addEndListener { _, _, _, _ -> afterEndAnimation() }
         }.start()
     }
@@ -221,6 +209,10 @@ constructor(context: Context,
         downCalled = false
         dragState = IDLE
         dragListener?.onEndDrag(this)
+    }
+
+    fun setItemViewId(@LayoutRes itemViewId: Int) {
+        itemView = LayoutInflater.from(context).inflate(itemViewId, parentViewGroup, false)
     }
 
     /**
@@ -292,6 +284,11 @@ constructor(context: Context,
         this.y = returnY
         afterEndAnimation()
     }
+
+    private inline val parentViewGroup: ViewGroup
+        get() = this.parent as? ViewGroup?
+                ?: throw IllegalStateException("Parent must be a non null ViewGroup" +
+                        " parent is $parent")
 
     private inline val View.getGlobalVisibleRect: Rect
         get() {
