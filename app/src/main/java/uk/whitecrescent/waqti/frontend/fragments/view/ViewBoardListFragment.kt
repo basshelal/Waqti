@@ -2,13 +2,11 @@
 
 package uk.whitecrescent.waqti.frontend.fragments.view
 
-import android.graphics.PointF
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
-import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_board_list_view.*
@@ -20,16 +18,14 @@ import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.commitTransaction
 import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.doInBackgroundDelayed
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.NO_FRAGMENT
 import uk.whitecrescent.waqti.frontend.VIEW_BOARD_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar
-import uk.whitecrescent.waqti.frontend.customview.DragView
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
-import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragRecyclerViewNew
+import uk.whitecrescent.waqti.frontend.fragments.create.CreateBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
 import uk.whitecrescent.waqti.getViewModel
@@ -37,7 +33,6 @@ import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.isValid
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.setImageTint
-import uk.whitecrescent.waqti.shortSnackBar
 import uk.whitecrescent.waqti.toEditable
 import uk.whitecrescent.waqti.verticalFABOnScrollListener
 
@@ -67,31 +62,6 @@ class ViewBoardListFragment : WaqtiViewFragment() {
         viewModel = getViewModel()
 
         setUpViews()
-
-        dragView.setOnLongClickListener {
-            dragView.startDrag()
-            true
-        }
-
-        dragView.dragListener = object : DragView.SimpleDragListener() {
-            override fun onStartDrag(dragView: DragView) {
-                dragView.alpha = 0.7F
-            }
-
-            override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF): Boolean {
-                if (oldView != null)
-                    dragView.shortSnackBar("Leaving ${oldView::class.simpleName}, entering ${newView::class.simpleName}")
-                return false
-            }
-
-            override fun onEndDrag(dragView: DragView) {
-                dragView.alpha = 1F
-            }
-        }
-
-        doInBackgroundDelayed(3000) {
-            dragView.isVisible = true
-        }
     }
 
     override fun setUpViews() {
@@ -99,10 +69,6 @@ class ViewBoardListFragment : WaqtiViewFragment() {
             boardsList_recyclerView {
                 adapter = BoardListAdapter(boardList.id).also {
                     it.viewMode = viewMode
-                }
-
-                dragListener = object : DragRecyclerViewNew.SimpleDragListener() {
-
                 }
 
                 setUpAppBar()
@@ -118,8 +84,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
             addBoard_FloatingButton {
                 setImageTint(WaqtiColor.WHITE)
                 setOnClickListener {
-                    //CreateBoardFragment.show(mainActivity)
-                    dragView.isInvisible = !dragView.isInvisible
+                    CreateBoardFragment.show(mainActivity)
                 }
             }
         }

@@ -42,12 +42,6 @@ constructor(context: Context,
     inline val gridLayoutManager: GridLayoutManager?
         get() = layoutManager as? GridLayoutManager
 
-    inline var dragListener: DragRecyclerViewNew.DragListener?
-        set(value) {
-            boardListAdapter?.dragListener = value
-        }
-        get() = boardListAdapter?.dragListener
-
     init {
         scrollBarColor = mainActivity.colorAttr(R.attr.colorOnSurface).toColor
         layoutManager = GridLayoutManager(context, 1, VERTICAL, false)
@@ -74,8 +68,6 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
     val boardList = Caches.boardLists[boardListID]
     var viewMode: ViewMode = ViewMode.LIST_VERTICAL
     lateinit var boardListView: BoardListView
-
-    var dragListener: DragRecyclerViewNew.DragListener? = null
 
     init {
         this.setHasStableIds(true)

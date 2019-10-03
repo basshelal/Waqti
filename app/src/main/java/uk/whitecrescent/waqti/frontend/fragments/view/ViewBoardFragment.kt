@@ -3,6 +3,7 @@
 package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.content.Context
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Vibrator
@@ -14,6 +15,8 @@ import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.EditorInfo
+import android.widget.ProgressBar
+import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
@@ -28,6 +31,8 @@ import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
+import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.find
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.R
@@ -50,6 +55,7 @@ import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.appearance.toColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVATION
+import uk.whitecrescent.waqti.frontend.customview.DragView
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
@@ -95,6 +101,39 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
         setUpViews()
 
+        task_dragView.setItemViewId(R.layout.task_card)
+
+        task_dragView.onStateChanged = { dragState: DragView.DragState ->
+            when (dragState) {
+                DragView.DragState.IDLE -> {
+                    task_dragView.backgroundColor = Color.RED
+                    task_dragView.updateLayoutParams {
+                        width = 200
+                        height = 200
+                    }
+                }
+                DragView.DragState.DRAGGING -> {
+                    task_dragView.backgroundColor = Color.CYAN
+                    task_dragView.updateLayoutParams {
+                        width = 400
+                        height = 400
+                    }
+                }
+                DragView.DragState.SETTLING -> {
+                    task_dragView.backgroundColor = Color.RED
+                    task_dragView.updateLayoutParams {
+                        width = 200
+                        height = 200
+                    }
+                }
+            }
+        }
+
+        task_dragView.setOnLongClickListener {
+            task_dragView.startDrag()
+            true
+        }
+
     }
 
     override fun setUpViews() {
@@ -105,6 +144,21 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 mainActivityVM.settingsChanged = false
             }
             adapter = mainActivityVM.boardAdapter
+
+
+            boardAdapter?.onStartDragTask = {
+                this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Start Drag Task")
+
+                task_dragView.find<ProgressBar>(R.id.taskCard_progressBar).isVisible = false
+                task_dragView.find<TextView>(R.id.task_textView).apply {
+                    isVisible = true
+                    text = it.textView.text
+                }
+
+                task_dragView.startDragFromView(it.itemView)
+            }
+
+
             if (boardAdapter?.board?.isEmpty() == true) {
                 emptyTitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
                 emptySubtitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor

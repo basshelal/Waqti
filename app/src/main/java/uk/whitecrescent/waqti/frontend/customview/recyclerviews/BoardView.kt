@@ -50,9 +50,11 @@ import kotlin.math.roundToInt
 private val listViewHolderPool = recycledViewPool(TASK_LISTS_CACHE_SIZE)
 
 class BoardView
-@JvmOverloads constructor(context: Context,
-                          attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
+@JvmOverloads
+constructor(context: Context,
+            attributeSet: AttributeSet? = null,
+            defStyle: Int = 0
+) : RecyclerView(context, attributeSet, defStyle) {
 
     /**
      * The color of the scrollbar of the [BoardView]
@@ -123,6 +125,9 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     var horizontalScrollOffset: Int = 0
     var onInflate: BoardView.() -> Unit = {}
     var onScrolled: (Int, Int) -> Unit = { dx, dy -> }
+
+    var onStartDragList: (BoardViewHolder) -> Unit = { }
+    var onStartDragTask: (TaskViewHolder) -> Unit = { }
 
     inline val linearLayoutManager: LinearLayoutManager? get() = boardView.layoutManager as? LinearLayoutManager?
     inline val allCards: List<CardView> get() = taskListAdapters.flatMap { it.allListCards }
@@ -260,6 +265,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
         val taskList = board[position]
         holder.taskListView.adapter = getOrCreateListAdapter(taskList.id)
+        holder.taskListView.listAdapter?.onStartDragTask = onStartDragTask
         holder.headerTextView.text = taskList.name
 
         val headerColorScheme =
@@ -382,6 +388,7 @@ class BoardViewHolder(view: View,
                 }
                 setOnLongClickListener {
                     adapter.itemTouchHelper.startDrag(this@BoardViewHolder)
+                    adapter.onStartDragList(this@BoardViewHolder)
                     true
                 }
             }

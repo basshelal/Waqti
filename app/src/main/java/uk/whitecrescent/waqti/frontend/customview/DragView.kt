@@ -7,14 +7,18 @@ import android.content.Context
 import android.graphics.PointF
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.LayoutRes
 import androidx.core.view.children
+import androidx.core.view.isVisible
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
+import androidx.recyclerview.widget.RecyclerView
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.IDLE
@@ -49,11 +53,23 @@ constructor(context: Context,
     var touchPointOutOfParentBounds = false
         private set
 
+    var onStateChanged: (DragState) -> Unit = { }
+        set(value) {
+            field = value
+            onStateChanged(this.dragState)
+        }
+
     var dragState: DragState = IDLE
-        private set
+        private set(value) {
+            field = value
+            onStateChanged(value)
+        }
 
     var dragListener: DragListener? = null
 
+    /**
+     * The contents of the DragView or the first and only child of the DragView
+     */
     inline var itemView: View?
         set(value) {
             removeAllViews()
@@ -66,6 +82,13 @@ constructor(context: Context,
                 ?: throw IllegalStateException("Parent must be a non null ViewGroup" +
                         " parent is $parent")
 
+    init {
+        if (attributeSet == null && defStyle == 0) {
+            this.isVisible = false
+
+        }
+    }
+
     override fun onFinishInflate() {
         super.onFinishInflate()
         init()
@@ -74,6 +97,10 @@ constructor(context: Context,
     private inline fun init() {
         returnX = this.x
         returnY = this.y
+    }
+
+    fun setItemViewId(@LayoutRes itemViewId: Int) {
+        itemView = LayoutInflater.from(context).inflate(itemViewId, parentViewGroup, false)
     }
 
     override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
@@ -233,12 +260,14 @@ constructor(context: Context,
         this.y = viewBounds.top.toFloat() - parentBounds.top.toFloat()
         returnX = this.x
         returnY = this.y
-        view.setOnTouchListener { v, event ->
-            touchPoint.set(event.rawX, event.rawY)
-            return@setOnTouchListener this.onTouchEvent(event)
-        }
+
         isDragging = true
         stealChildrenTouchEvents = true
+        view.setOnTouchListener { v, event ->
+            touchPoint.set(event.rawX, event.rawY)
+            this.onTouchEvent(event)
+            return@setOnTouchListener true
+        }
     }
 
     /**
@@ -425,10 +454,14 @@ constructor(context: Context,
  *  actually part of the RecyclerViews
  */
 
+/*
+ * itemView should be the DEFAULT View look of a DragView which will change when bind() is
+ * called, otherwise the default look will show which would just be one of the R.layout files
+ *
+ */
+abstract class DragViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-abstract class DragViewHolder<V : View>(val itemView: V) {
-
-    val dragView: DragView = DragView.fromView(itemView)
+    abstract val itemViewId: Int
 
     /* Here you change the the itemView's look */
     abstract fun bind()

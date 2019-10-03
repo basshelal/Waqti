@@ -4,9 +4,7 @@ import android.content.Context
 import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.View
-import com.google.android.material.card.MaterialCardView
 import uk.whitecrescent.waqti.frontend.customview.DragView
-import uk.whitecrescent.waqti.frontend.customview.DragViewHolder
 
 abstract class DragRecyclerViewNew
 @JvmOverloads
@@ -14,8 +12,6 @@ constructor(context: Context,
             attributeSet: AttributeSet? = null,
             defStyle: Int = 0
 ) : WaqtiRecyclerView(context, attributeSet, defStyle) {
-
-    abstract var dragViewHolder: DragViewHolder<MaterialCardView>
 
     interface DragListener {
 

@@ -2,7 +2,6 @@
 
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
-import android.content.ClipData
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Point
@@ -110,6 +109,8 @@ class TaskListAdapter(val taskListID: ID,
     var taskListView: TaskListView? = null
     var savedState: LinearLayoutManager.SavedState? = null
     var onInflate: TaskListView.() -> Unit = { }
+
+    var onStartDragTask: (TaskViewHolder) -> Unit = { }
 
     inline val linearLayoutManager: LinearLayoutManager? get() = taskListView?.layoutManager as? LinearLayoutManager?
     inline val allViewHolders: List<TaskViewHolder>
@@ -443,13 +444,11 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                     ViewTaskFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
-                    startDragAndDrop(
-                            ClipData.newPlainText("", ""),
-                            ShadowBuilder(this),
-                            DragEventLocalState(taskID, taskListID, adapterPosition),
-                            0
-                    )
-                    return@setOnLongClickListener true
+
+                    adapter.onStartDragTask(this@TaskViewHolder)
+
+
+                    return@setOnLongClickListener false
                 }
             }
             textView.visibility = View.VISIBLE
