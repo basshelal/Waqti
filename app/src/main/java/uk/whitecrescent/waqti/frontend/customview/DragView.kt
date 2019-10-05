@@ -253,8 +253,9 @@ constructor(context: Context,
         view.setOnTouchListener { v, event ->
             touchPoint.set(event.rawX, event.rawY)
             this.dispatchTouchEvent(event)
+            v.onTouchEvent(event)
             v.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
-            return@setOnTouchListener true
+            true
         }
     }
 
