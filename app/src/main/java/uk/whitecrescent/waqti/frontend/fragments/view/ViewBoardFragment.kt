@@ -72,7 +72,6 @@ import uk.whitecrescent.waqti.logE
 import uk.whitecrescent.waqti.longSnackBar
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
-import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.setColorScheme
 import uk.whitecrescent.waqti.setEdgeEffectColor
 import uk.whitecrescent.waqti.shortSnackBar
@@ -83,6 +82,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private var boardID: ID = 0L
     private lateinit var viewModel: ViewBoardFragmentViewModel
     private lateinit var board: Board
+
+    private var draggingVHID: ID = 0L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -106,29 +107,22 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
         task_dragView.setItemViewId(R.layout.task_card)
 
+        task_dragView.updateLayoutParams {
+            width = 700
+            height = 150
+        }
+
         task_dragView.onStateChanged = { dragState: DragView.DragState ->
             when (dragState) {
                 DragView.DragState.IDLE -> {
                     task_dragView.backgroundColor = Color.RED
-                    task_dragView.updateLayoutParams {
-                        width = 100
-                        height = 100
-                    }
                 }
                 DragView.DragState.DRAGGING -> {
                     task_dragView.backgroundColor = Color.CYAN
                     task_dragView.itemView!!.backgroundColor = Color.LTGRAY
-                    task_dragView.updateLayoutParams {
-                        width = 700
-                        height = 150
-                    }
                 }
                 DragView.DragState.SETTLING -> {
                     task_dragView.backgroundColor = Color.RED
-                    task_dragView.updateLayoutParams {
-                        width = 100
-                        height = 100
-                    }
                 }
             }
         }
@@ -140,18 +134,25 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
         task_dragView.dragListener = object : DragView.SimpleDragListener() {
             override fun onStartDrag(dragView: DragView) {
-                this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Start Drag Task")
-                logE("Start Drag Task @ $now")
+                this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Start Drag Task $draggingVHID")
+                logE("Start Drag Task @ $draggingVHID")
             }
 
             override fun onReleaseDrag(dragView: DragView, touchPoint: PointF) {
-                this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Release Drag Task")
-                logE("Release Drag Task @ $now")
+                this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Release Drag Task $draggingVHID")
+                logE("Release Drag Task @ $draggingVHID")
+
+                this@ViewBoardFragment.boardView.boardAdapter?.taskListAdapters?.find {
+                    it.allViewHolders.firstOrNull { it.taskID == draggingVHID } != null
+                }.also {
+                    it?.taskListView?.findViewHolderForItemId(draggingVHID)?.itemView
+                            ?.backgroundColor = Color.MAGENTA
+                }
             }
 
             override fun onEndDrag(dragView: DragView) {
-                this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("End Drag Task")
-                logE("End Drag Task @ $now")
+                this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("End Drag Task $draggingVHID")
+                logE("End Drag Task @ $draggingVHID")
             }
         }
 
@@ -168,6 +169,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
 
             boardAdapter?.onStartDragTask = {
+                draggingVHID = it.itemId
                 task_dragView.find<ProgressBar>(R.id.taskCard_progressBar).isVisible = false
                 task_dragView.find<TextView>(R.id.task_textView).apply {
                     isVisible = true
