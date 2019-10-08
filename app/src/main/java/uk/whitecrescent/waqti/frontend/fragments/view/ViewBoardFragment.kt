@@ -127,11 +127,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
             }
         }
 
-        task_dragView.setOnLongClickListener {
-            task_dragView.startDrag()
-            true
-        }
-
         task_dragView.dragListener = object : DragView.SimpleDragListener() {
             override fun onStartDrag(dragView: DragView) {
                 this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Start Drag Task $draggingVHID")
@@ -142,11 +137,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Release Drag Task $draggingVHID")
                 logE("Release Drag Task @ $draggingVHID")
 
-                this@ViewBoardFragment.boardView.boardAdapter?.taskListAdapters?.find {
-                    it.allViewHolders.firstOrNull { it.taskID == draggingVHID } != null
-                }.also {
-                    it?.taskListView?.findViewHolderForItemId(draggingVHID)?.itemView
-                            ?.backgroundColor = Color.MAGENTA
+                this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(draggingVHID)
+                        ?.itemView?.also {
+                    it.backgroundColor = Color.MAGENTA
                 }
             }
 

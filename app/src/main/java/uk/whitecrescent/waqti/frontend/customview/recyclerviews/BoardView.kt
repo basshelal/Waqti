@@ -358,6 +358,12 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     fun setListsColorScheme(colorScheme: ColorScheme) {
         taskListAdapters.forEach { it.taskListView { setColorScheme(colorScheme) } }
     }
+
+    fun findTaskViewHolder(taskID: ID): TaskViewHolder? {
+        return taskListAdapters.find {
+            it.allViewHolders.firstOrNull { it.taskID == taskID } != null
+        }?.taskListView?.findViewHolderForItemId(taskID) as? TaskViewHolder
+    }
 }
 
 

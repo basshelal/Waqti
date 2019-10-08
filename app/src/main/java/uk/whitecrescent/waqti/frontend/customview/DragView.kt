@@ -251,11 +251,15 @@ constructor(context: Context,
         isDragging = true
         stealChildrenTouchEvents = true
         view.setOnTouchListener { v, event ->
-            touchPoint.set(event.rawX, event.rawY)
-            this.dispatchTouchEvent(event)
-            v.onTouchEvent(event)
-            v.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
-            true
+            if (isDragging) {
+                touchPoint.set(event.rawX, event.rawY)
+                this.dispatchTouchEvent(event)
+                v.onTouchEvent(event)
+                v.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
+                true
+            } else {
+                false
+            }
         }
     }
 
