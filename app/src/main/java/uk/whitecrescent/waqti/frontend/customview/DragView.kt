@@ -14,12 +14,12 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
-import androidx.core.view.children
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.recyclerview.widget.RecyclerView
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.collections.forEachReversedByIndex
+import uk.whitecrescent.waqti.allChildren
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.IDLE
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.SETTLING
 import uk.whitecrescent.waqti.invoke
@@ -163,18 +163,20 @@ constructor(context: Context,
     }
 
     private inline fun getViewUnder(pointX: Float, pointY: Float): View? {
-        parentViewGroup.children.toList().forEachReversedByIndex {
+        /* parentViewGroup.children.toList().forEachReversedByIndex {
+             if (it.getGlobalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
+                     && it != this && it !in this.childrenRecursiveSequence()) {
+                 return it
+             }
+         }*/
+
+        // Below for ALL Views that are descendants of my parent all the way to the bottom
+        parentViewGroup.allChildren.forEachReversedByIndex {
             if (it.getGlobalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
                     && it != this && it !in this.childrenRecursiveSequence()) {
                 return it
             }
         }
-        /*parentViewGroup.childrenRecursiveSequence().toList().forEachReversedByIndex {
-            if (it.getGlobalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
-                    && it != this && it !in this.childrenRecursiveSequence()) {
-                return it
-            }
-        }*/
         return null
     }
 

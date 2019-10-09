@@ -364,6 +364,15 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             it.allViewHolders.firstOrNull { it.taskID == taskID } != null
         }?.taskListView?.findViewHolderForItemId(taskID) as? TaskViewHolder
     }
+
+    fun findTaskViewHolder(view: View): TaskViewHolder? {
+        taskListAdapters.map { it.taskListView }.forEach {
+            (it?.findContainingViewHolder(view) as? TaskViewHolder).also {
+                if (it != null) return it
+            }
+        }
+        return null
+    }
 }
 
 

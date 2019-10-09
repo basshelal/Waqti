@@ -147,6 +147,13 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("End Drag Task $draggingVHID")
                 logE("End Drag Task @ $draggingVHID")
             }
+
+            override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF): Boolean {
+                boardView.boardAdapter?.findTaskViewHolder(newView)?.also {
+                    it.itemView.backgroundColor = Color.RED
+                }
+                return super.onEnteredView(dragView, newView, oldView, touchPoint)
+            }
         }
 
     }

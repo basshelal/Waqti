@@ -40,6 +40,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import org.jetbrains.anko.childrenRecursiveSequence
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.BoardList
@@ -292,6 +293,9 @@ inline val View.parentView: View?
 
 inline val View.parentViewGroup: ViewGroup?
     get() = parent as? ViewGroup?
+
+inline val ViewGroup.allChildren: List<View>
+    get() = this.childrenRecursiveSequence().toList()
 
 inline fun IndicatorSeekBar.onSeek(crossinline onSeek: (SeekParams?) -> Unit) {
     onSeekChangeListener = object : SimpleOnSeekChangeListener() {
