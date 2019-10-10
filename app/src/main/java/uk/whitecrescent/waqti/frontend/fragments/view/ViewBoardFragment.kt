@@ -83,7 +83,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private lateinit var viewModel: ViewBoardFragmentViewModel
     private lateinit var board: Board
 
-    private var draggingVHID: ID = 0L
+    private var dragTaskID: ID = 0L
+    private var dragListID: ID = 0L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -128,32 +129,39 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
             dragListener = object : DragView.SimpleDragListener() {
                 override fun onStartDrag(dragView: DragView) {
-                    this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Start Drag Task $draggingVHID")
-                    logE("Start Drag Task @ $draggingVHID")
+                    this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Start Drag Task $dragTaskID")
+                    logE("Start Drag Task @ $dragTaskID")
                 }
 
                 override fun onReleaseDrag(dragView: DragView, touchPoint: PointF) {
-                    this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Release Drag Task $draggingVHID")
-                    logE("Release Drag Task @ $draggingVHID")
+                    this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Release Drag Task $dragTaskID")
+                    logE("Release Drag Task @ $dragTaskID")
 
-                    this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(draggingVHID)
+                    this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)
                             ?.itemView?.also {
                         it.backgroundColor = Color.MAGENTA
                     }
                 }
 
                 override fun onEndDrag(dragView: DragView) {
-                    this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("End Drag Task $draggingVHID")
-                    logE("End Drag Task @ $draggingVHID")
+                    this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("End Drag Task $dragTaskID")
+                    logE("End Drag Task @ $dragTaskID")
                 }
 
                 override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF): Boolean {
                     this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(newView)?.also {
                         it.itemView.backgroundColor = Color.RED
+                        this@ViewBoardFragment.task_dragView.find<TextView>(R.id.task_textView).apply {
+                            text = it.textView.text
+                        }
                     }
                     return super.onEnteredView(dragView, newView, oldView, touchPoint)
                 }
             }
+        }
+
+        list_dragView {
+            setItemViewId(R.layout.task_list)
         }
 
         setUpViews()
@@ -171,7 +179,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
 
             boardAdapter?.onStartDragTask = {
-                draggingVHID = it.itemId
+                dragTaskID = it.itemId
                 this@ViewBoardFragment.task_dragView.find<ProgressBar>(R.id.taskCard_progressBar).isVisible = false
                 this@ViewBoardFragment.task_dragView.find<TextView>(R.id.task_textView).apply {
                     isVisible = true
@@ -179,6 +187,11 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 this@ViewBoardFragment.task_dragView.startDragFromView(it.itemView)
+            }
+
+            boardAdapter?.onStartDragList = {
+                dragListID = it.itemId
+                shortSnackBar("${dragListID}")
             }
 
 
