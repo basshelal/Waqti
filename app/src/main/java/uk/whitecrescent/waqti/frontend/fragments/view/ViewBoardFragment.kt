@@ -60,7 +60,10 @@ import uk.whitecrescent.waqti.frontend.customview.DragView
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskViewHolder
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
@@ -108,8 +111,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
             setItemViewId(R.layout.task_card)
 
             updateLayoutParams {
-                width = 700
-                height = 150
+                width = MATCH_PARENT
+                height = WRAP_CONTENT
             }
 
             onStateChanged = { dragState: DragView.DragState ->
@@ -162,6 +165,11 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
         list_dragView {
             setItemViewId(R.layout.task_list)
+
+            updateLayoutParams {
+                width = WRAP_CONTENT
+                height = WRAP_CONTENT
+            }
         }
 
         setUpViews()
@@ -180,18 +188,15 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
             boardAdapter?.onStartDragTask = {
                 dragTaskID = it.itemId
-                this@ViewBoardFragment.task_dragView.find<ProgressBar>(R.id.taskCard_progressBar).isVisible = false
-                this@ViewBoardFragment.task_dragView.find<TextView>(R.id.task_textView).apply {
-                    isVisible = true
-                    text = it.textView.text
-                }
-
+                bindDragTask(it)
                 this@ViewBoardFragment.task_dragView.startDragFromView(it.itemView)
             }
 
             boardAdapter?.onStartDragList = {
                 dragListID = it.itemId
-                shortSnackBar("${dragListID}")
+                bindDragList(it)
+                shortSnackBar("Dragging List ${dragListID}")
+                this@ViewBoardFragment.list_dragView.startDragFromView(it.itemView)
             }
 
 
@@ -309,6 +314,20 @@ class ViewBoardFragment : WaqtiViewFragment() {
     override fun finish() {
         @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
+    }
+
+    private inline fun bindDragTask(taskViewHolder: TaskViewHolder) {
+        task_dragView.find<ProgressBar>(R.id.taskCard_progressBar).isVisible = false
+        task_dragView.find<TextView>(R.id.task_textView).apply {
+            isVisible = true
+            text = taskViewHolder.textView.text
+        }
+    }
+
+    private inline fun bindDragList(listViewHolder: BoardViewHolder) {
+        list_dragView.find<TaskListView>(R.id.taskList_recyclerView).apply {
+            adapter = listViewHolder.taskListView.listAdapter
+        }
     }
 
     private inline fun createOptionsMenu() {
