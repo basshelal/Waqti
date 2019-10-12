@@ -3,12 +3,12 @@
 package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
 import android.os.Vibrator
 import android.text.SpannableStringBuilder
+import android.util.TypedValue
 import android.view.DragEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -18,9 +18,12 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.inputmethod.EditorInfo
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.marginStart
 import androidx.core.view.updateLayoutParams
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
@@ -32,8 +35,8 @@ import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
-import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
+import org.jetbrains.anko.margin
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.R
@@ -110,22 +113,16 @@ class ViewBoardFragment : WaqtiViewFragment() {
         task_dragView {
             setItemViewId(R.layout.task_card)
 
-            updateLayoutParams {
-                width = MATCH_PARENT
-                height = WRAP_CONTENT
-            }
-
             onStateChanged = { dragState: DragView.DragState ->
                 when (dragState) {
                     DragView.DragState.IDLE -> {
-                        backgroundColor = Color.RED
+
                     }
                     DragView.DragState.DRAGGING -> {
-                        backgroundColor = Color.CYAN
-                        itemView!!.backgroundColor = Color.LTGRAY
+
                     }
                     DragView.DragState.SETTLING -> {
-                        backgroundColor = Color.RED
+
                     }
                 }
             }
@@ -133,30 +130,27 @@ class ViewBoardFragment : WaqtiViewFragment() {
             dragListener = object : DragView.SimpleDragListener() {
                 override fun onStartDrag(dragView: DragView) {
                     this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Start Drag Task $dragTaskID")
-                    logE("Start Drag Task @ $dragTaskID")
                 }
 
                 override fun onReleaseDrag(dragView: DragView, touchPoint: PointF) {
                     this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Release Drag Task $dragTaskID")
-                    logE("Release Drag Task @ $dragTaskID")
 
-                    this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)
-                            ?.itemView?.also {
-                        it.backgroundColor = Color.MAGENTA
+                    this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)?.itemView?.also {
+
                     }
                 }
 
                 override fun onEndDrag(dragView: DragView) {
                     this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("End Drag Task $dragTaskID")
-                    logE("End Drag Task @ $dragTaskID")
                 }
 
                 override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF): Boolean {
-                    this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(newView)?.also {
-                        it.itemView.backgroundColor = Color.RED
-                        this@ViewBoardFragment.task_dragView.find<TextView>(R.id.task_textView).apply {
-                            text = it.textView.text
-                        }
+                    this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(newView)?.also { new ->
+                        if (oldView != null)
+                            this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(oldView)?.also { old ->
+                                if (new.taskID != old.taskID)
+                                    shortSnackBar("Entered Task ${new.taskID}, left ${old.taskID}")
+                            }
                     }
                     return super.onEnteredView(dragView, newView, oldView, touchPoint)
                 }
@@ -317,10 +311,28 @@ class ViewBoardFragment : WaqtiViewFragment() {
     }
 
     private inline fun bindDragTask(taskViewHolder: TaskViewHolder) {
-        task_dragView.find<ProgressBar>(R.id.taskCard_progressBar).isVisible = false
-        task_dragView.find<TextView>(R.id.task_textView).apply {
-            isVisible = true
-            text = taskViewHolder.textView.text
+        task_dragView {
+            updateLayoutParams {
+                width = taskViewHolder.cardView.width
+                height = taskViewHolder.cardView.height
+            }
+            find<ProgressBar>(R.id.taskCard_progressBar).apply {
+                isGone = true
+            }
+            find<CardView>(R.id.task_cardView).apply {
+                updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                    width = MATCH_PARENT
+                    height = MATCH_PARENT
+                    margin = 0
+                }
+                setCardBackgroundColor(taskViewHolder.cardView.cardBackgroundColor)
+            }
+            find<TextView>(R.id.task_textView).apply {
+                isVisible = true
+                setTextSize(TypedValue.COMPLEX_UNIT_PX, taskViewHolder.textView.textSize)
+                text = taskViewHolder.textView.text
+            }
+            logE(marginStart)
         }
     }
 
