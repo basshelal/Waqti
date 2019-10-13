@@ -24,6 +24,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASK_LISTS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
@@ -40,6 +41,7 @@ import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
+import uk.whitecrescent.waqti.notifySwapped
 import uk.whitecrescent.waqti.parentView
 import uk.whitecrescent.waqti.recycledViewPool
 import uk.whitecrescent.waqti.setColorScheme
@@ -372,6 +374,42 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             }
         }
         return null
+    }
+
+    fun swapTaskViewHolders(oldViewHolder: TaskViewHolder, newViewHolder: TaskViewHolder) {
+        if (oldViewHolder.taskListID == newViewHolder.taskListID) {
+            val oldPos = oldViewHolder.adapterPosition
+            val newPos = newViewHolder.adapterPosition
+
+            val taskListAdapter = getListAdapter(oldViewHolder.taskListID)
+
+            taskListAdapter?.taskList?.swap(oldPos, newPos)?.update()
+            taskListAdapter?.notifySwapped(oldPos, newPos)
+        } else moveTaskViewHolder(oldViewHolder, newViewHolder)
+    }
+
+    fun moveTaskViewHolder(oldViewHolder: TaskViewHolder, newViewHolder: TaskViewHolder) {
+        if (oldViewHolder.taskListID != newViewHolder.taskListID) {
+
+            val oldAdapter = getListAdapter(oldViewHolder.taskListID)
+            val newAdapter = getListAdapter(newViewHolder.taskListID)
+
+            if (oldAdapter != null && newAdapter != null) {
+                val oldTaskList = newAdapter.taskList
+                val newTaskList = newAdapter.taskList
+                val task = oldTaskList[oldViewHolder.taskID]
+                val oldDragPos = oldViewHolder.adapterPosition
+                val newDragPos = newViewHolder.adapterPosition
+
+                AbstractWaqtiList.moveElement(
+                        listFrom = oldTaskList, listTo = newTaskList,
+                        element = task, toIndex = newDragPos
+                )
+
+                newAdapter.notifyItemInserted(newDragPos)
+                oldAdapter.notifyItemRemoved(oldDragPos)
+            }
+        }
     }
 }
 

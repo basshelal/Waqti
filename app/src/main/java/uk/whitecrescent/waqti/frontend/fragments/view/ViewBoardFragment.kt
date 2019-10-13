@@ -172,9 +172,22 @@ class ViewBoardFragment : WaqtiViewFragment() {
                             logE("NEW: " + newTaskViewHolder?.taskID)
                         }
 
+                        // We have entered a new ViewHolder
                         if (newTaskViewHolder != oldTaskViewHolder && oldTaskViewHolder != null) {
+
+                            val draggingViewHolder = this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)
+
                             shortSnackBar("Entered ${newTaskViewHolder!!.taskID}, left " +
-                                    "${oldTaskViewHolder!!.taskID}, dragging ${dragTaskID}")
+                                    "${oldTaskViewHolder!!.taskID}, dragging " +
+                                    "${draggingViewHolder?.taskID}")
+
+                            if (draggingViewHolder != null && newTaskViewHolder != null)
+
+                                this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
+                                        draggingViewHolder, newTaskViewHolder!!
+                                )
+
+                            return true
                         }
                     }
                     return super.onEnteredView(dragView, newView, oldView, touchPoint)
