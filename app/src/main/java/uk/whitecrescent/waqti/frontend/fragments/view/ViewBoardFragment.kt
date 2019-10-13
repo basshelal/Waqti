@@ -92,6 +92,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private var dragTaskID: ID = 0L
     private var dragListID: ID = 0L
 
+    private var oldTaskViewHolder: TaskViewHolder? = null
+    private var newTaskViewHolder: TaskViewHolder? = null
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_board_view, container, false)
@@ -130,6 +133,10 @@ class ViewBoardFragment : WaqtiViewFragment() {
             dragListener = object : DragView.SimpleDragListener() {
                 override fun onStartDrag(dragView: DragView) {
                     this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Start Drag Task $dragTaskID")
+
+                    this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)?.itemView?.also {
+
+                    }
                 }
 
                 override fun onReleaseDrag(dragView: DragView, touchPoint: PointF) {
@@ -145,12 +152,37 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF): Boolean {
-                    this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(newView)?.also { new ->
-                        if (oldView != null)
-                            this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(oldView)?.also { old ->
-                                if (new.taskID != old.taskID)
-                                    shortSnackBar("Entered Task ${new.taskID}, left ${old.taskID}")
+
+                    val newViewHolder = this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(newView)
+                    val oldViewHolder = if (oldView == null) null else
+                        this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(oldView)
+
+                    if (oldViewHolder != newViewHolder) {
+
+                        if (oldTaskViewHolder != oldViewHolder) {
+                            oldTaskViewHolder = oldViewHolder
+                        }
+                        if (newTaskViewHolder != newViewHolder) {
+                            newTaskViewHolder = newViewHolder
+                        }
+
+                        when {
+                            oldTaskViewHolder == null && newTaskViewHolder != null -> {
+                                // We have entered a new VH and the previous one was blank space
                             }
+                            oldTaskViewHolder != null && newTaskViewHolder == null -> {
+                                // We have left a VH and now entered blank space
+                            }
+                            oldTaskViewHolder != null && newTaskViewHolder != null -> {
+                                // We have moved between VHs skipping space
+                                shortSnackBar("Entered ${newTaskViewHolder?.taskID ?: 0}, left " +
+                                        "${oldTaskViewHolder?.taskID ?: 0}")
+                            }
+                            oldTaskViewHolder == null && newTaskViewHolder == null -> {
+                                // Should be impossible!
+                                shortSnackBar("IMPOSSIBLE!!!")
+                            }
+                        }
                     }
                     return super.onEnteredView(dragView, newView, oldView, touchPoint)
                 }
@@ -179,15 +211,12 @@ class ViewBoardFragment : WaqtiViewFragment() {
             }
             adapter = mainActivityVM.boardAdapter
 
-
             boardAdapter?.onStartDragTask = {
-                dragTaskID = it.itemId
                 bindDragTask(it)
                 this@ViewBoardFragment.task_dragView.startDragFromView(it.itemView)
             }
 
             boardAdapter?.onStartDragList = {
-                dragListID = it.itemId
                 bindDragList(it)
                 shortSnackBar("Dragging List ${dragListID}")
                 this@ViewBoardFragment.list_dragView.startDragFromView(it.itemView)
@@ -311,6 +340,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
     }
 
     private inline fun bindDragTask(taskViewHolder: TaskViewHolder) {
+        dragTaskID = taskViewHolder.itemId
         task_dragView {
             updateLayoutParams {
                 width = taskViewHolder.cardView.width
@@ -337,6 +367,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
     }
 
     private inline fun bindDragList(listViewHolder: BoardViewHolder) {
+        dragListID = listViewHolder.itemId
         list_dragView.find<TaskListView>(R.id.taskList_recyclerView).apply {
             adapter = listViewHolder.taskListView.listAdapter
         }
