@@ -23,7 +23,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.GravityCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
-import androidx.core.view.marginStart
 import androidx.core.view.updateLayoutParams
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
@@ -119,10 +118,11 @@ class ViewBoardFragment : WaqtiViewFragment() {
             onStateChanged = { dragState: DragView.DragState ->
                 when (dragState) {
                     DragView.DragState.IDLE -> {
-
+                        task_dragView.isVisible = false
                     }
                     DragView.DragState.DRAGGING -> {
-
+                        task_dragView.isVisible = true
+                        task_dragView.alpha = 0.7F
                     }
                     DragView.DragState.SETTLING -> {
 
@@ -132,15 +132,13 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
             dragListener = object : DragView.SimpleDragListener() {
                 override fun onStartDrag(dragView: DragView) {
-                    this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Start Drag Task $dragTaskID")
 
                     this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)?.itemView?.also {
-
+                        it.alpha = 0F
                     }
                 }
 
                 override fun onReleaseDrag(dragView: DragView, touchPoint: PointF) {
-                    this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("Release Drag Task $dragTaskID")
 
                     this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)?.itemView?.also {
 
@@ -148,7 +146,10 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 override fun onEndDrag(dragView: DragView) {
-                    this@ViewBoardFragment.mainActivity.appBar.shortSnackBar("End Drag Task $dragTaskID")
+
+                    this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)?.itemView?.also {
+                        it.alpha = 1F
+                    }
                 }
 
                 override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF): Boolean {
@@ -159,11 +160,13 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                     if (oldViewHolder != newViewHolder) {
 
-                        if (oldTaskViewHolder != oldViewHolder) {
+                        if (oldTaskViewHolder != oldViewHolder && oldViewHolder != null) {
                             oldTaskViewHolder = oldViewHolder
+                            logE("OLD: " + oldTaskViewHolder?.taskID)
                         }
-                        if (newTaskViewHolder != newViewHolder) {
+                        if (newTaskViewHolder != newViewHolder && newViewHolder != null) {
                             newTaskViewHolder = newViewHolder
+                            logE("NEW: " + newTaskViewHolder?.taskID)
                         }
 
                         when {
@@ -175,12 +178,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                             }
                             oldTaskViewHolder != null && newTaskViewHolder != null -> {
                                 // We have moved between VHs skipping space
-                                shortSnackBar("Entered ${newTaskViewHolder?.taskID ?: 0}, left " +
-                                        "${oldTaskViewHolder?.taskID ?: 0}")
                             }
                             oldTaskViewHolder == null && newTaskViewHolder == null -> {
                                 // Should be impossible!
-                                shortSnackBar("IMPOSSIBLE!!!")
                             }
                         }
                     }
@@ -191,6 +191,21 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
         list_dragView {
             setItemViewId(R.layout.task_list)
+
+            onStateChanged = { dragState: DragView.DragState ->
+                when (dragState) {
+                    DragView.DragState.IDLE -> {
+                        list_dragView.isVisible = false
+                    }
+                    DragView.DragState.DRAGGING -> {
+                        list_dragView.isVisible = true
+                        list_dragView.alpha = 0.7F
+                    }
+                    DragView.DragState.SETTLING -> {
+
+                    }
+                }
+            }
 
             updateLayoutParams {
                 width = WRAP_CONTENT
@@ -362,7 +377,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, taskViewHolder.textView.textSize)
                 text = taskViewHolder.textView.text
             }
-            logE(marginStart)
         }
     }
 
