@@ -150,6 +150,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)?.itemView?.also {
                         it.alpha = 1F
                     }
+
+                    oldTaskViewHolder = null
+                    newTaskViewHolder = null
                 }
 
                 override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF): Boolean {
@@ -169,19 +172,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                             logE("NEW: " + newTaskViewHolder?.taskID)
                         }
 
-                        when {
-                            oldTaskViewHolder == null && newTaskViewHolder != null -> {
-                                // We have entered a new VH and the previous one was blank space
-                            }
-                            oldTaskViewHolder != null && newTaskViewHolder == null -> {
-                                // We have left a VH and now entered blank space
-                            }
-                            oldTaskViewHolder != null && newTaskViewHolder != null -> {
-                                // We have moved between VHs skipping space
-                            }
-                            oldTaskViewHolder == null && newTaskViewHolder == null -> {
-                                // Should be impossible!
-                            }
+                        if (newTaskViewHolder != oldTaskViewHolder && oldTaskViewHolder != null) {
+                            shortSnackBar("Entered ${newTaskViewHolder!!.taskID}, left " +
+                                    "${oldTaskViewHolder!!.taskID}, dragging ${dragTaskID}")
                         }
                     }
                     return super.onEnteredView(dragView, newView, oldView, touchPoint)
