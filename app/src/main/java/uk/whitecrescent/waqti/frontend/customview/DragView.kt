@@ -39,8 +39,7 @@ constructor(context: Context,
     private var dx = 0F
     private var dy = 0F
 
-    private var returnX = 0F
-    private var returnY = 0F
+    val returnPoint = PointF()
 
     private var isDragging = false
     private var stealChildrenTouchEvents = false
@@ -79,8 +78,7 @@ constructor(context: Context,
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        returnX = this.x
-        returnY = this.y
+        returnPoint.set(this.x, this.y)
     }
 
     override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
@@ -140,10 +138,7 @@ constructor(context: Context,
     private inline fun onEntered(event: MotionEvent) {
         val newView = getViewUnder(event.rawX, event.rawY) ?: parentViewGroup
         if (currentView != newView) {
-            if (dragListener?.onEnteredView(this, newView, currentView, touchPoint) == true) {
-                returnX = newView.x
-                returnY = newView.y
-            }
+            dragListener?.onEnteredView(this, newView, currentView, touchPoint)
             currentView = newView
         }
         onBounds()
@@ -187,11 +182,11 @@ constructor(context: Context,
         val dampingRatio = 0.6F
         val stiffness = 1000F
 
-        SpringAnimation(this, DynamicAnimation.X, returnX).also {
+        SpringAnimation(this, DynamicAnimation.X, returnPoint.x).also {
             it.spring.dampingRatio = dampingRatio
             it.spring.stiffness = stiffness
         }.start()
-        SpringAnimation(this, DynamicAnimation.Y, returnY).also {
+        SpringAnimation(this, DynamicAnimation.Y, returnPoint.y).also {
             it.spring.dampingRatio = dampingRatio
             it.spring.stiffness = stiffness
             it.addEndListener { _, _, _, _ -> afterEndAnimation() }
@@ -219,8 +214,7 @@ constructor(context: Context,
      * To start dragging from a View that is not a descendant of this DragView, use [startDragFromView]
      */
     fun startDrag() {
-        returnX = this.x
-        returnY = this.y
+        returnPoint.set(this.x, this.y)
         dragState = DragState.DRAGGING
         dragListener?.onStartDrag(this)
         isDragging = true
@@ -247,8 +241,7 @@ constructor(context: Context,
 
         this.x = viewBounds.left.toFloat() - parentBounds.left.toFloat()
         this.y = viewBounds.top.toFloat() - parentBounds.top.toFloat()
-        returnX = this.x
-        returnY = this.y
+        returnPoint.set(this.x, this.y)
 
         isDragging = true
         stealChildrenTouchEvents = true
@@ -283,8 +276,7 @@ constructor(context: Context,
     fun endDragNow() {
         cancelLongPress()
         dragListener?.onReleaseDrag(this, touchPoint)
-        this.x = returnX
-        this.y = returnY
+        returnPoint.set(this.x, this.y)
         afterEndAnimation()
     }
 
@@ -350,14 +342,9 @@ constructor(context: Context,
          *
          * In most cases [oldView] will never be null and will instead be the [dragView]'s
          * parent, but this is rarely not the case.
-         *
-         * @return true if [dragView] can be released on top of [newView] meaning if the user
-         * were to release drag the [dragView] will drop on top of [newView], false meaning it
-         * cannot. If [dragView] has never entered an acceptable drop view, it will return to its
-         * original position upon release
          */
         fun onEnteredView(dragView: DragView, newView: View,
-                          oldView: View?, touchPoint: PointF): Boolean
+                          oldView: View?, touchPoint: PointF)
 
         /**
          * Called when the user's touch point exits the bounds of the [dragView]'s parent view.
@@ -387,7 +374,8 @@ constructor(context: Context,
         override fun onStartDrag(dragView: DragView) {}
         override fun onUpdateLocation(dragView: DragView, touchPoint: PointF) {}
         override fun onEnteredView(dragView: DragView, newView: View,
-                                   oldView: View?, touchPoint: PointF): Boolean = false
+                                   oldView: View?, touchPoint: PointF) {
+        }
 
         override fun onExitedParentBounds(dragView: DragView, touchPoint: PointF) {}
         override fun onEnteredParentBounds(dragView: DragView, touchPoint: PointF) {}
@@ -403,8 +391,8 @@ constructor(context: Context,
                                                    touchPoint: PointF) -> Unit =
                             { dragView, touchPoint -> },
                     crossinline onEnteredView: (DragView, View,
-                                                View?, PointF) -> Boolean =
-                            { dragView, newView, oldView, touchPoint -> false },
+                                                View?, PointF) -> Unit =
+                            { dragView, newView, oldView, touchPoint -> },
 
                     crossinline onExitedParentBounds: (dragView: DragView,
                                                        touchPoint: PointF) -> Unit =

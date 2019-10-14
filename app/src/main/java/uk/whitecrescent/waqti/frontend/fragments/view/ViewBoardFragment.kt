@@ -3,6 +3,7 @@
 package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
@@ -34,6 +35,7 @@ import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.find
 import org.jetbrains.anko.margin
 import org.jetbrains.anko.textColor
@@ -155,7 +157,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     newTaskViewHolder = null
                 }
 
-                override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF): Boolean {
+                override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF) {
 
                     val newViewHolder = this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(newView)
                     val oldViewHolder = if (oldView == null) null else
@@ -181,16 +183,24 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                     "${oldTaskViewHolder!!.taskID}, dragging " +
                                     "${draggingViewHolder?.taskID}")
 
-                            if (draggingViewHolder != null && newTaskViewHolder != null)
-
+                            if (draggingViewHolder != null && newTaskViewHolder != null) {
                                 this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
                                         draggingViewHolder, newTaskViewHolder!!
                                 )
 
-                            return true
+                                draggingViewHolder.apply {
+                                    itemView.backgroundColor = Color.RED
+                                }
+
+                                newTaskViewHolder!!.apply {
+                                    itemView.backgroundColor = Color.BLUE
+                                }
+
+                                returnPoint.set(draggingViewHolder.itemView.x,
+                                        draggingViewHolder.itemView.y)
+                            }
                         }
                     }
-                    return super.onEnteredView(dragView, newView, oldView, touchPoint)
                 }
             }
         }
