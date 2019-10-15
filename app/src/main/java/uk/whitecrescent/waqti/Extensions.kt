@@ -9,6 +9,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Point
+import android.graphics.Rect
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.util.DisplayMetrics
@@ -21,6 +22,7 @@ import android.widget.EdgeEffect
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.annotation.IdRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -41,6 +43,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.jetbrains.anko.childrenRecursiveSequence
+import org.jetbrains.anko.find
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.BoardList
@@ -293,6 +296,16 @@ inline val View.parentView: View?
 
 inline val View.parentViewGroup: ViewGroup?
     get() = parent as? ViewGroup?
+
+inline val View.globalVisibleRect: Rect
+    get() {
+        val result = Rect()
+        this.getGlobalVisibleRect(result)
+        return result
+    }
+
+
+inline fun <reified T : View> View.find(@IdRes id: Int, apply: T.() -> Unit): T = find<T>(id).apply(apply)
 
 inline val ViewGroup.allChildren: List<View>
     get() = this.childrenRecursiveSequence().toList()

@@ -36,8 +36,8 @@ import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.find
 import org.jetbrains.anko.margin
+import org.jetbrains.anko.sdk27.coroutines.onTouch
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.R
@@ -50,6 +50,7 @@ import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
+import uk.whitecrescent.waqti.find
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
@@ -66,6 +67,7 @@ import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskViewHolder
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateListFragment
@@ -124,7 +126,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     }
                     DragView.DragState.DRAGGING -> {
                         task_dragView.isVisible = true
-                        task_dragView.alpha = 0.7F
+                        task_dragView.alpha = 0.8F
                     }
                     DragView.DragState.SETTLING -> {
 
@@ -157,11 +159,17 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     newTaskViewHolder = null
                 }
 
-                override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF) {
+                override fun onUpdateLocation(dragView: DragView, touchPoint: PointF) {
 
+                }
+
+                override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF) {
+                    //if (oldView != null) onEntered(newView, oldView)
+                }
+
+                fun onEntered(newView: View, oldView: View) {
                     val newViewHolder = this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(newView)
-                    val oldViewHolder = if (oldView == null) null else
-                        this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(oldView)
+                    val oldViewHolder = this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(oldView)
 
                     if (oldViewHolder != newViewHolder) {
 
@@ -179,14 +187,12 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                             val draggingViewHolder = this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)
 
-                            shortSnackBar("Entered ${newTaskViewHolder!!.taskID}, left " +
-                                    "${oldTaskViewHolder!!.taskID}, dragging " +
-                                    "${draggingViewHolder?.taskID}")
+                            if (draggingViewHolder != null && newTaskViewHolder != null &&
+                                    draggingViewHolder != newTaskViewHolder) {
 
-                            if (draggingViewHolder != null && newTaskViewHolder != null) {
-                                this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
-                                        draggingViewHolder, newTaskViewHolder!!
-                                )
+                                shortSnackBar("Entered ${newTaskViewHolder!!.taskID}, left " +
+                                        "${oldTaskViewHolder!!.taskID}, dragging " +
+                                        "${draggingViewHolder.taskID}")
 
                                 draggingViewHolder.apply {
                                     itemView.backgroundColor = Color.RED
@@ -198,10 +204,15 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                                 returnPoint.set(draggingViewHolder.itemView.x,
                                         draggingViewHolder.itemView.y)
+
+                                this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
+                                        draggingViewHolder, newTaskViewHolder!!
+                                )
                             }
                         }
                     }
                 }
+
             }
         }
 
@@ -215,7 +226,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     }
                     DragView.DragState.DRAGGING -> {
                         list_dragView.isVisible = true
-                        list_dragView.alpha = 0.7F
+                        list_dragView.alpha = 0.8F
                     }
                     DragView.DragState.SETTLING -> {
 
@@ -226,6 +237,17 @@ class ViewBoardFragment : WaqtiViewFragment() {
             updateLayoutParams {
                 width = WRAP_CONTENT
                 height = WRAP_CONTENT
+            }
+
+            dragListener = object : DragView.SimpleDragListener() {
+
+                override fun onEndDrag(dragView: DragView) {
+                    list_dragView {
+                        find<TaskListView>(R.id.taskList_recyclerView) {
+                            adapter = null
+                        }
+                    }
+                }
             }
         }
 
@@ -250,7 +272,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
             boardAdapter?.onStartDragList = {
                 bindDragList(it)
                 shortSnackBar("Dragging List ${dragListID}")
-                this@ViewBoardFragment.list_dragView.startDragFromView(it.itemView)
+                this@ViewBoardFragment.list_dragView.startDragFromView(it.header)
             }
 
 
@@ -377,10 +399,10 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 width = taskViewHolder.cardView.width
                 height = taskViewHolder.cardView.height
             }
-            find<ProgressBar>(R.id.taskCard_progressBar).apply {
+            find<ProgressBar>(R.id.taskCard_progressBar) {
                 isGone = true
             }
-            find<CardView>(R.id.task_cardView).apply {
+            find<CardView>(R.id.task_cardView) {
                 updateLayoutParams<ViewGroup.MarginLayoutParams> {
                     width = MATCH_PARENT
                     height = MATCH_PARENT
@@ -388,7 +410,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
                 setCardBackgroundColor(taskViewHolder.cardView.cardBackgroundColor)
             }
-            find<TextView>(R.id.task_textView).apply {
+            find<TextView>(R.id.task_textView) {
                 isVisible = true
                 setTextSize(TypedValue.COMPLEX_UNIT_PX, taskViewHolder.textView.textSize)
                 text = taskViewHolder.textView.text
@@ -398,8 +420,25 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
     private inline fun bindDragList(listViewHolder: BoardViewHolder) {
         dragListID = listViewHolder.itemId
-        list_dragView.find<TaskListView>(R.id.taskList_recyclerView).apply {
-            adapter = listViewHolder.taskListView.listAdapter
+
+
+        boardView.onTouch { v, event -> }
+
+        list_dragView {
+            updateLayoutParams {
+                width = listViewHolder.rootView.width
+                height = listViewHolder.rootView.height
+            }
+            find<TaskListView>(R.id.taskList_recyclerView) {
+                // TODO: 15-Oct-19 Below only works the first time for some reason
+
+                logE(adapter)
+
+                swapAdapter(TaskListAdapter(listViewHolder.taskListView.listAdapter!!.taskListID,
+                        listViewHolder.taskListView.listAdapter!!.boardAdapter), false)
+
+                logE(adapter)
+            }
         }
     }
 

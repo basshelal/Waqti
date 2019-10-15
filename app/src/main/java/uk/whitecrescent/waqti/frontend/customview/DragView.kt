@@ -5,7 +5,6 @@ package uk.whitecrescent.waqti.frontend.customview
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PointF
-import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -22,6 +21,7 @@ import org.jetbrains.anko.collections.forEachReversedByIndex
 import uk.whitecrescent.waqti.allChildren
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.IDLE
 import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.SETTLING
+import uk.whitecrescent.waqti.globalVisibleRect
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.parentViewGroup
 import kotlin.math.roundToInt
@@ -145,7 +145,7 @@ constructor(context: Context,
     }
 
     private inline fun onBounds() {
-        val outOfBounds = !parentViewGroup.getGlobalVisibleRect
+        val outOfBounds = !parentViewGroup.globalVisibleRect
                 .contains(touchPoint.x.roundToInt(), touchPoint.y.roundToInt())
         if (touchPointOutOfParentBounds != outOfBounds) {
             touchPointOutOfParentBounds = outOfBounds
@@ -157,6 +157,8 @@ constructor(context: Context,
         }
     }
 
+    fun getViewUnderTouchPoint(): View? = getViewUnder(touchPoint.x, touchPoint.y)
+
     private inline fun getViewUnder(pointX: Float, pointY: Float): View? {
         /* parentViewGroup.children.toList().forEachReversedByIndex {
              if (it.getGlobalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
@@ -167,7 +169,7 @@ constructor(context: Context,
 
         // Below for ALL Views that are descendants of my parent all the way to the bottom
         parentViewGroup.allChildren.forEachReversedByIndex {
-            if (it.getGlobalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
+            if (it.globalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
                     && it != this && it !in this.childrenRecursiveSequence()) {
                 return it
             }
@@ -236,8 +238,8 @@ constructor(context: Context,
 
         bringToFront()
 
-        val parentBounds = parentViewGroup.getGlobalVisibleRect
-        val viewBounds = view.getGlobalVisibleRect
+        val parentBounds = parentViewGroup.globalVisibleRect
+        val viewBounds = view.globalVisibleRect
 
         this.x = viewBounds.left.toFloat() - parentBounds.left.toFloat()
         this.y = viewBounds.top.toFloat() - parentBounds.top.toFloat()
@@ -284,13 +286,6 @@ constructor(context: Context,
         get() = this.parent as? ViewGroup?
                 ?: throw IllegalStateException("Parent must be a non null ViewGroup" +
                         " parent is $parent")
-
-    private inline val View.getGlobalVisibleRect: Rect
-        get() {
-            val result = Rect()
-            this.getGlobalVisibleRect(result)
-            return result
-        }
 
     companion object {
 

@@ -377,7 +377,8 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     }
 
     fun swapTaskViewHolders(oldViewHolder: TaskViewHolder, newViewHolder: TaskViewHolder) {
-        if (oldViewHolder.taskListID == newViewHolder.taskListID) {
+        if (oldViewHolder.taskListID == newViewHolder.taskListID &&
+                oldViewHolder.taskID != newViewHolder.taskID) {
             val oldPos = oldViewHolder.adapterPosition
             val newPos = newViewHolder.adapterPosition
 
@@ -389,7 +390,8 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     }
 
     fun moveTaskViewHolder(oldViewHolder: TaskViewHolder, newViewHolder: TaskViewHolder) {
-        if (oldViewHolder.taskListID != newViewHolder.taskListID) {
+        if (oldViewHolder.taskListID != newViewHolder.taskListID &&
+                oldViewHolder.taskID != newViewHolder.taskID) {
 
             val oldAdapter = getListAdapter(oldViewHolder.taskListID)
             val newAdapter = getListAdapter(newViewHolder.taskListID)
@@ -440,7 +442,7 @@ class BoardViewHolder(view: View,
                     ViewListFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
-                    adapter.itemTouchHelper.startDrag(this@BoardViewHolder)
+
                     adapter.onStartDragList(this@BoardViewHolder)
                     true
                 }
