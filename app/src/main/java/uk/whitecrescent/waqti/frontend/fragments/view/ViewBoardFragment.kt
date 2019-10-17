@@ -63,6 +63,7 @@ import uk.whitecrescent.waqti.frontend.appearance.toColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVATION
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
+import uk.whitecrescent.waqti.frontend.customview.drag.DragBehavior
 import uk.whitecrescent.waqti.frontend.customview.drag.DragView
 import uk.whitecrescent.waqti.frontend.customview.drag.addDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
@@ -118,39 +119,23 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
 
         task_dragView {
-            setItemViewId(R.layout.task_card)
 
-            onStateChanged = { dragState: DragView.DragState ->
-                when (dragState) {
-                    DragView.DragState.IDLE -> {
-                        task_dragView.isVisible = false
-                    }
-                    DragView.DragState.DRAGGING -> {
-                        task_dragView.isVisible = true
-                        task_dragView.alpha = 0.8F
-                    }
-                    DragView.DragState.SETTLING -> {
-
-                    }
-                }
-            }
-
-            dragListener = object : DragView.SimpleDragListener() {
-                override fun onStartDrag(dragView: DragView) {
+            dragBehavior.dragListener = object : DragBehavior.SimpleDragListener() {
+                override fun onStartDrag(dragView: View) {
 
                     this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)?.itemView?.also {
                         it.alpha = 0F
                     }
                 }
 
-                override fun onReleaseDrag(dragView: DragView, touchPoint: PointF) {
+                override fun onReleaseDrag(dragView: View, touchPoint: PointF) {
 
                     this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)?.itemView?.also {
 
                     }
                 }
 
-                override fun onEndDrag(dragView: DragView) {
+                override fun onEndDrag(dragView: View) {
 
                     this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(dragTaskID)?.itemView?.also {
                         it.alpha = 1F
@@ -160,11 +145,12 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     newTaskViewHolder = null
                 }
 
-                override fun onUpdateLocation(dragView: DragView, touchPoint: PointF) {
+                override fun onUpdateLocation(dragView: View, touchPoint: PointF) {
 
                 }
 
-                override fun onEnteredView(dragView: DragView, newView: View, oldView: View?, touchPoint: PointF) {
+                fun onEnteredView(dragView: View, newView: View, oldView: View?,
+                                  touchPoint: PointF) {
                     //if (oldView != null) onEntered(newView, oldView)
                 }
 
@@ -203,7 +189,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                     itemView.backgroundColor = Color.BLUE
                                 }
 
-                                returnPoint.set(draggingViewHolder.itemView.x,
+                                dragBehavior.returnPoint.set(draggingViewHolder.itemView.x,
                                         draggingViewHolder.itemView.y)
 
                                 this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
@@ -214,6 +200,20 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     }
                 }
 
+                override fun onDragStateChanged(dragView: View, newState: DragBehavior.DragState) {
+                    when (newState) {
+                        DragBehavior.DragState.IDLE -> {
+                            task_dragView.isVisible = false
+                        }
+                        DragBehavior.DragState.DRAGGING -> {
+                            task_dragView.isVisible = true
+                            task_dragView.alpha = 0.8F
+                        }
+                        DragBehavior.DragState.SETTLING -> {
+
+                        }
+                    }
+                }
             }
         }
 
@@ -262,13 +262,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
             true
         }
 
-        val x = addList_floatingButton.addDragBehavior()
-
-        x.view.setOnLongClickListener {
-            x.startDrag()
-            true
-        }
-
     }
 
     override fun setUpViews() {
@@ -282,7 +275,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
             boardAdapter?.onStartDragTask = {
                 bindDragTask(it)
-                this@ViewBoardFragment.task_dragView.startDragFromView(it.itemView)
+                this@ViewBoardFragment.task_dragView.dragBehavior.startDragFromView(it.itemView)
             }
 
             boardAdapter?.onStartDragList = {

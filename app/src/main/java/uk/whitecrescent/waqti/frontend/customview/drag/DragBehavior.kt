@@ -9,8 +9,10 @@ import android.view.View
 import android.view.ViewConfiguration
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
+import org.jetbrains.anko.childrenRecursiveSequence
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.NonFinal
+import uk.whitecrescent.waqti.globalVisibleRect
 import uk.whitecrescent.waqti.parentViewGroup
 
 /* TODO: 15-Oct-19
@@ -23,7 +25,7 @@ open class DragBehavior(val view: View) {
 
     protected val dPoint = PointF()
     protected val touchPoint = PointF()
-    protected val returnPoint = PointF()
+    val returnPoint = PointF()
 
     protected var isDragging = false
     protected var stealChildrenTouchEvents = false
@@ -95,6 +97,7 @@ open class DragBehavior(val view: View) {
     }
 
     private inline fun animateReturn() {
+        dragState = DragState.SETTLING
         SpringAnimation(view, DynamicAnimation.X, returnPoint.x).also {
             it.spring.dampingRatio = dampingRatio
             it.spring.stiffness = stiffness
@@ -112,11 +115,13 @@ open class DragBehavior(val view: View) {
         stealChildrenTouchEvents = false
         touchPointOutOfParentBounds = false
         downCalled = false
+        dragState = DragState.IDLE
         dragListener?.onEndDrag(view)
     }
 
     fun startDrag() {
         returnPoint.set(view.x, view.y)
+        dragState = DragState.DRAGGING
         dragListener?.onStartDrag(view)
         isDragging = true
         stealChildrenTouchEvents = true
@@ -132,6 +137,37 @@ open class DragBehavior(val view: View) {
         view.cancelLongPress()
         returnPoint.set(view.x, view.y)
         afterEndAnimation()
+    }
+
+    fun startDragFromView(otherView: View) {
+        require(otherView in this.view.parentViewGroup!!.childrenRecursiveSequence()) {
+            "The passed in view must be a descendant of this DragView's parent!"
+        }
+        dragState = DragState.DRAGGING
+        dragListener?.onStartDrag(view)
+
+        this.view.bringToFront()
+
+        val parentBounds = this.view.parentViewGroup!!.globalVisibleRect
+        val viewBounds = otherView.globalVisibleRect
+
+        this.view.x = viewBounds.left.toFloat() - parentBounds.left.toFloat()
+        this.view.y = viewBounds.top.toFloat() - parentBounds.top.toFloat()
+        returnPoint.set(this.view.x, this.view.y)
+
+        isDragging = true
+        stealChildrenTouchEvents = true
+        otherView.setOnTouchListener { v, event ->
+            if (isDragging) {
+                touchPoint.set(event.rawX, event.rawY)
+                this.view.dispatchTouchEvent(event)
+                v.onTouchEvent(event)
+                v.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
+                true
+            } else {
+                false
+            }
+        }
     }
 
     companion object {

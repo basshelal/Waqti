@@ -121,7 +121,7 @@
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
 
-    <uk.whitecrescent.waqti.frontend.customview.drag.DragView
+    <uk.whitecrescent.waqti.frontend.customview.TaskCard
         android:id="@+id/task_dragView"
         android:layout_width="0dp"
         android:layout_height="0dp"
