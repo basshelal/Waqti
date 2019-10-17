@@ -62,6 +62,7 @@ import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.appearance.toColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVATION
 import uk.whitecrescent.waqti.frontend.customview.DragView
+import uk.whitecrescent.waqti.frontend.customview.addDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
@@ -252,6 +253,21 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
 
         setUpViews()
+
+
+        val d = mainActivity.appBar.addDragBehavior()
+
+        d.view.setOnLongClickListener {
+            d.startDrag()
+            true
+        }
+
+        val x = addList_floatingButton.addDragBehavior()
+
+        x.view.setOnLongClickListener {
+            x.startDrag()
+            true
+        }
 
     }
 

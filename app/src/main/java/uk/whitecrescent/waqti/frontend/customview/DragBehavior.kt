@@ -25,21 +25,21 @@ import kotlin.math.roundToInt
 @ForLater
 open class DragBehavior(val view: View) {
 
-    private var dx = 0F
-    private var dy = 0F
+    protected val dPoint = PointF()
+    protected val touchPoint = PointF()
+    protected val returnPoint = PointF()
 
-    val returnPoint = PointF()
+    protected var isDragging = false
+    protected var stealChildrenTouchEvents = false
 
-    private var isDragging = false
-    private var stealChildrenTouchEvents = false
+    protected var currentView: View? = null
 
-    private var currentView: View? = null
-    private var touchPoint = PointF()
+    protected var downCalled = false
 
-    private var downCalled = false
+    private var touchPointOutOfParentBounds = false
 
-    var touchPointOutOfParentBounds = false
-        private set
+    protected var dampingRatio = 0.6F
+    protected var stiffness = 1000F
 
     init {
         returnPoint.set(view.x, view.y)
@@ -70,16 +70,17 @@ open class DragBehavior(val view: View) {
 
     private inline fun onDown(event: MotionEvent) {
         if (!downCalled) {
-            dx = view.x - event.rawX
-            dy = view.y - event.rawY
+            dPoint.x = view.x - event.rawX
+            dPoint.y = view.y - event.rawY
             touchPoint.set(event.rawX, event.rawY)
+            view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
             downCalled = true
         }
     }
 
     private inline fun onMove(event: MotionEvent) {
-        view.x = event.rawX + dx
-        view.y = event.rawY + dy
+        view.x = event.rawX + dPoint.x
+        view.y = event.rawY + dPoint.y
         touchPoint.set(event.rawX, event.rawY)
         onEntered(event)
     }
@@ -111,10 +112,6 @@ open class DragBehavior(val view: View) {
     }
 
     private inline fun animateReturn() {
-
-        val dampingRatio = 0.6F
-        val stiffness = 1000F
-
         SpringAnimation(view, DynamicAnimation.X, returnPoint.x).also {
             it.spring.dampingRatio = dampingRatio
             it.spring.stiffness = stiffness
@@ -147,39 +144,6 @@ open class DragBehavior(val view: View) {
     }
 
     /**
-     * Call this to start dragging this DragView from another View that is not a descendant of
-     * this View.
-     *
-     * Ideally the other [view] should be identical in appearance to this DragView
-     */
-    fun startDragFromView(view: View) {
-        require(view in parentViewGroup.childrenRecursiveSequence()) {
-            "The passed in view must be a descendant of this DragView's parent!"
-        }
-
-        val parentBounds = parentViewGroup.globalVisibleRect
-        val viewBounds = view.globalVisibleRect
-
-        view.x = viewBounds.left.toFloat() - parentBounds.left.toFloat()
-        view.y = viewBounds.top.toFloat() - parentBounds.top.toFloat()
-        returnPoint.set(view.x, view.y)
-
-        isDragging = true
-        stealChildrenTouchEvents = true
-        view.setOnTouchListener { v, event ->
-            if (isDragging) {
-                touchPoint.set(event.rawX, event.rawY)
-                this.view.dispatchTouchEvent(event)
-                v.onTouchEvent(event)
-                v.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
-                true
-            } else {
-                false
-            }
-        }
-    }
-
-    /**
      * Call this to end the drag, this will start an animation to return this DragView to its
      * last acceptable drop location determined by the [dragListener]'s
      * [DragListener.onEnteredView] return value, if none was determined then this DragView will
@@ -201,8 +165,10 @@ open class DragBehavior(val view: View) {
     }
 
     private inline val parentViewGroup: ViewGroup
-        get() = view.parent as? ViewGroup?
+        get() = view.parentViewGroup
                 ?: throw IllegalStateException("Parent must be a non null ViewGroup" +
                         " parent is ${view.parent}")
 
 }
+
+inline fun View.addDragBehavior() = DragBehavior(this)
