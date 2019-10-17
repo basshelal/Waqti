@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.View
-import uk.whitecrescent.waqti.frontend.customview.DragView
+import uk.whitecrescent.waqti.frontend.customview.drag.DragView
 
 abstract class DragRecyclerViewNew
 @JvmOverloads

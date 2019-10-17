@@ -1,21 +1,17 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package uk.whitecrescent.waqti.frontend.customview
+package uk.whitecrescent.waqti.frontend.customview.drag
 
+import android.annotation.SuppressLint
 import android.graphics.PointF
 import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
+import android.view.ViewConfiguration
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
-import org.jetbrains.anko.childrenRecursiveSequence
-import org.jetbrains.anko.collections.forEachReversedByIndex
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.NonFinal
-import uk.whitecrescent.waqti.allChildren
-import uk.whitecrescent.waqti.globalVisibleRect
 import uk.whitecrescent.waqti.parentViewGroup
-import kotlin.math.roundToInt
 
 /* TODO: 15-Oct-19
  * An idea to make Dragging be an added behavior (a decorator) applied to a View rather than
@@ -34,19 +30,26 @@ open class DragBehavior(val view: View) {
 
     protected var currentView: View? = null
 
-    protected var downCalled = false
+    private var downCalled = false
 
     private var touchPointOutOfParentBounds = false
 
     protected var dampingRatio = 0.6F
     protected var stiffness = 1000F
 
-    init {
-        returnPoint.set(view.x, view.y)
+    var dragListener: DragListener? = null
 
-        view.setOnTouchListener { v, event ->
+    protected var dragState: DragState = DragState.IDLE
+        private set(value) {
+            field = value
+            dragListener?.onDragStateChanged(view, value)
+        }
+
+    private val onTouchListener = object : View.OnTouchListener {
+        @SuppressLint("ClickableViewAccessibility")
+        override fun onTouch(v: View, event: MotionEvent): Boolean {
             touchPoint.set(event.rawX, event.rawY)
-            if (isDragging) {
+            return if (isDragging) {
                 when (event.actionMasked) {
                     MotionEvent.ACTION_DOWN -> {
                         onDown(event)
@@ -66,6 +69,12 @@ open class DragBehavior(val view: View) {
                 view.onTouchEvent(event)
             }
         }
+
+    }
+
+    init {
+        returnPoint.set(view.x, view.y)
+        view.setOnTouchListener(onTouchListener)
     }
 
     private inline fun onDown(event: MotionEvent) {
@@ -82,33 +91,7 @@ open class DragBehavior(val view: View) {
         view.x = event.rawX + dPoint.x
         view.y = event.rawY + dPoint.y
         touchPoint.set(event.rawX, event.rawY)
-        onEntered(event)
-    }
-
-    private inline fun onEntered(event: MotionEvent) {
-        val newView = getViewUnder(event.rawX, event.rawY) ?: parentViewGroup
-        if (currentView != newView) {
-            currentView = newView
-        }
-        onBounds()
-    }
-
-    private inline fun onBounds() {
-        val outOfBounds = !parentViewGroup.globalVisibleRect
-                .contains(touchPoint.x.roundToInt(), touchPoint.y.roundToInt())
-        if (touchPointOutOfParentBounds != outOfBounds) {
-            touchPointOutOfParentBounds = outOfBounds
-        }
-    }
-
-    private inline fun getViewUnder(pointX: Float, pointY: Float): View? {
-        parentViewGroup.allChildren.forEachReversedByIndex {
-            if (it.globalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
-                    && it != view && it !in view.childrenRecursiveSequence()) {
-                return it
-            }
-        }
-        return null
+        dragListener?.onUpdateLocation(view, touchPoint)
     }
 
     private inline fun animateReturn() {
@@ -129,45 +112,85 @@ open class DragBehavior(val view: View) {
         stealChildrenTouchEvents = false
         touchPointOutOfParentBounds = false
         downCalled = false
+        dragListener?.onEndDrag(view)
     }
 
-    /**
-     * Call this to start dragging from this DragView or any of its descendants, note that this
-     * will "steal" those children's touch events while this DragView is being dragged.
-     *
-     * To start dragging from a View that is not a descendant of this DragView, use [startDragFromView]
-     */
     fun startDrag() {
         returnPoint.set(view.x, view.y)
+        dragListener?.onStartDrag(view)
         isDragging = true
         stealChildrenTouchEvents = true
     }
 
-    /**
-     * Call this to end the drag, this will start an animation to return this DragView to its
-     * last acceptable drop location determined by the [dragListener]'s
-     * [DragListener.onEnteredView] return value, if none was determined then this DragView will
-     * return to its original location.
-     */
     fun endDrag() {
         view.cancelLongPress()
+        dragListener?.onReleaseDrag(view, touchPoint)
         animateReturn()
     }
 
-    /**
-     * Call this to end the drag operation immediately, this is identical to [endDrag] except
-     * without an animation
-     */
     fun endDragNow() {
         view.cancelLongPress()
         returnPoint.set(view.x, view.y)
         afterEndAnimation()
     }
 
-    private inline val parentViewGroup: ViewGroup
-        get() = view.parentViewGroup
-                ?: throw IllegalStateException("Parent must be a non null ViewGroup" +
-                        " parent is ${view.parent}")
+    companion object {
+
+        val longPressTime: Int
+            get() = ViewConfiguration.getLongPressTimeout()
+    }
+
+    enum class DragState {
+        /** View is idle, no movement */
+        IDLE,
+        /** View is being dragged by user, movement from user */
+        DRAGGING,
+        /** View is settling into final position, movement is not from user */
+        SETTLING
+    }
+
+    interface DragListener {
+
+        /**
+         * Called before the drag operation starts
+         */
+        fun onStartDrag(dragView: View)
+
+        /**
+         * Called when the drag touch location is updated, meaning when the user moves their
+         * finger while dragging.
+         *
+         * Warning: This gets called **VERY OFTEN**, any code called in here should not be too
+         * expensive, else you may experience jank while dragging. It is preferred to use
+         * [onEnteredView] instead to receive events when the touch point enters a new view.
+         */
+        fun onUpdateLocation(dragView: View, touchPoint: PointF)
+
+        /**
+         * Called when the user's touch is release. The [dragView] will start to animate its return.
+         */
+        fun onReleaseDrag(dragView: View, touchPoint: PointF)
+
+        /**
+         * Called when the dragging operation has fully ended and the [dragView] has ended its
+         * return animation.
+         */
+        fun onEndDrag(dragView: View)
+
+        /**
+         * Called when the [DragState] of the [dragView] is changed
+         */
+        fun onDragStateChanged(dragView: View, newState: DragState)
+
+    }
+
+    abstract class SimpleDragListener : DragListener {
+        override fun onStartDrag(dragView: View) {}
+        override fun onUpdateLocation(dragView: View, touchPoint: PointF) {}
+        override fun onReleaseDrag(dragView: View, touchPoint: PointF) {}
+        override fun onEndDrag(dragView: View) {}
+        override fun onDragStateChanged(dragView: View, newState: DragState) {}
+    }
 
 }
 

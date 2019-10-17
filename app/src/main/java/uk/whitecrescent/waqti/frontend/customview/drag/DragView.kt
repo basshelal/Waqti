@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package uk.whitecrescent.waqti.frontend.customview
+package uk.whitecrescent.waqti.frontend.customview.drag
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -19,8 +19,8 @@ import androidx.recyclerview.widget.RecyclerView
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import uk.whitecrescent.waqti.allChildren
-import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.IDLE
-import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.SETTLING
+import uk.whitecrescent.waqti.frontend.customview.drag.DragView.DragState.IDLE
+import uk.whitecrescent.waqti.frontend.customview.drag.DragView.DragState.SETTLING
 import uk.whitecrescent.waqti.globalVisibleRect
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.parentViewGroup

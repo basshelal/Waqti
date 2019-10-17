@@ -7,7 +7,7 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.view.GestureDetectorCompat
 import androidx.recyclerview.widget.RecyclerView
-import uk.whitecrescent.waqti.frontend.customview.DragView
+import uk.whitecrescent.waqti.frontend.customview.drag.DragView
 
 open class DragRecyclerView
 @JvmOverloads

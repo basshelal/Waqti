@@ -61,10 +61,10 @@ import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.appearance.toColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVATION
-import uk.whitecrescent.waqti.frontend.customview.DragView
-import uk.whitecrescent.waqti.frontend.customview.addDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
+import uk.whitecrescent.waqti.frontend.customview.drag.DragView
+import uk.whitecrescent.waqti.frontend.customview.drag.addDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
