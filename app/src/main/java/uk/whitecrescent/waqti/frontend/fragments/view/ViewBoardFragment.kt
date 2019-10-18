@@ -64,7 +64,6 @@ import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVA
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
 import uk.whitecrescent.waqti.frontend.customview.drag.DragBehavior
-import uk.whitecrescent.waqti.frontend.customview.drag.DragView
 import uk.whitecrescent.waqti.frontend.customview.drag.addDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
@@ -119,6 +118,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
 
         task_dragView {
+
+            isVisible = false
 
             dragBehavior.dragListener = object : DragBehavior.SimpleDragListener() {
                 override fun onStartDrag(dragView: View) {
@@ -218,34 +219,35 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
 
         list_dragView {
-            setItemViewId(R.layout.task_list)
 
-            onStateChanged = { dragState: DragView.DragState ->
-                when (dragState) {
-                    DragView.DragState.IDLE -> {
-                        list_dragView.isVisible = false
-                    }
-                    DragView.DragState.DRAGGING -> {
-                        list_dragView.isVisible = true
-                        list_dragView.alpha = 0.8F
-                    }
-                    DragView.DragState.SETTLING -> {
-
-                    }
-                }
-            }
+            isVisible = false
 
             updateLayoutParams {
                 width = WRAP_CONTENT
                 height = WRAP_CONTENT
             }
 
-            dragListener = object : DragView.SimpleDragListener() {
+            dragBehavior.dragListener = object : DragBehavior.SimpleDragListener() {
 
-                override fun onEndDrag(dragView: DragView) {
+                override fun onEndDrag(dragView: View) {
                     list_dragView {
                         find<TaskListView>(R.id.taskList_recyclerView) {
                             adapter = null
+                        }
+                    }
+                }
+
+                override fun onDragStateChanged(dragView: View, newState: DragBehavior.DragState) {
+                    when (newState) {
+                        DragBehavior.DragState.IDLE -> {
+                            list_dragView.isVisible = false
+                        }
+                        DragBehavior.DragState.DRAGGING -> {
+                            list_dragView.isVisible = true
+                            list_dragView.alpha = 0.8F
+                        }
+                        DragBehavior.DragState.SETTLING -> {
+
                         }
                     }
                 }
@@ -281,7 +283,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
             boardAdapter?.onStartDragList = {
                 bindDragList(it)
                 shortSnackBar("Dragging List ${dragListID}")
-                this@ViewBoardFragment.list_dragView.startDragFromView(it.header)
+                this@ViewBoardFragment.list_dragView.dragBehavior.startDragFromView(it.header)
             }
 
 
