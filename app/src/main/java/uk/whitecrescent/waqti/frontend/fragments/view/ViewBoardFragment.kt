@@ -119,8 +119,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
         task_dragView {
 
-            isVisible = false
-
             dragBehavior.dragListener = object : DragBehavior.SimpleDragListener() {
                 override fun onStartDrag(dragView: View) {
 
@@ -219,8 +217,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
 
         list_dragView {
-
-            isVisible = false
 
             updateLayoutParams {
                 width = WRAP_CONTENT

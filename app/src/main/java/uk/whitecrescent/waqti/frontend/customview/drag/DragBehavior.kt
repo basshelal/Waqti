@@ -40,6 +40,10 @@ open class DragBehavior(val view: View) {
     protected var stiffness = 1000F
 
     var dragListener: DragListener? = null
+        set(value) {
+            field = value
+            value?.onDragStateChanged(view, dragState)
+        }
 
     protected var dragState: DragState = DragState.IDLE
         private set(value) {
