@@ -115,13 +115,13 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <uk.whitecrescent.waqti.frontend.customview.TaskList
+    <uk.whitecrescent.waqti.frontend.customview.TaskListLayout
         android:id="@+id/list_dragView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
 
-    <uk.whitecrescent.waqti.frontend.customview.TaskCard
+    <uk.whitecrescent.waqti.frontend.customview.TaskCardLayout
         android:id="@+id/task_dragView"
         android:layout_width="0dp"
         android:layout_height="0dp"

@@ -354,6 +354,11 @@ inline fun Pair<Int, Int>.getPercent(value: Int): Int {
     return (((value - first).toDouble() / (second - first).toDouble()) * 100.0).roundToInt()
 }
 
+inline val Number.I: Int get() = this.toInt()
+inline val Number.D: Double get() = this.toDouble()
+inline val Number.F: Float get() = this.toFloat()
+inline val Number.L: Long get() = this.toLong()
+
 //endregion Android Utils
 
 //region RxJava Extensions

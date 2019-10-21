@@ -18,6 +18,7 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.recyclerview.widget.RecyclerView
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.collections.forEachReversedByIndex
+import uk.whitecrescent.waqti.F
 import uk.whitecrescent.waqti.allChildren
 import uk.whitecrescent.waqti.frontend.customview.drag.DragView.DragState.IDLE
 import uk.whitecrescent.waqti.frontend.customview.drag.DragView.DragState.SETTLING
@@ -241,8 +242,8 @@ constructor(context: Context,
         val parentBounds = parentViewGroup.globalVisibleRect
         val viewBounds = view.globalVisibleRect
 
-        this.x = viewBounds.left.toFloat() - parentBounds.left.toFloat()
-        this.y = viewBounds.top.toFloat() - parentBounds.top.toFloat()
+        this.x = viewBounds.left.F - parentBounds.left.F
+        this.y = viewBounds.top.F - parentBounds.top.F
         returnPoint.set(this.x, this.y)
 
         isDragging = true

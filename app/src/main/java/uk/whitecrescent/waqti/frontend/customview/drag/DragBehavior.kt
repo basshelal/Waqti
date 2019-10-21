@@ -10,17 +10,9 @@ import android.view.ViewConfiguration
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import org.jetbrains.anko.childrenRecursiveSequence
-import uk.whitecrescent.waqti.ForLater
-import uk.whitecrescent.waqti.NonFinal
 import uk.whitecrescent.waqti.globalVisibleRect
 import uk.whitecrescent.waqti.parentViewGroup
 
-/* TODO: 15-Oct-19
- * An idea to make Dragging be an added behavior (a decorator) applied to a View rather than
- * creating an actual View just for dragging
- */
-@NonFinal
-@ForLater
 open class DragBehavior(val view: View) {
 
     protected val dPoint = PointF()

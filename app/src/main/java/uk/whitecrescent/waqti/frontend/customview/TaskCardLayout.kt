@@ -12,12 +12,12 @@ import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
-import uk.whitecrescent.waqti.frontend.customview.drag.addDragBehavior
+import uk.whitecrescent.waqti.frontend.customview.drag.DragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskViewHolder
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.setIndeterminateColor
 
-class TaskCard
+class TaskCardLayout
 @JvmOverloads
 constructor(context: Context,
             attributeSet: AttributeSet? = null,
@@ -30,7 +30,7 @@ constructor(context: Context,
     inline val progressBar: ProgressBar get() = taskCard_progressBar
     inline val textView: TextView get() = task_textView
 
-    val dragBehavior = this.addDragBehavior()
+    val dragBehavior = this.addTaskCardLayoutDragBehavior()
 
     init {
         View.inflate(context, R.layout.task_card, this)
@@ -45,4 +45,8 @@ constructor(context: Context,
         cardView { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
         textView { textColor = colorScheme.text.toAndroidColor }
     }
+
+    fun addTaskCardLayoutDragBehavior() = TaskCardLayoutDragBehavior(this)
 }
+
+class TaskCardLayoutDragBehavior(val taskCardLayout: TaskCardLayout) : DragBehavior(taskCardLayout)

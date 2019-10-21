@@ -12,14 +12,14 @@ import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
-import uk.whitecrescent.waqti.frontend.customview.drag.addDragBehavior
+import uk.whitecrescent.waqti.frontend.customview.drag.DragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.setColorScheme
 import uk.whitecrescent.waqti.setEdgeEffectColor
 
-class TaskList
+class TaskListLayout
 @JvmOverloads
 constructor(context: Context,
             attributeSet: AttributeSet? = null,
@@ -32,7 +32,7 @@ constructor(context: Context,
     inline val addButton: FloatingActionButton get() = taskListFooter_fab
     inline val rootView: ConstraintLayout get() = taskList_rootView
 
-    val dragBehavior = this.addDragBehavior()
+    val dragBehavior = this.addTaskListLayoutDragBehavior()
 
     init {
         View.inflate(context, R.layout.task_list, this)
@@ -56,4 +56,7 @@ constructor(context: Context,
         taskListView { setColorScheme(colorScheme) }
     }
 
+    fun addTaskListLayoutDragBehavior() = TaskListLayoutDragBehavior(this)
 }
+
+class TaskListLayoutDragBehavior(val taskListLayout: TaskListLayout) : DragBehavior(taskListLayout)
