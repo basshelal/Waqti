@@ -34,7 +34,7 @@ class BoardListView
 constructor(context: Context,
             attributeSet: AttributeSet? = null,
             defStyle: Int = 0
-) : DragRecyclerView(context, attributeSet, defStyle) {
+) : WaqtiRecyclerView(context, attributeSet, defStyle) {
 
     val boardListAdapter: BoardListAdapter?
         get() = this.adapter as? BoardListAdapter

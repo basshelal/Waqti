@@ -1,4 +1,4 @@
-package uk.whitecrescent.waqti.frontend.customview
+package uk.whitecrescent.waqti.frontend.customview.draglayouts
 
 import android.content.Context
 import android.util.AttributeSet
