@@ -15,7 +15,7 @@ constructor(context: Context,
             defStyle: Int = 0
 ) : FrameLayout(context, attributeSet, defStyle) {
 
-    val dragBehavior = this.addBoardCardLayoutDragBehavior()
+    val dragBehavior = BoardCardLayoutDragBehavior(this)
 
     init {
         View.inflate(context, R.layout.board_card, this)
@@ -25,7 +25,6 @@ constructor(context: Context,
         TODO()
     }
 
-    fun addBoardCardLayoutDragBehavior() = BoardCardLayoutDragBehavior(this)
 }
 
 class BoardCardLayoutDragBehavior(val boardCardLayout: BoardCardLayout) : DragBehavior(boardCardLayout)

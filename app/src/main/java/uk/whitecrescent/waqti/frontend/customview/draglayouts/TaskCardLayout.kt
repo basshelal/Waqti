@@ -2,15 +2,22 @@ package uk.whitecrescent.waqti.frontend.customview.draglayouts
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import kotlinx.android.synthetic.main.task_card.view.*
+import org.jetbrains.anko.margin
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.find
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.customview.drag.DragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskViewHolder
@@ -30,14 +37,33 @@ constructor(context: Context,
     inline val progressBar: ProgressBar get() = taskCard_progressBar
     inline val textView: TextView get() = task_textView
 
-    val dragBehavior = this.addTaskCardLayoutDragBehavior()
+    val dragBehavior = TaskCardLayoutDragBehavior(this)
 
     init {
         View.inflate(context, R.layout.task_card, this)
     }
 
     fun matchTaskViewHolder(viewHolder: TaskViewHolder) {
-        TODO()
+        updateLayoutParams {
+            width = viewHolder.cardView.width
+            height = viewHolder.cardView.height
+        }
+        find<ProgressBar>(R.id.taskCard_progressBar) {
+            isGone = true
+        }
+        find<CardView>(R.id.task_cardView) {
+            updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                width = ViewGroup.LayoutParams.MATCH_PARENT
+                height = ViewGroup.LayoutParams.MATCH_PARENT
+                margin = 0
+            }
+            setCardBackgroundColor(viewHolder.cardView.cardBackgroundColor)
+        }
+        find<TextView>(R.id.task_textView) {
+            isVisible = true
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, viewHolder.textView.textSize)
+            text = viewHolder.textView.text
+        }
     }
 
     fun setColorScheme(colorScheme: ColorScheme) {
@@ -46,7 +72,6 @@ constructor(context: Context,
         textView { textColor = colorScheme.text.toAndroidColor }
     }
 
-    fun addTaskCardLayoutDragBehavior() = TaskCardLayoutDragBehavior(this)
 }
 
 class TaskCardLayoutDragBehavior(val taskCardLayout: TaskCardLayout) : DragBehavior(taskCardLayout)

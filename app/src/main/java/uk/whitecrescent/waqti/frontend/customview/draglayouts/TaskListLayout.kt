@@ -32,7 +32,7 @@ constructor(context: Context,
     inline val addButton: FloatingActionButton get() = taskListFooter_fab
     inline val rootView: ConstraintLayout get() = taskList_rootView
 
-    val dragBehavior = this.addTaskListLayoutDragBehavior()
+    val dragBehavior = TaskListLayoutDragBehavior(this)
 
     init {
         View.inflate(context, R.layout.task_list, this)
@@ -56,7 +56,6 @@ constructor(context: Context,
         taskListView { setColorScheme(colorScheme) }
     }
 
-    fun addTaskListLayoutDragBehavior() = TaskListLayoutDragBehavior(this)
 }
 
 class TaskListLayoutDragBehavior(val taskListLayout: TaskListLayout) : DragBehavior(taskListLayout)

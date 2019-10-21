@@ -56,7 +56,7 @@ open class DragBehavior(val view: View) {
                         onDown(event)
                         onMove(event)
                     }
-                    MotionEvent.ACTION_UP -> {
+                    MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                         endDrag()
                     }
                     else -> view.onTouchEvent(event)
