@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
-import uk.whitecrescent.waqti.frontend.customview.drag.DragBehavior
+import uk.whitecrescent.waqti.frontend.customview.drag.ObservableDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView
 import uk.whitecrescent.waqti.invoke
@@ -58,4 +58,4 @@ constructor(context: Context,
 
 }
 
-class TaskListLayoutDragBehavior(val taskListLayout: TaskListLayout) : DragBehavior(taskListLayout)
+class TaskListLayoutDragBehavior(val taskListLayout: TaskListLayout) : ObservableDragBehavior(taskListLayout)

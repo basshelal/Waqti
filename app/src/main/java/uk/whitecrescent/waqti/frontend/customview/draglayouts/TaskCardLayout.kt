@@ -19,7 +19,7 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.find
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
-import uk.whitecrescent.waqti.frontend.customview.drag.DragBehavior
+import uk.whitecrescent.waqti.frontend.customview.drag.ObservableDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskViewHolder
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.setIndeterminateColor
@@ -74,4 +74,4 @@ constructor(context: Context,
 
 }
 
-class TaskCardLayoutDragBehavior(val taskCardLayout: TaskCardLayout) : DragBehavior(taskCardLayout)
+class TaskCardLayoutDragBehavior(val taskCardLayout: TaskCardLayout) : ObservableDragBehavior(taskCardLayout)

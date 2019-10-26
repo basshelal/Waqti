@@ -57,7 +57,7 @@ import uk.whitecrescent.waqti.frontend.appearance.toColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVATION
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
-import uk.whitecrescent.waqti.frontend.customview.drag.DragBehavior
+import uk.whitecrescent.waqti.frontend.customview.drag.ObservableDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
@@ -240,7 +240,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private inline fun setUpDragViews() {
         task_dragView {
 
-            dragBehavior.dragListener = object : DragBehavior.SimpleDragListener() {
+            dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
                 override fun onStartDrag(dragView: View) {
 
                     findViewHolder(dragTaskID)?.itemView?.also {
@@ -272,16 +272,16 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     checkForScroll(touchPoint)
                 }
 
-                override fun onDragStateChanged(dragView: View, newState: DragBehavior.DragState) {
+                override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
                     when (newState) {
-                        DragBehavior.DragState.IDLE -> {
+                        ObservableDragBehavior.DragState.IDLE -> {
                             task_dragView.isVisible = false
                         }
-                        DragBehavior.DragState.DRAGGING -> {
+                        ObservableDragBehavior.DragState.DRAGGING -> {
                             task_dragView.isVisible = true
                             task_dragView.alpha = 0.8F
                         }
-                        DragBehavior.DragState.SETTLING -> {
+                        ObservableDragBehavior.DragState.SETTLING -> {
 
                         }
                     }
@@ -362,7 +362,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 height = WRAP_CONTENT
             }
 
-            dragBehavior.dragListener = object : DragBehavior.SimpleDragListener() {
+            dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
 
                 override fun onEndDrag(dragView: View) {
                     list_dragView {
@@ -372,16 +372,16 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     }
                 }
 
-                override fun onDragStateChanged(dragView: View, newState: DragBehavior.DragState) {
+                override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
                     when (newState) {
-                        DragBehavior.DragState.IDLE -> {
+                        ObservableDragBehavior.DragState.IDLE -> {
                             list_dragView.isVisible = false
                         }
-                        DragBehavior.DragState.DRAGGING -> {
+                        ObservableDragBehavior.DragState.DRAGGING -> {
                             list_dragView.isVisible = true
                             list_dragView.alpha = 0.8F
                         }
-                        DragBehavior.DragState.SETTLING -> {
+                        ObservableDragBehavior.DragState.SETTLING -> {
 
                         }
                     }

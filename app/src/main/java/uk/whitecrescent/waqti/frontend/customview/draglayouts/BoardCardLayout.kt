@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.view.View
 import android.widget.FrameLayout
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.frontend.customview.drag.DragBehavior
+import uk.whitecrescent.waqti.frontend.customview.drag.ObservableDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListViewHolder
 
 class BoardCardLayout
@@ -27,4 +27,4 @@ constructor(context: Context,
 
 }
 
-class BoardCardLayoutDragBehavior(val boardCardLayout: BoardCardLayout) : DragBehavior(boardCardLayout)
+class BoardCardLayoutDragBehavior(val boardCardLayout: BoardCardLayout) : ObservableDragBehavior(boardCardLayout)
