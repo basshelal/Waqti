@@ -5,6 +5,7 @@ package uk.whitecrescent.waqti.frontend
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
+import android.graphics.PointF
 import android.graphics.Rect
 import android.os.Bundle
 import android.provider.Settings
@@ -20,12 +21,14 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.collections.forEachReversedByIndex
 import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.configuration
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.addOnBackPressedCallback
+import uk.whitecrescent.waqti.allChildren
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.doInBackground
@@ -39,8 +42,11 @@ import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
 import uk.whitecrescent.waqti.getViewModel
+import uk.whitecrescent.waqti.globalVisibleRect
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.onClickOutside
+import uk.whitecrescent.waqti.rootViewGroup
+import kotlin.math.roundToInt
 
 const val DRAWER_DELAY_MILLIS = 250L
 
@@ -209,6 +215,15 @@ class MainActivity : AppCompatActivity() {
                 popBackStackImmediate() // TODO: 09-Jul-19 Look into changing this to something more efficient
             }
         }
+    }
+
+    inline fun findViewUnder(pointF: PointF): View? {
+        drawerLayout.rootViewGroup?.allChildren?.forEachReversedByIndex {
+            if (it.globalVisibleRect.contains(pointF.x.roundToInt(), pointF.y.roundToInt())) {
+                return it
+            }
+        }
+        return null
     }
 
     inline val appBar: AppBar

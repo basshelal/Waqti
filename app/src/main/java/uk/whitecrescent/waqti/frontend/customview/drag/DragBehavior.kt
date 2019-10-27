@@ -354,6 +354,8 @@ open class BasicDragBehavior(val view: View) {
 
 open class ObservableDragBehavior(view: View) : BasicDragBehavior(view) {
 
+    val initialTouchPoint = PointF()
+
     var dragListener: DragListener? = null
         set(value) {
             field = value
@@ -384,12 +386,14 @@ open class ObservableDragBehavior(view: View) : BasicDragBehavior(view) {
 
     override fun startDrag() {
         super.startDrag()
+        initialTouchPoint.set(touchPoint)
         dragState = DragState.DRAGGING
         dragListener?.onStartDrag(view)
     }
 
     override fun endDrag() {
         super.endDrag()
+        initialTouchPoint.set(0F, 0F)
         dragListener?.onReleaseDrag(view, touchPoint)
     }
 

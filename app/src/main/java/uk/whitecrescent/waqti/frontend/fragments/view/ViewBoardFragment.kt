@@ -3,7 +3,6 @@
 package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.content.Context
-import android.graphics.Color
 import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
@@ -30,8 +29,6 @@ import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
-import org.jetbrains.anko.backgroundColor
-import org.jetbrains.anko.sdk27.coroutines.onTouch
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.R
@@ -88,9 +85,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
     private var dragTaskID: ID = 0L
     private var dragListID: ID = 0L
-
-    private var oldTaskViewHolder: TaskViewHolder? = null
-    private var newTaskViewHolder: TaskViewHolder? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -223,7 +217,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
                 textChangedListener = { update() }
                 text = SpannableStringBuilder(board.name)
-                setOnEditorActionListener { textView, actionId, _ ->
+                setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
                         clearFocusAndHideKeyboard()
@@ -241,11 +235,29 @@ class ViewBoardFragment : WaqtiViewFragment() {
         task_dragView {
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
+
+                // The VH we have just left TODO, I don't think we even need this!
+                private var oldTaskViewHolder: TaskViewHolder? = null
+
+                // The VH we are currently dragging
+                private var draggingViewHolder: TaskViewHolder? = null
+
+                // The VH we are currently over, we are dragging OVER it
+                private var currentViewHolder: TaskViewHolder? = null
+
+                lateinit var taskListView: TaskListView
+
                 override fun onStartDrag(dragView: View) {
 
                     findViewHolder(dragTaskID)?.itemView?.also {
                         it.alpha = 0F
                     }
+
+                    draggingViewHolder = findViewHolder(dragTaskID)
+
+                    taskListView = boardView.boardAdapter!!.getListAdapter(draggingViewHolder!!.taskListID)!!.taskListView!!
+
+                    shortSnackBar("Started dragging a task in Tasklist ID ${taskListView.listAdapter!!.taskListID}")
                 }
 
                 override fun onReleaseDrag(dragView: View, touchPoint: PointF) {
@@ -260,7 +272,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     }
 
                     oldTaskViewHolder = null
-                    newTaskViewHolder = null
+                    currentViewHolder = null
                 }
 
                 override fun onUpdateLocation(dragView: View, touchPoint: PointF) {
@@ -268,7 +280,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     //  If so, check for swap conditions and also scroll conditions see more in
                     //  TaskListAdapter.onDrag
                     /** check [TaskListAdapter.onDrag]*/
-                    findViewHolderUnder(touchPoint)
+                    updateViewHolders(touchPoint)
                     checkForScroll(touchPoint)
                 }
 
@@ -287,53 +299,42 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     }
                 }
 
-                fun onEnteredView(dragView: View, newView: View, oldView: View?,
-                                  touchPoint: PointF) {
-                    //if (oldView != null) onEntered(newView, oldView)
-                }
+                inline fun updateViewHolders(touchPoint: PointF) {
+                    if (this.currentViewHolder != findViewHolderUnder(touchPoint)) {
+                        oldTaskViewHolder = currentViewHolder
+                        currentViewHolder = findViewHolderUnder(touchPoint)
 
-                fun onEntered(newView: View, oldView: View) {
-                    val newViewHolder = findViewHolder(newView)
-                    val oldViewHolder = findViewHolder(oldView)
+                        logE("OLD: ${oldTaskViewHolder?.textView?.text}")
+                        logE("CUR: ${currentViewHolder?.textView?.text}")
+                        logE("DRG: ${draggingViewHolder?.textView?.text}")
+                        logE("------------------------------------------------------------------------")
 
-                    if (oldViewHolder != newViewHolder) {
+                        if (draggingViewHolder != null && currentViewHolder != null &&
+                                draggingViewHolder != currentViewHolder) {
 
-                        if (oldTaskViewHolder != oldViewHolder && oldViewHolder != null) {
-                            oldTaskViewHolder = oldViewHolder
-                            logE("OLD: " + oldTaskViewHolder?.taskID)
-                        }
-                        if (newTaskViewHolder != newViewHolder && newViewHolder != null) {
-                            newTaskViewHolder = newViewHolder
-                            logE("NEW: " + newTaskViewHolder?.taskID)
-                        }
+                            shortSnackBar("Entered ${currentViewHolder!!.taskID}, left " +
+                                    "${oldTaskViewHolder?.taskID}, dragging " +
+                                    "${draggingViewHolder!!.taskID}")
 
-                        // We have entered a new ViewHolder
-                        if (newTaskViewHolder != oldTaskViewHolder && oldTaskViewHolder != null) {
-
-                            val draggingViewHolder = findViewHolder(dragTaskID)
-
-                            if (draggingViewHolder != null && newTaskViewHolder != null &&
-                                    draggingViewHolder != newTaskViewHolder) {
-
-                                shortSnackBar("Entered ${newTaskViewHolder!!.taskID}, left " +
-                                        "${oldTaskViewHolder!!.taskID}, dragging " +
-                                        "${draggingViewHolder.taskID}")
-
-                                draggingViewHolder.apply {
-                                    itemView.backgroundColor = Color.RED
-                                }
-
-                                newTaskViewHolder!!.apply {
-                                    itemView.backgroundColor = Color.BLUE
-                                }
-
-                                dragBehavior.returnPoint.set(draggingViewHolder.itemView.x,
-                                        draggingViewHolder.itemView.y)
-
-                                this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
-                                        draggingViewHolder, newTaskViewHolder!!
-                                )
+                            oldTaskViewHolder?.apply {
+                                //itemView.backgroundColor = Color.LTGRAY
                             }
+
+                            currentViewHolder!!.apply {
+                                //itemView.backgroundColor = Color.BLUE
+                            }
+
+                            draggingViewHolder!!.apply {
+                                //itemView.backgroundColor = Color.RED
+                            }
+
+                            this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
+                                    draggingViewHolder!!, currentViewHolder!!
+                            )
+
+                            // TODO: 27-Oct-19 Something is wrong here
+                            dragBehavior.returnPoint.set(draggingViewHolder!!.itemView.x,
+                                    draggingViewHolder!!.itemView.y)
                         }
                     }
                 }
@@ -345,6 +346,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(view)
 
                 inline fun findViewHolderUnder(pointF: PointF): TaskViewHolder? {
+                    mainActivity.findViewUnder(pointF)?.also {
+                        return findViewHolder(it)
+                    }
                     return null
                 }
 
@@ -411,21 +415,17 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private inline fun bindDragList(listViewHolder: BoardViewHolder) {
         dragListID = listViewHolder.itemId
 
-
-        boardView.onTouch { v, event -> }
-
         list_dragView {
             updateLayoutParams {
                 width = listViewHolder.rootView.width
                 height = listViewHolder.rootView.height
             }
-            find<TaskListView>(R.id.taskList_recyclerView) {
-                // TODO: 15-Oct-19 Below only works the first time for some reason
+            taskListView {
 
                 logE(adapter)
 
-                swapAdapter(TaskListAdapter(listViewHolder.taskListView.listAdapter!!.taskListID,
-                        listViewHolder.taskListView.listAdapter!!.boardAdapter), false)
+                adapter = TaskListAdapter(listViewHolder.taskListView.listAdapter!!.taskListID,
+                        listViewHolder.taskListView.listAdapter!!.boardAdapter)
 
                 logE(adapter)
             }

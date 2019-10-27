@@ -297,6 +297,9 @@ inline val View.parentView: View?
 inline val View.parentViewGroup: ViewGroup?
     get() = parent as? ViewGroup?
 
+inline val View.rootViewGroup: ViewGroup?
+    get() = this.rootView as? ViewGroup
+
 inline val View.globalVisibleRect: Rect
     get() {
         val result = Rect()
