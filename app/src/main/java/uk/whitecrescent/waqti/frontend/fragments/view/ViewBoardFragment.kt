@@ -129,7 +129,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 this@ViewBoardFragment.list_dragView.dragBehavior.startDragFromView(it.header)
             }
 
-
             if (boardAdapter?.board?.isEmpty() == true) {
                 emptyTitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
                 emptySubtitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
@@ -236,49 +235,36 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
 
-                // The VH we have just left TODO, I don't think we even need this!
-                private var oldTaskViewHolder: TaskViewHolder? = null
-
                 // The VH we are currently dragging
                 private var draggingViewHolder: TaskViewHolder? = null
 
-                // The VH we are currently over, we are dragging OVER it
+                // The VH we are currently over
                 private var currentViewHolder: TaskViewHolder? = null
 
                 lateinit var taskListView: TaskListView
 
                 override fun onStartDrag(dragView: View) {
 
-                    findViewHolder(dragTaskID)?.itemView?.also {
-                        it.alpha = 0F
-                    }
-
                     draggingViewHolder = findViewHolder(dragTaskID)
+
+                    draggingViewHolder?.itemView?.alpha = 0F
 
                     taskListView = boardView.boardAdapter!!.getListAdapter(draggingViewHolder!!.taskListID)!!.taskListView!!
 
-                    shortSnackBar("Started dragging a task in Tasklist ID ${taskListView.listAdapter!!.taskListID}")
                 }
 
                 override fun onReleaseDrag(dragView: View, touchPoint: PointF) {
 
-                    findViewHolder(dragTaskID)
                 }
 
                 override fun onEndDrag(dragView: View) {
 
-                    findViewHolder(dragTaskID)?.itemView?.also {
-                        it.alpha = 1F
-                    }
+                    draggingViewHolder?.itemView?.alpha = 1F
 
-                    oldTaskViewHolder = null
                     currentViewHolder = null
                 }
 
                 override fun onUpdateLocation(dragView: View, touchPoint: PointF) {
-                    // Check if we are now over a new ViewHolder
-                    //  If so, check for swap conditions and also scroll conditions see more in
-                    //  TaskListAdapter.onDrag
                     /** check [TaskListAdapter.onDrag]*/
                     updateViewHolders(touchPoint)
                     checkForScroll(touchPoint)
@@ -301,40 +287,31 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                 inline fun updateViewHolders(touchPoint: PointF) {
                     if (this.currentViewHolder != findViewHolderUnder(touchPoint)) {
-                        oldTaskViewHolder = currentViewHolder
                         currentViewHolder = findViewHolderUnder(touchPoint)
-
-                        logE("OLD: ${oldTaskViewHolder?.textView?.text}")
-                        logE("CUR: ${currentViewHolder?.textView?.text}")
-                        logE("DRG: ${draggingViewHolder?.textView?.text}")
-                        logE("------------------------------------------------------------------------")
 
                         if (draggingViewHolder != null && currentViewHolder != null &&
                                 draggingViewHolder != currentViewHolder) {
 
-                            shortSnackBar("Entered ${currentViewHolder!!.taskID}, left " +
-                                    "${oldTaskViewHolder?.taskID}, dragging " +
-                                    "${draggingViewHolder!!.taskID}")
+                            // TODO: 27-Oct-19 Something is wrong here, it works when the header
+                            //  is invisible because the return point animation is actually doing
+                            //  the point in relation to the DragView's parent, not the actual
+                            //  RecyclerView, we need to offset this
+                            //  the 2 viewParents of interest are the TaskListView and the root
+                            //  of this Fragment, we need to find the position of this
+                            //  TaskListView in relation to the fragment root (which is the
+                            //  parent of the DragView)
 
-                            oldTaskViewHolder?.apply {
-                                //itemView.backgroundColor = Color.LTGRAY
-                            }
+                            val headerHeight = (boardView.findViewHolderForItemId(1) as
+                                    BoardViewHolder).header.height
 
-                            currentViewHolder!!.apply {
-                                //itemView.backgroundColor = Color.BLUE
-                            }
+                            val newReturnPoint = PointF(currentViewHolder!!.itemView.x,
+                                    currentViewHolder!!.itemView.y + headerHeight)
 
-                            draggingViewHolder!!.apply {
-                                //itemView.backgroundColor = Color.RED
-                            }
+                            dragBehavior.returnPoint.set(newReturnPoint)
 
                             this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
                                     draggingViewHolder!!, currentViewHolder!!
                             )
-
-                            // TODO: 27-Oct-19 Something is wrong here
-                            dragBehavior.returnPoint.set(draggingViewHolder!!.itemView.x,
-                                    draggingViewHolder!!.itemView.y)
                         }
                     }
                 }
@@ -362,8 +339,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
         list_dragView {
 
             updateLayoutParams {
-                width = WRAP_CONTENT
-                height = WRAP_CONTENT
+                width = MATCH_PARENT
+                height = MATCH_PARENT
             }
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
@@ -424,8 +401,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                 logE(adapter)
 
-                adapter = TaskListAdapter(listViewHolder.taskListView.listAdapter!!.taskListID,
-                        listViewHolder.taskListView.listAdapter!!.boardAdapter)
+                adapter = boardView.boardAdapter!!.getListAdapter(listViewHolder.itemId)
 
                 logE(adapter)
             }
