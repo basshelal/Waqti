@@ -10,12 +10,14 @@ import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.allChildren
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.customview.drag.ObservableDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
@@ -41,6 +43,7 @@ constructor(context: Context,
 
     init {
         View.inflate(context, R.layout.task_list, this)
+        this.isVisible = false
     }
 
     fun matchBoardViewHolder(viewHolder: BoardViewHolder) {
@@ -67,8 +70,13 @@ constructor(context: Context,
         taskListView.swapAdapter(viewHolder.taskListView.adapter, false)
 
         // TODO: 28-Oct-19 Items won't show because they have alpha = 0F for some reason
-        taskListView.allViewHolders.forEach {
-            it.itemView.alpha = 1F
+        //  below is a quick hack
+        post {
+            taskListView.listAdapter?.taskDragEnabled = false
+            taskListView.allChildren.forEach {
+                it.alpha = 1F
+            }
+            this.isVisible = true
         }
     }
 

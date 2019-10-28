@@ -112,6 +112,8 @@ class TaskListAdapter(val taskListID: ID,
 
     var onStartDragTask: (TaskViewHolder) -> Unit = { }
 
+    var taskDragEnabled: Boolean = true
+
     inline val linearLayoutManager: LinearLayoutManager? get() = taskListView?.layoutManager as? LinearLayoutManager?
     inline val allViewHolders: List<TaskViewHolder>
         get() = taskListView?.allViewHolders ?: emptyList()
@@ -178,6 +180,7 @@ class TaskListAdapter(val taskListID: ID,
                 taskList.getParent().cardColor.colorScheme
             else taskList.cardColor.colorScheme)
             textView.text = taskList[position].name
+            dragEnabled = taskDragEnabled
         }
         holder.apply {
             cardView.setOnDragListener { _, event ->
@@ -434,6 +437,8 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
 
     inline val mainActivity: MainActivity get() = itemView.mainActivity
 
+    var dragEnabled: Boolean = true
+
     init {
         doInBackground {
             textView.textSize = mainActivity.preferences.cardTextSize.toFloat()
@@ -444,7 +449,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                     ViewTaskFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
-                    adapter.onStartDragTask(this@TaskViewHolder)
+                    if (dragEnabled) adapter.onStartDragTask(this@TaskViewHolder)
                     true
                 }
             }
