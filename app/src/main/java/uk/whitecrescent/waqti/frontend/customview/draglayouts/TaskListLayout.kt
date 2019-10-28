@@ -17,10 +17,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.allChildren
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.customview.drag.ObservableDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView
 import uk.whitecrescent.waqti.invoke
 import uk.whitecrescent.waqti.setColorScheme
@@ -43,7 +43,6 @@ constructor(context: Context,
 
     init {
         View.inflate(context, R.layout.task_list, this)
-        this.isVisible = false
     }
 
     fun matchBoardViewHolder(viewHolder: BoardViewHolder) {
@@ -67,14 +66,18 @@ constructor(context: Context,
         setHeaderColorScheme(viewHolder.headerColorScheme)
         setListColorScheme(viewHolder.listColorScheme)
 
-        taskListView.swapAdapter(viewHolder.taskListView.adapter, false)
+        viewHolder.taskListView.listAdapter?.saveState()
+
+        val adapter = TaskListAdapter(viewHolder.itemId, viewHolder.adapter)
+        adapter.savedState = viewHolder.taskListView.listAdapter?.savedState
+
+        taskListView.adapter = adapter
 
         // TODO: 28-Oct-19 Items won't show because they have alpha = 0F for some reason
         //  below is a quick hack
         post {
-            taskListView.listAdapter?.taskDragEnabled = false
-            taskListView.allChildren.forEach {
-                it.alpha = 1F
+            taskListView.allViewHolders.forEach {
+                it.itemView.alpha = 1F
             }
             this.isVisible = true
         }

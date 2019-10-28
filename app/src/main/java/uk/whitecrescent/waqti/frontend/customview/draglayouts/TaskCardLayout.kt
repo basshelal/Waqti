@@ -47,6 +47,7 @@ constructor(context: Context,
             width = viewHolder.cardView.width
             height = viewHolder.cardView.height
         }
+        setColorScheme(viewHolder.colorScheme)
         taskCard_progressBar {
             isGone = true
         }
@@ -56,7 +57,6 @@ constructor(context: Context,
                 height = ViewGroup.LayoutParams.MATCH_PARENT
                 margin = 0
             }
-            setCardBackgroundColor(viewHolder.cardView.cardBackgroundColor)
         }
         task_textView {
             isVisible = true

@@ -82,7 +82,7 @@ class TaskListView
     }
 
     fun setColorScheme(colorScheme: ColorScheme) {
-        allViewHolders.forEach { it.setColorScheme(colorScheme) }
+        allViewHolders.forEach { it.colorScheme = colorScheme }
         listAdapter?.notifyDataSetChanged()
     }
 
@@ -176,9 +176,9 @@ class TaskListAdapter(val taskListID: ID,
         holder.doInBackground {
             taskID = taskList[position].id
             taskListID = this@TaskListAdapter.taskListID
-            setColorScheme(if (taskList.cardColor == WaqtiColor.INHERIT)
+            colorScheme = if (taskList.cardColor == WaqtiColor.INHERIT)
                 taskList.getParent().cardColor.colorScheme
-            else taskList.cardColor.colorScheme)
+            else taskList.cardColor.colorScheme
             textView.text = taskList[position].name
             dragEnabled = taskDragEnabled
         }
@@ -439,6 +439,14 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
 
     var dragEnabled: Boolean = true
 
+    var colorScheme: ColorScheme = ColorScheme.WAQTI_DEFAULT
+        set(value) {
+            field = value
+            progressBar { setIndeterminateColor(colorScheme.text) }
+            cardView { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
+            textView { textColor = colorScheme.text.toAndroidColor }
+        }
+
     init {
         doInBackground {
             textView.textSize = mainActivity.preferences.cardTextSize.toFloat()
@@ -466,12 +474,6 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                 it.task_textView { textColor = colorScheme.text.toAndroidColor }
             }))
         }
-    }
-
-    fun setColorScheme(colorScheme: ColorScheme) {
-        progressBar { setIndeterminateColor(colorScheme.text) }
-        cardView { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
-        textView { textColor = colorScheme.text.toAndroidColor }
     }
 }
 

@@ -338,16 +338,30 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
 
+                var draggingViewHolder: BoardViewHolder? = null
+
+                override fun onStartDrag(dragView: View) {
+                    draggingViewHolder = boardView.findViewHolderForItemId(dragListID) as BoardViewHolder
+
+                    draggingViewHolder!!.itemView.alpha = 0F
+                }
+
                 override fun onEndDrag(dragView: View) {
+
+                    draggingViewHolder?.itemView?.alpha = 1F
+
+                    draggingViewHolder!!.taskListView.listAdapter?.taskDragEnabled = true
+
                 }
 
                 override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
                     when (newState) {
                         ObservableDragBehavior.DragState.IDLE -> {
-
+                            list_dragView.isVisible = false
                         }
                         ObservableDragBehavior.DragState.DRAGGING -> {
-
+                            list_dragView.alpha = 0.8F
+                            list_dragView.isVisible = true
                         }
                         ObservableDragBehavior.DragState.SETTLING -> {
 
