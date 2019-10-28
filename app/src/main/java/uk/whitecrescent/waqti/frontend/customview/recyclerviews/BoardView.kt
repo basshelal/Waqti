@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
+import uk.whitecrescent.waqti.F
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -280,8 +281,8 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                     board.cardColor.colorScheme
                 else taskList.cardColor.colorScheme
 
-        holder.setHeaderColorScheme(headerColorScheme)
-        holder.setListColorScheme(listColorScheme)
+        holder.headerColorScheme = headerColorScheme
+        holder.listColorScheme = listColorScheme
     }
 
     override fun onViewAttachedToWindow(holder: BoardViewHolder) {
@@ -426,13 +427,30 @@ class BoardViewHolder(view: View,
 
     inline val mainActivity: MainActivity get() = itemView.mainActivity
 
+    var headerColorScheme: ColorScheme = ColorScheme.WAQTI_DEFAULT
+        set(value) {
+            field = value
+            taskListView {
+                scrollBarColor = value.text
+                setEdgeEffectColor(value.dark)
+            }
+            header { setCardBackgroundColor(value.main.toAndroidColor) }
+            headerTextView { textColor = value.text.toAndroidColor }
+            addButton { setColorScheme(value) }
+        }
+
+    var listColorScheme: ColorScheme = ColorScheme.WAQTI_DEFAULT
+        set(value) {
+            field = value
+            taskListView { setColorScheme(value) }
+        }
 
     init {
         doInBackground {
             rootView.updateLayoutParams {
                 width = adapter.taskListWidth
             }
-            headerTextView { textSize = adapter.listHeaderTextSize.toFloat() }
+            headerTextView { textSize = adapter.listHeaderTextSize.F }
             taskListView {
                 addOnScrollListener(addButton.verticalFABOnScrollListener)
             }
@@ -442,7 +460,6 @@ class BoardViewHolder(view: View,
                     ViewListFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
-
                     adapter.onStartDragList(this@BoardViewHolder)
                     true
                 }
@@ -455,20 +472,6 @@ class BoardViewHolder(view: View,
                 }
             }
         }
-    }
-
-    fun setHeaderColorScheme(colorScheme: ColorScheme) {
-        taskListView {
-            scrollBarColor = colorScheme.text
-            setEdgeEffectColor(colorScheme.dark)
-        }
-        header { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
-        headerTextView { textColor = colorScheme.text.toAndroidColor }
-        addButton { setColorScheme(colorScheme) }
-    }
-
-    fun setListColorScheme(colorScheme: ColorScheme) {
-        taskListView { setColorScheme(colorScheme) }
     }
 }
 

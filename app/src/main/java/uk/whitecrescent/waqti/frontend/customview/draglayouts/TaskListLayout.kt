@@ -2,11 +2,16 @@ package uk.whitecrescent.waqti.frontend.customview.draglayouts
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.view.updateLayoutParams
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
@@ -39,7 +44,32 @@ constructor(context: Context,
     }
 
     fun matchBoardViewHolder(viewHolder: BoardViewHolder) {
-        TODO()
+        // TODO: 28-Oct-19 The margin offset that happens is because of
+        //  DragBehavior.startDragFromView it needs to take into account the relationship between
+        //  the parents
+
+        this.updateLayoutParams {
+            width = WRAP_CONTENT
+            height = MATCH_PARENT
+        }
+        rootView.updateLayoutParams<MarginLayoutParams> {
+            val viewHolderLayoutParams = viewHolder.rootView.layoutParams as RecyclerView.LayoutParams
+            width = viewHolderLayoutParams.width
+            height = viewHolderLayoutParams.height
+        }
+        headerTextView {
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, viewHolder.headerTextView.textSize)
+            text = viewHolder.headerTextView.text
+        }
+        setHeaderColorScheme(viewHolder.headerColorScheme)
+        setListColorScheme(viewHolder.listColorScheme)
+
+        taskListView.swapAdapter(viewHolder.taskListView.adapter, false)
+
+        // TODO: 28-Oct-19 Items won't show because they have alpha = 0F for some reason
+        taskListView.allViewHolders.forEach {
+            it.itemView.alpha = 1F
+        }
     }
 
     fun setHeaderColorScheme(colorScheme: ColorScheme) {

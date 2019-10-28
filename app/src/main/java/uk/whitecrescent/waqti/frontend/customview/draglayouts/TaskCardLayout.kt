@@ -17,7 +17,6 @@ import org.jetbrains.anko.margin
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.find
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.customview.drag.ObservableDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskViewHolder
@@ -48,18 +47,18 @@ constructor(context: Context,
             width = viewHolder.cardView.width
             height = viewHolder.cardView.height
         }
-        find<ProgressBar>(R.id.taskCard_progressBar) {
+        taskCard_progressBar {
             isGone = true
         }
-        find<CardView>(R.id.task_cardView) {
-            updateLayoutParams<ViewGroup.MarginLayoutParams> {
+        task_cardView {
+            updateLayoutParams<MarginLayoutParams> {
                 width = ViewGroup.LayoutParams.MATCH_PARENT
                 height = ViewGroup.LayoutParams.MATCH_PARENT
                 margin = 0
             }
             setCardBackgroundColor(viewHolder.cardView.cardBackgroundColor)
         }
-        find<TextView>(R.id.task_textView) {
+        task_textView {
             isVisible = true
             setTextSize(TypedValue.COMPLEX_UNIT_PX, viewHolder.textView.textSize)
             text = viewHolder.textView.text

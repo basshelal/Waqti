@@ -41,7 +41,6 @@ import uk.whitecrescent.waqti.convertDpToPx
 import uk.whitecrescent.waqti.doInBackground
 import uk.whitecrescent.waqti.fadeIn
 import uk.whitecrescent.waqti.fadeOut
-import uk.whitecrescent.waqti.find
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
@@ -68,7 +67,6 @@ import uk.whitecrescent.waqti.frontend.vibrateCompat
 import uk.whitecrescent.waqti.getViewModel
 import uk.whitecrescent.waqti.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.logE
 import uk.whitecrescent.waqti.longSnackBar
 import uk.whitecrescent.waqti.mainActivity
 import uk.whitecrescent.waqti.mainActivityViewModel
@@ -124,8 +122,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
             }
 
             boardAdapter?.onStartDragList = {
-                bindDragList(it)
-                shortSnackBar("Dragging List ${dragListID}")
+                dragListID = it.itemId
+                list_dragView.matchBoardViewHolder(it)
                 this@ViewBoardFragment.list_dragView.dragBehavior.startDragFromView(it.header)
             }
 
@@ -338,29 +336,18 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
         list_dragView {
 
-            updateLayoutParams {
-                width = MATCH_PARENT
-                height = MATCH_PARENT
-            }
-
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
 
                 override fun onEndDrag(dragView: View) {
-                    list_dragView {
-                        find<TaskListView>(R.id.taskList_recyclerView) {
-                            adapter = null
-                        }
-                    }
                 }
 
                 override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
                     when (newState) {
                         ObservableDragBehavior.DragState.IDLE -> {
-                            list_dragView.isVisible = false
+
                         }
                         ObservableDragBehavior.DragState.DRAGGING -> {
-                            list_dragView.isVisible = true
-                            list_dragView.alpha = 0.8F
+
                         }
                         ObservableDragBehavior.DragState.SETTLING -> {
 
@@ -387,25 +374,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
     override fun finish() {
         @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = PREVIOUS_FRAGMENT)
         mainActivity.supportFragmentManager.popBackStack()
-    }
-
-    private inline fun bindDragList(listViewHolder: BoardViewHolder) {
-        dragListID = listViewHolder.itemId
-
-        list_dragView {
-            updateLayoutParams {
-                width = listViewHolder.rootView.width
-                height = listViewHolder.rootView.height
-            }
-            taskListView {
-
-                logE(adapter)
-
-                adapter = boardView.boardAdapter!!.getListAdapter(listViewHolder.itemId)
-
-                logE(adapter)
-            }
-        }
     }
 
     private inline fun createOptionsMenu() {
