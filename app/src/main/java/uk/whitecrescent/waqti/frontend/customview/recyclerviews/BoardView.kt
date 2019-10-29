@@ -1,9 +1,6 @@
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -57,12 +54,7 @@ class BoardView
 constructor(context: Context,
             attributeSet: AttributeSet? = null,
             defStyle: Int = 0
-) : RecyclerView(context, attributeSet, defStyle) {
-
-    /**
-     * The color of the scrollbar of the [BoardView]
-     */
-    var scrollBarColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT.colorScheme.text
+) : WaqtiRecyclerView(context, attributeSet, defStyle) {
 
     /**
      * Gets the adapter as a [BoardAdapter] or `null` if there is no adapter
@@ -93,26 +85,6 @@ constructor(context: Context,
         }
         boardAdapter?.notifyDataSetChanged()
     }
-
-    /**
-     * Called automatically by the Android framework in [onDrawScrollBars]
-     */
-    @Suppress("unused")
-    protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
-    }
-
-    /**
-     * Called automatically by the Android framework in [onDrawScrollBars]
-     */
-    @Suppress("unused")
-    protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
-    }
 }
 
 class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
@@ -132,7 +104,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     var onStartDragList: (BoardViewHolder) -> Unit = { }
     var onStartDragTask: (TaskViewHolder) -> Unit = { }
 
-    inline val linearLayoutManager: LinearLayoutManager? get() = boardView.layoutManager as? LinearLayoutManager?
+    inline val linearLayoutManager: LinearLayoutManager? get() = boardView.linearLayoutManager
     inline val allCards: List<CardView> get() = taskListAdapters.flatMap { it.allListCards }
 
     init {

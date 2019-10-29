@@ -3,10 +3,7 @@
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Point
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.DragEvent
 import android.view.LayoutInflater
@@ -50,11 +47,11 @@ private const val draggingViewAlpha = 0F
 private val defaultInterpolator = AccelerateDecelerateInterpolator()
 
 class TaskListView
-@JvmOverloads constructor(context: Context,
-                          attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
-
-    var scrollBarColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT.colorScheme.text
+@JvmOverloads
+constructor(context: Context,
+            attributeSet: AttributeSet? = null,
+            defStyle: Int = 0
+) : WaqtiRecyclerView(context, attributeSet, defStyle) {
 
     inline val listAdapter: TaskListAdapter?
         get() = adapter as TaskListAdapter?
@@ -86,20 +83,6 @@ class TaskListView
         listAdapter?.notifyDataSetChanged()
     }
 
-    @Suppress("unused")
-    protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
-    }
-
-    @Suppress("unused")
-    protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
-    }
-
 }
 
 class TaskListAdapter(val taskListID: ID,
@@ -114,7 +97,7 @@ class TaskListAdapter(val taskListID: ID,
 
     var taskDragEnabled: Boolean = true
 
-    inline val linearLayoutManager: LinearLayoutManager? get() = taskListView?.layoutManager as? LinearLayoutManager?
+    inline val linearLayoutManager: LinearLayoutManager? get() = taskListView?.linearLayoutManager
     inline val allViewHolders: List<TaskViewHolder>
         get() = taskListView?.allViewHolders ?: emptyList()
     inline val allListCards: List<CardView> get() = allViewHolders.map { it.cardView }

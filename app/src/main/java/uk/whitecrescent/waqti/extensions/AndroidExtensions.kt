@@ -48,7 +48,6 @@ import uk.whitecrescent.waqti.frontend.SimpleOnSeekChangeListener
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 
-
 //region View
 
 inline operator fun <reified V : View?> V?.invoke(block: V.() -> Unit) = this?.apply(block)
@@ -142,11 +141,7 @@ inline val View.rootViewGroup: ViewGroup?
     get() = this.rootView as? ViewGroup
 
 inline val View.globalVisibleRect: Rect
-    get() {
-        val result = Rect()
-        this.getGlobalVisibleRect(result)
-        return result
-    }
+    get() = Rect().also { this.getGlobalVisibleRect(it) }
 
 inline fun <reified T : View> View.find(@IdRes id: Int, apply: T.() -> Unit): T = find<T>(id).apply(apply)
 
@@ -181,18 +176,16 @@ inline fun RecyclerView.smoothScrollToStart() {
     }
 }
 
-inline fun RecyclerView.onScrolled(crossinline onScroll: (RecyclerView, Int, Int) -> Unit) {
+inline fun RecyclerView.addOnScrollListener(
+        crossinline onScrolled: (dx: Int, dy: Int) -> Unit = { _, _ -> },
+        crossinline onScrollStateChanged: (newState: Int) -> Unit = { _ -> }) {
     addOnScrollListener(object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            onScroll(recyclerView, dx, dy)
+            onScrolled(dx, dy)
         }
-    })
-}
 
-inline fun RecyclerView.onScrollStateChanged(crossinline onScroll: (RecyclerView, Int) -> Unit) {
-    addOnScrollListener(object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            onScroll(recyclerView, newState)
+            onScrollStateChanged(newState)
         }
     })
 }
@@ -224,7 +217,7 @@ inline fun RecyclerView.Adapter<*>.notifySwapped(fromPosition: Int, toPosition: 
 //endregion RecyclerView
 
 inline fun Any.logE(message: Any?, tag: String = this::class.simpleName.toString()) {
-    if (BuildConfig.DEBUG) Log.e(this::class.simpleName, message.toString())
+    if (BuildConfig.DEBUG) Log.e(tag, message.toString())
 }
 
 inline fun Any.logD(message: Any?, tag: String = this::class.simpleName.toString()) {

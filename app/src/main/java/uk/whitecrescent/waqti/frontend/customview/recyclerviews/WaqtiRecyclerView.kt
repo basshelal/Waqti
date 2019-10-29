@@ -8,6 +8,9 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
+import uk.whitecrescent.waqti.extensions.addOnScrollListener
+import uk.whitecrescent.waqti.extensions.shortSnackBar
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 
 /**
@@ -23,10 +26,63 @@ constructor(context: Context,
 ) : RecyclerView(context, attributeSet, defStyle) {
 
     var savedState: SavedState? = null
+
     var scrollBarColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT.colorScheme.text
+
     val currentPosition: Int
         get() = (layoutManager as? LinearLayoutManager)
                 ?.findFirstCompletelyVisibleItemPosition() ?: 0
+
+    inline val linearLayoutManager: LinearLayoutManager? get() = layoutManager as? LinearLayoutManager
+
+    inline val horizontalScrollOffset: Int get() = computeHorizontalScrollOffset()
+    inline val verticalScrollOffset: Int get() = computeVerticalScrollOffset()
+
+    inline val maxHorizontalScroll: Int get() = computeHorizontalScrollRange() - computeHorizontalScrollExtent()
+    inline val maxVerticalScroll: Int get() = computeVerticalScrollRange() - computeVerticalScrollExtent()
+
+    var flingVelocityX: Int = 0
+        protected set
+
+    var flingVelocityY: Int = 0
+        protected set
+
+    override fun setLayoutManager(layoutManager: LayoutManager?) {
+        super.setLayoutManager(layoutManager)
+
+        if (layoutManager is LinearLayoutManager) {
+            OverScrollDecoratorHelper.setUpOverScroll(this,
+                    if (layoutManager.orientation == LinearLayoutManager.HORIZONTAL)
+                        OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL
+                    else OverScrollDecoratorHelper.ORIENTATION_VERTICAL)
+
+        }
+
+        val originalOnFlingListener = onFlingListener
+        onFlingListener = object : OnFlingListener() {
+            override fun onFling(velocityX: Int, velocityY: Int): Boolean {
+                flingVelocityX = velocityX
+                flingVelocityY = velocityY
+                return originalOnFlingListener?.onFling(velocityX, velocityY) ?: false
+            }
+        }
+
+        addOnScrollListener(
+                onScrolled = { dx, dy ->
+                    if (dy != 0 && scrollState == SCROLL_STATE_SETTLING &&
+                            (verticalScrollOffset == 0 || verticalScrollOffset == maxVerticalScroll)) {
+                        shortSnackBar("Y: $flingVelocityY")
+                    }
+
+                    if (dx != 0 && scrollState == SCROLL_STATE_SETTLING &&
+                            (horizontalScrollOffset == 0 || horizontalScrollOffset == maxHorizontalScroll)) {
+                        shortSnackBar("X: $flingVelocityX")
+                    }
+                },
+                onScrollStateChanged = { newState -> }
+        )
+
+    }
 
     fun saveState(): SavedState? {
         savedState = this.onSaveInstanceState() as? SavedState?

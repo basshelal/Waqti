@@ -44,7 +44,6 @@ import uk.whitecrescent.waqti.extensions.fadeOut
 import uk.whitecrescent.waqti.extensions.getViewModel
 import uk.whitecrescent.waqti.extensions.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.extensions.invoke
-import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.longSnackBar
 import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.mainActivityViewModel
@@ -109,8 +108,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
     override fun setUpViews() {
         setBackground()
-
-        logE("HELLO WORLD!!!")
 
         boardView {
             if (mainActivityVM.settingsChanged) {
