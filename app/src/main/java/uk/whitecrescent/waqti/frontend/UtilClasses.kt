@@ -11,7 +11,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.OnSeekChangeListener
 import com.warkiz.widget.SeekParams
-import uk.whitecrescent.waqti.doInBackgroundDelayed
+import uk.whitecrescent.waqti.extensions.doInBackgroundDelayed
 
 open class SimpleTextWatcher : TextWatcher {
 

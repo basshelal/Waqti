@@ -9,9 +9,9 @@ import android.view.ViewConfiguration
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import org.jetbrains.anko.childrenRecursiveSequence
-import uk.whitecrescent.waqti.F
-import uk.whitecrescent.waqti.globalVisibleRect
-import uk.whitecrescent.waqti.parentViewGroup
+import uk.whitecrescent.waqti.extensions.F
+import uk.whitecrescent.waqti.extensions.globalVisibleRect
+import uk.whitecrescent.waqti.extensions.parentViewGroup
 
 open class DragBehavior(val view: View) {
 

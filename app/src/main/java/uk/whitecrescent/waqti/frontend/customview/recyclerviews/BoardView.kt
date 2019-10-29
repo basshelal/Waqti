@@ -23,13 +23,22 @@ import androidx.recyclerview.widget.SnapHelper
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
-import uk.whitecrescent.waqti.F
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASK_LISTS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.doInBackground
+import uk.whitecrescent.waqti.extensions.F
+import uk.whitecrescent.waqti.extensions.doInBackground
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.mainActivity
+import uk.whitecrescent.waqti.extensions.mainActivityViewModel
+import uk.whitecrescent.waqti.extensions.notifySwapped
+import uk.whitecrescent.waqti.extensions.parentView
+import uk.whitecrescent.waqti.extensions.recycledViewPool
+import uk.whitecrescent.waqti.extensions.setColorScheme
+import uk.whitecrescent.waqti.extensions.setEdgeEffectColor
+import uk.whitecrescent.waqti.extensions.verticalFABOnScrollListener
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
@@ -39,15 +48,6 @@ import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.N
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.PAGED
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.mainActivityViewModel
-import uk.whitecrescent.waqti.notifySwapped
-import uk.whitecrescent.waqti.parentView
-import uk.whitecrescent.waqti.recycledViewPool
-import uk.whitecrescent.waqti.setColorScheme
-import uk.whitecrescent.waqti.setEdgeEffectColor
-import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
 private val listViewHolderPool = recycledViewPool(TASK_LISTS_CACHE_SIZE)

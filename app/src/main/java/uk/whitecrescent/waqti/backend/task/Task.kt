@@ -30,16 +30,16 @@ import uk.whitecrescent.waqti.backend.task.Properties.PRIORITY
 import uk.whitecrescent.waqti.backend.task.Properties.SUB_TASKS
 import uk.whitecrescent.waqti.backend.task.Properties.TARGET
 import uk.whitecrescent.waqti.backend.task.Properties.TIME
-import uk.whitecrescent.waqti.ids
+import uk.whitecrescent.waqti.extensions.ids
+import uk.whitecrescent.waqti.extensions.isNotConstrained
+import uk.whitecrescent.waqti.extensions.isUnMet
+import uk.whitecrescent.waqti.extensions.logD
+import uk.whitecrescent.waqti.extensions.tasks
+import uk.whitecrescent.waqti.extensions.toArrayList
 import uk.whitecrescent.waqti.isAfter
 import uk.whitecrescent.waqti.isBefore
 import uk.whitecrescent.waqti.isInThePast
-import uk.whitecrescent.waqti.isNotConstrained
-import uk.whitecrescent.waqti.isUnMet
-import uk.whitecrescent.waqti.logD
 import uk.whitecrescent.waqti.now
-import uk.whitecrescent.waqti.tasks
-import uk.whitecrescent.waqti.toArrayList
 
 @UpdateTests // tests are old, update them
 @UpdateDocumentation // documentation is very old, update it

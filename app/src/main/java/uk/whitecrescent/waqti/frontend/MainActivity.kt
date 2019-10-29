@@ -27,12 +27,17 @@ import org.jetbrains.anko.configuration
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.addOnBackPressedCallback
-import uk.whitecrescent.waqti.allChildren
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
-import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.doInBackgroundDelayed
+import uk.whitecrescent.waqti.extensions.addOnBackPressedCallback
+import uk.whitecrescent.waqti.extensions.allChildren
+import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
+import uk.whitecrescent.waqti.extensions.doInBackground
+import uk.whitecrescent.waqti.extensions.doInBackgroundDelayed
+import uk.whitecrescent.waqti.extensions.getViewModel
+import uk.whitecrescent.waqti.extensions.globalVisibleRect
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.onClickOutside
+import uk.whitecrescent.waqti.extensions.rootViewGroup
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar
@@ -41,11 +46,6 @@ import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListView
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
-import uk.whitecrescent.waqti.getViewModel
-import uk.whitecrescent.waqti.globalVisibleRect
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.onClickOutside
-import uk.whitecrescent.waqti.rootViewGroup
 import kotlin.math.roundToInt
 
 const val DRAWER_DELAY_MILLIS = 250L

@@ -17,11 +17,11 @@ import org.jetbrains.anko.margin
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.setIndeterminateColor
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.customview.drag.ObservableDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskViewHolder
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.setIndeterminateColor
 
 class TaskCardLayout
 @JvmOverloads

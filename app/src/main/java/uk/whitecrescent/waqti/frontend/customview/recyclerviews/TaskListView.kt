@@ -29,19 +29,19 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.persistence.getParent
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.doInBackground
+import uk.whitecrescent.waqti.extensions.doInBackground
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.lastPosition
+import uk.whitecrescent.waqti.extensions.locationOnScreen
+import uk.whitecrescent.waqti.extensions.mainActivity
+import uk.whitecrescent.waqti.extensions.mainActivityViewModel
+import uk.whitecrescent.waqti.extensions.notifySwapped
+import uk.whitecrescent.waqti.extensions.recycledViewPool
+import uk.whitecrescent.waqti.extensions.setIndeterminateColor
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.lastPosition
-import uk.whitecrescent.waqti.locationOnScreen
-import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.mainActivityViewModel
-import uk.whitecrescent.waqti.notifySwapped
-import uk.whitecrescent.waqti.recycledViewPool
-import uk.whitecrescent.waqti.setIndeterminateColor
 import kotlin.math.roundToInt
 
 private val taskViewHolderPool = recycledViewPool(TASKS_CACHE_SIZE)

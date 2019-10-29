@@ -3,9 +3,9 @@ package uk.whitecrescent.waqti.backend.collections
 import com.google.gson.reflect.TypeToken
 import io.objectbox.converter.PropertyConverter
 import io.reactivex.schedulers.Schedulers
-import uk.whitecrescent.waqti.GSON
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.toJson
+import uk.whitecrescent.waqti.extensions.GSON
+import uk.whitecrescent.waqti.extensions.toJson
 
 class IDArrayListConverter : PropertyConverter<ArrayList<ID>, String> {
 

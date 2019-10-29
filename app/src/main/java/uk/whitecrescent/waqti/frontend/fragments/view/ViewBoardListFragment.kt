@@ -14,10 +14,17 @@ import org.jetbrains.anko.image
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.persistence.Caches
-import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
-import uk.whitecrescent.waqti.commitTransaction
-import uk.whitecrescent.waqti.convertDpToPx
-import uk.whitecrescent.waqti.doInBackground
+import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
+import uk.whitecrescent.waqti.extensions.commitTransaction
+import uk.whitecrescent.waqti.extensions.convertDpToPx
+import uk.whitecrescent.waqti.extensions.doInBackground
+import uk.whitecrescent.waqti.extensions.getViewModel
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.isValid
+import uk.whitecrescent.waqti.extensions.mainActivity
+import uk.whitecrescent.waqti.extensions.setImageTint
+import uk.whitecrescent.waqti.extensions.toEditable
+import uk.whitecrescent.waqti.extensions.verticalFABOnScrollListener
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.NO_FRAGMENT
@@ -28,13 +35,7 @@ import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListAdapter
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
-import uk.whitecrescent.waqti.getViewModel
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.isValid
-import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.setImageTint
-import uk.whitecrescent.waqti.toEditable
-import uk.whitecrescent.waqti.verticalFABOnScrollListener
+import kotlin.math.roundToInt
 
 class ViewBoardListFragment : WaqtiViewFragment() {
 
@@ -74,7 +75,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                 setUpAppBar()
                 if (boardListAdapter?.boardList?.isEmpty() == true) {
                     emptyState_scrollView.isVisible = true
-                    addBoard_FloatingButton.customSize = convertDpToPx(85, mainActivity)
+                    addBoard_FloatingButton.customSize = (mainActivity convertDpToPx 85).roundToInt()
                 }
                 restoreState(mainActivityVM.boardListState)
                 addOnScrollListener(this@ViewBoardListFragment.addBoard_FloatingButton.verticalFABOnScrollListener)

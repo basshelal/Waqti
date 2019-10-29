@@ -10,15 +10,20 @@
       "properties": [
         {
           "id": "1:3333450997805728459",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:2236091303328457592",
-          "name": "name"
+          "name": "name",
+          "type": 9
         },
         {
           "id": "3:461541886812114187",
-          "name": "importanceLevel"
+          "name": "importanceLevel",
+          "type": 5,
+          "flags": 4
         }
       ],
       "relations": []
@@ -30,11 +35,14 @@
       "properties": [
         {
           "id": "1:5682892843628558956",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:7658376549010838356",
-          "name": "name"
+          "name": "name",
+          "type": 9
         }
       ],
       "relations": []
@@ -46,75 +54,96 @@
       "properties": [
         {
           "id": "2:1025240058549411373",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "3:5199621828132573879",
-          "name": "state"
+          "name": "state",
+          "type": 9
         },
         {
           "id": "4:4263025554324225168",
-          "name": "isFailable"
+          "name": "isFailable",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "5:5377213439917119524",
-          "name": "isKillable"
+          "name": "isKillable",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "7:7390810001076944739",
-          "name": "failedTimes"
+          "name": "failedTimes",
+          "type": 9
         },
         {
           "id": "8:9124022216585695926",
-          "name": "killedTime"
+          "name": "killedTime",
+          "type": 9
         },
         {
           "id": "9:9076778947888553214",
-          "name": "time"
+          "name": "time",
+          "type": 9
         },
         {
           "id": "10:5316358865413725650",
-          "name": "duration"
+          "name": "duration",
+          "type": 9
         },
         {
           "id": "11:1621638412464790999",
-          "name": "priority"
+          "name": "priority",
+          "type": 9
         },
         {
           "id": "12:7943604296351478033",
-          "name": "labels"
+          "name": "labels",
+          "type": 9
         },
         {
           "id": "13:7498708291531056024",
-          "name": "optional"
+          "name": "optional",
+          "type": 9
         },
         {
           "id": "14:3307111383316189797",
-          "name": "description"
+          "name": "description",
+          "type": 9
         },
         {
           "id": "15:4811500617028981433",
-          "name": "checklist"
+          "name": "checklist",
+          "type": 9
         },
         {
           "id": "16:471309597825832019",
-          "name": "deadline"
+          "name": "deadline",
+          "type": 9
         },
         {
           "id": "17:5029705932203320291",
-          "name": "target"
+          "name": "target",
+          "type": 9
         },
         {
           "id": "18:3375977741705948661",
-          "name": "before"
+          "name": "before",
+          "type": 9
         },
         {
           "id": "19:5128935028138531750",
-          "name": "subTasks"
+          "name": "subTasks",
+          "type": 9
         },
         {
           "id": "20:6366623681841543256",
-          "name": "name"
+          "name": "name",
+          "type": 9
         }
       ],
       "relations": []
@@ -126,55 +155,69 @@
       "properties": [
         {
           "id": "2:3938359362300720150",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "3:1111616981545614625",
-          "name": "name"
+          "name": "name",
+          "type": 9
         },
         {
           "id": "4:4104037997033085134",
-          "name": "time"
+          "name": "time",
+          "type": 9
         },
         {
           "id": "5:5130439128384999127",
-          "name": "duration"
+          "name": "duration",
+          "type": 9
         },
         {
           "id": "6:8660649539029363107",
-          "name": "priority"
+          "name": "priority",
+          "type": 9
         },
         {
           "id": "7:1965904777299962866",
-          "name": "labels"
+          "name": "labels",
+          "type": 9
         },
         {
           "id": "8:787286453372057056",
-          "name": "optional"
+          "name": "optional",
+          "type": 9
         },
         {
           "id": "9:8689978809613348276",
-          "name": "description"
+          "name": "description",
+          "type": 9
         },
         {
           "id": "10:7205293280803226998",
-          "name": "checklist"
+          "name": "checklist",
+          "type": 9
         },
         {
           "id": "11:1997248570406566255",
-          "name": "target"
+          "name": "target",
+          "type": 9
         },
         {
           "id": "12:9015478033067451191",
-          "name": "deadline"
+          "name": "deadline",
+          "type": 9
         },
         {
           "id": "13:1082817153870086722",
-          "name": "before"
+          "name": "before",
+          "type": 9
         },
         {
           "id": "14:7564145408630477368",
-          "name": "subTasks"
+          "name": "subTasks",
+          "type": 9
         }
       ],
       "relations": []
@@ -186,15 +229,19 @@
       "properties": [
         {
           "id": "1:6396180406738501391",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:9075894592850643807",
-          "name": "name"
+          "name": "name",
+          "type": 9
         },
         {
           "id": "3:1624163829282455801",
-          "name": "duration"
+          "name": "duration",
+          "type": 9
         }
       ],
       "relations": []
@@ -206,23 +253,30 @@
       "properties": [
         {
           "id": "1:6364545451447930927",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "2:6277015241882235539",
-          "name": "isAutoRemovingKilled"
+          "name": "isAutoRemovingKilled",
+          "type": 1,
+          "flags": 4
         },
         {
           "id": "3:6977249331556152642",
-          "name": "idList"
+          "name": "idList",
+          "type": 9
         },
         {
           "id": "4:4558035675837499151",
-          "name": "name"
+          "name": "name",
+          "type": 9
         },
         {
           "id": "5:2686736484580824575",
-          "name": "appearance"
+          "name": "appearance",
+          "type": 9
         }
       ],
       "relations": []
@@ -234,19 +288,24 @@
       "properties": [
         {
           "id": "1:3943355873246270575",
-          "name": "idList"
+          "name": "idList",
+          "type": 9
         },
         {
           "id": "2:5691054492889155638",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "3:9040069583653683076",
-          "name": "name"
+          "name": "name",
+          "type": 9
         },
         {
           "id": "10:1601625826227257492",
-          "name": "appearance"
+          "name": "appearance",
+          "type": 9
         }
       ],
       "relations": []
@@ -258,15 +317,19 @@
       "properties": [
         {
           "id": "1:3050711706325355629",
-          "name": "idList"
+          "name": "idList",
+          "type": 9
         },
         {
           "id": "2:8468310790422254300",
-          "name": "id"
+          "name": "id",
+          "type": 6,
+          "flags": 1
         },
         {
           "id": "3:5670723765203866788",
-          "name": "name"
+          "name": "name",
+          "type": 9
         }
       ],
       "relations": []
@@ -276,8 +339,8 @@
   "lastIndexId": "0:0",
   "lastRelationId": "3:8985201363338834308",
   "lastSequenceId": "0:0",
-  "modelVersion": 4,
-  "modelVersionParserMinimum": 4,
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
   "retiredEntityUids": [
     5634405882540972946,
     4005571448960804553,

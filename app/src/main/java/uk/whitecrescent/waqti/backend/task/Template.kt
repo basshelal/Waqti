@@ -5,7 +5,7 @@ import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.persistence.Caches
-import uk.whitecrescent.waqti.hash
+import uk.whitecrescent.waqti.extensions.hash
 
 // TODO: 19-May-18 Templates, PropertyBundles and that whole thing need to be tested and doc'd
 

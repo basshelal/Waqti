@@ -19,7 +19,9 @@ import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.extensions.commitTransaction
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.toEditable
 import uk.whitecrescent.waqti.frontend.ABOUT_FRAGMENT
 import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
@@ -28,8 +30,6 @@ import uk.whitecrescent.waqti.frontend.WAQTI_VERSION
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVATION
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.toEditable
 
 class AboutFragment : WaqtiFragment() {
 

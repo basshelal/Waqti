@@ -4,13 +4,13 @@ package uk.whitecrescent.waqti.frontend.appearance
 
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Color.GREY
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Level.FIFTY
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Level.NINE_HUNDRED
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Level.SEVEN_HUNDRED
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Level.THREE_HUNDRED
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme.Level.TWO_HUNDRED
-import uk.whitecrescent.waqti.logE
 
 open class WaqtiColor(val value: String) {
     init {

@@ -18,13 +18,13 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.recyclerview.widget.RecyclerView
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.collections.forEachReversedByIndex
-import uk.whitecrescent.waqti.F
-import uk.whitecrescent.waqti.allChildren
+import uk.whitecrescent.waqti.extensions.F
+import uk.whitecrescent.waqti.extensions.allChildren
+import uk.whitecrescent.waqti.extensions.globalVisibleRect
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.parentViewGroup
 import uk.whitecrescent.waqti.frontend.customview.drag.DragView.DragState.IDLE
 import uk.whitecrescent.waqti.frontend.customview.drag.DragView.DragState.SETTLING
-import uk.whitecrescent.waqti.globalVisibleRect
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.parentViewGroup
 import kotlin.math.roundToInt
 
 // TODO: 08-Aug-19 Callback or event when View bounds go out of bounds of Parent

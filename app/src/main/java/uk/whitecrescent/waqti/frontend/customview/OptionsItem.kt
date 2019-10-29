@@ -9,9 +9,9 @@ import kotlinx.android.synthetic.main.options_item.view.*
 import org.jetbrains.anko.image
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.extensions.invoke
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.appearance.toColor
-import uk.whitecrescent.waqti.invoke
 
 class OptionsItem
 @JvmOverloads constructor(context: Context,

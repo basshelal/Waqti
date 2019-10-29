@@ -3,15 +3,15 @@ package uk.whitecrescent.waqti.backend.persistence
 import android.annotation.SuppressLint
 import io.objectbox.Box
 import io.reactivex.Observable
-import uk.whitecrescent.waqti.CACHE_CHECKING_PERIOD
-import uk.whitecrescent.waqti.CACHE_CHECKING_UNIT
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.Committable
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.doInBackgroundAsync
-import uk.whitecrescent.waqti.ids
-import uk.whitecrescent.waqti.logD
-import uk.whitecrescent.waqti.size
+import uk.whitecrescent.waqti.extensions.CACHE_CHECKING_PERIOD
+import uk.whitecrescent.waqti.extensions.CACHE_CHECKING_UNIT
+import uk.whitecrescent.waqti.extensions.doInBackgroundAsync
+import uk.whitecrescent.waqti.extensions.ids
+import uk.whitecrescent.waqti.extensions.logD
+import uk.whitecrescent.waqti.extensions.size
 import java.util.concurrent.TimeUnit
 
 open class Cache<E : Cacheable>(
@@ -33,11 +33,10 @@ open class Cache<E : Cacheable>(
     fun initialize() {
         doInBackgroundAsync {
             logD("Started initialization for Cache of $type")
-            Sequence { db.all.iterator() }
-                    .asSequence().take(sizeLimit).forEach {
-                        it.initialize()
-                        safeAdd(it)
-                    }
+            db.all.asSequence().take(sizeLimit).forEach {
+                it.initialize()
+                safeAdd(it)
+            }
             logD("Completed initialization for Cache of $type")
             logD("Cache of $type is of size ${size}")
             logD("DB of $type is of size ${db.size}")

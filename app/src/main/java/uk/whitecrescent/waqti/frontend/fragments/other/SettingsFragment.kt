@@ -13,7 +13,10 @@ import kotlinx.android.synthetic.main.fragment_settings.*
 import org.angmarch.views.OnSpinnerItemSelectedListener
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.extensions.commitTransaction
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.mainActivity
+import uk.whitecrescent.waqti.extensions.onSeek
 import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
 import uk.whitecrescent.waqti.frontend.AppTheme
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
@@ -25,9 +28,6 @@ import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVA
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.onSeek
 
 class SettingsFragment : WaqtiFragment() {
 

@@ -18,13 +18,13 @@ import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.backend.task.TaskState
 import uk.whitecrescent.waqti.backend.task.TaskStateException
 import uk.whitecrescent.waqti.backend.task.UNMET
+import uk.whitecrescent.waqti.extensions.ids
+import uk.whitecrescent.waqti.extensions.tasks
+import uk.whitecrescent.waqti.extensions.toArrayList
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.ids
 import uk.whitecrescent.waqti.seconds
 import uk.whitecrescent.waqti.sleep
-import uk.whitecrescent.waqti.tasks
 import uk.whitecrescent.waqti.testTask
-import uk.whitecrescent.waqti.toArrayList
 
 @DisplayName("SubTasks Tests")
 class SubTasks : BaseTaskTest() {

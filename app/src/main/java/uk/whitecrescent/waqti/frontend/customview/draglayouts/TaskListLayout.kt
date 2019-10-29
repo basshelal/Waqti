@@ -17,14 +17,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.setColorScheme
+import uk.whitecrescent.waqti.extensions.setEdgeEffectColor
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.customview.drag.ObservableDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.setColorScheme
-import uk.whitecrescent.waqti.setEdgeEffectColor
 
 class TaskListLayout
 @JvmOverloads
@@ -72,6 +72,10 @@ constructor(context: Context,
         adapter.savedState = viewHolder.taskListView.listAdapter?.savedState
 
         taskListView.adapter = adapter
+
+        addButton {
+            isVisible = viewHolder.addButton.isVisible
+        }
 
         // TODO: 28-Oct-19 Items won't show because they have alpha = 0F for some reason
         //  below is a quick hack

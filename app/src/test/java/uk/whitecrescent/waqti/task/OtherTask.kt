@@ -14,7 +14,7 @@ import uk.whitecrescent.waqti.backend.task.MANDATORY
 import uk.whitecrescent.waqti.backend.task.OPTIONAL
 import uk.whitecrescent.waqti.backend.task.Priority
 import uk.whitecrescent.waqti.backend.task.Task
-import uk.whitecrescent.waqti.ids
+import uk.whitecrescent.waqti.extensions.ids
 import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.sleep
 

@@ -35,12 +35,22 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
-import uk.whitecrescent.waqti.commitTransaction
-import uk.whitecrescent.waqti.convertDpToPx
-import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.fadeIn
-import uk.whitecrescent.waqti.fadeOut
+import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
+import uk.whitecrescent.waqti.extensions.commitTransaction
+import uk.whitecrescent.waqti.extensions.convertDpToPx
+import uk.whitecrescent.waqti.extensions.doInBackground
+import uk.whitecrescent.waqti.extensions.fadeIn
+import uk.whitecrescent.waqti.extensions.fadeOut
+import uk.whitecrescent.waqti.extensions.getViewModel
+import uk.whitecrescent.waqti.extensions.horizontalFABOnScrollListener
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.logE
+import uk.whitecrescent.waqti.extensions.longSnackBar
+import uk.whitecrescent.waqti.extensions.mainActivity
+import uk.whitecrescent.waqti.extensions.mainActivityViewModel
+import uk.whitecrescent.waqti.extensions.setColorScheme
+import uk.whitecrescent.waqti.extensions.setEdgeEffectColor
+import uk.whitecrescent.waqti.extensions.shortSnackBar
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
@@ -64,15 +74,6 @@ import uk.whitecrescent.waqti.frontend.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
 import uk.whitecrescent.waqti.frontend.vibrateCompat
-import uk.whitecrescent.waqti.getViewModel
-import uk.whitecrescent.waqti.horizontalFABOnScrollListener
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.longSnackBar
-import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.mainActivityViewModel
-import uk.whitecrescent.waqti.setColorScheme
-import uk.whitecrescent.waqti.setEdgeEffectColor
-import uk.whitecrescent.waqti.shortSnackBar
 import kotlin.math.roundToInt
 
 class ViewBoardFragment : WaqtiViewFragment() {
@@ -108,6 +109,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
     override fun setUpViews() {
         setBackground()
+
+        logE("HELLO WORLD!!!")
+
         boardView {
             if (mainActivityVM.settingsChanged) {
                 invalidateBoard()
@@ -131,7 +135,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 emptyTitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
                 emptySubtitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
                 emptyState_scrollView.isVisible = true
-                addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
+                addList_floatingButton.customSize = (mainActivity convertDpToPx 85).roundToInt()
             }
             addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
         }

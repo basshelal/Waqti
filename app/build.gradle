@@ -83,4 +83,6 @@ dependencies {
     implementation 'com.github.warkiz.widget:indicatorseekbar:2.1.2'
     implementation 'com.github.basshelal:UnsplashPhotoPicker:1.1.2'
     implementation 'androidx.dynamicanimation:dynamicanimation:1.0.0'
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    implementation 'me.everything:overscroll-decor-android:1.0.4'
 }
