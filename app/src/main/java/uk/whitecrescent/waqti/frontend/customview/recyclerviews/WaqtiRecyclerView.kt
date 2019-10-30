@@ -8,7 +8,10 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import me.everything.android.ui.overscroll.OverScrollDecoratorHelper
+import me.everything.android.ui.overscroll.HorizontalOverScrollBounceEffectDecorator
+import me.everything.android.ui.overscroll.OverScrollBounceEffectDecoratorBase
+import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator
+import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter
 import uk.whitecrescent.waqti.extensions.addOnScrollListener
 import uk.whitecrescent.waqti.extensions.shortSnackBar
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
@@ -47,15 +50,19 @@ constructor(context: Context,
     var flingVelocityY: Int = 0
         protected set
 
+    var overScroller: OverScrollBounceEffectDecoratorBase? = null
+
     override fun setLayoutManager(layoutManager: LayoutManager?) {
         super.setLayoutManager(layoutManager)
 
-        if (layoutManager is LinearLayoutManager) {
-            OverScrollDecoratorHelper.setUpOverScroll(this,
-                    if (layoutManager.orientation == LinearLayoutManager.HORIZONTAL)
-                        OverScrollDecoratorHelper.ORIENTATION_HORIZONTAL
-                    else OverScrollDecoratorHelper.ORIENTATION_VERTICAL)
+        setUpOverScroller()
+    }
 
+    fun setUpOverScroller() {
+
+        if (layoutManager is LinearLayoutManager) {
+            overScroller = if (linearLayoutManager?.orientation == LinearLayoutManager.VERTICAL)
+                VerticalOverScroller(this) else HorizontalOverScroller(this)
         }
 
         val originalOnFlingListener = onFlingListener
@@ -71,17 +78,18 @@ constructor(context: Context,
                 onScrolled = { dx, dy ->
                     if (dy != 0 && scrollState == SCROLL_STATE_SETTLING &&
                             (verticalScrollOffset == 0 || verticalScrollOffset == maxVerticalScroll)) {
+                        // OVERSCROLL REQUIRED
                         shortSnackBar("Y: $flingVelocityY")
                     }
 
                     if (dx != 0 && scrollState == SCROLL_STATE_SETTLING &&
                             (horizontalScrollOffset == 0 || horizontalScrollOffset == maxHorizontalScroll)) {
+                        // OVERSCROLL REQUIRED
                         shortSnackBar("X: $flingVelocityX")
                     }
                 },
                 onScrollStateChanged = { newState -> }
         )
-
     }
 
     fun saveState(): SavedState? {
@@ -127,3 +135,9 @@ abstract class WaqtiViewHolder<V : View>(view: V) : RecyclerView.ViewHolder(view
     abstract fun bind(adapterPosition: Int): V
 
 }
+
+class VerticalOverScroller(val recyclerView: WaqtiRecyclerView) :
+        VerticalOverScrollBounceEffectDecorator(RecyclerViewOverScrollDecorAdapter(recyclerView))
+
+class HorizontalOverScroller(val recyclerView: WaqtiRecyclerView) :
+        HorizontalOverScrollBounceEffectDecorator(RecyclerViewOverScrollDecorAdapter(recyclerView))
