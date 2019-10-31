@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.recyclerview.widget.SnapHelper
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
@@ -218,7 +219,11 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 snapHelper = null
             }
         }
-        snapHelper?.attachToRecyclerView(boardView)
+        if (snapHelper != null) {
+            boardView.onFlingListener = null
+            snapHelper?.attachToRecyclerView(boardView)
+            boardView.addVelocityTrackerOnFlingListener()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -391,7 +396,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
 class BoardViewHolder(view: View,
                       val adapter: BoardAdapter) : ViewHolder(view) {
-    val header: CardView = itemView.taskListHeader
+    val header: MaterialCardView = itemView.taskListHeader
     val headerTextView: TextView = itemView.taskListHeader_textView
     val taskListView: TaskListView = itemView.taskList_recyclerView
     val addButton: FloatingActionButton = itemView.taskListFooter_fab

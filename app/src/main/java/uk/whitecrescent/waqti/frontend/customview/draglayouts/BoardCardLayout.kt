@@ -22,7 +22,7 @@ constructor(context: Context,
     }
 
     fun matchBoardListViewHolder(viewHolder: BoardListViewHolder) {
-        TODO()
+
     }
 
 }

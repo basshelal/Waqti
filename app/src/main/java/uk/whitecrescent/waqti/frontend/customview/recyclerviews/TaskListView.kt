@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.task_card.view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
@@ -414,7 +415,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
 
     var taskID: ID = 0L
     var taskListID: ID = adapter.taskListID
-    val cardView: CardView = itemView.task_cardView
+    val cardView: MaterialCardView = itemView.task_cardView
     val progressBar: ProgressBar = itemView.taskCard_progressBar
     val textView: TextView = itemView.task_textView
 

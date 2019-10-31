@@ -78,6 +78,7 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout {
             setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
             useCustomBehavior(GravityCompat.END)
             setViewScrimColor(GravityCompat.END, Color.TRANSPARENT)
             setViewElevation(GravityCompat.END, 0F)
@@ -105,12 +106,18 @@ class MainActivity : AppCompatActivity() {
                     if (isDrawerOpen(GravityCompat.END)) {
                         setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END)
                     }
+                    if (isDrawerOpen(GravityCompat.START)) {
+                        setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.START)
+                    }
                 }
 
                 override fun onDrawerClosed(drawerView: View) {
                     if (!isDrawerOpen(GravityCompat.END)) {
                         currentColor = DEFAULT_SCRIM_COLOR
                         setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
+                    }
+                    if (!isDrawerOpen(GravityCompat.START)) {
+                        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
                     }
                 }
 

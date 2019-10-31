@@ -118,13 +118,13 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
             boardAdapter?.onStartDragTask = {
                 dragTaskID = it.itemId
-                task_dragView.matchTaskViewHolder(it)
+                task_dragView?.matchTaskViewHolder(it)
                 this@ViewBoardFragment.task_dragView.dragBehavior.startDragFromView(it.itemView)
             }
 
             boardAdapter?.onStartDragList = {
                 dragListID = it.itemId
-                list_dragView.matchBoardViewHolder(it)
+                list_dragView?.matchBoardViewHolder(it)
                 this@ViewBoardFragment.list_dragView.dragBehavior.startDragFromView(it.header)
             }
 

@@ -14,6 +14,7 @@ import org.jetbrains.anko.image
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.persistence.Caches
+import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.extensions.commitTransaction
 import uk.whitecrescent.waqti.extensions.convertDpToPx
@@ -41,6 +42,8 @@ class ViewBoardListFragment : WaqtiViewFragment() {
 
     private lateinit var viewModel: ViewBoardListFragmentViewModel
     private lateinit var boardList: BoardList
+
+    private var dragBoardID: ID = 0L
 
     private inline var viewMode: ViewMode
         set(value) {
@@ -88,6 +91,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                     CreateBoardFragment.show(mainActivity)
                 }
             }
+            setUpDragView()
         }
     }
 
@@ -140,6 +144,10 @@ class ViewBoardListFragment : WaqtiViewFragment() {
             }
         }
         mainActivity.resetColorScheme()
+    }
+
+    private inline fun setUpDragView() {
+
     }
 
     override fun finish() {

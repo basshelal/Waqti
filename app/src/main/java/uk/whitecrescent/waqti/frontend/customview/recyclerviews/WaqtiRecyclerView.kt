@@ -78,14 +78,7 @@ constructor(context: Context,
                 VerticalOverScroller(this) else HorizontalOverScroller(this)
         }
 
-        val originalOnFlingListener = onFlingListener
-        onFlingListener = object : OnFlingListener() {
-            override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-                flingVelocityX = velocityX
-                flingVelocityY = velocityY
-                return originalOnFlingListener?.onFling(velocityX, velocityY) ?: false
-            }
-        }
+        addVelocityTrackerOnFlingListener()
 
         addOnScrollListener(
                 onScrolled = { dx, dy ->
@@ -112,6 +105,17 @@ constructor(context: Context,
                 },
                 onScrollStateChanged = { newState -> }
         )
+    }
+
+    fun addVelocityTrackerOnFlingListener() {
+        val originalOnFlingListener = onFlingListener
+        onFlingListener = object : OnFlingListener() {
+            override fun onFling(velocityX: Int, velocityY: Int): Boolean {
+                flingVelocityX = velocityX
+                flingVelocityY = velocityY
+                return originalOnFlingListener?.onFling(velocityX, velocityY) ?: false
+            }
+        }
     }
 
     fun saveState(): SavedState? {
