@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.Context
@@ -12,9 +14,13 @@ import me.everything.android.ui.overscroll.HorizontalOverScrollBounceEffectDecor
 import me.everything.android.ui.overscroll.OverScrollBounceEffectDecoratorBase
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter
+import uk.whitecrescent.waqti.Time
+import uk.whitecrescent.waqti.extensions.D
+import uk.whitecrescent.waqti.extensions.F
+import uk.whitecrescent.waqti.extensions.I
 import uk.whitecrescent.waqti.extensions.addOnScrollListener
-import uk.whitecrescent.waqti.extensions.shortSnackBar
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+import uk.whitecrescent.waqti.now
 
 /**
  * Contains common [RecyclerView] functionality that is desired across the entire application.
@@ -52,13 +58,20 @@ constructor(context: Context,
 
     var overScroller: OverScrollBounceEffectDecoratorBase? = null
 
+    var horizontalScrollSpeed: Int = 0
+    var verticalScrollSpeed: Int = 0
+
+    private var oldHorizontalScrollOffset: Int = 0
+    private var oldVerticalScrollOffset: Int = 0
+    private var oldTime: Time = Time.MIN
+
     override fun setLayoutManager(layoutManager: LayoutManager?) {
         super.setLayoutManager(layoutManager)
 
         setUpOverScroller()
     }
 
-    fun setUpOverScroller() {
+    private inline fun setUpOverScroller() {
 
         if (layoutManager is LinearLayoutManager) {
             overScroller = if (linearLayoutManager?.orientation == LinearLayoutManager.VERTICAL)
@@ -76,17 +89,26 @@ constructor(context: Context,
 
         addOnScrollListener(
                 onScrolled = { dx, dy ->
+                    val dY = verticalScrollOffset.D - oldVerticalScrollOffset.D
+                    val dX = horizontalScrollOffset.D - oldHorizontalScrollOffset.D
+                    val dSecs = (now.nano - oldTime.nano).D / 1E9.D
+
+                    verticalScrollSpeed = (dY / dSecs).I
+                    horizontalScrollSpeed = (dX / dSecs).I
+
                     if (dy != 0 && scrollState == SCROLL_STATE_SETTLING &&
                             (verticalScrollOffset == 0 || verticalScrollOffset == maxVerticalScroll)) {
-                        // OVERSCROLL REQUIRED
-                        shortSnackBar("Y: $flingVelocityY")
+                        (overScroller as? VerticalOverScroller)?.overScroll()
                     }
 
                     if (dx != 0 && scrollState == SCROLL_STATE_SETTLING &&
                             (horizontalScrollOffset == 0 || horizontalScrollOffset == maxHorizontalScroll)) {
-                        // OVERSCROLL REQUIRED
-                        shortSnackBar("X: $flingVelocityX")
+                        (overScroller as? HorizontalOverScroller)?.overScroll()
                     }
+
+                    oldVerticalScrollOffset = verticalScrollOffset
+                    oldHorizontalScrollOffset = horizontalScrollOffset
+                    oldTime = now
                 },
                 onScrollStateChanged = { newState -> }
         )
@@ -136,8 +158,42 @@ abstract class WaqtiViewHolder<V : View>(view: V) : RecyclerView.ViewHolder(view
 
 }
 
-class VerticalOverScroller(val recyclerView: WaqtiRecyclerView) :
-        VerticalOverScrollBounceEffectDecorator(RecyclerViewOverScrollDecorAdapter(recyclerView))
+private const val overScrollThreshold = 20.0
 
-class HorizontalOverScroller(val recyclerView: WaqtiRecyclerView) :
-        HorizontalOverScrollBounceEffectDecorator(RecyclerViewOverScrollDecorAdapter(recyclerView))
+private class VerticalOverScroller(val recyclerView: WaqtiRecyclerView) :
+        VerticalOverScrollBounceEffectDecorator(
+                RecyclerViewOverScrollDecorAdapter(recyclerView)) {
+
+    inline fun overScroll() {
+        val threshold = (recyclerView.height.D / overScrollThreshold)
+
+        val amount = -(recyclerView.verticalScrollSpeed.F / threshold.F)
+
+        issueStateTransition(mOverScrollingState)
+
+        translateView(recyclerView, amount)
+
+        issueStateTransition(mBounceBackState)
+
+    }
+}
+
+private class HorizontalOverScroller(val recyclerView: WaqtiRecyclerView) :
+        HorizontalOverScrollBounceEffectDecorator(
+                RecyclerViewOverScrollDecorAdapter(recyclerView)) {
+
+    inline fun overScroll() {
+
+        val threshold = (recyclerView.width.D / overScrollThreshold)
+
+        val amount = -(recyclerView.horizontalScrollSpeed.F / threshold.F)
+
+        issueStateTransition(mOverScrollingState)
+
+        translateView(recyclerView, amount)
+
+        issueStateTransition(mBounceBackState)
+
+    }
+
+}
