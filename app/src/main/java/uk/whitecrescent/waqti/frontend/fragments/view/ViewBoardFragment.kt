@@ -339,10 +339,15 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
 
-                var draggingViewHolder: BoardViewHolder? = null
+
+                // The VH we are currently dragging
+                private var draggingViewHolder: BoardViewHolder? = null
+
+                // The VH we are currently over
+                private var currentViewHolder: BoardViewHolder? = null
 
                 override fun onStartDrag(dragView: View) {
-                    draggingViewHolder = boardView.findViewHolderForItemId(dragListID) as BoardViewHolder
+                    draggingViewHolder = findViewHolder(dragListID)
 
                     draggingViewHolder!!.itemView.alpha = 0F
                 }
@@ -350,8 +355,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 override fun onEndDrag(dragView: View) {
 
                     draggingViewHolder?.itemView?.alpha = 1F
-
-                    draggingViewHolder!!.taskListView.listAdapter?.taskDragEnabled = true
 
                 }
 
@@ -368,6 +371,23 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                         }
                     }
+                }
+
+                inline fun findViewHolder(id: ID) =
+                        this@ViewBoardFragment.boardView.findViewHolderForItemId(id) as? BoardViewHolder
+
+                inline fun findViewHolder(view: View) =
+                        this@ViewBoardFragment.boardView.findContainingViewHolder(view) as? BoardViewHolder
+
+                inline fun findViewHolderUnder(pointF: PointF): BoardViewHolder? {
+                    mainActivity.findViewUnder(pointF)?.also {
+                        return findViewHolder(it)
+                    }
+                    return null
+                }
+
+                inline fun checkForScroll(touchPointF: PointF) {
+                    // here we check if we have to scroll something either left right or up down
                 }
             }
         }

@@ -6,7 +6,6 @@ import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
 import android.graphics.PointF
-import android.graphics.Rect
 import android.os.Bundle
 import android.provider.Settings
 import android.view.MotionEvent
@@ -28,6 +27,7 @@ import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.extensions.I
 import uk.whitecrescent.waqti.extensions.addOnBackPressedCallback
 import uk.whitecrescent.waqti.extensions.allChildren
 import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
@@ -171,14 +171,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         val spr = super.dispatchTouchEvent(event)
-        currentTouchPoint.set(event.rawX.toInt(), event.rawY.toInt())
+        currentTouchPoint.set(event.rawX.I, event.rawY.I)
         if (event.action == MotionEvent.ACTION_DOWN) {
             onTouchOutSideListeners.forEach {
                 val (view, onClick) = it
                 if (view.isVisible) {
-                    val viewRect = Rect()
-                    view.getGlobalVisibleRect(viewRect)
-                    if (!viewRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    val viewRect = view.globalVisibleRect
+                    if (!viewRect.contains(event.rawX.I, event.rawY.I)) {
                         onClick(view)
                     }
                 }
