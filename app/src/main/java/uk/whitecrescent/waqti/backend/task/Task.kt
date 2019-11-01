@@ -33,7 +33,6 @@ import uk.whitecrescent.waqti.backend.task.Properties.TIME
 import uk.whitecrescent.waqti.extensions.ids
 import uk.whitecrescent.waqti.extensions.isNotConstrained
 import uk.whitecrescent.waqti.extensions.isUnMet
-import uk.whitecrescent.waqti.extensions.logD
 import uk.whitecrescent.waqti.extensions.tasks
 import uk.whitecrescent.waqti.extensions.toArrayList
 import uk.whitecrescent.waqti.isAfter
@@ -1490,12 +1489,11 @@ class Task(name: String = "") : Cacheable {
                             }
 
                             override fun onComplete() {
-                                logD("Observing ENDED for Task: $name $id because " +
-                                        if (done) "not in cache" else "IMPOSSIBLE!")
+
                             }
 
                             override fun onSubscribe(d: Disposable) {
-                                logD("Observing STARTED for Task: $name $id")
+
                             }
                         }
                 )

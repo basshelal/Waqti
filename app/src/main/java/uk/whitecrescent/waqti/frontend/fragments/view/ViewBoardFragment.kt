@@ -35,6 +35,8 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.extensions.D
+import uk.whitecrescent.waqti.extensions.addOnScrollListener
 import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.extensions.commitTransaction
 import uk.whitecrescent.waqti.extensions.convertDpToPx
@@ -44,6 +46,7 @@ import uk.whitecrescent.waqti.extensions.fadeOut
 import uk.whitecrescent.waqti.extensions.getViewModel
 import uk.whitecrescent.waqti.extensions.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.longSnackBar
 import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.mainActivityViewModel
@@ -135,6 +138,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 addList_floatingButton.customSize = (mainActivity convertDpToPx 85).roundToInt()
             }
             addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
+            //parallaxImage(board.backgroundPhoto)
         }
         doInBackground {
             setUpAppBar()
@@ -190,7 +194,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
             }
 
-            setUpDragViews()
+            setUpTaskDragView()
+            setUpListDragView()
 
             boardFragment_progressBar?.visibility = View.GONE
         }
@@ -229,7 +234,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
         mainActivity.setColorScheme(board.barColor.colorScheme)
     }
 
-    private inline fun setUpDragViews() {
+    private inline fun setUpTaskDragView() {
         task_dragView {
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
@@ -285,7 +290,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 inline fun updateViewHolders(touchPoint: PointF) {
-                    if (this.currentViewHolder != findViewHolderUnder(touchPoint)) {
+                    if (currentViewHolder != findViewHolderUnder(touchPoint)) {
                         currentViewHolder = findViewHolderUnder(touchPoint)
 
                         if (draggingViewHolder != null && currentViewHolder != null &&
@@ -334,11 +339,12 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
             }
         }
+    }
 
+    private inline fun setUpListDragView() {
         list_dragView {
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
-
 
                 // The VH we are currently dragging
                 private var draggingViewHolder: BoardViewHolder? = null
@@ -349,13 +355,22 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 override fun onStartDrag(dragView: View) {
                     draggingViewHolder = findViewHolder(dragListID)
 
-                    draggingViewHolder!!.itemView.alpha = 0F
+                    draggingViewHolder?.itemView?.alpha = 0F
+                }
+
+                override fun onReleaseDrag(dragView: View, touchPoint: PointF) {
+
                 }
 
                 override fun onEndDrag(dragView: View) {
 
                     draggingViewHolder?.itemView?.alpha = 1F
 
+                }
+
+                override fun onUpdateLocation(dragView: View, touchPoint: PointF) {
+                    updateViewHolders(touchPoint)
+                    checkForScroll(touchPoint)
                 }
 
                 override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
@@ -369,6 +384,25 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         }
                         ObservableDragBehavior.DragState.SETTLING -> {
 
+                        }
+                    }
+                }
+
+                inline fun updateViewHolders(touchPoint: PointF) {
+                    if (currentViewHolder != findViewHolderUnder(touchPoint)) {
+                        currentViewHolder = findViewHolderUnder(touchPoint)
+
+                        if (draggingViewHolder != null && currentViewHolder != null &&
+                                draggingViewHolder != currentViewHolder) {
+
+                            val newReturnPoint = PointF(currentViewHolder!!.itemView.x,
+                                    currentViewHolder!!.itemView.y)
+
+                            dragBehavior.returnPoint.set(newReturnPoint)
+
+                            this@ViewBoardFragment.boardView.boardAdapter?.swapBoardViewHolders(
+                                    draggingViewHolder!!, currentViewHolder!!
+                            )
                         }
                     }
                 }
@@ -391,7 +425,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
             }
         }
-
     }
 
     override fun onStart() {
@@ -586,6 +619,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private inline fun setBackgroundImage(photo: UnsplashPhoto) {
         background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
             width = MATCH_PARENT
+            height = MATCH_PARENT
         }
         Glide.with(this)
                 .load(Uri.parse(photo.urls.regular))
@@ -597,6 +631,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private inline fun setBackgroundColor(waqtiColor: WaqtiColor) {
         background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
             width = MATCH_PARENT
+            height = MATCH_PARENT
         }
 
         background_imageView.setImageDrawable(null)
@@ -616,44 +651,24 @@ class ViewBoardFragment : WaqtiViewFragment() {
     @ForLater
     private inline fun parallaxImage(photo: UnsplashPhoto) {
         doInBackground {
-            /* TODO
-              * The scrollBy will differ based on how wide the image is
-              * the wider the image the smaller the number.
-              * Or the number of lists??
-              * Actually I think its based on number of lists not image width!
-              * What if it's based on a relation between both?
-              */
-
             background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 width = WRAP_CONTENT
+                height = WRAP_CONTENT
             }
-
-            /*
-            * Log from Glide:
-            *
-            * Glide treats LayoutParams.WRAP_CONTENT as a request for an image the size of this
-            * device's screen dimensions. If you want to load the original image and are ok with
-            * the corresponding memory cost and OOMs (depending on the input size), use
-            * .override(Target.SIZE_ORIGINAL). Otherwise, use LayoutParams.MATCH_PARENT, set
-            * layout_width and layout_height to fixed dimension, or use .override() with fixed
-            * dimensions.
-            *
-            * */
 
             Glide.with(this)
                     .load(Uri.parse(photo.urls.regular))
                     .centerCrop()
                     .into(background_imageView)
 
-            // below is only if we want parallax!
-            boardView.boardAdapter?.apply {
-                mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
-                onScrolled = { dx, _ ->
-                    // below prevents over-scrolling leftwards which shows white space
-                    if (horizontalScrollOffset > 0)
-                        background_imageView.scrollBy((dx * 0.25).roundToInt(), 0)
-                    mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
-                }
+            boardView?.apply {
+                addOnScrollListener(onScrolled = { dx, dy ->
+                    if (horizontalScrollOffset > 0 && horizontalScrollOffset < maxHorizontalScroll) {
+                        val scrollAmount = (dx.D * (photo.width.D / maxHorizontalScroll.D) * 0.25).roundToInt()
+                        logE(scrollAmount)
+                        background_imageView.scrollBy(scrollAmount, 0)
+                    }
+                })
             }
         }
     }

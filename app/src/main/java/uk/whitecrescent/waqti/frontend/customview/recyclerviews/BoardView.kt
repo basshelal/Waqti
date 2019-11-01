@@ -98,9 +98,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     var listHeaderTextSize: Int = 28
     val taskListAdapters = ArrayList<TaskListAdapter>()
     var savedState: LinearLayoutManager.SavedState? = null
-    var horizontalScrollOffset: Int = 0
     var onInflate: BoardView.() -> Unit = {}
-    var onScrolled: (Int, Int) -> Unit = { dx, dy -> }
 
     var onStartDragList: (BoardViewHolder) -> Unit = { }
     var onStartDragTask: (TaskViewHolder) -> Unit = { }
@@ -165,11 +163,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                             ?.findFirstCompletelyVisibleItemPosition() ?: 0
                     boardView.mainActivityViewModel.boardPosition.changeTo(true to currentBoardPos)
                 }
-            }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                horizontalScrollOffset += dx
-                onScrolled(dx, dy)
             }
         })
 
@@ -391,6 +384,15 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             }
         }
     }
+
+    fun swapBoardViewHolders(oldViewHolder: BoardViewHolder, newViewHolder: BoardViewHolder) {
+
+    }
+
+    fun moveBoardViewHolder(oldViewHolder: BoardViewHolder, newViewHolder: BoardViewHolder) {
+
+    }
+
 }
 
 

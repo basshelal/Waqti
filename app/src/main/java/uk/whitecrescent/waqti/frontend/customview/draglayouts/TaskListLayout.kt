@@ -17,6 +17,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.extensions.doInBackground
 import uk.whitecrescent.waqti.extensions.invoke
 import uk.whitecrescent.waqti.extensions.setColorScheme
 import uk.whitecrescent.waqti.extensions.setEdgeEffectColor
@@ -63,6 +64,9 @@ constructor(context: Context,
             setTextSize(TypedValue.COMPLEX_UNIT_PX, viewHolder.headerTextView.textSize)
             text = viewHolder.headerTextView.text
         }
+        addButton {
+            isVisible = viewHolder.addButton.isVisible
+        }
         setHeaderColorScheme(viewHolder.headerColorScheme)
         setListColorScheme(viewHolder.listColorScheme)
 
@@ -71,15 +75,11 @@ constructor(context: Context,
         val adapter = TaskListAdapter(viewHolder.itemId, viewHolder.adapter)
         adapter.savedState = viewHolder.taskListView.listAdapter?.savedState
 
-        taskListView.adapter = adapter
-
-        addButton {
-            isVisible = viewHolder.addButton.isVisible
-        }
+        taskListView.swapAdapter(adapter, false)
 
         // TODO: 28-Oct-19 Items won't show because they have alpha = 0F for some reason
         //  below is a quick hack
-        post {
+        doInBackground {
             taskListView.allViewHolders.forEach {
                 it.itemView.alpha = 1F
             }
