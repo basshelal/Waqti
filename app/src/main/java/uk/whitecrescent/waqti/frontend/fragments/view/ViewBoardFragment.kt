@@ -121,14 +121,18 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
             boardAdapter?.onStartDragTask = {
                 dragTaskID = it.itemId
-                task_dragView?.matchTaskViewHolder(it)
-                this@ViewBoardFragment.task_dragView.dragBehavior.startDragFromView(it.itemView)
+                task_dragShadow updateToMatch it.itemView
+                task_dragShadow.updateLayoutParams {
+                    width = WRAP_CONTENT
+                    height = WRAP_CONTENT
+                }
+                this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it.itemView)
             }
 
             boardAdapter?.onStartDragList = {
                 dragListID = it.itemId
-                list_dragView?.matchBoardViewHolder(it)
-                this@ViewBoardFragment.list_dragView.dragBehavior.startDragFromView(it.header)
+                list_dragShadow updateToMatch it.itemView
+                this@ViewBoardFragment.list_dragShadow.dragBehavior.startDragFromView(it.header)
             }
 
             if (boardAdapter?.board?.isEmpty() == true) {
@@ -194,8 +198,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
             }
 
-            setUpTaskDragView()
-            setUpListDragView()
+            setUpTaskDrag()
+            setUpListDrag()
 
             boardFragment_progressBar?.visibility = View.GONE
         }
@@ -234,8 +238,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
         mainActivity.setColorScheme(board.barColor.colorScheme)
     }
 
-    private inline fun setUpTaskDragView() {
-        task_dragView {
+    private inline fun setUpTaskDrag() {
+        task_dragShadow {
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
 
@@ -277,11 +281,11 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
                     when (newState) {
                         ObservableDragBehavior.DragState.IDLE -> {
-                            task_dragView.isVisible = false
+                            task_dragShadow.isVisible = false
                         }
                         ObservableDragBehavior.DragState.DRAGGING -> {
-                            task_dragView.isVisible = true
-                            task_dragView.alpha = 0.8F
+                            task_dragShadow.isVisible = true
+                            task_dragShadow.alpha = 0.8F
                         }
                         ObservableDragBehavior.DragState.SETTLING -> {
 
@@ -341,8 +345,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
     }
 
-    private inline fun setUpListDragView() {
-        list_dragView {
+    private inline fun setUpListDrag() {
+        list_dragShadow {
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
 
@@ -376,11 +380,11 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
                     when (newState) {
                         ObservableDragBehavior.DragState.IDLE -> {
-                            list_dragView.isVisible = false
+                            list_dragShadow.isVisible = false
                         }
                         ObservableDragBehavior.DragState.DRAGGING -> {
-                            list_dragView.alpha = 0.8F
-                            list_dragView.isVisible = true
+                            list_dragShadow.alpha = 0.8F
+                            list_dragShadow.isVisible = true
                         }
                         ObservableDragBehavior.DragState.SETTLING -> {
 

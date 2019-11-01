@@ -13,10 +13,10 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardView
-        android:background="@color/transparent"
         android:id="@+id/boardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/transparent"
         android:scrollbars="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -115,14 +115,14 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <uk.whitecrescent.waqti.frontend.customview.draglayouts.TaskListLayout
-        android:id="@+id/list_dragView"
+    <uk.whitecrescent.waqti.frontend.customview.drag.DragShadow
+        android:id="@+id/list_dragShadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
 
-    <uk.whitecrescent.waqti.frontend.customview.draglayouts.TaskCardLayout
-        android:id="@+id/task_dragView"
+    <uk.whitecrescent.waqti.frontend.customview.drag.DragShadow
+        android:id="@+id/task_dragShadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         tools:ignore="MissingConstraints" />
