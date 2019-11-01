@@ -19,7 +19,13 @@ import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.backend.task.Task
-import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.extensions.commitTransaction
+import uk.whitecrescent.waqti.extensions.getViewModel
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.isNotDefault
+import uk.whitecrescent.waqti.extensions.mainActivity
+import uk.whitecrescent.waqti.extensions.requestFocusAndShowKeyboard
+import uk.whitecrescent.waqti.extensions.smoothScrollToEnd
 import uk.whitecrescent.waqti.frontend.CREATE_TASK_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
@@ -31,13 +37,7 @@ import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragmentViewModel
-import uk.whitecrescent.waqti.getViewModel
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.isNotDefault
-import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.requestFocusAndShowKeyboard
 import uk.whitecrescent.waqti.rfcFormatted
-import uk.whitecrescent.waqti.smoothScrollToEnd
 
 class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 

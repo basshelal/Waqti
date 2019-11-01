@@ -2,12 +2,8 @@
 
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
-import android.content.ClipData
 import android.content.Context
-import android.graphics.Canvas
 import android.graphics.Point
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.DragEvent
 import android.view.LayoutInflater
@@ -22,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.task_card.view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
@@ -30,19 +27,19 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.persistence.getParent
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.doInBackground
+import uk.whitecrescent.waqti.extensions.doInBackground
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.lastPosition
+import uk.whitecrescent.waqti.extensions.locationOnScreen
+import uk.whitecrescent.waqti.extensions.mainActivity
+import uk.whitecrescent.waqti.extensions.mainActivityViewModel
+import uk.whitecrescent.waqti.extensions.notifySwapped
+import uk.whitecrescent.waqti.extensions.recycledViewPool
+import uk.whitecrescent.waqti.extensions.setIndeterminateColor
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.lastPosition
-import uk.whitecrescent.waqti.locationOnScreen
-import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.mainActivityViewModel
-import uk.whitecrescent.waqti.notifySwapped
-import uk.whitecrescent.waqti.recycledViewPool
-import uk.whitecrescent.waqti.setIndeterminateColor
 import kotlin.math.roundToInt
 
 private val taskViewHolderPool = recycledViewPool(TASKS_CACHE_SIZE)
@@ -51,11 +48,11 @@ private const val draggingViewAlpha = 0F
 private val defaultInterpolator = AccelerateDecelerateInterpolator()
 
 class TaskListView
-@JvmOverloads constructor(context: Context,
-                          attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
-
-    var scrollBarColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT.colorScheme.text
+@JvmOverloads
+constructor(context: Context,
+            attributeSet: AttributeSet? = null,
+            defStyle: Int = 0
+) : WaqtiRecyclerView(context, attributeSet, defStyle) {
 
     inline val listAdapter: TaskListAdapter?
         get() = adapter as TaskListAdapter?
@@ -83,22 +80,8 @@ class TaskListView
     }
 
     fun setColorScheme(colorScheme: ColorScheme) {
-        allViewHolders.forEach { it.setColorScheme(colorScheme) }
+        allViewHolders.forEach { it.colorScheme = colorScheme }
         listAdapter?.notifyDataSetChanged()
-    }
-
-    @Suppress("unused")
-    protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
-    }
-
-    @Suppress("unused")
-    protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
     }
 
 }
@@ -111,7 +94,9 @@ class TaskListAdapter(val taskListID: ID,
     var savedState: LinearLayoutManager.SavedState? = null
     var onInflate: TaskListView.() -> Unit = { }
 
-    inline val linearLayoutManager: LinearLayoutManager? get() = taskListView?.layoutManager as? LinearLayoutManager?
+    var onStartDragTask: (TaskViewHolder) -> Unit = { }
+
+    inline val linearLayoutManager: LinearLayoutManager? get() = taskListView?.linearLayoutManager
     inline val allViewHolders: List<TaskViewHolder>
         get() = taskListView?.allViewHolders ?: emptyList()
     inline val allListCards: List<CardView> get() = allViewHolders.map { it.cardView }
@@ -173,9 +158,9 @@ class TaskListAdapter(val taskListID: ID,
         holder.doInBackground {
             taskID = taskList[position].id
             taskListID = this@TaskListAdapter.taskListID
-            setColorScheme(if (taskList.cardColor == WaqtiColor.INHERIT)
+            colorScheme = if (taskList.cardColor == WaqtiColor.INHERIT)
                 taskList.getParent().cardColor.colorScheme
-            else taskList.cardColor.colorScheme)
+            else taskList.cardColor.colorScheme
             textView.text = taskList[position].name
         }
         holder.apply {
@@ -427,11 +412,19 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
 
     var taskID: ID = 0L
     var taskListID: ID = adapter.taskListID
-    val cardView: CardView = itemView.task_cardView
+    val cardView: MaterialCardView = itemView.task_cardView
     val progressBar: ProgressBar = itemView.taskCard_progressBar
     val textView: TextView = itemView.task_textView
 
     inline val mainActivity: MainActivity get() = itemView.mainActivity
+
+    var colorScheme: ColorScheme = ColorScheme.WAQTI_DEFAULT
+        set(value) {
+            field = value
+            progressBar { setIndeterminateColor(colorScheme.text) }
+            cardView { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
+            textView { textColor = colorScheme.text.toAndroidColor }
+        }
 
     init {
         doInBackground {
@@ -443,13 +436,8 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                     ViewTaskFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
-                    startDragAndDrop(
-                            ClipData.newPlainText("", ""),
-                            ShadowBuilder(this),
-                            DragEventLocalState(taskID, taskListID, adapterPosition),
-                            0
-                    )
-                    return@setOnLongClickListener true
+                    adapter.onStartDragTask(this@TaskViewHolder)
+                    true
                 }
             }
             textView.visibility = View.VISIBLE
@@ -465,12 +453,6 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                 it.task_textView { textColor = colorScheme.text.toAndroidColor }
             }))
         }
-    }
-
-    fun setColorScheme(colorScheme: ColorScheme) {
-        progressBar { setIndeterminateColor(colorScheme.text) }
-        cardView { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
-        textView { textColor = colorScheme.text.toAndroidColor }
     }
 }
 

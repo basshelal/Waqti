@@ -25,8 +25,8 @@ import uk.whitecrescent.waqti.backend.task.Priority
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.backend.task.Template
 import uk.whitecrescent.waqti.backend.task.TimeUnit
+import uk.whitecrescent.waqti.extensions.size
 import uk.whitecrescent.waqti.now
-import uk.whitecrescent.waqti.size
 import java.io.File
 import java.io.FileReader
 import java.io.FileWriter

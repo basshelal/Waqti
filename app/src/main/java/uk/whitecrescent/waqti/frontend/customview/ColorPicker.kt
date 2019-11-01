@@ -12,9 +12,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.color_circle.view.*
 import org.jetbrains.anko.image
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.extensions.invoke
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
-import uk.whitecrescent.waqti.invoke
 
 class ColorPicker
 @JvmOverloads constructor(context: Context,

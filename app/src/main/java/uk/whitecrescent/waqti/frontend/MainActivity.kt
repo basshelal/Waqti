@@ -5,8 +5,9 @@ package uk.whitecrescent.waqti.frontend
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.Point
-import android.graphics.Rect
+import android.graphics.PointF
 import android.os.Bundle
+import android.provider.Settings
 import android.view.MotionEvent
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -19,16 +20,24 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
 import org.jetbrains.anko.backgroundColor
+import org.jetbrains.anko.collections.forEachReversedByIndex
 import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.configuration
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.addOnBackPressedCallback
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
-import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.doInBackgroundDelayed
+import uk.whitecrescent.waqti.extensions.I
+import uk.whitecrescent.waqti.extensions.addOnBackPressedCallback
+import uk.whitecrescent.waqti.extensions.allChildren
+import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
+import uk.whitecrescent.waqti.extensions.doInBackground
+import uk.whitecrescent.waqti.extensions.doInBackgroundDelayed
+import uk.whitecrescent.waqti.extensions.getViewModel
+import uk.whitecrescent.waqti.extensions.globalVisibleRect
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.onClickOutside
+import uk.whitecrescent.waqti.extensions.rootViewGroup
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar
@@ -37,9 +46,7 @@ import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardListView
 import uk.whitecrescent.waqti.frontend.fragments.other.AboutFragment
 import uk.whitecrescent.waqti.frontend.fragments.other.SettingsFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardListFragment
-import uk.whitecrescent.waqti.getViewModel
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.onClickOutside
+import kotlin.math.roundToInt
 
 const val DRAWER_DELAY_MILLIS = 250L
 
@@ -71,6 +78,7 @@ class MainActivity : AppCompatActivity() {
 
         drawerLayout {
             setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
+            setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
             useCustomBehavior(GravityCompat.END)
             setViewScrimColor(GravityCompat.END, Color.TRANSPARENT)
             setViewElevation(GravityCompat.END, 0F)
@@ -98,12 +106,18 @@ class MainActivity : AppCompatActivity() {
                     if (isDrawerOpen(GravityCompat.END)) {
                         setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.END)
                     }
+                    if (isDrawerOpen(GravityCompat.START)) {
+                        setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, GravityCompat.START)
+                    }
                 }
 
                 override fun onDrawerClosed(drawerView: View) {
                     if (!isDrawerOpen(GravityCompat.END)) {
                         currentColor = DEFAULT_SCRIM_COLOR
                         setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
+                    }
+                    if (!isDrawerOpen(GravityCompat.START)) {
+                        setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.START)
                     }
                 }
 
@@ -157,14 +171,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         val spr = super.dispatchTouchEvent(event)
-        currentTouchPoint.set(event.rawX.toInt(), event.rawY.toInt())
+        currentTouchPoint.set(event.rawX.I, event.rawY.I)
         if (event.action == MotionEvent.ACTION_DOWN) {
             onTouchOutSideListeners.forEach {
                 val (view, onClick) = it
                 if (view.isVisible) {
-                    val viewRect = Rect()
-                    view.getGlobalVisibleRect(viewRect)
-                    if (!viewRect.contains(event.rawX.toInt(), event.rawY.toInt())) {
+                    val viewRect = view.globalVisibleRect
+                    if (!viewRect.contains(event.rawX.I, event.rawY.I)) {
                         onClick(view)
                     }
                 }
@@ -210,6 +223,15 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    inline fun findViewUnder(pointF: PointF): View? {
+        drawerLayout.rootViewGroup?.allChildren?.forEachReversedByIndex {
+            if (it.globalVisibleRect.contains(pointF.x.roundToInt(), pointF.y.roundToInt())) {
+                return it
+            }
+        }
+        return null
+    }
+
     inline val appBar: AppBar
         get() = activity_appBar
 
@@ -225,6 +247,9 @@ class MainActivity : AppCompatActivity() {
 
     inline val isNightMode
         get() = (configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES
+
+    inline val animatorDurationScale: Float
+        get() = Settings.Global.getFloat(contentResolver, Settings.Global.ANIMATOR_DURATION_SCALE, 1.0F)
 
 }
 

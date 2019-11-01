@@ -4,12 +4,12 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.backend.task.DEBUG
+import uk.whitecrescent.waqti.extensions.size
 import uk.whitecrescent.waqti.getFilledBoardList
 import uk.whitecrescent.waqti.mustEqual
 import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.rfcFormatted
 import uk.whitecrescent.waqti.secs
-import uk.whitecrescent.waqti.size
 import uk.whitecrescent.waqti.till
 import java.io.File
 

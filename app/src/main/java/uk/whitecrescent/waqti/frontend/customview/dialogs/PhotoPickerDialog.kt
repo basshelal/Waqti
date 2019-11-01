@@ -11,8 +11,8 @@ import com.github.basshelal.unsplashpicker.presentation.PhotoSize
 import com.github.basshelal.unsplashpicker.presentation.UnsplashPhotoPicker
 import kotlinx.android.synthetic.main.dialog_photopicker.*
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.extensions.invoke
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiFragment
-import uk.whitecrescent.waqti.invoke
 
 /**
  * This is actually not a [MaterialDialog], just a regular [Fragment]

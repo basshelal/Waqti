@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.backend.task.Task
+import uk.whitecrescent.waqti.extensions.ids
+import uk.whitecrescent.waqti.extensions.size
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.ids
-import uk.whitecrescent.waqti.size
 import uk.whitecrescent.waqti.sleep
 
 @DisplayName("Task Cache Tests")

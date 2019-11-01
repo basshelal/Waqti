@@ -14,7 +14,11 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.TaskList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.commitTransaction
+import uk.whitecrescent.waqti.extensions.commitTransaction
+import uk.whitecrescent.waqti.extensions.getViewModel
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.requestFocusAndShowKeyboard
+import uk.whitecrescent.waqti.extensions.scrollToEnd
 import uk.whitecrescent.waqti.frontend.CREATE_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
@@ -23,10 +27,6 @@ import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragmentViewModel
-import uk.whitecrescent.waqti.getViewModel
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.requestFocusAndShowKeyboard
-import uk.whitecrescent.waqti.scrollToEnd
 
 class CreateListFragment : WaqtiCreateFragment<TaskList>() {
 

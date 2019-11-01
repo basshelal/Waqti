@@ -7,9 +7,8 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.backend.task.Task
-import uk.whitecrescent.waqti.forEach
+import uk.whitecrescent.waqti.extensions.size
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.size
 import uk.whitecrescent.waqti.testTask
 
 @DisplayName("Task Database Tests")
@@ -61,7 +60,7 @@ class TaskDatabase : BasePersistenceTest() {
         tasks.forEach { it.changeName("New Name") }
         Database.tasks.put(tasks)
 
-        Database.tasks.forEach { assertEquals("New Name", it.name) }
+        Database.tasks.all.forEach { assertEquals("New Name", it.name) }
 
         assertEquals(tasks, Database.tasks.all)
         assertTrue(Database.tasks.size == tasks.size)

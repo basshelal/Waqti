@@ -3,6 +3,7 @@
 package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.content.Context
+import android.graphics.PointF
 import android.net.Uri
 import android.os.Bundle
 import android.os.Vibrator
@@ -34,12 +35,24 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
-import uk.whitecrescent.waqti.commitTransaction
-import uk.whitecrescent.waqti.convertDpToPx
-import uk.whitecrescent.waqti.doInBackground
-import uk.whitecrescent.waqti.fadeIn
-import uk.whitecrescent.waqti.fadeOut
+import uk.whitecrescent.waqti.extensions.D
+import uk.whitecrescent.waqti.extensions.addOnScrollListener
+import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
+import uk.whitecrescent.waqti.extensions.commitTransaction
+import uk.whitecrescent.waqti.extensions.convertDpToPx
+import uk.whitecrescent.waqti.extensions.doInBackground
+import uk.whitecrescent.waqti.extensions.fadeIn
+import uk.whitecrescent.waqti.extensions.fadeOut
+import uk.whitecrescent.waqti.extensions.getViewModel
+import uk.whitecrescent.waqti.extensions.horizontalFABOnScrollListener
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.logE
+import uk.whitecrescent.waqti.extensions.longSnackBar
+import uk.whitecrescent.waqti.extensions.mainActivity
+import uk.whitecrescent.waqti.extensions.mainActivityViewModel
+import uk.whitecrescent.waqti.extensions.setColorScheme
+import uk.whitecrescent.waqti.extensions.setEdgeEffectColor
+import uk.whitecrescent.waqti.extensions.shortSnackBar
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
@@ -52,21 +65,17 @@ import uk.whitecrescent.waqti.frontend.appearance.toColor
 import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVATION
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
+import uk.whitecrescent.waqti.frontend.customview.drag.ObservableDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.DragEventLocalState
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListAdapter
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView
+import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskViewHolder
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
 import uk.whitecrescent.waqti.frontend.vibrateCompat
-import uk.whitecrescent.waqti.getViewModel
-import uk.whitecrescent.waqti.horizontalFABOnScrollListener
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.longSnackBar
-import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.mainActivityViewModel
-import uk.whitecrescent.waqti.setColorScheme
-import uk.whitecrescent.waqti.setEdgeEffectColor
-import uk.whitecrescent.waqti.shortSnackBar
 import kotlin.math.roundToInt
 
 class ViewBoardFragment : WaqtiViewFragment() {
@@ -74,6 +83,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private var boardID: ID = 0L
     private lateinit var viewModel: ViewBoardFragmentViewModel
     private lateinit var board: Board
+
+    private var dragTaskID: ID = 0L
+    private var dragListID: ID = 0L
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -99,19 +111,34 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
     override fun setUpViews() {
         setBackground()
+
         boardView {
             if (mainActivityVM.settingsChanged) {
                 invalidateBoard()
                 mainActivityVM.settingsChanged = false
             }
             adapter = mainActivityVM.boardAdapter
+
+            boardAdapter?.onStartDragTask = {
+                dragTaskID = it.itemId
+                task_dragView?.matchTaskViewHolder(it)
+                this@ViewBoardFragment.task_dragView.dragBehavior.startDragFromView(it.itemView)
+            }
+
+            boardAdapter?.onStartDragList = {
+                dragListID = it.itemId
+                list_dragView?.matchBoardViewHolder(it)
+                this@ViewBoardFragment.list_dragView.dragBehavior.startDragFromView(it.header)
+            }
+
             if (boardAdapter?.board?.isEmpty() == true) {
                 emptyTitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
                 emptySubtitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
                 emptyState_scrollView.isVisible = true
-                addList_floatingButton.customSize = convertDpToPx(85, mainActivity)
+                addList_floatingButton.customSize = (mainActivity convertDpToPx 85).roundToInt()
             }
             addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
+            //parallaxImage(board.backgroundPhoto)
         }
         doInBackground {
             setUpAppBar()
@@ -167,6 +194,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
             }
 
+            setUpTaskDragView()
+            setUpListDragView()
+
             boardFragment_progressBar?.visibility = View.GONE
         }
     }
@@ -190,7 +220,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
                 textChangedListener = { update() }
                 text = SpannableStringBuilder(board.name)
-                setOnEditorActionListener { textView, actionId, _ ->
+                setOnEditorActionListener { _, actionId, _ ->
                     if (actionId == EditorInfo.IME_ACTION_DONE) {
                         update()
                         clearFocusAndHideKeyboard()
@@ -202,6 +232,199 @@ class ViewBoardFragment : WaqtiViewFragment() {
             rightImage = R.drawable.overflow_icon
         }
         mainActivity.setColorScheme(board.barColor.colorScheme)
+    }
+
+    private inline fun setUpTaskDragView() {
+        task_dragView {
+
+            dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
+
+                // The VH we are currently dragging
+                private var draggingViewHolder: TaskViewHolder? = null
+
+                // The VH we are currently over
+                private var currentViewHolder: TaskViewHolder? = null
+
+                lateinit var taskListView: TaskListView
+
+                override fun onStartDrag(dragView: View) {
+
+                    draggingViewHolder = findViewHolder(dragTaskID)
+
+                    draggingViewHolder?.itemView?.alpha = 0F
+
+                    taskListView = boardView.boardAdapter!!.getListAdapter(draggingViewHolder!!.taskListID)!!.taskListView!!
+
+                }
+
+                override fun onReleaseDrag(dragView: View, touchPoint: PointF) {
+
+                }
+
+                override fun onEndDrag(dragView: View) {
+
+                    draggingViewHolder?.itemView?.alpha = 1F
+
+                    currentViewHolder = null
+                }
+
+                override fun onUpdateLocation(dragView: View, touchPoint: PointF) {
+                    /** check [TaskListAdapter.onDrag]*/
+                    updateViewHolders(touchPoint)
+                    checkForScroll(touchPoint)
+                }
+
+                override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
+                    when (newState) {
+                        ObservableDragBehavior.DragState.IDLE -> {
+                            task_dragView.isVisible = false
+                        }
+                        ObservableDragBehavior.DragState.DRAGGING -> {
+                            task_dragView.isVisible = true
+                            task_dragView.alpha = 0.8F
+                        }
+                        ObservableDragBehavior.DragState.SETTLING -> {
+
+                        }
+                    }
+                }
+
+                inline fun updateViewHolders(touchPoint: PointF) {
+                    if (currentViewHolder != findViewHolderUnder(touchPoint)) {
+                        currentViewHolder = findViewHolderUnder(touchPoint)
+
+                        if (draggingViewHolder != null && currentViewHolder != null &&
+                                draggingViewHolder != currentViewHolder) {
+
+                            // TODO: 27-Oct-19 Something is wrong here, it works when the header
+                            //  is invisible because the return point animation is actually doing
+                            //  the point in relation to the DragView's parent, not the actual
+                            //  RecyclerView, we need to offset this
+                            //  the 2 viewParents of interest are the TaskListView and the root
+                            //  of this Fragment, we need to find the position of this
+                            //  TaskListView in relation to the fragment root (which is the
+                            //  parent of the DragView)
+
+                            val headerHeight = (boardView.findViewHolderForItemId(1) as
+                                    BoardViewHolder).header.height
+
+                            val newReturnPoint = PointF(currentViewHolder!!.itemView.x,
+                                    currentViewHolder!!.itemView.y + headerHeight)
+
+                            dragBehavior.returnPoint.set(newReturnPoint)
+
+                            this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
+                                    draggingViewHolder!!, currentViewHolder!!
+                            )
+                        }
+                    }
+                }
+
+                inline fun findViewHolder(id: ID) =
+                        this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(id)
+
+                inline fun findViewHolder(view: View) =
+                        this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(view)
+
+                inline fun findViewHolderUnder(pointF: PointF): TaskViewHolder? {
+                    mainActivity.findViewUnder(pointF)?.also {
+                        return findViewHolder(it)
+                    }
+                    return null
+                }
+
+                inline fun checkForScroll(touchPointF: PointF) {
+                    // here we check if we have to scroll something either left right or up down
+                }
+
+            }
+        }
+    }
+
+    private inline fun setUpListDragView() {
+        list_dragView {
+
+            dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
+
+                // The VH we are currently dragging
+                private var draggingViewHolder: BoardViewHolder? = null
+
+                // The VH we are currently over
+                private var currentViewHolder: BoardViewHolder? = null
+
+                override fun onStartDrag(dragView: View) {
+                    draggingViewHolder = findViewHolder(dragListID)
+
+                    draggingViewHolder?.itemView?.alpha = 0F
+                }
+
+                override fun onReleaseDrag(dragView: View, touchPoint: PointF) {
+
+                }
+
+                override fun onEndDrag(dragView: View) {
+
+                    draggingViewHolder?.itemView?.alpha = 1F
+
+                }
+
+                override fun onUpdateLocation(dragView: View, touchPoint: PointF) {
+                    updateViewHolders(touchPoint)
+                    checkForScroll(touchPoint)
+                }
+
+                override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
+                    when (newState) {
+                        ObservableDragBehavior.DragState.IDLE -> {
+                            list_dragView.isVisible = false
+                        }
+                        ObservableDragBehavior.DragState.DRAGGING -> {
+                            list_dragView.alpha = 0.8F
+                            list_dragView.isVisible = true
+                        }
+                        ObservableDragBehavior.DragState.SETTLING -> {
+
+                        }
+                    }
+                }
+
+                inline fun updateViewHolders(touchPoint: PointF) {
+                    if (currentViewHolder != findViewHolderUnder(touchPoint)) {
+                        currentViewHolder = findViewHolderUnder(touchPoint)
+
+                        if (draggingViewHolder != null && currentViewHolder != null &&
+                                draggingViewHolder != currentViewHolder) {
+
+                            val newReturnPoint = PointF(currentViewHolder!!.itemView.x,
+                                    currentViewHolder!!.itemView.y)
+
+                            dragBehavior.returnPoint.set(newReturnPoint)
+
+                            this@ViewBoardFragment.boardView.boardAdapter?.swapBoardViewHolders(
+                                    draggingViewHolder!!, currentViewHolder!!
+                            )
+                        }
+                    }
+                }
+
+                inline fun findViewHolder(id: ID) =
+                        this@ViewBoardFragment.boardView.findViewHolderForItemId(id) as? BoardViewHolder
+
+                inline fun findViewHolder(view: View) =
+                        this@ViewBoardFragment.boardView.findContainingViewHolder(view) as? BoardViewHolder
+
+                inline fun findViewHolderUnder(pointF: PointF): BoardViewHolder? {
+                    mainActivity.findViewUnder(pointF)?.also {
+                        return findViewHolder(it)
+                    }
+                    return null
+                }
+
+                inline fun checkForScroll(touchPointF: PointF) {
+                    // here we check if we have to scroll something either left right or up down
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -396,6 +619,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private inline fun setBackgroundImage(photo: UnsplashPhoto) {
         background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
             width = MATCH_PARENT
+            height = MATCH_PARENT
         }
         Glide.with(this)
                 .load(Uri.parse(photo.urls.regular))
@@ -407,6 +631,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private inline fun setBackgroundColor(waqtiColor: WaqtiColor) {
         background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
             width = MATCH_PARENT
+            height = MATCH_PARENT
         }
 
         background_imageView.setImageDrawable(null)
@@ -426,44 +651,24 @@ class ViewBoardFragment : WaqtiViewFragment() {
     @ForLater
     private inline fun parallaxImage(photo: UnsplashPhoto) {
         doInBackground {
-            /* TODO
-              * The scrollBy will differ based on how wide the image is
-              * the wider the image the smaller the number.
-              * Or the number of lists??
-              * Actually I think its based on number of lists not image width!
-              * What if it's based on a relation between both?
-              */
-
             background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
                 width = WRAP_CONTENT
+                height = WRAP_CONTENT
             }
-
-            /*
-            * Log from Glide:
-            *
-            * Glide treats LayoutParams.WRAP_CONTENT as a request for an image the size of this
-            * device's screen dimensions. If you want to load the original image and are ok with
-            * the corresponding memory cost and OOMs (depending on the input size), use
-            * .override(Target.SIZE_ORIGINAL). Otherwise, use LayoutParams.MATCH_PARENT, set
-            * layout_width and layout_height to fixed dimension, or use .override() with fixed
-            * dimensions.
-            *
-            * */
 
             Glide.with(this)
                     .load(Uri.parse(photo.urls.regular))
                     .centerCrop()
                     .into(background_imageView)
 
-            // below is only if we want parallax!
-            boardView.boardAdapter?.apply {
-                mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
-                onScrolled = { dx, _ ->
-                    // below prevents over-scrolling leftwards which shows white space
-                    if (horizontalScrollOffset > 0)
-                        background_imageView.scrollBy((dx * 0.25).roundToInt(), 0)
-                    mainActivity.appBar.shortSnackBar("$horizontalScrollOffset")
-                }
+            boardView?.apply {
+                addOnScrollListener(onScrolled = { dx, dy ->
+                    if (horizontalScrollOffset > 0 && horizontalScrollOffset < maxHorizontalScroll) {
+                        val scrollAmount = (dx.D * (photo.width.D / maxHorizontalScroll.D) * 0.25).roundToInt()
+                        logE(scrollAmount)
+                        background_imageView.scrollBy(scrollAmount, 0)
+                    }
+                })
             }
         }
     }

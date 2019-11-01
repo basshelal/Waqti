@@ -6,7 +6,7 @@ import io.objectbox.annotation.Id
 import uk.whitecrescent.waqti.Duration
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.persistence.Caches
-import uk.whitecrescent.waqti.hash
+import uk.whitecrescent.waqti.extensions.hash
 
 @Entity
 class TimeUnit(name: String = "", duration: Duration = Duration.ZERO) : Cacheable {

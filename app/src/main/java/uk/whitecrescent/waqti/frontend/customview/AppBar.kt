@@ -17,11 +17,11 @@ import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.hintTextColor
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.mainActivity
 
 /**
  * A Material-like AppBar that allows for an ImageView on the start, an [EditTextView] in the

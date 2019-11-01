@@ -1,9 +1,6 @@
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -20,14 +17,26 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import androidx.recyclerview.widget.SnapHelper
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.android.synthetic.main.task_list.view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.backend.collections.AbstractWaqtiList
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASK_LISTS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.doInBackground
+import uk.whitecrescent.waqti.extensions.F
+import uk.whitecrescent.waqti.extensions.doInBackground
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.mainActivity
+import uk.whitecrescent.waqti.extensions.mainActivityViewModel
+import uk.whitecrescent.waqti.extensions.notifySwapped
+import uk.whitecrescent.waqti.extensions.parentView
+import uk.whitecrescent.waqti.extensions.recycledViewPool
+import uk.whitecrescent.waqti.extensions.setColorScheme
+import uk.whitecrescent.waqti.extensions.setEdgeEffectColor
+import uk.whitecrescent.waqti.extensions.verticalFABOnScrollListener
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
@@ -37,27 +46,16 @@ import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.N
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.PAGED
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateTaskFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewListFragment
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.mainActivityViewModel
-import uk.whitecrescent.waqti.parentView
-import uk.whitecrescent.waqti.recycledViewPool
-import uk.whitecrescent.waqti.setColorScheme
-import uk.whitecrescent.waqti.setEdgeEffectColor
-import uk.whitecrescent.waqti.verticalFABOnScrollListener
 import kotlin.math.roundToInt
 
 private val listViewHolderPool = recycledViewPool(TASK_LISTS_CACHE_SIZE)
 
 class BoardView
-@JvmOverloads constructor(context: Context,
-                          attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) : RecyclerView(context, attributeSet, defStyle) {
-
-    /**
-     * The color of the scrollbar of the [BoardView]
-     */
-    var scrollBarColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT.colorScheme.text
+@JvmOverloads
+constructor(context: Context,
+            attributeSet: AttributeSet? = null,
+            defStyle: Int = 0
+) : WaqtiRecyclerView(context, attributeSet, defStyle) {
 
     /**
      * Gets the adapter as a [BoardAdapter] or `null` if there is no adapter
@@ -88,26 +86,6 @@ class BoardView
         }
         boardAdapter?.notifyDataSetChanged()
     }
-
-    /**
-     * Called automatically by the Android framework in [onDrawScrollBars]
-     */
-    @Suppress("unused")
-    protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
-    }
-
-    /**
-     * Called automatically by the Android framework in [onDrawScrollBars]
-     */
-    @Suppress("unused")
-    protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
-    }
 }
 
 class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
@@ -120,11 +98,12 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     var listHeaderTextSize: Int = 28
     val taskListAdapters = ArrayList<TaskListAdapter>()
     var savedState: LinearLayoutManager.SavedState? = null
-    var horizontalScrollOffset: Int = 0
     var onInflate: BoardView.() -> Unit = {}
-    var onScrolled: (Int, Int) -> Unit = { dx, dy -> }
 
-    inline val linearLayoutManager: LinearLayoutManager? get() = boardView.layoutManager as? LinearLayoutManager?
+    var onStartDragList: (BoardViewHolder) -> Unit = { }
+    var onStartDragTask: (TaskViewHolder) -> Unit = { }
+
+    inline val linearLayoutManager: LinearLayoutManager? get() = boardView.linearLayoutManager
     inline val allCards: List<CardView> get() = taskListAdapters.flatMap { it.allListCards }
 
     init {
@@ -185,11 +164,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                     boardView.mainActivityViewModel.boardPosition.changeTo(true to currentBoardPos)
                 }
             }
-
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                horizontalScrollOffset += dx
-                onScrolled(dx, dy)
-            }
         })
 
         itemTouchHelper = ItemTouchHelper(object : SimpleItemTouchHelperCallback() {
@@ -238,7 +212,11 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 snapHelper = null
             }
         }
-        snapHelper?.attachToRecyclerView(boardView)
+        if (snapHelper != null) {
+            boardView.onFlingListener = null
+            snapHelper?.attachToRecyclerView(boardView)
+            boardView.addVelocityTrackerOnFlingListener()
+        }
     }
 
     override fun getItemCount(): Int {
@@ -260,6 +238,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
         val taskList = board[position]
         holder.taskListView.adapter = getOrCreateListAdapter(taskList.id)
+        holder.taskListView.listAdapter?.onStartDragTask = onStartDragTask
         holder.headerTextView.text = taskList.name
 
         val headerColorScheme =
@@ -272,8 +251,8 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                     board.cardColor.colorScheme
                 else taskList.cardColor.colorScheme
 
-        holder.setHeaderColorScheme(headerColorScheme)
-        holder.setListColorScheme(listColorScheme)
+        holder.headerColorScheme = headerColorScheme
+        holder.listColorScheme = listColorScheme
     }
 
     override fun onViewAttachedToWindow(holder: BoardViewHolder) {
@@ -352,12 +331,74 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     fun setListsColorScheme(colorScheme: ColorScheme) {
         taskListAdapters.forEach { it.taskListView { setColorScheme(colorScheme) } }
     }
+
+    fun findTaskViewHolder(taskID: ID): TaskViewHolder? {
+        return taskListAdapters.find {
+            it.allViewHolders.firstOrNull { it.taskID == taskID } != null
+        }?.taskListView?.findViewHolderForItemId(taskID) as? TaskViewHolder
+    }
+
+    fun findTaskViewHolder(view: View): TaskViewHolder? {
+        taskListAdapters.map { it.taskListView }.forEach {
+            (it?.findContainingViewHolder(view) as? TaskViewHolder).also {
+                if (it != null) return it
+            }
+        }
+        return null
+    }
+
+    fun swapTaskViewHolders(oldViewHolder: TaskViewHolder, newViewHolder: TaskViewHolder) {
+        if (oldViewHolder.taskListID == newViewHolder.taskListID &&
+                oldViewHolder.taskID != newViewHolder.taskID) {
+            val oldPos = oldViewHolder.adapterPosition
+            val newPos = newViewHolder.adapterPosition
+
+            val taskListAdapter = getListAdapter(oldViewHolder.taskListID)
+
+            taskListAdapter?.taskList?.swap(oldPos, newPos)?.update()
+            taskListAdapter?.notifySwapped(oldPos, newPos)
+        } else moveTaskViewHolder(oldViewHolder, newViewHolder)
+    }
+
+    fun moveTaskViewHolder(oldViewHolder: TaskViewHolder, newViewHolder: TaskViewHolder) {
+        if (oldViewHolder.taskListID != newViewHolder.taskListID &&
+                oldViewHolder.taskID != newViewHolder.taskID) {
+
+            val oldAdapter = getListAdapter(oldViewHolder.taskListID)
+            val newAdapter = getListAdapter(newViewHolder.taskListID)
+
+            if (oldAdapter != null && newAdapter != null) {
+                val oldTaskList = newAdapter.taskList
+                val newTaskList = newAdapter.taskList
+                val task = oldTaskList[oldViewHolder.taskID]
+                val oldDragPos = oldViewHolder.adapterPosition
+                val newDragPos = newViewHolder.adapterPosition
+
+                AbstractWaqtiList.moveElement(
+                        listFrom = oldTaskList, listTo = newTaskList,
+                        element = task, toIndex = newDragPos
+                )
+
+                newAdapter.notifyItemInserted(newDragPos)
+                oldAdapter.notifyItemRemoved(oldDragPos)
+            }
+        }
+    }
+
+    fun swapBoardViewHolders(oldViewHolder: BoardViewHolder, newViewHolder: BoardViewHolder) {
+
+    }
+
+    fun moveBoardViewHolder(oldViewHolder: BoardViewHolder, newViewHolder: BoardViewHolder) {
+
+    }
+
 }
 
 
 class BoardViewHolder(view: View,
                       val adapter: BoardAdapter) : ViewHolder(view) {
-    val header: CardView = itemView.taskListHeader
+    val header: MaterialCardView = itemView.taskListHeader
     val headerTextView: TextView = itemView.taskListHeader_textView
     val taskListView: TaskListView = itemView.taskList_recyclerView
     val addButton: FloatingActionButton = itemView.taskListFooter_fab
@@ -365,13 +406,30 @@ class BoardViewHolder(view: View,
 
     inline val mainActivity: MainActivity get() = itemView.mainActivity
 
+    var headerColorScheme: ColorScheme = ColorScheme.WAQTI_DEFAULT
+        set(value) {
+            field = value
+            taskListView {
+                scrollBarColor = value.text
+                setEdgeEffectColor(value.dark)
+            }
+            header { setCardBackgroundColor(value.main.toAndroidColor) }
+            headerTextView { textColor = value.text.toAndroidColor }
+            addButton { setColorScheme(value) }
+        }
+
+    var listColorScheme: ColorScheme = ColorScheme.WAQTI_DEFAULT
+        set(value) {
+            field = value
+            taskListView { setColorScheme(value) }
+        }
 
     init {
         doInBackground {
             rootView.updateLayoutParams {
                 width = adapter.taskListWidth
             }
-            headerTextView { textSize = adapter.listHeaderTextSize.toFloat() }
+            headerTextView { textSize = adapter.listHeaderTextSize.F }
             taskListView {
                 addOnScrollListener(addButton.verticalFABOnScrollListener)
             }
@@ -381,7 +439,7 @@ class BoardViewHolder(view: View,
                     ViewListFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
-                    adapter.itemTouchHelper.startDrag(this@BoardViewHolder)
+                    adapter.onStartDragList(this@BoardViewHolder)
                     true
                 }
             }
@@ -393,20 +451,6 @@ class BoardViewHolder(view: View,
                 }
             }
         }
-    }
-
-    fun setHeaderColorScheme(colorScheme: ColorScheme) {
-        taskListView {
-            scrollBarColor = colorScheme.text
-            setEdgeEffectColor(colorScheme.dark)
-        }
-        header { setCardBackgroundColor(colorScheme.main.toAndroidColor) }
-        headerTextView { textColor = colorScheme.text.toAndroidColor }
-        addButton { setColorScheme(colorScheme) }
-    }
-
-    fun setListColorScheme(colorScheme: ColorScheme) {
-        taskListView { setColorScheme(colorScheme) }
     }
 }
 

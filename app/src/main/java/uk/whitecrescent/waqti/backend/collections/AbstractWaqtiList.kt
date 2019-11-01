@@ -4,9 +4,9 @@ import io.objectbox.annotation.BaseEntity
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.persistence.Cache
 import uk.whitecrescent.waqti.backend.task.ID
-import uk.whitecrescent.waqti.ids
-import uk.whitecrescent.waqti.matchOrder
-import uk.whitecrescent.waqti.toArrayList
+import uk.whitecrescent.waqti.extensions.ids
+import uk.whitecrescent.waqti.extensions.matchOrder
+import uk.whitecrescent.waqti.extensions.toArrayList
 
 @BaseEntity
 abstract class AbstractWaqtiList<E : Cacheable> : WaqtiList<E>, Cacheable {

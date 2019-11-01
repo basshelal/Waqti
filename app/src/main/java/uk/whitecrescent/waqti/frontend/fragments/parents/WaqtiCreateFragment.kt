@@ -1,7 +1,7 @@
 package uk.whitecrescent.waqti.frontend.fragments.parents
 
 import uk.whitecrescent.waqti.backend.Cacheable
-import uk.whitecrescent.waqti.clearFocusAndHideKeyboard
+import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
 
 abstract class WaqtiCreateFragment<E : Cacheable> : WaqtiFragment(true) {
 

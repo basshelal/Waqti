@@ -1,23 +1,30 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package uk.whitecrescent.waqti.frontend.customview
+package uk.whitecrescent.waqti.frontend.customview.drag
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.PointF
-import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
-import androidx.core.view.children
+import android.widget.FrameLayout
+import androidx.annotation.LayoutRes
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
-import com.google.android.material.card.MaterialCardView
+import androidx.recyclerview.widget.RecyclerView
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.collections.forEachReversedByIndex
-import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.IDLE
-import uk.whitecrescent.waqti.frontend.customview.DragView.DragState.SETTLING
+import uk.whitecrescent.waqti.extensions.F
+import uk.whitecrescent.waqti.extensions.allChildren
+import uk.whitecrescent.waqti.extensions.globalVisibleRect
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.parentViewGroup
+import uk.whitecrescent.waqti.frontend.customview.drag.DragView.DragState.IDLE
+import uk.whitecrescent.waqti.frontend.customview.drag.DragView.DragState.SETTLING
 import kotlin.math.roundToInt
 
 // TODO: 08-Aug-19 Callback or event when View bounds go out of bounds of Parent
@@ -28,13 +35,12 @@ class DragView
 constructor(context: Context,
             attributeSet: AttributeSet? = null,
             defStyle: Int = 0
-) : MaterialCardView(context, attributeSet, defStyle) {
+) : FrameLayout(context, attributeSet, defStyle) {
 
     private var dx = 0F
     private var dy = 0F
 
-    private var returnX = 0F
-    private var returnY = 0F
+    val returnPoint = PointF()
 
     private var isDragging = false
     private var stealChildrenTouchEvents = false
@@ -47,11 +53,23 @@ constructor(context: Context,
     var touchPointOutOfParentBounds = false
         private set
 
+    var onStateChanged: (DragState) -> Unit = { }
+        set(value) {
+            field = value
+            onStateChanged(this.dragState)
+        }
+
     var dragState: DragState = IDLE
-        private set
+        private set(value) {
+            field = value
+            onStateChanged(value)
+        }
 
     var dragListener: DragListener? = null
 
+    /**
+     * The contents of the DragView or the first and only child of the DragView
+     */
     inline var itemView: View?
         set(value) {
             removeAllViews()
@@ -59,19 +77,9 @@ constructor(context: Context,
         }
         get() = getChildAt(0)
 
-    private inline val parentViewGroup: ViewGroup
-        get() = this.parent as? ViewGroup?
-                ?: throw IllegalStateException("Parent must be a non null ViewGroup" +
-                        " parent is $parent")
-
     override fun onFinishInflate() {
         super.onFinishInflate()
-        init()
-    }
-
-    private inline fun init() {
-        returnX = this.x
-        returnY = this.y
+        returnPoint.set(this.x, this.y)
     }
 
     override fun addView(child: View?, index: Int, params: ViewGroup.LayoutParams?) {
@@ -131,17 +139,14 @@ constructor(context: Context,
     private inline fun onEntered(event: MotionEvent) {
         val newView = getViewUnder(event.rawX, event.rawY) ?: parentViewGroup
         if (currentView != newView) {
-            if (dragListener?.onEnteredView(this, newView, currentView, touchPoint) == true) {
-                returnX = newView.x
-                returnY = newView.y
-            }
+            dragListener?.onEnteredView(this, newView, currentView, touchPoint)
             currentView = newView
         }
         onBounds()
     }
 
     private inline fun onBounds() {
-        val outOfBounds = !parentViewGroup.getGlobalVisibleRect
+        val outOfBounds = !parentViewGroup.globalVisibleRect
                 .contains(touchPoint.x.roundToInt(), touchPoint.y.roundToInt())
         if (touchPointOutOfParentBounds != outOfBounds) {
             touchPointOutOfParentBounds = outOfBounds
@@ -153,19 +158,23 @@ constructor(context: Context,
         }
     }
 
+    fun getViewUnderTouchPoint(): View? = getViewUnder(touchPoint.x, touchPoint.y)
+
     private inline fun getViewUnder(pointX: Float, pointY: Float): View? {
-        parentViewGroup.children.toList().forEachReversedByIndex {
-            if (it.getGlobalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
+        /* parentViewGroup.children.toList().forEachReversedByIndex {
+             if (it.getGlobalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
+                     && it != this && it !in this.childrenRecursiveSequence()) {
+                 return it
+             }
+         }*/
+
+        // Below for ALL Views that are descendants of my parent all the way to the bottom
+        parentViewGroup.allChildren.forEachReversedByIndex {
+            if (it.globalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
                     && it != this && it !in this.childrenRecursiveSequence()) {
                 return it
             }
         }
-        /*parentViewGroup.childrenRecursiveSequence().toList().forEachReversedByIndex {
-            if (it.getGlobalVisibleRect.contains(pointX.roundToInt(), pointY.roundToInt())
-                    && it != this && it !in this.childrenRecursiveSequence()) {
-                return it
-            }
-        }*/
         return null
     }
 
@@ -173,13 +182,16 @@ constructor(context: Context,
         dragListener?.onReleaseDrag(this, touchPoint)
         dragState = SETTLING
 
-        SpringAnimation(this, DynamicAnimation.X, returnX).also {
-            it.spring.dampingRatio = 0.6F
-            it.spring.stiffness = 1000F
+        val dampingRatio = 0.6F
+        val stiffness = 1000F
+
+        SpringAnimation(this, DynamicAnimation.X, returnPoint.x).also {
+            it.spring.dampingRatio = dampingRatio
+            it.spring.stiffness = stiffness
         }.start()
-        SpringAnimation(this, DynamicAnimation.Y, returnY).also {
-            it.spring.dampingRatio = 0.6F
-            it.spring.stiffness = 1000F
+        SpringAnimation(this, DynamicAnimation.Y, returnPoint.y).also {
+            it.spring.dampingRatio = dampingRatio
+            it.spring.stiffness = stiffness
             it.addEndListener { _, _, _, _ -> afterEndAnimation() }
         }.start()
     }
@@ -194,6 +206,10 @@ constructor(context: Context,
         dragListener?.onEndDrag(this)
     }
 
+    fun setItemViewId(@LayoutRes itemViewId: Int) {
+        itemView = LayoutInflater.from(context).inflate(itemViewId, parentViewGroup, false)
+    }
+
     /**
      * Call this to start dragging from this DragView or any of its descendants, note that this
      * will "steal" those children's touch events while this DragView is being dragged.
@@ -201,8 +217,7 @@ constructor(context: Context,
      * To start dragging from a View that is not a descendant of this DragView, use [startDragFromView]
      */
     fun startDrag() {
-        returnX = this.x
-        returnY = this.y
+        returnPoint.set(this.x, this.y)
         dragState = DragState.DRAGGING
         dragListener?.onStartDrag(this)
         isDragging = true
@@ -224,19 +239,26 @@ constructor(context: Context,
 
         bringToFront()
 
-        val parentBounds = parentViewGroup.getGlobalVisibleRect
-        val viewBounds = view.getGlobalVisibleRect
+        val parentBounds = parentViewGroup.globalVisibleRect
+        val viewBounds = view.globalVisibleRect
 
-        this.x = viewBounds.left.toFloat() - parentBounds.left.toFloat()
-        this.y = viewBounds.top.toFloat() - parentBounds.top.toFloat()
-        returnX = this.x
-        returnY = this.y
-        view.setOnTouchListener { v, event ->
-            touchPoint.set(event.rawX, event.rawY)
-            return@setOnTouchListener this.onTouchEvent(event)
-        }
+        this.x = viewBounds.left.F - parentBounds.left.F
+        this.y = viewBounds.top.F - parentBounds.top.F
+        returnPoint.set(this.x, this.y)
+
         isDragging = true
         stealChildrenTouchEvents = true
+        view.setOnTouchListener { v, event ->
+            if (isDragging) {
+                touchPoint.set(event.rawX, event.rawY)
+                this.dispatchTouchEvent(event)
+                v.onTouchEvent(event)
+                v.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
+                true
+            } else {
+                false
+            }
+        }
     }
 
     /**
@@ -257,17 +279,25 @@ constructor(context: Context,
     fun endDragNow() {
         cancelLongPress()
         dragListener?.onReleaseDrag(this, touchPoint)
-        this.x = returnX
-        this.y = returnY
+        returnPoint.set(this.x, this.y)
         afterEndAnimation()
     }
 
-    private inline val View.getGlobalVisibleRect: Rect
-        get() {
-            val result = Rect()
-            this.getGlobalVisibleRect(result)
-            return result
+    private inline val parentViewGroup: ViewGroup
+        get() = this.parent as? ViewGroup?
+                ?: throw IllegalStateException("Parent must be a non null ViewGroup" +
+                        " parent is $parent")
+
+    companion object {
+
+        // TODO: 28-Sep-19 Use this later so we make long press have a nice fade before starting maybe
+        val longPressTime: Int
+            get() = ViewConfiguration.getLongPressTimeout()
+
+        fun fromView(view: View): DragView {
+            return (DragView(view.context)) { addView(view) }!!
         }
+    }
 
     enum class DragState {
         /** View is idle, no movement */
@@ -308,14 +338,9 @@ constructor(context: Context,
          *
          * In most cases [oldView] will never be null and will instead be the [dragView]'s
          * parent, but this is rarely not the case.
-         *
-         * @return true if [dragView] can be released on top of [newView] meaning if the user
-         * were to release drag the [dragView] will drop on top of [newView], false meaning it
-         * cannot. If [dragView] has never entered an acceptable drop view, it will return to its
-         * original position upon release
          */
         fun onEnteredView(dragView: DragView, newView: View,
-                          oldView: View?, touchPoint: PointF): Boolean
+                          oldView: View?, touchPoint: PointF)
 
         /**
          * Called when the user's touch point exits the bounds of the [dragView]'s parent view.
@@ -345,7 +370,8 @@ constructor(context: Context,
         override fun onStartDrag(dragView: DragView) {}
         override fun onUpdateLocation(dragView: DragView, touchPoint: PointF) {}
         override fun onEnteredView(dragView: DragView, newView: View,
-                                   oldView: View?, touchPoint: PointF): Boolean = false
+                                   oldView: View?, touchPoint: PointF) {
+        }
 
         override fun onExitedParentBounds(dragView: DragView, touchPoint: PointF) {}
         override fun onEnteredParentBounds(dragView: DragView, touchPoint: PointF) {}
@@ -361,8 +387,8 @@ constructor(context: Context,
                                                    touchPoint: PointF) -> Unit =
                             { dragView, touchPoint -> },
                     crossinline onEnteredView: (DragView, View,
-                                                View?, PointF) -> Boolean =
-                            { dragView, newView, oldView, touchPoint -> false },
+                                                View?, PointF) -> Unit =
+                            { dragView, newView, oldView, touchPoint -> },
 
                     crossinline onExitedParentBounds: (dragView: DragView,
                                                        touchPoint: PointF) -> Unit =
@@ -402,6 +428,27 @@ constructor(context: Context,
         }
     }
 
+}
+
+
+/* TODO: 28-Sep-19 For new Drag Implementation:
+ *  Make a dragListener in each possible draggable RecyclerView
+ *  then make any Fragment with any draggables implement listeners for each recyclerView
+ *  independently. The DragViews are actually in the Fragment as separate Views and not
+ *  actually part of the RecyclerViews
+ */
+
+/*
+ * itemView should be the DEFAULT View look of a DragView which will change when bind() is
+ * called, otherwise the default look will show which would just be one of the R.layout files
+ *
+ */
+abstract class DragViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+    abstract val itemViewId: Int
+
+    /* Here you change the the itemView's look */
+    abstract fun bind()
 }
 
 /*

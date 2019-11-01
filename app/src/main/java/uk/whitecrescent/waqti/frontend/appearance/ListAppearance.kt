@@ -2,8 +2,8 @@ package uk.whitecrescent.waqti.frontend.appearance
 
 import com.google.gson.annotations.SerializedName
 import io.objectbox.converter.PropertyConverter
-import uk.whitecrescent.waqti.fromJsonTo
-import uk.whitecrescent.waqti.toJson
+import uk.whitecrescent.waqti.extensions.fromJsonTo
+import uk.whitecrescent.waqti.extensions.toJson
 
 class ListAppearance {
 

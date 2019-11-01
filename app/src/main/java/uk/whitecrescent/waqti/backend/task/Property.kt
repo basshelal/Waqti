@@ -1,6 +1,6 @@
 package uk.whitecrescent.waqti.backend.task
 
-import uk.whitecrescent.waqti.hash
+import uk.whitecrescent.waqti.extensions.hash
 
 //isMet doesn't mean anything if isConstrained is false!
 open class Property<V>(@Transient open var isVisible: Boolean = SHOWING,

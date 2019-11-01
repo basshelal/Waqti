@@ -18,22 +18,23 @@ import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.extensions.hideKeyboard
+import uk.whitecrescent.waqti.extensions.invoke
+import uk.whitecrescent.waqti.extensions.mainActivity
+import uk.whitecrescent.waqti.extensions.mainActivityViewModel
+import uk.whitecrescent.waqti.extensions.shortSnackBar
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.appearance.BackgroundType
 import uk.whitecrescent.waqti.frontend.appearance.toColor
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewBoardFragment
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewMode
-import uk.whitecrescent.waqti.hideKeyboard
-import uk.whitecrescent.waqti.invoke
-import uk.whitecrescent.waqti.mainActivity
-import uk.whitecrescent.waqti.mainActivityViewModel
 
 class BoardListView
 @JvmOverloads
 constructor(context: Context,
             attributeSet: AttributeSet? = null,
             defStyle: Int = 0
-) : DragRecyclerView(context, attributeSet, defStyle) {
+) : WaqtiRecyclerView(context, attributeSet, defStyle) {
 
     val boardListAdapter: BoardListAdapter?
         get() = this.adapter as? BoardListAdapter
@@ -84,6 +85,7 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
 
             override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
                 super.clearView(recyclerView, viewHolder)
+
                 if (viewHolder is BoardListViewHolder) {
                     viewHolder.itemView.alpha = 1F
                 }
@@ -91,6 +93,7 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
 
             override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
                 super.onSelectedChanged(viewHolder, actionState)
+
                 if (viewHolder != null && viewHolder is BoardListViewHolder) {
                     viewHolder.itemView.alpha = 0.7F
                 }
@@ -154,6 +157,11 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
                     mainActivityViewModel.boardID = board.id
 
                     ViewBoardFragment.show(mainActivity)
+                }
+
+                setOnLongClickListener {
+                    shortSnackBar("Started dragging from Long Click Listener")
+                    false
                 }
             }
         }

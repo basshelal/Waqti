@@ -4,7 +4,7 @@ import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.persistence.Caches
-import uk.whitecrescent.waqti.hash
+import uk.whitecrescent.waqti.extensions.hash
 
 /**
  * The user defined level of importance of a Task represented as a String with a number representing importance

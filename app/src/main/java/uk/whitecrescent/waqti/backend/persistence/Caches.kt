@@ -12,8 +12,8 @@ import uk.whitecrescent.waqti.backend.task.Priority
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.backend.task.Template
 import uk.whitecrescent.waqti.backend.task.TimeUnit
-import uk.whitecrescent.waqti.doInBackgroundAsync
-import uk.whitecrescent.waqti.size
+import uk.whitecrescent.waqti.extensions.doInBackgroundAsync
+import uk.whitecrescent.waqti.extensions.size
 
 
 /*
