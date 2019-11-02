@@ -91,7 +91,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
                     CreateBoardFragment.show(mainActivity)
                 }
             }
-            setUpDragView()
+            setUpBoardDrag()
         }
     }
 
@@ -146,7 +146,7 @@ class ViewBoardListFragment : WaqtiViewFragment() {
         mainActivity.resetColorScheme()
     }
 
-    private inline fun setUpDragView() {
+    private inline fun setUpBoardDrag() {
 
     }
 

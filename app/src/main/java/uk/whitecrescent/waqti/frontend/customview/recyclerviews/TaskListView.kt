@@ -27,6 +27,7 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.persistence.getParent
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.extensions.I
 import uk.whitecrescent.waqti.extensions.doInBackground
 import uk.whitecrescent.waqti.extensions.invoke
 import uk.whitecrescent.waqti.extensions.lastPosition
@@ -370,7 +371,7 @@ class TaskListAdapter(val taskListID: ID,
         taskListView {
             val scrollBy: Int
 
-            val screenWidth = mainActivity.dimensions.first
+            val screenWidth = mainActivity.screenWidth
 
             val listWidth = boardAdapter.taskListWidth
 
@@ -386,7 +387,7 @@ class TaskListAdapter(val taskListID: ID,
         taskListView {
             val scrollBy: Int
 
-            val screenWidth = mainActivity.dimensions.first
+            val screenWidth = mainActivity.screenWidth
 
             val listWidth = boardAdapter.taskListWidth
 
@@ -490,7 +491,7 @@ private class ShadowBuilder(view: View) : View.DragShadowBuilder(view) {
 
         val x = view.mainActivity.currentTouchPoint.x - viewPoint.x
         val y = view.mainActivity.currentTouchPoint.y - viewPoint.y
-        outShadowTouchPoint?.set(x, y)
+        outShadowTouchPoint?.set(x.I, y.I)
     }
 
 }

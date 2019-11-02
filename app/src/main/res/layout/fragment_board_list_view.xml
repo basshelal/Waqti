@@ -84,10 +84,4 @@
 
     </androidx.core.widget.NestedScrollView>
 
-    <uk.whitecrescent.waqti.frontend.customview.draglayouts.BoardCardLayout
-        android:id="@+id/board_dragView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>

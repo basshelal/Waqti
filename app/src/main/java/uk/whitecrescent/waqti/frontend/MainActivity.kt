@@ -4,7 +4,6 @@ package uk.whitecrescent.waqti.frontend
 
 import android.content.res.Configuration
 import android.graphics.Color
-import android.graphics.Point
 import android.graphics.PointF
 import android.os.Bundle
 import android.provider.Settings
@@ -54,8 +53,10 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel: MainActivityViewModel
     lateinit var preferences: WaqtiPreferences
-    val currentTouchPoint = Point()
+    val currentTouchPoint = PointF()
     val onTouchOutSideListeners = HashMap<View, (View) -> Unit>()
+
+    var onTouch: (MotionEvent) -> Unit = {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         preferences = WaqtiPreferences(this)
@@ -171,13 +172,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         val spr = super.dispatchTouchEvent(event)
-        currentTouchPoint.set(event.rawX.I, event.rawY.I)
+        currentTouchPoint.set(event.rawX, event.rawY)
+        onTouch(event)
         if (event.action == MotionEvent.ACTION_DOWN) {
             onTouchOutSideListeners.forEach {
                 val (view, onClick) = it
                 if (view.isVisible) {
-                    val viewRect = view.globalVisibleRect
-                    if (!viewRect.contains(event.rawX.I, event.rawY.I)) {
+                    if (!view.globalVisibleRect.contains(event.rawX.I, event.rawY.I)) {
                         onClick(view)
                     }
                 }
@@ -235,9 +236,9 @@ class MainActivity : AppCompatActivity() {
     inline val appBar: AppBar
         get() = activity_appBar
 
-    inline val dimensions: Pair<Int, Int>
-        get() = this.resources
-                .let { displayMetrics.widthPixels to displayMetrics.heightPixels }
+    inline val screenWidth: Int get() = displayMetrics.widthPixels
+
+    inline val screenHeight: Int get() = displayMetrics.heightPixels
 
     inline val currentFragment: Fragment
         get() = supportFragmentManager.fragments.last()
