@@ -12,6 +12,7 @@ import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Point
 import android.graphics.Rect
+import android.graphics.RectF
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.util.DisplayMetrics
@@ -27,6 +28,7 @@ import androidx.activity.OnBackPressedCallback
 import androidx.annotation.IdRes
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.toRectF
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
@@ -147,6 +149,22 @@ inline fun <reified T : View> View.find(@IdRes id: Int, apply: T.() -> Unit): T 
 
 inline val ViewGroup.allChildren: List<View>
     get() = this.childrenRecursiveSequence().toList()
+
+inline fun View.bottomHorizontalRect(top: Float): RectF {
+    return this.globalVisibleRect.toRectF().also { it.top = top }
+}
+
+inline fun View.topHorizontalRect(bottom: Float): RectF {
+    return this.globalVisibleRect.toRectF().also { it.bottom = bottom }
+}
+
+inline fun View.leftVerticalRect(right: Float): RectF {
+    return this.globalVisibleRect.toRectF().also { it.right = right }
+}
+
+inline fun View.rightVerticalRect(left: Float): RectF {
+    return this.globalVisibleRect.toRectF().also { it.left = left }
+}
 
 //endregion View
 

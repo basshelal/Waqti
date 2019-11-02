@@ -110,3 +110,61 @@ data class ChangedPositionPair(var positionChanged: Boolean = false,
 @Retention(AnnotationRetention.SOURCE)
 @Target(AnnotationTarget.EXPRESSION)
 annotation class FragmentNavigation(val from: String, val to: String)
+
+data class Quadruple<out A, out B, out C, out D>(
+        val first: A,
+        val second: B,
+        val third: C,
+        val fourth: D
+) {
+
+    override fun toString(): String = "($first, $second, $third, $fourth)"
+}
+
+inline fun <T> Quadruple<T, T, T, T>.toList(): List<T> =
+        listOf(first, second, third, fourth)
+
+data class Quintuple<out A, out B, out C, out D, out E>(
+        val first: A,
+        val second: B,
+        val third: C,
+        val fourth: D,
+        val fifth: E
+) {
+
+    override fun toString(): String = "($first, $second, $third, $fourth, $fifth)"
+}
+
+inline fun <T> Quintuple<T, T, T, T, T>.toList(): List<T> =
+        listOf(first, second, third, fourth, fifth)
+
+data class Sextuple<out A, out B, out C, out D, out E, out F>(
+        val first: A,
+        val second: B,
+        val third: C,
+        val fourth: D,
+        val fifth: E,
+        val sixth: F
+) {
+
+    override fun toString(): String = "($first, $second, $third, $fourth, $fifth, $sixth)"
+}
+
+inline fun <T> Sextuple<T, T, T, T, T, T>.toList(): List<T> =
+        listOf(first, second, third, fourth, fifth, sixth)
+
+data class Septuple<out A, out B, out C, out D, out E, out F, out G>(
+        val first: A,
+        val second: B,
+        val third: C,
+        val fourth: D,
+        val fifth: E,
+        val sixth: F,
+        val seventh: G
+) {
+
+    override fun toString(): String = "($first, $second, $third, $fourth, $fifth, $sixth)"
+}
+
+inline fun <T> Septuple<T, T, T, T, T, T, T>.toList(): List<T> =
+        listOf(first, second, third, fourth, fifth, sixth, seventh)

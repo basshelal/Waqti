@@ -288,7 +288,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                             task_dragShadow.alpha = 0.8F
                         }
                         ObservableDragBehavior.DragState.SETTLING -> {
-
+                            task_dragShadow.alpha = 1F
                         }
                     }
                 }
@@ -387,7 +387,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                             list_dragShadow.isVisible = true
                         }
                         ObservableDragBehavior.DragState.SETTLING -> {
-
+                            list_dragShadow.alpha = 1F
                         }
                     }
                 }

@@ -5,6 +5,7 @@ package uk.whitecrescent.waqti.frontend
 import android.content.res.Configuration
 import android.graphics.Color
 import android.graphics.PointF
+import android.graphics.RectF
 import android.os.Bundle
 import android.provider.Settings
 import android.view.MotionEvent
@@ -26,6 +27,7 @@ import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.I
 import uk.whitecrescent.waqti.extensions.addOnBackPressedCallback
 import uk.whitecrescent.waqti.extensions.allChildren
@@ -232,6 +234,14 @@ class MainActivity : AppCompatActivity() {
         }
         return null
     }
+
+    inline fun bottomHorizontalRect(y: Float) = RectF(0F, y, screenWidth.F, screenHeight.F)
+
+    inline fun topHorizontalRect(y: Float) = RectF(0F, 0F, screenWidth.F, y)
+
+    inline fun leftVerticalRect(x: Float) = RectF(0F, 0F, x, screenHeight.F)
+
+    inline fun rightVerticalRect(x: Float) = RectF(x, 0F, screenWidth.F, screenHeight.F)
 
     inline val appBar: AppBar
         get() = activity_appBar
