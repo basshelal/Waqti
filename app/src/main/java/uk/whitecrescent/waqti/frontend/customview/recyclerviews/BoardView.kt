@@ -359,7 +359,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
                 taskListAdapter?.taskList?.swap(oldPos, newPos)?.update()
                 taskListAdapter?.notifySwapped(oldPos, newPos)
             }
-        } else moveTaskViewHolder(oldViewHolder, newViewHolder)
+        }// else moveTaskViewHolder(oldViewHolder, newViewHolder)
     }
 
     fun moveTaskViewHolder(oldViewHolder: TaskViewHolder, newViewHolder: TaskViewHolder) {

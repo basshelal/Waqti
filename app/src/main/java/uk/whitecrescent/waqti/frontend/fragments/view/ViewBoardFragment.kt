@@ -22,7 +22,6 @@ import androidx.core.graphics.contains
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
-import androidx.recyclerview.widget.DefaultItemAnimator
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -56,6 +55,7 @@ import uk.whitecrescent.waqti.extensions.fadeOut
 import uk.whitecrescent.waqti.extensions.getViewModel
 import uk.whitecrescent.waqti.extensions.globalVisibleRectF
 import uk.whitecrescent.waqti.extensions.horizontalFABOnScrollListener
+import uk.whitecrescent.waqti.extensions.horizontalPercentInverted
 import uk.whitecrescent.waqti.extensions.invoke
 import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.longSnackBar
@@ -286,11 +286,13 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     }
                 private val scrollLeftBounds: RectF
                     get() = taskListView.globalVisibleRectF.apply {
-
+                        right = left
+                        left = 0F
                     }
                 private val scrollRightBounds: RectF
                     get() = taskListView.globalVisibleRectF.apply {
-
+                        left = right
+                        right = realScreenWidth.F
                     }
 
                 private val currentTouchPoint = PointF()
@@ -316,8 +318,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                     currentTouchPoint.set(dragBehavior.initialTouchPoint)
 
-                    taskListView.itemAnimator = null
-
                     disposable = observable.subscribe {
                         if (!currentTouchPoint.equals(0F, 0F)) {
                             updateViewHolders(currentTouchPoint)
@@ -334,8 +334,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     draggingViewHolder?.itemView?.alpha = 1F
 
                     currentViewHolder = null
-
-                    taskListView.itemAnimator = DefaultItemAnimator()
 
                     disposable.dispose()
                 }
@@ -407,8 +405,30 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 private inline fun scrollHorizontally(touchPoint: PointF) {
-                    if (boardView?.linearLayoutManager?.canScrollHorizontally() == true) {
+                    if (boardView.linearLayoutManager?.canScrollHorizontally() == true) {
 
+                        if (touchPoint in scrollLeftBounds &&
+                                boardView.horizontalScrollOffset > 0) {
+                            val height = 10F
+                            val percent = scrollLeftBounds.horizontalPercentInverted(touchPoint).roundToInt()
+                            val multiplier = (percent.F / 100F) + 1F
+                            val scrollAmount = (-height * multiplier).roundToInt()
+
+                            boardView.scrollBy(scrollAmount, 0)
+
+                            return
+                        }
+                        if (touchPoint in scrollRightBounds &&
+                                boardView.horizontalScrollOffset < boardView.maxHorizontalScroll) {
+                            val height = 10F
+                            val percent = scrollRightBounds.verticalPercent(touchPoint).roundToInt()
+                            val multiplier = (percent.F / 100F) + 1F
+                            val scrollAmount = (height * multiplier).roundToInt()
+
+                            boardView.scrollBy(scrollAmount, 0)
+
+                            return
+                        }
                     }
                 }
 
