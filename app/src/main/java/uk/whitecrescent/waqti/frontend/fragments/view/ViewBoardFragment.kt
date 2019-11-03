@@ -320,8 +320,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                     disposable = observable.subscribe {
                         if (!currentTouchPoint.equals(0F, 0F)) {
-                            if (!checkForScroll(currentTouchPoint))
-                                updateViewHolders(currentTouchPoint)
+                            updateViewHolders(currentTouchPoint)
+                            checkForScroll(currentTouchPoint)
                         }
                     }
                 }
@@ -361,24 +361,25 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 private inline fun updateViewHolders(touchPoint: PointF) {
-                    if (currentViewHolder != findViewHolderUnder(touchPoint)) {
+                    if (touchPoint in scrollUpBounds) {
+                        currentViewHolder = taskListView.findFirstVisibleViewHolder() as? TaskViewHolder
+                        swapTaskViewHolders(draggingViewHolder, currentViewHolder)
+                    } else if (touchPoint in scrollDownBounds) {
+                        currentViewHolder = taskListView.findLastVisibleViewHolder() as? TaskViewHolder
+                        swapTaskViewHolders(draggingViewHolder, currentViewHolder)
+                    } else if (currentViewHolder != findViewHolderUnder(touchPoint)) {
                         currentViewHolder = findViewHolderUnder(touchPoint)
                         swapTaskViewHolders(draggingViewHolder, currentViewHolder)
                     }
                 }
 
-                // return true if a scroll was done
-                // this is run every frame
-                private inline fun checkForScroll(touchPoint: PointF): Boolean {
-                    return scrollVertically(touchPoint) && scrollHorizontally(touchPoint)
+                private inline fun checkForScroll(touchPoint: PointF) {
+                    scrollVertically(touchPoint)
+                    scrollHorizontally(touchPoint)
                 }
 
-                private inline fun scrollVertically(touchPoint: PointF): Boolean {
+                private inline fun scrollVertically(touchPoint: PointF) {
                     if (taskListView.linearLayoutManager?.canScrollVertically() == true) {
-                        // TODO: 03-Nov-19 We need to let the scroll keep happening even if the
-                        //  touchPoint isn't moving (user isn't moving his finger)
-
-                        logE(draggingViewHolder!!.itemView.height)
 
                         if (touchPoint in scrollUpBounds &&
                                 taskListView.verticalScrollOffset > 0) {
@@ -387,13 +388,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                             val multiplier = (percent.F / 100F) + 1F
                             val scrollAmount = (-height * multiplier).roundToInt()
 
-                            currentViewHolder = taskListView.findFirstVisibleViewHolder() as? TaskViewHolder
-
-                            swapTaskViewHolders(draggingViewHolder, currentViewHolder)
-
                             taskListView.scrollBy(0, scrollAmount)
 
-                            return true
+                            return
                         }
                         if (touchPoint in scrollDownBounds &&
                                 taskListView.verticalScrollOffset < taskListView.maxVerticalScroll) {
@@ -402,23 +399,17 @@ class ViewBoardFragment : WaqtiViewFragment() {
                             val multiplier = (percent.F / 100F) + 1F
                             val scrollAmount = (height * multiplier).roundToInt()
 
-                            currentViewHolder = taskListView.findLastVisibleViewHolder() as? TaskViewHolder
-
-                            swapTaskViewHolders(draggingViewHolder, currentViewHolder)
-
                             taskListView.scrollBy(0, scrollAmount)
 
-                            return true
+                            return
                         }
                     }
-                    return false
                 }
 
-                private inline fun scrollHorizontally(touchPoint: PointF): Boolean {
+                private inline fun scrollHorizontally(touchPoint: PointF) {
                     if (boardView?.linearLayoutManager?.canScrollHorizontally() == true) {
 
                     }
-                    return false
                 }
 
                 private inline fun findViewHolder(id: ID) =
