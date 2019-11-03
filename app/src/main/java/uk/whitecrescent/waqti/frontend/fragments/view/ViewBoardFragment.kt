@@ -22,6 +22,7 @@ import androidx.core.graphics.contains
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
+import androidx.recyclerview.widget.DefaultItemAnimator
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
@@ -29,6 +30,10 @@ import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
 import com.afollestad.materialdialogs.color.colorChooser
 import com.bumptech.glide.Glide
 import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
@@ -40,6 +45,7 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.extensions.D
 import uk.whitecrescent.waqti.extensions.F
+import uk.whitecrescent.waqti.extensions.L
 import uk.whitecrescent.waqti.extensions.addOnScrollListener
 import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.extensions.commitTransaction
@@ -83,6 +89,7 @@ import uk.whitecrescent.waqti.frontend.fragments.create.CreateListFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
 import uk.whitecrescent.waqti.frontend.vibrateCompat
+import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
 private val defaultInterpolator = AccelerateDecelerateInterpolator()
@@ -269,12 +276,12 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                 private val scrollUpBounds: RectF
                     get() = taskListView.globalVisibleRectF.apply {
-                        bottom = top + (taskListView.height.F * 0.2F)
+                        bottom = top + (taskListView.height.F * 0.05F)
                         top = 0F
                     }
                 private val scrollDownBounds: RectF
                     get() = taskListView.globalVisibleRectF.apply {
-                        top = bottom - (taskListView.height.F * 0.15F)
+                        top = bottom - (taskListView.height.F * 0.05F)
                         bottom = realScreenHeight.F
                     }
                 private val scrollLeftBounds: RectF
@@ -286,6 +293,19 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                     }
 
+                private val currentTouchPoint = PointF()
+
+                private val frameRate = mainActivity.millisPerFrame.L
+
+                private val observable =
+                        Observable.interval(
+                                frameRate,
+                                TimeUnit.MILLISECONDS)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribeOn(Schedulers.computation())
+
+                private lateinit var disposable: Disposable
+
                 override fun onStartDrag(dragView: View) {
 
                     draggingViewHolder = findViewHolder(dragTaskID)
@@ -294,6 +314,16 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                     taskListView = boardView.boardAdapter!!.getListAdapter(draggingViewHolder!!.taskListID)!!.taskListView!!
 
+                    currentTouchPoint.set(dragBehavior.initialTouchPoint)
+
+                    taskListView.itemAnimator = null
+
+                    disposable = observable.subscribe {
+                        if (!currentTouchPoint.equals(0F, 0F)) {
+                            if (!checkForScroll(currentTouchPoint))
+                                updateViewHolders(currentTouchPoint)
+                        }
+                    }
                 }
 
                 override fun onReleaseDrag(dragView: View, touchPoint: PointF) {
@@ -304,12 +334,15 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     draggingViewHolder?.itemView?.alpha = 1F
 
                     currentViewHolder = null
+
+                    taskListView.itemAnimator = DefaultItemAnimator()
+
+                    disposable.dispose()
                 }
 
                 override fun onUpdateLocation(dragView: View, touchPoint: PointF) {
                     /** check [TaskListAdapter.onDrag]*/
-                    if (!checkForScroll(touchPoint))
-                        updateViewHolders(touchPoint)
+                    currentTouchPoint.set(touchPoint)
                 }
 
                 override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
@@ -330,12 +363,12 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 private inline fun updateViewHolders(touchPoint: PointF) {
                     if (currentViewHolder != findViewHolderUnder(touchPoint)) {
                         currentViewHolder = findViewHolderUnder(touchPoint)
-
                         swapTaskViewHolders(draggingViewHolder, currentViewHolder)
                     }
                 }
 
                 // return true if a scroll was done
+                // this is run every frame
                 private inline fun checkForScroll(touchPoint: PointF): Boolean {
                     return scrollVertically(touchPoint) && scrollHorizontally(touchPoint)
                 }
@@ -345,31 +378,35 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         // TODO: 03-Nov-19 We need to let the scroll keep happening even if the
                         //  touchPoint isn't moving (user isn't moving his finger)
 
+                        logE(draggingViewHolder!!.itemView.height)
+
                         if (touchPoint in scrollUpBounds &&
                                 taskListView.verticalScrollOffset > 0) {
-                            val scrollUpAmount = draggingViewHolder?.itemView?.height ?: 0
+                            val height = 10F
                             val percent = scrollUpBounds.verticalPercentInverted(touchPoint).roundToInt()
-
+                            val multiplier = (percent.F / 100F) + 1F
+                            val scrollAmount = (-height * multiplier).roundToInt()
 
                             currentViewHolder = taskListView.findFirstVisibleViewHolder() as? TaskViewHolder
 
                             swapTaskViewHolders(draggingViewHolder, currentViewHolder)
 
-                            taskListView.smoothScrollBy(0, -scrollUpAmount - percent, defaultInterpolator)
+                            taskListView.scrollBy(0, scrollAmount)
 
                             return true
                         }
                         if (touchPoint in scrollDownBounds &&
                                 taskListView.verticalScrollOffset < taskListView.maxVerticalScroll) {
-                            val scrollDownAmount = draggingViewHolder?.itemView?.height ?: 0
+                            val height = 10F
                             val percent = scrollDownBounds.verticalPercent(touchPoint).roundToInt()
-
+                            val multiplier = (percent.F / 100F) + 1F
+                            val scrollAmount = (height * multiplier).roundToInt()
 
                             currentViewHolder = taskListView.findLastVisibleViewHolder() as? TaskViewHolder
 
                             swapTaskViewHolders(draggingViewHolder, currentViewHolder)
 
-                            taskListView.smoothScrollBy(0, scrollDownAmount + percent, defaultInterpolator)
+                            taskListView.scrollBy(0, scrollAmount)
 
                             return true
                         }

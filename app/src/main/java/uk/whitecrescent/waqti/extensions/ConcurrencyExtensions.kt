@@ -8,8 +8,33 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import org.reactivestreams.Subscriber
+import org.reactivestreams.Subscription
 
 //region RxJava Extensions
+
+inline fun <T> Subscriber(
+        crossinline onError: (Throwable?) -> Unit = {},
+        crossinline onComplete: () -> Unit = {},
+        crossinline onSubscribe: (Subscription?) -> Unit = {},
+        crossinline onNext: (T) -> Unit = {}
+) = object : Subscriber<T> {
+    override fun onNext(t: T) {
+        onNext(t)
+    }
+
+    override fun onError(t: Throwable?) {
+        onError(t)
+    }
+
+    override fun onComplete() {
+        onComplete()
+    }
+
+    override fun onSubscribe(s: Subscription?) {
+        onSubscribe(s)
+    }
+}
 
 /**
  * Provides an Observable that can be used to execute code on the computation thread and notify

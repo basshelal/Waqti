@@ -261,6 +261,8 @@ class MainActivity : AppCompatActivity() {
             windowManager.defaultDisplay.getRealSize(it)
         }.y
 
+    inline val millisPerFrame: Float get() = 1000F / windowManager.defaultDisplay.refreshRate
+
     inline val currentFragment: Fragment
         get() = supportFragmentManager.fragments.last()
 
