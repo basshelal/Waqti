@@ -4,6 +4,7 @@ package uk.whitecrescent.waqti.frontend
 
 import android.content.res.Configuration
 import android.graphics.Color
+import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.RectF
 import android.os.Bundle
@@ -235,20 +236,30 @@ class MainActivity : AppCompatActivity() {
         return null
     }
 
-    inline fun bottomHorizontalRect(y: Float) = RectF(0F, y, screenWidth.F, screenHeight.F)
+    inline fun bottomHorizontalRect(y: Float) = RectF(0F, y, realScreenWidth.F, realScreenHeight.F)
 
-    inline fun topHorizontalRect(y: Float) = RectF(0F, 0F, screenWidth.F, y)
+    inline fun topHorizontalRect(y: Float) = RectF(0F, 0F, realScreenWidth.F, y)
 
-    inline fun leftVerticalRect(x: Float) = RectF(0F, 0F, x, screenHeight.F)
+    inline fun leftVerticalRect(x: Float) = RectF(0F, 0F, x, realScreenHeight.F)
 
-    inline fun rightVerticalRect(x: Float) = RectF(x, 0F, screenWidth.F, screenHeight.F)
+    inline fun rightVerticalRect(x: Float) = RectF(x, 0F, realScreenWidth.F, realScreenHeight.F)
 
     inline val appBar: AppBar
         get() = activity_appBar
 
-    inline val screenWidth: Int get() = displayMetrics.widthPixels
+    inline val usableScreenWidth: Int get() = displayMetrics.widthPixels
 
-    inline val screenHeight: Int get() = displayMetrics.heightPixels
+    inline val usableScreenHeight: Int get() = displayMetrics.heightPixels
+
+    inline val realScreenWidth: Int
+        get() = Point().also {
+            windowManager.defaultDisplay.getRealSize(it)
+        }.x
+
+    inline val realScreenHeight: Int
+        get() = Point().also {
+            windowManager.defaultDisplay.getRealSize(it)
+        }.y
 
     inline val currentFragment: Fragment
         get() = supportFragmentManager.fragments.last()

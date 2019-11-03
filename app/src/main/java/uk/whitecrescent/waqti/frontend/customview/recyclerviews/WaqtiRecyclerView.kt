@@ -127,6 +127,34 @@ constructor(context: Context,
         this.onRestoreInstanceState(state)
     }
 
+    inline fun findFirstCompletelyVisibleViewHolder(): ViewHolder? {
+        linearLayoutManager?.also {
+            return findViewHolderForAdapterPosition(it.findFirstCompletelyVisibleItemPosition())
+        }
+        return null
+    }
+
+    inline fun findFirstVisibleViewHolder(): ViewHolder? {
+        linearLayoutManager?.also {
+            return findViewHolderForAdapterPosition(it.findFirstVisibleItemPosition())
+        }
+        return null
+    }
+
+    inline fun findLastCompletelyVisibleViewHolder(): ViewHolder? {
+        linearLayoutManager?.also {
+            return findViewHolderForAdapterPosition(it.findLastCompletelyVisibleItemPosition())
+        }
+        return null
+    }
+
+    inline fun findLastVisibleViewHolder(): ViewHolder? {
+        linearLayoutManager?.also {
+            return findViewHolderForAdapterPosition(it.findLastVisibleItemPosition())
+        }
+        return null
+    }
+
     /**
      * Called automatically by the Android framework in [onDrawScrollBars]
      */

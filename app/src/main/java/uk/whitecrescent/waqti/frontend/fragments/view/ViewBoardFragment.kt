@@ -4,6 +4,7 @@ package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.content.Context
 import android.graphics.PointF
+import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
 import android.os.Vibrator
@@ -14,8 +15,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.graphics.contains
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
@@ -36,6 +39,7 @@ import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.extensions.D
+import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.addOnScrollListener
 import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.extensions.commitTransaction
@@ -44,6 +48,7 @@ import uk.whitecrescent.waqti.extensions.doInBackground
 import uk.whitecrescent.waqti.extensions.fadeIn
 import uk.whitecrescent.waqti.extensions.fadeOut
 import uk.whitecrescent.waqti.extensions.getViewModel
+import uk.whitecrescent.waqti.extensions.globalVisibleRectF
 import uk.whitecrescent.waqti.extensions.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.extensions.invoke
 import uk.whitecrescent.waqti.extensions.logE
@@ -53,6 +58,8 @@ import uk.whitecrescent.waqti.extensions.mainActivityViewModel
 import uk.whitecrescent.waqti.extensions.setColorScheme
 import uk.whitecrescent.waqti.extensions.setEdgeEffectColor
 import uk.whitecrescent.waqti.extensions.shortSnackBar
+import uk.whitecrescent.waqti.extensions.verticalPercent
+import uk.whitecrescent.waqti.extensions.verticalPercentInverted
 import uk.whitecrescent.waqti.frontend.FragmentNavigation
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
@@ -78,6 +85,8 @@ import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewMo
 import uk.whitecrescent.waqti.frontend.vibrateCompat
 import kotlin.math.roundToInt
 
+private val defaultInterpolator = AccelerateDecelerateInterpolator()
+
 class ViewBoardFragment : WaqtiViewFragment() {
 
     private var boardID: ID = 0L
@@ -86,6 +95,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
     private var dragTaskID: ID = 0L
     private var dragListID: ID = 0L
+
+    private inline val realScreenWidth get() = mainActivity.realScreenWidth
+    private inline val realScreenHeight get() = mainActivity.realScreenHeight
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -238,6 +250,10 @@ class ViewBoardFragment : WaqtiViewFragment() {
         mainActivity.setColorScheme(board.barColor.colorScheme)
     }
 
+    /**
+     * See [androidx.recyclerview.widget.ItemTouchHelper.scrollIfNecessary] for a scroll idea
+     * see [androidx.recyclerview.widget.ItemTouchHelper.mScrollRunnable] for persistent scroll
+     */
     private inline fun setUpTaskDrag() {
         task_dragShadow {
 
@@ -249,7 +265,26 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 // The VH we are currently over
                 private var currentViewHolder: TaskViewHolder? = null
 
-                lateinit var taskListView: TaskListView
+                private lateinit var taskListView: TaskListView
+
+                private val scrollUpBounds: RectF
+                    get() = taskListView.globalVisibleRectF.apply {
+                        bottom = top + (taskListView.height.F * 0.2F)
+                        top = 0F
+                    }
+                private val scrollDownBounds: RectF
+                    get() = taskListView.globalVisibleRectF.apply {
+                        top = bottom - (taskListView.height.F * 0.15F)
+                        bottom = realScreenHeight.F
+                    }
+                private val scrollLeftBounds: RectF
+                    get() = taskListView.globalVisibleRectF.apply {
+
+                    }
+                private val scrollRightBounds: RectF
+                    get() = taskListView.globalVisibleRectF.apply {
+
+                    }
 
                 override fun onStartDrag(dragView: View) {
 
@@ -262,7 +297,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 override fun onReleaseDrag(dragView: View, touchPoint: PointF) {
-
                 }
 
                 override fun onEndDrag(dragView: View) {
@@ -274,8 +308,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                 override fun onUpdateLocation(dragView: View, touchPoint: PointF) {
                     /** check [TaskListAdapter.onDrag]*/
-                    updateViewHolders(touchPoint)
-                    checkForScroll(touchPoint)
+                    if (!checkForScroll(touchPoint))
+                        updateViewHolders(touchPoint)
                 }
 
                 override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
@@ -293,54 +327,97 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     }
                 }
 
-                inline fun updateViewHolders(touchPoint: PointF) {
+                private inline fun updateViewHolders(touchPoint: PointF) {
                     if (currentViewHolder != findViewHolderUnder(touchPoint)) {
                         currentViewHolder = findViewHolderUnder(touchPoint)
 
-                        if (draggingViewHolder != null && currentViewHolder != null &&
-                                draggingViewHolder != currentViewHolder) {
-
-                            // TODO: 27-Oct-19 Something is wrong here, it works when the header
-                            //  is invisible because the return point animation is actually doing
-                            //  the point in relation to the DragView's parent, not the actual
-                            //  RecyclerView, we need to offset this
-                            //  the 2 viewParents of interest are the TaskListView and the root
-                            //  of this Fragment, we need to find the position of this
-                            //  TaskListView in relation to the fragment root (which is the
-                            //  parent of the DragView)
-
-                            val headerHeight = (boardView.findViewHolderForItemId(1) as
-                                    BoardViewHolder).header.height
-
-                            val newReturnPoint = PointF(currentViewHolder!!.itemView.x,
-                                    currentViewHolder!!.itemView.y + headerHeight)
-
-                            dragBehavior.returnPoint.set(newReturnPoint)
-
-                            this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
-                                    draggingViewHolder!!, currentViewHolder!!
-                            )
-                        }
+                        swapTaskViewHolders(draggingViewHolder, currentViewHolder)
                     }
                 }
 
-                inline fun findViewHolder(id: ID) =
+                // return true if a scroll was done
+                private inline fun checkForScroll(touchPoint: PointF): Boolean {
+                    return scrollVertically(touchPoint) && scrollHorizontally(touchPoint)
+                }
+
+                private inline fun scrollVertically(touchPoint: PointF): Boolean {
+                    if (taskListView.linearLayoutManager?.canScrollVertically() == true) {
+                        // TODO: 03-Nov-19 We need to let the scroll keep happening even if the
+                        //  touchPoint isn't moving (user isn't moving his finger)
+
+                        if (touchPoint in scrollUpBounds &&
+                                taskListView.verticalScrollOffset > 0) {
+                            val scrollUpAmount = draggingViewHolder?.itemView?.height ?: 0
+                            val percent = scrollUpBounds.verticalPercentInverted(touchPoint).roundToInt()
+
+
+                            currentViewHolder = taskListView.findFirstVisibleViewHolder() as? TaskViewHolder
+
+                            swapTaskViewHolders(draggingViewHolder, currentViewHolder)
+
+                            taskListView.smoothScrollBy(0, -scrollUpAmount - percent, defaultInterpolator)
+
+                            return true
+                        }
+                        if (touchPoint in scrollDownBounds &&
+                                taskListView.verticalScrollOffset < taskListView.maxVerticalScroll) {
+                            val scrollDownAmount = draggingViewHolder?.itemView?.height ?: 0
+                            val percent = scrollDownBounds.verticalPercent(touchPoint).roundToInt()
+
+
+                            currentViewHolder = taskListView.findLastVisibleViewHolder() as? TaskViewHolder
+
+                            swapTaskViewHolders(draggingViewHolder, currentViewHolder)
+
+                            taskListView.smoothScrollBy(0, scrollDownAmount + percent, defaultInterpolator)
+
+                            return true
+                        }
+                    }
+                    return false
+                }
+
+                private inline fun scrollHorizontally(touchPoint: PointF): Boolean {
+                    if (boardView?.linearLayoutManager?.canScrollHorizontally() == true) {
+
+                    }
+                    return false
+                }
+
+                private inline fun findViewHolder(id: ID) =
                         this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(id)
 
-                inline fun findViewHolder(view: View) =
+                private inline fun findViewHolder(view: View) =
                         this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(view)
 
-                inline fun findViewHolderUnder(pointF: PointF): TaskViewHolder? {
-                    mainActivity.findViewUnder(pointF)?.also {
+                private inline fun findViewHolderUnder(point: PointF): TaskViewHolder? {
+                    mainActivity.findViewUnder(point)?.also {
                         return findViewHolder(it)
                     }
                     return null
                 }
 
-                inline fun checkForScroll(touchPointF: PointF) {
-                    // here we check if we have to scroll something either left right or up down
-                }
+                private inline fun swapTaskViewHolders(oldViewHolder: TaskViewHolder?,
+                                                       newViewHolder: TaskViewHolder?) {
+                    if (oldViewHolder != null && newViewHolder != null && oldViewHolder != newViewHolder) {
+                        // TODO: 27-Oct-19 Something is wrong here, it works when the header
+                        //  is invisible because the return point animation is actually doing
+                        //  the point in relation to the DragView's parent, not the actual
+                        //  RecyclerView, we need to offset this
+                        //  the 2 viewParents of interest are the TaskListView and the root
+                        //  of this Fragment, we need to find the position of this
+                        //  TaskListView in relation to the fragment root (which is the
+                        //  parent of the DragView)
 
+                        val newReturnPoint = PointF(newViewHolder.itemView.x, newViewHolder.itemView.y)
+
+                        dragBehavior.returnPoint.set(newReturnPoint)
+
+                        this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
+                                oldViewHolder, newViewHolder
+                        )
+                    }
+                }
             }
         }
     }

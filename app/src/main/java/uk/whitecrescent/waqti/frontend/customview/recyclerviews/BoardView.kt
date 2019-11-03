@@ -123,7 +123,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         onInflate = {}
 
         val percent = boardView.mainActivity.preferences.listWidth / 100.0
-        taskListWidth = (boardView.mainActivity.screenWidth * percent).roundToInt()
+        taskListWidth = (boardView.mainActivity.usableScreenWidth * percent).roundToInt()
         listHeaderTextSize = boardView.mainActivity.preferences.listHeaderTextSize
 
         doInBackground {
@@ -136,14 +136,14 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
             /*
             How many lists can fit into one screen?
-            screenWidth / tasklistWidth = ~1.4
+            usableScreenWidth / tasklistWidth = ~1.4
             How many full screens will show, remember that the pointer will never
             reach the last list!
 
-            val screenWidth = boardView.mainActivity.screenDimensions.first.toFloat()
-            val lists = screenWidth.toDouble() / taskListWidth.toDouble()
+            val usableScreenWidth = boardView.mainActivity.screenDimensions.first.toFloat()
+            val lists = usableScreenWidth.toDouble() / taskListWidth.toDouble()
 
-            logE("ScreenWidth: $screenWidth")
+            logE("ScreenWidth: $usableScreenWidth")
             logE("Percent: $percent")
             logE("TaskListWidth: $taskListWidth")
             logE("Lists in 1 screen: $lists")
@@ -355,8 +355,10 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
             val taskListAdapter = getListAdapter(oldViewHolder.taskListID)
 
-            taskListAdapter?.taskList?.swap(oldPos, newPos)?.update()
-            taskListAdapter?.notifySwapped(oldPos, newPos)
+            if (oldPos >= 0 && newPos >= 0) {
+                taskListAdapter?.taskList?.swap(oldPos, newPos)?.update()
+                taskListAdapter?.notifySwapped(oldPos, newPos)
+            }
         } else moveTaskViewHolder(oldViewHolder, newViewHolder)
     }
 

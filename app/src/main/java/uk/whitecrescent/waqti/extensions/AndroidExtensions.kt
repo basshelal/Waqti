@@ -11,6 +11,7 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Point
+import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
 import android.text.Editable
@@ -49,6 +50,8 @@ import uk.whitecrescent.waqti.frontend.MainActivityViewModel
 import uk.whitecrescent.waqti.frontend.SimpleOnSeekChangeListener
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
+import kotlin.math.max
+import kotlin.math.min
 
 //region View
 
@@ -145,25 +148,28 @@ inline val View.rootViewGroup: ViewGroup?
 inline val View.globalVisibleRect: Rect
     get() = Rect().also { this.getGlobalVisibleRect(it) }
 
+inline val View.globalVisibleRectF: RectF
+    get() = Rect().also { this.getGlobalVisibleRect(it) }.toRectF()
+
 inline fun <reified T : View> View.find(@IdRes id: Int, apply: T.() -> Unit): T = find<T>(id).apply(apply)
 
 inline val ViewGroup.allChildren: List<View>
     get() = this.childrenRecursiveSequence().toList()
 
 inline fun View.bottomHorizontalRect(top: Float): RectF {
-    return this.globalVisibleRect.toRectF().also { it.top = top }
+    return this.globalVisibleRectF.also { it.top = top }
 }
 
 inline fun View.topHorizontalRect(bottom: Float): RectF {
-    return this.globalVisibleRect.toRectF().also { it.bottom = bottom }
+    return this.globalVisibleRectF.also { it.bottom = bottom }
 }
 
 inline fun View.leftVerticalRect(right: Float): RectF {
-    return this.globalVisibleRect.toRectF().also { it.right = right }
+    return this.globalVisibleRectF.also { it.right = right }
 }
 
 inline fun View.rightVerticalRect(left: Float): RectF {
-    return this.globalVisibleRect.toRectF().also { it.left = left }
+    return this.globalVisibleRectF.also { it.left = left }
 }
 
 //endregion View
@@ -330,3 +336,27 @@ inline infix fun Context.convertDpToPx(dp: Number): Float =
  */
 inline infix fun Context.convertPxToDp(px: Number): Float =
         (px.F / (this.resources.displayMetrics.densityDpi.F / DisplayMetrics.DENSITY_DEFAULT))
+
+inline fun RectF.verticalPercent(pointF: PointF): Float {
+    val min = min(bottom, top)
+    val max = max(bottom, top)
+    return (((pointF.y - min) / (max - min)) * 100F)
+}
+
+inline fun RectF.verticalPercentInverted(pointF: PointF): Float {
+    val min = min(bottom, top)
+    val max = max(bottom, top)
+    return (((pointF.y - max) / (min - max)) * 100F)
+}
+
+inline fun RectF.horizontalPercent(pointF: PointF): Float {
+    val min = min(bottom, top)
+    val max = max(bottom, top)
+    return (((pointF.x - min) / (max - min)) * 100F)
+}
+
+inline fun RectF.horizontalPercentInverted(pointF: PointF): Float {
+    val min = min(bottom, top)
+    val max = max(bottom, top)
+    return (((pointF.y - max) / (min - max)) * 100F)
+}

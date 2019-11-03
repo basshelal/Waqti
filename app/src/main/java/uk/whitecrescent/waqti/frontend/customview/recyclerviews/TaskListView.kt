@@ -371,7 +371,7 @@ class TaskListAdapter(val taskListID: ID,
         taskListView {
             val scrollBy: Int
 
-            val screenWidth = mainActivity.screenWidth
+            val screenWidth = mainActivity.usableScreenWidth
 
             val listWidth = boardAdapter.taskListWidth
 
@@ -387,7 +387,7 @@ class TaskListAdapter(val taskListID: ID,
         taskListView {
             val scrollBy: Int
 
-            val screenWidth = mainActivity.screenWidth
+            val screenWidth = mainActivity.usableScreenWidth
 
             val listWidth = boardAdapter.taskListWidth
 
