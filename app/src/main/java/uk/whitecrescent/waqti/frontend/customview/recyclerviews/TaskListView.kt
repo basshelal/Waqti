@@ -73,7 +73,7 @@ constructor(context: Context,
         }
         itemAnimator = object : DefaultItemAnimator() {
             override fun animateAdd(holder: ViewHolder?): Boolean {
-                holder?.itemView?.alpha = draggingViewAlpha
+                //holder?.itemView?.alpha = draggingViewAlpha
                 dispatchAddFinished(holder)
                 return true
             }

@@ -6,7 +6,6 @@ package uk.whitecrescent.waqti.extensions
 
 import android.Manifest
 import android.app.Activity
-import android.app.AlarmManager
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
@@ -259,9 +258,6 @@ inline fun Activity.checkWritePermission() {
                 arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE), 1)
     }
 }
-
-inline val Activity.alarmManager: AlarmManager
-    get() = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
 inline fun <reified T : ViewModel> FragmentActivity.getViewModel(): T =
         ViewModelProviders.of(this).get(T::class.java)

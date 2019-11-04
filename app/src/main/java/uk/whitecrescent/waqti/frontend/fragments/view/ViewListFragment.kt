@@ -2,9 +2,7 @@
 
 package uk.whitecrescent.waqti.frontend.fragments.view
 
-import android.content.Context
 import android.os.Bundle
-import android.os.Vibrator
 import android.text.SpannableStringBuilder
 import android.view.DragEvent
 import android.view.LayoutInflater
@@ -21,6 +19,7 @@ import com.afollestad.materialdialogs.color.colorChooser
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import kotlinx.android.synthetic.main.list_options.view.*
+import org.jetbrains.anko.vibrator
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.TaskList
@@ -123,7 +122,7 @@ class ViewListFragment : WaqtiViewFragment() {
                                 fadeIn(200)
                             }
                             DragEvent.ACTION_DRAG_ENTERED -> {
-                                (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator).vibrateCompat(50)
+                                mainActivity.vibrator.vibrateCompat(50)
                             }
                             DragEvent.ACTION_DROP -> {
                                 ConfirmDialog().apply {

@@ -11,7 +11,9 @@ import androidx.dynamicanimation.animation.SpringAnimation
 import org.jetbrains.anko.childrenRecursiveSequence
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.globalVisibleRect
+import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.parentViewGroup
+import uk.whitecrescent.waqti.now
 
 open class DragBehavior(val view: View) {
 
@@ -126,6 +128,7 @@ open class DragBehavior(val view: View) {
         isDragging = true
         stealChildrenTouchEvents = true
         otherView.setOnTouchListener { v, event ->
+            logE(now)
             if (isDragging) {
                 touchPoint.set(event.rawX, event.rawY)
                 this.view.dispatchTouchEvent(event)

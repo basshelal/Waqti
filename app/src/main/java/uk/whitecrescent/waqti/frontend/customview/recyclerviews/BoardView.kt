@@ -348,50 +348,54 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     }
 
     fun swapTaskViewHolders(oldViewHolder: TaskViewHolder, newViewHolder: TaskViewHolder) {
-        if (oldViewHolder.taskListID == newViewHolder.taskListID &&
-                oldViewHolder.taskID != newViewHolder.taskID) {
-            val oldPos = oldViewHolder.adapterPosition
-            val newPos = newViewHolder.adapterPosition
+        when {
+            oldViewHolder.taskID == newViewHolder.taskID -> return
+            oldViewHolder.taskListID == newViewHolder.taskListID -> {
+                // They are in the same list
 
-            val taskListAdapter = getListAdapter(oldViewHolder.taskListID)
+                val oldTaskListAdapter = getListAdapter(oldViewHolder.taskListID)
+                val newTaskListAdapter = getListAdapter(newViewHolder.taskListID)
 
-            if (oldPos >= 0 && newPos >= 0) {
-                taskListAdapter?.taskList?.swap(oldPos, newPos)?.update()
-                taskListAdapter?.notifySwapped(oldPos, newPos)
+                if (oldTaskListAdapter != newTaskListAdapter ||
+                        oldTaskListAdapter == null || newTaskListAdapter == null) return
+
+                val oldPosition = oldViewHolder.adapterPosition
+                val newPosition = newViewHolder.adapterPosition
+
+                if (oldPosition >= 0 && newPosition >= 0) {
+                    oldTaskListAdapter.taskList.swap(oldPosition, newPosition).update()
+                    oldTaskListAdapter.notifySwapped(oldPosition, newPosition)
+                }
             }
-        }// else moveTaskViewHolder(oldViewHolder, newViewHolder)
-    }
+            oldViewHolder.taskListID != newViewHolder.taskListID -> {
+                // They are in different lists
 
-    fun moveTaskViewHolder(oldViewHolder: TaskViewHolder, newViewHolder: TaskViewHolder) {
-        if (oldViewHolder.taskListID != newViewHolder.taskListID &&
-                oldViewHolder.taskID != newViewHolder.taskID) {
+                val oldTaskListAdapter = getListAdapter(oldViewHolder.taskListID)
+                val newTaskListAdapter = getListAdapter(newViewHolder.taskListID)
 
-            val oldAdapter = getListAdapter(oldViewHolder.taskListID)
-            val newAdapter = getListAdapter(newViewHolder.taskListID)
+                if (oldTaskListAdapter == newTaskListAdapter ||
+                        oldTaskListAdapter == null || newTaskListAdapter == null) return
 
-            if (oldAdapter != null && newAdapter != null) {
-                val oldTaskList = newAdapter.taskList
-                val newTaskList = newAdapter.taskList
-                val task = oldTaskList[oldViewHolder.taskID]
-                val oldDragPos = oldViewHolder.adapterPosition
-                val newDragPos = newViewHolder.adapterPosition
+                val oldTaskList = oldTaskListAdapter.taskList
+                val newTaskList = newTaskListAdapter.taskList
+                val taskToMove = oldTaskList[oldViewHolder.taskID]
+                val oldPosition = oldViewHolder.adapterPosition
+                val newPosition = newViewHolder.adapterPosition
 
-                AbstractWaqtiList.moveElement(
-                        listFrom = oldTaskList, listTo = newTaskList,
-                        element = task, toIndex = newDragPos
-                )
+                if (oldPosition >= 0 && newPosition >= 0) {
+                    AbstractWaqtiList.moveElement(
+                            listFrom = oldTaskList, listTo = newTaskList,
+                            element = taskToMove, toIndex = newPosition
+                    )
 
-                newAdapter.notifyItemInserted(newDragPos)
-                oldAdapter.notifyItemRemoved(oldDragPos)
+                    newTaskListAdapter.notifyItemInserted(newPosition)
+                    oldTaskListAdapter.notifyItemRemoved(oldPosition)
+                }
             }
         }
     }
 
     fun swapBoardViewHolders(oldViewHolder: BoardViewHolder, newViewHolder: BoardViewHolder) {
-
-    }
-
-    fun moveBoardViewHolder(oldViewHolder: BoardViewHolder, newViewHolder: BoardViewHolder) {
 
     }
 

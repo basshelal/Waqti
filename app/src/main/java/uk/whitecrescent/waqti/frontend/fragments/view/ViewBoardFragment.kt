@@ -2,12 +2,10 @@
 
 package uk.whitecrescent.waqti.frontend.fragments.view
 
-import android.content.Context
 import android.graphics.PointF
 import android.graphics.RectF
 import android.net.Uri
 import android.os.Bundle
-import android.os.Vibrator
 import android.text.SpannableStringBuilder
 import android.view.DragEvent
 import android.view.LayoutInflater
@@ -15,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.inputmethod.EditorInfo
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.contains
@@ -37,6 +34,7 @@ import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
 import org.jetbrains.anko.textColor
+import org.jetbrains.anko.vibrator
 import uk.whitecrescent.waqti.ForLater
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
@@ -50,6 +48,7 @@ import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.extensions.commitTransaction
 import uk.whitecrescent.waqti.extensions.convertDpToPx
 import uk.whitecrescent.waqti.extensions.doInBackground
+import uk.whitecrescent.waqti.extensions.doInBackgroundDelayed
 import uk.whitecrescent.waqti.extensions.fadeIn
 import uk.whitecrescent.waqti.extensions.fadeOut
 import uk.whitecrescent.waqti.extensions.getViewModel
@@ -91,8 +90,6 @@ import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewMo
 import uk.whitecrescent.waqti.frontend.vibrateCompat
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
-
-private val defaultInterpolator = AccelerateDecelerateInterpolator()
 
 class ViewBoardFragment : WaqtiViewFragment() {
 
@@ -186,8 +183,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                 fadeIn(200)
                             }
                             DragEvent.ACTION_DRAG_ENTERED -> {
-                                (mainActivity.getSystemService(Context.VIBRATOR_SERVICE) as? Vibrator?)
-                                        ?.vibrateCompat(50)
+                                mainActivity.vibrator.vibrateCompat(50)
                             }
                             DragEvent.ACTION_DROP -> {
                                 ConfirmDialog().apply {
@@ -257,10 +253,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
         mainActivity.setColorScheme(board.barColor.colorScheme)
     }
 
-    /**
-     * See [androidx.recyclerview.widget.ItemTouchHelper.scrollIfNecessary] for a scroll idea
-     * see [androidx.recyclerview.widget.ItemTouchHelper.mScrollRunnable] for persistent scroll
-     */
     private inline fun setUpTaskDrag() {
         task_dragShadow {
 
@@ -299,6 +291,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                 private val frameRate = mainActivity.millisPerFrame.L
 
+                private val scrollByPixels = frameRate.F / 1.5F
+
                 private val observable =
                         Observable.interval(
                                 frameRate,
@@ -324,9 +318,20 @@ class ViewBoardFragment : WaqtiViewFragment() {
                             checkForScroll(currentTouchPoint)
                         }
                     }
+
+                    // TODO: 04-Nov-19 When dragging a ViewHolder that will be touched by a "notify" method call,
+                    //  the drag we have is let go for some reason
+
+                    doInBackgroundDelayed(2000) {
+                        taskListView.listAdapter?.notifyItemRemoved(1)
+                    }
+
                 }
 
                 override fun onReleaseDrag(dragView: View, touchPoint: PointF) {
+
+                    logE("RELEASE")
+
                 }
 
                 override fun onEndDrag(dragView: View) {
@@ -381,10 +386,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                         if (touchPoint in scrollUpBounds &&
                                 taskListView.verticalScrollOffset > 0) {
-                            val height = 10F
                             val percent = scrollUpBounds.verticalPercentInverted(touchPoint).roundToInt()
                             val multiplier = (percent.F / 100F) + 1F
-                            val scrollAmount = (-height * multiplier).roundToInt()
+                            val scrollAmount = (-scrollByPixels * multiplier).roundToInt()
 
                             taskListView.scrollBy(0, scrollAmount)
 
@@ -392,10 +396,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         }
                         if (touchPoint in scrollDownBounds &&
                                 taskListView.verticalScrollOffset < taskListView.maxVerticalScroll) {
-                            val height = 10F
                             val percent = scrollDownBounds.verticalPercent(touchPoint).roundToInt()
                             val multiplier = (percent.F / 100F) + 1F
-                            val scrollAmount = (height * multiplier).roundToInt()
+                            val scrollAmount = (scrollByPixels * multiplier).roundToInt()
 
                             taskListView.scrollBy(0, scrollAmount)
 
@@ -409,10 +412,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                         if (touchPoint in scrollLeftBounds &&
                                 boardView.horizontalScrollOffset > 0) {
-                            val height = 10F
                             val percent = scrollLeftBounds.horizontalPercentInverted(touchPoint).roundToInt()
                             val multiplier = (percent.F / 100F) + 1F
-                            val scrollAmount = (-height * multiplier).roundToInt()
+                            val scrollAmount = (-scrollByPixels * multiplier).roundToInt()
 
                             boardView.scrollBy(scrollAmount, 0)
 
@@ -420,10 +422,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         }
                         if (touchPoint in scrollRightBounds &&
                                 boardView.horizontalScrollOffset < boardView.maxHorizontalScroll) {
-                            val height = 10F
                             val percent = scrollRightBounds.verticalPercent(touchPoint).roundToInt()
                             val multiplier = (percent.F / 100F) + 1F
-                            val scrollAmount = (height * multiplier).roundToInt()
+                            val scrollAmount = (scrollByPixels * multiplier).roundToInt()
 
                             boardView.scrollBy(scrollAmount, 0)
 
