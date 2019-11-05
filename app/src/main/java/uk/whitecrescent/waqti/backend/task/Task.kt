@@ -1465,6 +1465,15 @@ class Task(name: String = "") : Cacheable {
 
     //region Observers
 
+    fun runObserver() {
+        if (observingProperties[TIME]!!) observeTime()
+        if (observingProperties[DURATION]!!) observeDuration()
+        if (observingProperties[CHECKLIST]!!) observeChecklist()
+        if (observingProperties[DEADLINE]!!) observeDeadline()
+        if (observingProperties[BEFORE]!!) observeBefore()
+        if (observingProperties[SUB_TASKS]!!) observeSubTasks()
+    }
+
     @SuppressLint("CheckResult")
     private inline fun backgroundObserver() {
         var done = false
@@ -1476,12 +1485,7 @@ class Task(name: String = "") : Cacheable {
 
                             override fun onNext(it: Long) {
                                 if (this@Task !in Caches.tasks) done = true
-                                if (observingProperties[TIME]!!) observeTime()
-                                if (observingProperties[DURATION]!!) observeDuration()
-                                if (observingProperties[CHECKLIST]!!) observeChecklist()
-                                if (observingProperties[DEADLINE]!!) observeDeadline()
-                                if (observingProperties[BEFORE]!!) observeBefore()
-                                if (observingProperties[SUB_TASKS]!!) observeSubTasks()
+                                runObserver()
                             }
 
                             override fun onError(e: Throwable) {

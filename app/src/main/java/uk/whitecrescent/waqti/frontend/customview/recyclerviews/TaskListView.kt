@@ -96,6 +96,7 @@ class TaskListAdapter(val taskListID: ID,
     var onInflate: TaskListView.() -> Unit = { }
 
     var onStartDragTask: (TaskViewHolder) -> Unit = { }
+    var onTouchTask: (TaskViewHolder) -> Unit = {}
 
     inline val linearLayoutManager: LinearLayoutManager? get() = taskListView?.linearLayoutManager
     inline val allViewHolders: List<TaskViewHolder>
@@ -164,6 +165,9 @@ class TaskListAdapter(val taskListID: ID,
             else taskList.cardColor.colorScheme
             textView.text = taskList[position].name
         }
+    }
+
+    private inline fun setHolderDrag(holder: TaskViewHolder) {
         holder.apply {
             cardView.setOnDragListener { _, event ->
                 val draggingState = event.localState as DragEventLocalState
@@ -431,6 +435,10 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
         doInBackground {
             textView.textSize = mainActivity.preferences.cardTextSize.toFloat()
             cardView {
+                setOnTouchListener { v, event ->
+                    adapter.onTouchTask(this@TaskViewHolder)
+                    false
+                }
                 setOnClickListener {
                     mainActivityViewModel.taskID = taskID
                     mainActivityViewModel.listID = taskListID

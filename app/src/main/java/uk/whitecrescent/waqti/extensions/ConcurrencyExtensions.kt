@@ -19,22 +19,13 @@ inline fun <T> Subscriber(
         crossinline onSubscribe: (Subscription?) -> Unit = {},
         crossinline onNext: (T) -> Unit = {}
 ) = object : Subscriber<T> {
-    override fun onNext(t: T) {
-        onNext(t)
-    }
-
-    override fun onError(t: Throwable?) {
-        onError(t)
-    }
-
-    override fun onComplete() {
-        onComplete()
-    }
-
-    override fun onSubscribe(s: Subscription?) {
-        onSubscribe(s)
-    }
+    override fun onNext(t: T) = onNext(t)
+    override fun onError(t: Throwable?) = onError(t)
+    override fun onComplete() = onComplete()
+    override fun onSubscribe(s: Subscription?) = onSubscribe(s)
 }
+
+inline fun <T> Observable<T>.onAndroid() = this.observeOn(AndroidSchedulers.mainThread())
 
 /**
  * Provides an Observable that can be used to execute code on the computation thread and notify
@@ -43,7 +34,7 @@ inline fun <T> Subscriber(
  */
 inline fun <T> T.androidObservable(): Observable<T> {
     return Observable.just(this)
-            .observeOn(AndroidSchedulers.mainThread())
+            .onAndroid()
             .subscribeOn(Schedulers.computation())
 }
 
@@ -60,7 +51,7 @@ inline fun <reified T> T.doInBackgroundWhen(crossinline predicate: (T) -> Boolea
                                                     java.util.concurrent.TimeUnit.MILLISECONDS): Disposable {
     var invoked = false
     return Observable.interval(period.toLong(), timeUnit, Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
+            .onAndroid()
             .subscribeOn(Schedulers.computation())
             .subscribe({
                 if (!predicate(this)) invoked = false
@@ -88,7 +79,7 @@ inline fun <reified T> T.doInBackgroundOnceWhen(crossinline predicate: (T) -> Bo
                                                 crossinline onNext: T.() -> Unit): Disposable {
     var done = false
     return Observable.interval(period.toLong(), timeUnit, Schedulers.computation())
-            .observeOn(AndroidSchedulers.mainThread())
+            .onAndroid()
             .subscribeOn(Schedulers.computation())
             .takeWhile { !done }
             .subscribe({
