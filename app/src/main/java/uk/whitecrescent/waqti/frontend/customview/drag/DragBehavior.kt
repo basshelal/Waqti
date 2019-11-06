@@ -8,12 +8,12 @@ import android.view.View
 import android.view.ViewConfiguration
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.childrenRecursiveSequence
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.globalVisibleRect
-import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.parentViewGroup
-import uk.whitecrescent.waqti.now
+import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 
 open class DragBehavior(val view: View) {
 
@@ -128,10 +128,25 @@ open class DragBehavior(val view: View) {
         isDragging = true
         stealChildrenTouchEvents = true
         otherView.setOnTouchListener { v, event ->
-            logE(now)
+
+            /*
+             * The otherView, (the one this comment is inside its touchListener) is having its
+             * touch event cancelled when a notify function is called because that other View is
+             * a member of the RecyclerView which is being redrawn and re-laid-out so naturally
+             * it must cancel its touch events, but ideally this shouldn't effect us as the
+             * dragBehavior since we only care about this.view
+             *
+             * So, either we look into a solution inside here to fix this, or we make it such
+             * that when the user touches any Task, the dragShadow is placed there and matched
+             * there and a long press will occur on it not the item. I really should try to fix
+             * it here but that might not be possible, we'll see
+             */
+
+            v.backgroundColor = ColorScheme.getAllColorSchemes().random().main.toAndroidColor
             if (isDragging) {
                 touchPoint.set(event.rawX, event.rawY)
                 this.view.dispatchTouchEvent(event)
+                this.view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
                 v.onTouchEvent(event)
                 v.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
                 true

@@ -7,6 +7,7 @@ import android.graphics.Point
 import android.util.AttributeSet
 import android.view.DragEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -96,7 +97,7 @@ class TaskListAdapter(val taskListID: ID,
     var onInflate: TaskListView.() -> Unit = { }
 
     var onStartDragTask: (TaskViewHolder) -> Unit = { }
-    var onTouchTask: (TaskViewHolder) -> Unit = {}
+    var onTouchTask: (TaskViewHolder, MotionEvent) -> Unit = { _, _ -> }
 
     inline val linearLayoutManager: LinearLayoutManager? get() = taskListView?.linearLayoutManager
     inline val allViewHolders: List<TaskViewHolder>
@@ -435,8 +436,8 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
         doInBackground {
             textView.textSize = mainActivity.preferences.cardTextSize.toFloat()
             cardView {
-                setOnTouchListener { v, event ->
-                    adapter.onTouchTask(this@TaskViewHolder)
+                setOnTouchListener { _, event ->
+                    adapter.onTouchTask(this@TaskViewHolder, event)
                     false
                 }
                 setOnClickListener {

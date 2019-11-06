@@ -329,9 +329,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 override fun onReleaseDrag(dragView: View, touchPoint: PointF) {
-
-                    logE("RELEASE")
-
                 }
 
                 override fun onEndDrag(dragView: View) {
