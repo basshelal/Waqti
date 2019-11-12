@@ -1,9 +1,6 @@
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
-
 apply plugin: 'kotlin-kapt'
 apply plugin: 'io.objectbox'
 
@@ -11,8 +8,8 @@ android {
     compileSdkVersion 29
     defaultConfig {
         applicationId "uk.whitecrescent.waqti"
-        minSdkVersion 24
-        targetSdkVersion 29
+        minSdkVersion(24)
+        targetSdkVersion(29)
         multiDexEnabled true
         versionCode 3
         versionName "1.0.1"
@@ -22,14 +19,14 @@ android {
         release {
             // don't minify because variable names get lost including enum names, things break!
             // we can fix this eventually by using the progaurd files
-            minifyEnabled false
+            minifyEnabled = false
 
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
     compileOptions {
-        sourceCompatibility 1.8
-        targetCompatibility 1.8
+        sourceCompatibility(1.8)
+        targetCompatibility(1.8)
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -65,17 +62,12 @@ dependencies {
     implementation("com.jakewharton.threetenabp:threetenabp:1.2.1")
     testImplementation("org.threeten:threetenbp:1.4.0")
     implementation("com.google.code.gson:gson:2.8.6") // replace GSON with moshi
-    implementation("com.squareup.moshi:moshi-kotlin:1.9.1")
-    implementation("com.github.florent37:shapeofview:1.4.6") // remove
     implementation("org.jetbrains.anko:anko:0.10.8")
     debugImplementation("com.squareup.leakcanary:leakcanary-android:1.6.3")
     releaseImplementation("com.squareup.leakcanary:leakcanary-android-no-op:1.6.3")
     implementation("com.google.android.material:material:1.2.0-alpha01")
     implementation("com.mikhaellopez:circularimageview:3.2.0")
-    implementation("com.squareup.retrofit2:retrofit:2.6.2") // remove
-    implementation("com.github.bumptech.glide:glide:4.10.0") // switch to Picasso??
-    annotationProcessor("com.github.bumptech.glide:compiler:4.10.0") // switch to Picasso??
-    implementation("com.kc.androidunsplash:androidunsplash:1.0.4") // remove later
+    implementation("com.squareup.picasso:picasso:2.71828")
     implementation("com.github.medyo:android-about-page:1.2.5")
     implementation("com.afollestad.material-dialogs:core:3.0.1")
     implementation("com.afollestad.material-dialogs:input:3.0.1")

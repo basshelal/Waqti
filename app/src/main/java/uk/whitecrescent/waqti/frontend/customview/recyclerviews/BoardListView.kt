@@ -2,6 +2,7 @@ package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.Context
 import android.content.res.Configuration
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -10,7 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.board_card.view.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.colorAttr
@@ -128,10 +129,16 @@ class BoardListAdapter(boardListID: ID) : RecyclerView.Adapter<BoardListViewHold
                         setImageDrawable(board.backgroundColor.toColorDrawable)
                     }
                     BackgroundType.UNSPLASH_PHOTO -> {
-                        Glide.with(this)
-                                .load(Uri.parse(board.backgroundPhoto.urls.regular))
-                                .centerCrop()
-                                .into(boardImage_imageView)
+                        val photo = board.backgroundPhoto
+
+                        Picasso.get().load(Uri.parse(photo.urls.regular)).apply {
+                            fetch()
+                            photo.color?.also {
+                                placeholder(ColorDrawable(it.toColor.toAndroidColor))
+                            }
+                            fit()
+                            centerCrop()
+                        }.into(boardImage_imageView)
                     }
                 }
             }

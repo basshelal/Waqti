@@ -4,7 +4,7 @@ import android.content.Context
 import android.text.SpannableStringBuilder
 import android.util.AttributeSet
 import android.view.View
-import com.github.florent37.shapeofview.shapes.RoundRectView
+import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.options_item.view.*
 import org.jetbrains.anko.image
 import org.jetbrains.anko.textColor
@@ -14,9 +14,11 @@ import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.appearance.toColor
 
 class OptionsItem
-@JvmOverloads constructor(context: Context,
-                          attributeSet: AttributeSet? = null,
-                          defStyle: Int = 0) : RoundRectView(context, attributeSet, defStyle) {
+@JvmOverloads constructor(
+        context: Context,
+        attributeSet: AttributeSet? = null,
+        defStyle: Int = 0
+) : MaterialCardView(context, attributeSet, defStyle) {
     init {
 
         View.inflate(context, R.layout.options_item, this)
@@ -24,10 +26,7 @@ class OptionsItem
         val attributes = context.obtainStyledAttributes(attributeSet, R.styleable.OptionsItem)
 
         attributes.getDimension(R.styleable.OptionsItem_radius, 0F).also {
-            bottomLeftRadius = it
-            topLeftRadius = it
-            topRightRadius = it
-            bottomRightRadius = it
+            radius = it
         }
 
         optionsItem_imageView {

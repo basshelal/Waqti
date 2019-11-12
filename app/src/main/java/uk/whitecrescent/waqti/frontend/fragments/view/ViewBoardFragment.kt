@@ -4,6 +4,7 @@ package uk.whitecrescent.waqti.frontend.fragments.view
 
 import android.graphics.PointF
 import android.graphics.RectF
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.SpannableStringBuilder
@@ -24,8 +25,8 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
 import com.afollestad.materialdialogs.color.colorChooser
-import com.bumptech.glide.Glide
 import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
+import com.squareup.picasso.Picasso
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
@@ -254,7 +255,31 @@ class ViewBoardFragment : WaqtiViewFragment() {
     }
 
     private inline fun setUpTaskDrag() {
+
+        val range = (0..1080)
+
         task_dragShadow {
+
+            /*setOnLongClickListener {
+                logE("ON LONG CLICK!")
+                updateLayoutParams {
+                    width = WRAP_CONTENT
+                    height = WRAP_CONTENT
+                }
+                isVisible = true
+                alpha = 1F
+                updateToMatch(boardView.boardAdapter!!.findTaskViewHolder(1)!!.itemView)
+                dragBehavior.startDrag()
+
+
+                true
+            }
+
+
+            doInBackgroundDelayed(2000) {
+                performLongClick(500F, 0F)
+            }*/
+
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
 
@@ -748,11 +773,14 @@ class ViewBoardFragment : WaqtiViewFragment() {
             width = MATCH_PARENT
             height = MATCH_PARENT
         }
-        Glide.with(this)
-                .load(Uri.parse(photo.urls.regular))
-                .centerCrop()
-                .into(background_imageView)
-
+        Picasso.get().load(Uri.parse(photo.urls.regular)).apply {
+            fetch()
+            photo.color?.also {
+                placeholder(ColorDrawable(it.toColor.toAndroidColor))
+            }
+            fit()
+            centerCrop()
+        }.into(background_imageView)
     }
 
     private inline fun setBackgroundColor(waqtiColor: WaqtiColor) {
@@ -783,7 +811,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 height = WRAP_CONTENT
             }
 
-            Glide.with(this)
+            Picasso.get()
                     .load(Uri.parse(photo.urls.regular))
                     .centerCrop()
                     .into(background_imageView)
