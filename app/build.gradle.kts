@@ -1,32 +1,41 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'io.objectbox'
+import org.jetbrains.kotlin.config.KotlinCompilerVersion
+
+plugins {
+    id("com.android.application")
+    kotlin("android")
+    kotlin("android.extensions")
+    kotlin("kapt")
+    id("kotlin-android")
+    id("kotlin-android-extensions")
+    id("kotlin-kapt")
+    id("io.objectbox")
+}
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion(29)
+}
+
+android {
+    compileSdkVersion(29)
     defaultConfig {
-        applicationId "uk.whitecrescent.waqti"
+        applicationId = "uk.whitecrescent.waqti"
         minSdkVersion(24)
         targetSdkVersion(29)
-        multiDexEnabled true
-        versionCode 3
-        versionName "1.0.1"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled = true
+        versionCode = 3
+        versionName = "1.0.1"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
-        release {
-            // don't minify because variable names get lost including enum names, things break!
-            // we can fix this eventually by using the progaurd files
-            minifyEnabled = false
 
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        getByName("release") {
+            isMinifyEnabled = false
+            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
         }
     }
     compileOptions {
-        sourceCompatibility(1.8)
-        targetCompatibility(1.8)
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
     kotlinOptions {
         jvmTarget = "1.8"
@@ -34,10 +43,12 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    val kotlinVersion = KotlinCompilerVersion.VERSION
+
+    fileTree(mapOf("dir" to "libs", "include" to listOf("*.jar")))
     /*================================= Kotlin =================================*/
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.2")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-rx2:1.3.2")
@@ -56,7 +67,7 @@ dependencies {
     androidTestImplementation("androidx.test.espresso:espresso-core:3.2.0")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.5.2")
     /*================================= External =================================*/
-    implementation("io.objectbox:objectbox-kotlin:$objectboxVersion")
+    implementation("io.objectbox:objectbox-kotlin:2.4.0")
     implementation("io.reactivex.rxjava2:rxjava:2.2.14")
     implementation("io.reactivex.rxjava2:rxandroid:2.1.1")
     implementation("com.jakewharton.threetenabp:threetenabp:1.2.1")
