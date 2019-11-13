@@ -50,8 +50,8 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
         return inflater.inflate(R.layout.fragment_create_task, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         viewModel = getViewModel()
 

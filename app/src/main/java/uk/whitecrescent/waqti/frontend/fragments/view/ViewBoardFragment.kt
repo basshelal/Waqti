@@ -109,8 +109,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
         return inflater.inflate(R.layout.fragment_board_view, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         boardID = mainActivityVM.boardID
         board = Caches.boards[boardID]
@@ -123,7 +123,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
 
         setUpViews()
-
     }
 
     override fun setUpViews() {
@@ -339,8 +338,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                     disposable = observable.subscribe {
                         if (!currentTouchPoint.equals(0F, 0F)) {
-                            updateViewHolders(currentTouchPoint)
-                            checkForScroll(currentTouchPoint)
+                            // updateViewHolders(currentTouchPoint)
+                            // checkForScroll(currentTouchPoint)
                         }
                     }
 

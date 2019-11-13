@@ -69,8 +69,8 @@ class ViewListFragment : WaqtiViewFragment() {
         return inflater.inflate(R.layout.fragment_view_list, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         listID = mainActivityVM.listID
         boardID = mainActivityVM.boardID
@@ -87,7 +87,6 @@ class ViewListFragment : WaqtiViewFragment() {
         viewModel = getViewModel()
 
         setUpViews()
-
     }
 
     override fun setUpViews() {

@@ -35,8 +35,8 @@ class PhotoPickerDialog : WaqtiFragment() {
         return inflater.inflate(R.layout.dialog_photopicker, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         setUpAppBar()
         setUpViews()

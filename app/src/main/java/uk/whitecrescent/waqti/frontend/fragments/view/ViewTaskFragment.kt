@@ -59,8 +59,8 @@ class ViewTaskFragment : WaqtiViewFragment() {
         return inflater.inflate(R.layout.fragment_view_task, container, false)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         taskID = mainActivityVM.taskID
         listID = mainActivityVM.listID
@@ -73,7 +73,6 @@ class ViewTaskFragment : WaqtiViewFragment() {
         board = Caches.boards[boardID]
 
         setUpViews()
-
     }
 
     override fun setUpViews() {

@@ -1,6 +1,7 @@
 package uk.whitecrescent.waqti.frontend.fragments.parents
 
 import android.os.Bundle
+import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.transition.AutoTransition
@@ -36,8 +37,8 @@ abstract class WaqtiFragment(val animate: Boolean = true) : Fragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         mainActivity = activity as MainActivity
         mainActivityVM = mainActivity.viewModel
