@@ -3,7 +3,6 @@ package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -103,7 +102,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     var onStartDragList: (BoardViewHolder) -> Unit = { }
     var onStartDragTask: (TaskViewHolder) -> Unit = { }
-    var onTouchTask: (TaskViewHolder, MotionEvent) -> Unit = { _, _ -> }
 
     inline val linearLayoutManager: LinearLayoutManager? get() = boardView.linearLayoutManager
     inline val allCards: List<CardView> get() = taskListAdapters.flatMap { it.allListCards }
@@ -241,7 +239,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         val taskList = board[position]
         holder.taskListView.adapter = getOrCreateListAdapter(taskList.id)
         holder.taskListView.listAdapter?.onStartDragTask = onStartDragTask
-        holder.taskListView.listAdapter?.onTouchTask = onTouchTask
         holder.headerTextView.text = taskList.name
 
         val headerColorScheme =

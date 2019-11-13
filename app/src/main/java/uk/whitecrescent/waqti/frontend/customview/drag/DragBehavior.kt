@@ -19,6 +19,7 @@ import uk.whitecrescent.waqti.extensions.globalVisibleRect
 import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.parentViewGroup
+import uk.whitecrescent.waqti.extensions.parents
 import java.util.concurrent.TimeUnit
 
 open class DragBehavior(val view: View) {
@@ -104,6 +105,14 @@ open class DragBehavior(val view: View) {
                                 logE(synthesizedEvent)
                                 logE(event == synthesizedEvent)
                                 logE(event === synthesizedEvent)
+                            }
+
+                            view.parents.forEach {
+                                it.isClickable = false
+                                it.stopNestedScroll()
+                                it.requestDisallowInterceptTouchEvent(true)
+                                it.isEnabled = false
+                                it.cancelPendingInputEvents()
                             }
                         },
                         onError = {
@@ -201,6 +210,14 @@ open class DragBehavior(val view: View) {
         // the touch point is different from the current one (either the event passed is not the
         // synthesized one, OR the actual point is different, both mean the passed in event is
         // not the synthesized one) then we can proceed as usual and do dragging
+
+        otherView.parents.forEach {
+            it.isClickable = false
+            it.stopNestedScroll()
+            it.requestDisallowInterceptTouchEvent(true)
+            it.isEnabled = false
+            it.cancelPendingInputEvents()
+        }
 
         synthesizedEvent = MotionEvent.obtain(
                 SystemClock.uptimeMillis(),
