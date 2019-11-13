@@ -2,18 +2,24 @@
 
 package uk.whitecrescent.waqti.frontend.customview.drag
 
+import android.annotation.SuppressLint
 import android.graphics.PointF
+import android.os.SystemClock
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
-import org.jetbrains.anko.backgroundColor
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import org.jetbrains.anko.childrenRecursiveSequence
 import uk.whitecrescent.waqti.extensions.F
+import uk.whitecrescent.waqti.extensions.Observer
 import uk.whitecrescent.waqti.extensions.globalVisibleRect
+import uk.whitecrescent.waqti.extensions.logE
+import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.parentViewGroup
-import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
+import java.util.concurrent.TimeUnit
 
 open class DragBehavior(val view: View) {
 
@@ -31,7 +37,14 @@ open class DragBehavior(val view: View) {
     protected var dampingRatio = 0.6F
     protected var stiffness = 1000F
 
+    var synthesizedEvent: MotionEvent? = null
+
     protected val onTouchListener = View.OnTouchListener { v, event ->
+        if (event != synthesizedEvent) {
+            logE("Recycled Synthesized event!")
+            synthesizedEvent?.recycle()
+            synthesizedEvent = null
+        }
         touchPoint.set(event.rawX, event.rawY)
         if (isDragging) {
             when (event.actionMasked) {
@@ -39,24 +52,72 @@ open class DragBehavior(val view: View) {
                     onDown(event)
                 }
                 MotionEvent.ACTION_MOVE -> {
-                    onDown(event)
                     onMove(event)
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     endDrag()
                 }
-                else -> view.onTouchEvent(event)
+                else -> {
+                    logE("SOMETHING ELSE!")
+                    // view.onTouchEvent(event)
+                }
             }
-            view.onTouchEvent(event)
             true
         } else {
-            view.onTouchEvent(event)
+            true
         }
     }
 
     init {
         returnPoint.set(view.x, view.y)
         view.setOnTouchListener(onTouchListener)
+    }
+
+    @SuppressLint("CheckResult")
+    fun drag(event: MotionEvent) {
+        if (event === synthesizedEvent) {
+            logE("Recycled Original event!")
+            view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
+            event.recycle()
+            view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
+            startObserver(event)
+        }
+    }
+
+    private inline fun startObserver(event: MotionEvent) {
+        Observable.interval(1L, TimeUnit.MILLISECONDS)
+                .takeWhile { synthesizedEvent != null }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(Observer<Long>(
+                        onNext = {
+                            if (event !== synthesizedEvent) {
+                                logE("Recycled Synthesized event!")
+                                synthesizedEvent?.recycle()
+                                synthesizedEvent = null
+                            }
+                            view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
+                            //view.dispatchTouchEvent(event)
+                            onTouchListener.onTouch(view, event)
+                            if (it.rem(100L) == 0L) {
+                                logE(event)
+                                logE(synthesizedEvent)
+                                logE(event == synthesizedEvent)
+                                logE(event === synthesizedEvent)
+                            }
+                        },
+                        onError = {
+
+                        },
+                        onComplete = {
+                            logE("COMPLETED DRAGGING!")
+                            logE(synthesizedEvent)
+                        },
+                        onSubscribe = {
+                            logE("STARTED DRAGGING!")
+                        }
+                )
+                )
     }
 
     protected open fun onDown(event: MotionEvent) {
@@ -70,6 +131,8 @@ open class DragBehavior(val view: View) {
     }
 
     protected open fun onMove(event: MotionEvent) {
+        onDown(event)
+        view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
         view.x = event.rawX + dPoint.x
         view.y = event.rawY + dPoint.y
         touchPoint.set(event.rawX, event.rawY)
@@ -101,6 +164,7 @@ open class DragBehavior(val view: View) {
     }
 
     open fun endDrag() {
+        synthesizedEvent = null
         view.cancelLongPress()
         animateReturn()
     }
@@ -111,9 +175,12 @@ open class DragBehavior(val view: View) {
         afterEndAnimation()
     }
 
+    @SuppressLint("Recycle")
     open fun startDragFromView(otherView: View) {
         require(otherView in this.view.parentViewGroup!!.childrenRecursiveSequence()) {
-            "The passed in view must be a descendant of this DragView's parent!"
+            """"The passed in view must be a descendant of this DragView's parent! 
+                Passed in View: $otherView 
+                Parent: ${otherView.parent}"""
         }
 
         this.view.bringToFront()
@@ -123,11 +190,30 @@ open class DragBehavior(val view: View) {
 
         this.view.x = viewBounds.left.F - parentBounds.left.F
         this.view.y = viewBounds.top.F - parentBounds.top.F
-        returnPoint.set(this.view.x, this.view.y)
+        startDrag()
 
-        isDragging = true
-        stealChildrenTouchEvents = true
-        otherView.setOnTouchListener { v, event ->
+        // continuously run a synthesized drag loop (synthesized MotionEvent) until the user
+        // actually starts dragging themselves in which case we will recycle the synthesized
+        // MotionEvent and use the user's MotionEvent for Drags
+        // How will we know? Well the Synthesized Event won't actually move anything, it'll act
+        // and behave like a MOVE but it will be in the same spot, the touch point that is
+        // triggering this start drag, this needs to be a new parameter, if onMove is called and
+        // the touch point is different from the current one (either the event passed is not the
+        // synthesized one, OR the actual point is different, both mean the passed in event is
+        // not the synthesized one) then we can proceed as usual and do dragging
+
+        synthesizedEvent = MotionEvent.obtain(
+                SystemClock.uptimeMillis(),
+                SystemClock.uptimeMillis(),
+                MotionEvent.ACTION_MOVE,
+                view.mainActivity.currentTouchPoint.x,
+                view.mainActivity.currentTouchPoint.y,
+                0
+        )
+
+        synthesizedEvent?.also { drag(it) }
+
+        /*otherView.setOnTouchListener { v, event ->
 
             /*
              * The otherView, (the one this comment is inside its touchListener) is having its
@@ -153,8 +239,12 @@ open class DragBehavior(val view: View) {
             } else {
                 false
             }
-        }
+        }*/
     }
+
+    inline fun onTouchEvent(event: MotionEvent) = this.view.onTouchEvent(event)
+
+    inline fun dispatchTouchEvent(event: MotionEvent) = this.view.dispatchTouchEvent(event)
 
     companion object {
 
