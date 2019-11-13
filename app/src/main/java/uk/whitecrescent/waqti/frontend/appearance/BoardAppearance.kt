@@ -54,9 +54,9 @@ enum class BackgroundType {
     COLOR, UNSPLASH_PHOTO
 }
 
-val DEFAULT_URLS = UnsplashUrls("", "", "", "", "", "", "")
+val DEFAULT_URLS = UnsplashUrls("", "", "", "", "")
 val DEFAULT_LINKS = UnsplashLinks("", "", "", "", "", "", "")
 val DEFAULT_USER = UnsplashUser("", "", "", "", "", "", 0, 0, 0, DEFAULT_URLS, DEFAULT_LINKS)
 
 val DEFAULT_PHOTO = UnsplashPhoto("", "", 0, 0, "", 0, "",
-        DEFAULT_URLS, DEFAULT_LINKS, DEFAULT_USER)
+        DEFAULT_URLS, DEFAULT_LINKS, DEFAULT_USER, null)

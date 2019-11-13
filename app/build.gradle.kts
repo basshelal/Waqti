@@ -73,6 +73,10 @@ dependencies {
 
     implementation("com.google.code.gson:gson:2.8.6") // replace GSON with moshi
 
+    implementation("com.squareup.moshi:moshi:1.9.1")
+    implementation("com.squareup.moshi:moshi-kotlin:1.9.1")
+    kapt("com.squareup.moshi:moshi-kotlin-codegen:1.9.1")
+
     implementation("org.jetbrains.anko:anko:0.10.8")
 
     debugImplementation("com.squareup.leakcanary:leakcanary-android:1.6.3")
@@ -103,7 +107,7 @@ dependencies {
 
     implementation("com.github.warkiz.widget:indicatorseekbar:2.1.2")
 
-    implementation("com.github.basshelal:UnsplashPhotoPicker:1.1.2")
+    implementation("com.github.basshelal:UnsplashPhotoPicker:master-SNAPSHOT")
 
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 
