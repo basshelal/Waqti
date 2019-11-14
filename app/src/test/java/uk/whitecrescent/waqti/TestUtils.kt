@@ -2,6 +2,13 @@
 
 package uk.whitecrescent.waqti
 
+import org.threeten.bp.Duration
+import org.threeten.bp.LocalDateTime
+import uk.whitecrescent.threetenabp.at
+import uk.whitecrescent.threetenabp.days
+import uk.whitecrescent.threetenabp.minutes
+import uk.whitecrescent.threetenabp.tomorrow
+import uk.whitecrescent.threetenabp.yesterday
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.BoardList
 import uk.whitecrescent.waqti.backend.collections.TaskList
@@ -18,10 +25,10 @@ import uk.whitecrescent.waqti.backend.task.UNMET
 
 // Time
 
-inline val testTimePast: Time
+inline val testTimePast: LocalDateTime
     get() = yesterday at 11
 
-inline val testTimeFuture: Time
+inline val testTimeFuture: LocalDateTime
     get() = tomorrow at 11
 
 // Duration

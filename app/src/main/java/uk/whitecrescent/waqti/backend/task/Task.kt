@@ -10,11 +10,13 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import uk.whitecrescent.waqti.Duration
+import org.threeten.bp.Duration
+import org.threeten.bp.LocalDateTime
+import uk.whitecrescent.threetenabp.isInThePast
+import uk.whitecrescent.threetenabp.now
 import uk.whitecrescent.waqti.MissingFeature
 import uk.whitecrescent.waqti.NonFinal
 import uk.whitecrescent.waqti.TestedDocumentedAndFinalSince
-import uk.whitecrescent.waqti.Time
 import uk.whitecrescent.waqti.UpdateDocumentation
 import uk.whitecrescent.waqti.UpdateTests
 import uk.whitecrescent.waqti.WaqtiVersion
@@ -35,10 +37,6 @@ import uk.whitecrescent.waqti.extensions.isNotConstrained
 import uk.whitecrescent.waqti.extensions.isUnMet
 import uk.whitecrescent.waqti.extensions.tasks
 import uk.whitecrescent.waqti.extensions.toArrayList
-import uk.whitecrescent.waqti.isAfter
-import uk.whitecrescent.waqti.isBefore
-import uk.whitecrescent.waqti.isInThePast
-import uk.whitecrescent.waqti.now
 
 @UpdateTests // tests are old, update them
 @UpdateDocumentation // documentation is very old, update it
@@ -489,17 +487,17 @@ class Task(name: String = "") : Cacheable {
      * @param timeProperty the `Property` of type `Time` that this Task's time will be set to
      * @return this Task after setting the Task's time Property
      */
-    fun setTimeProperty(timeProperty: Property<Time>): Task {
+    fun setTimeProperty(timeProperty: Property<LocalDateTime>): Task {
         this.time = TimeProperty(
                 timeProperty.isVisible, timeProperty.value, timeProperty.isConstrained, timeProperty.isMet)
 
         if (this.time.isConstrained) {
-            if (this.time.value isAfter now) {
+            if (this.time.value.isAfter(now)) {
                 if (canSleep()) sleep()
                 makeFailableIfConstraint(this.time)
             }
 
-            if (this.time.value isBefore now) {
+            if (this.time.value.isBefore(now)) {
                 this.time.isMet = MET
             }
             observingProperties[TIME] = true
@@ -518,7 +516,7 @@ class Task(name: String = "") : Cacheable {
      * @param time the Time value that this Task's time value will be set to
      * @return this Task after setting the Task's time Property
      */
-    fun setTimePropertyValue(time: Time) = setTimeProperty(Property(SHOWING, time, NOT_CONSTRAINED, UNMET))
+    fun setTimePropertyValue(time: LocalDateTime) = setTimeProperty(Property(SHOWING, time, NOT_CONSTRAINED, UNMET))
 
     /**
      * Sets this Task's time Property with the given value and makes the Property showing,
@@ -531,7 +529,7 @@ class Task(name: String = "") : Cacheable {
      * @param time the Time value that this Task's time value will be set to
      * @return this Task after setting the Task's time Property
      */
-    fun setTimeConstraintValue(time: Time) = setTimeProperty(Property(SHOWING, time, CONSTRAINED, UNMET))
+    fun setTimeConstraintValue(time: LocalDateTime) = setTimeProperty(Property(SHOWING, time, CONSTRAINED, UNMET))
 
     //endregion Time
 
@@ -919,7 +917,7 @@ class Task(name: String = "") : Cacheable {
      * @param deadlineProperty the `Property` of type `java.time.Time` that this Task's deadline will be set to
      * @return this Task after setting the Task's deadline Property
      */
-    fun setDeadlineProperty(deadlineProperty: Property<Time>): Task {
+    fun setDeadlineProperty(deadlineProperty: Property<LocalDateTime>): Task {
         this.deadline = TimeProperty(
                 deadlineProperty.isVisible, deadlineProperty.value,
                 deadlineProperty.isConstrained, deadlineProperty.isMet
@@ -955,7 +953,7 @@ class Task(name: String = "") : Cacheable {
      * @param deadline the java.time.Time value that this Task's deadline value will be set to
      * @return this Task after setting the Task's deadline Property
      */
-    fun setDeadlinePropertyValue(deadline: Time) =
+    fun setDeadlinePropertyValue(deadline: LocalDateTime) =
             setDeadlineProperty(Property(SHOWING, deadline, false, UNMET))
 
     /**
@@ -967,7 +965,7 @@ class Task(name: String = "") : Cacheable {
      * @param deadline the java.time.Time value that this Task's deadline value will be set to
      * @return this Task after setting the Task's deadline Constraint
      */
-    fun setDeadlineConstraintValue(deadline: Time) =
+    fun setDeadlineConstraintValue(deadline: LocalDateTime) =
             setDeadlineProperty(Property(SHOWING, deadline, true, UNMET))
 
     //endregion Deadline

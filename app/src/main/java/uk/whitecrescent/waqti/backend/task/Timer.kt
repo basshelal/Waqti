@@ -2,9 +2,9 @@ package uk.whitecrescent.waqti.backend.task
 
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
-import uk.whitecrescent.waqti.Duration
-import uk.whitecrescent.waqti.now
-import uk.whitecrescent.waqti.till
+import org.threeten.bp.Duration
+import uk.whitecrescent.threetenabp.now
+import uk.whitecrescent.threetenabp.till
 import java.util.concurrent.TimeUnit
 
 // TODO: 14-May-18 Does a Timer need a Task to exist?

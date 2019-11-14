@@ -108,6 +108,7 @@ dependencies {
     implementation("com.github.warkiz.widget:indicatorseekbar:2.1.2")
 
     implementation("com.github.basshelal:UnsplashPhotoPicker:master-SNAPSHOT")
+    implementation("com.github.basshelal.ThreeTenKTX:threetenabp:master-SNAPSHOT")
 
     implementation("com.facebook.shimmer:shimmer:0.5.0")
 

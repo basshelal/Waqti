@@ -12,8 +12,9 @@ import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import kotlinx.android.synthetic.main.property_card.view.*
 import org.jetbrains.anko.backgroundColor
+import org.threeten.bp.LocalDateTime
+import uk.whitecrescent.threetenabp.rfcFormatted
 import uk.whitecrescent.waqti.R
-import uk.whitecrescent.waqti.Time
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION
 import uk.whitecrescent.waqti.backend.task.DEFAULT_TIME
@@ -37,7 +38,6 @@ import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiCreateFragmentViewModel
-import uk.whitecrescent.waqti.rfcFormatted
 
 class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
@@ -229,8 +229,8 @@ class CreateTaskFragment : WaqtiCreateFragment<Task>() {
 
 class CreateTaskFragmentViewModel : WaqtiCreateFragmentViewModel<Task>() {
 
-    var taskTime: Time = DEFAULT_TIME
-    var taskDeadline: Time = DEFAULT_TIME
+    var taskTime: LocalDateTime = DEFAULT_TIME
+    var taskDeadline: LocalDateTime = DEFAULT_TIME
     var taskDescription: String = DEFAULT_DESCRIPTION
 
     override fun createElement(fromFragment: Task): Task {

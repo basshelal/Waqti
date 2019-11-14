@@ -14,13 +14,13 @@ import me.everything.android.ui.overscroll.HorizontalOverScrollBounceEffectDecor
 import me.everything.android.ui.overscroll.OverScrollBounceEffectDecoratorBase
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter
-import uk.whitecrescent.waqti.Time
+import org.threeten.bp.LocalDateTime
+import uk.whitecrescent.threetenabp.now
 import uk.whitecrescent.waqti.extensions.D
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.I
 import uk.whitecrescent.waqti.extensions.addOnScrollListener
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
-import uk.whitecrescent.waqti.now
 
 /**
  * Contains common [RecyclerView] functionality that is desired across the entire application.
@@ -63,7 +63,7 @@ constructor(context: Context,
 
     private var oldHorizontalScrollOffset: Int = 0
     private var oldVerticalScrollOffset: Int = 0
-    private var oldTime: Time = Time.MIN
+    private var oldTime: LocalDateTime = LocalDateTime.MIN
 
     override fun setLayoutManager(layoutManager: LayoutManager?) {
         super.setLayoutManager(layoutManager)

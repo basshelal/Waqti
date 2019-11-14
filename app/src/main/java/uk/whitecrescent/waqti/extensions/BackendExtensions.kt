@@ -4,7 +4,7 @@
 
 package uk.whitecrescent.waqti.extensions
 
-import uk.whitecrescent.waqti.Time
+import org.threeten.bp.LocalDateTime
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.collections.Tuple
 import uk.whitecrescent.waqti.backend.persistence.Caches
@@ -29,9 +29,9 @@ inline val <T> Property<T>.isUnMet: Boolean get() = !this.isMet
 
 inline val <T> Property<T>.isHidden: Boolean get() = !this.isVisible
 
-inline val Time.isDefault: Boolean get() = this == DEFAULT_TIME
+inline val LocalDateTime.isDefault: Boolean get() = this == DEFAULT_TIME
 
-inline val Time.isNotDefault: Boolean get() = this != DEFAULT_TIME
+inline val LocalDateTime.isNotDefault: Boolean get() = this != DEFAULT_TIME
 
 inline val Description.isDefault: Boolean get() = this == DEFAULT_DESCRIPTION
 

@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_view_task.*
 import kotlinx.android.synthetic.main.task_options.view.*
+import uk.whitecrescent.threetenabp.rfcFormatted
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.TaskList
@@ -42,7 +43,6 @@ import uk.whitecrescent.waqti.frontend.customview.dialogs.DateTimePickerDialog
 import uk.whitecrescent.waqti.frontend.customview.dialogs.EditTextDialog
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
 import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
-import uk.whitecrescent.waqti.rfcFormatted
 
 class ViewTaskFragment : WaqtiViewFragment() {
 

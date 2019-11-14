@@ -1,7 +1,7 @@
 package uk.whitecrescent.waqti.backend.task
 
-import uk.whitecrescent.waqti.Duration
-import uk.whitecrescent.waqti.Time
+import org.threeten.bp.Duration
+import org.threeten.bp.LocalDateTime
 import java.util.concurrent.TimeUnit
 
 var DEBUG = true
@@ -49,7 +49,7 @@ val DEFAULT_TASK_STATE = TaskState.EXISTING
 
 //region Default Property Values
 
-val DEFAULT_TIME: Time = Time.MIN
+val DEFAULT_TIME: LocalDateTime = LocalDateTime.MIN
 val DEFAULT_DURATION: Duration = Duration.ZERO
 val DEFAULT_PRIORITY = Priority("", -1)
 val DEFAULT_LABELS_LIST = arrayListOf<Label>()
@@ -57,7 +57,7 @@ const val DEFAULT_OPTIONAL = MANDATORY
 const val DEFAULT_DESCRIPTION = ""
 val DEFAULT_CHECKLIST = Checklist()
 const val DEFAULT_TARGET = ""
-val DEFAULT_DEADLINE: Time = Time.MAX
+val DEFAULT_DEADLINE: LocalDateTime = LocalDateTime.MAX
 const val DEFAULT_TASK_ID: ID = 0L
 val DEFAULT_SUB_TASKS = arrayListOf<ID>()
 

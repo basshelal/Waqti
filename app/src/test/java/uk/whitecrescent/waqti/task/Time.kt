@@ -2,6 +2,9 @@ package uk.whitecrescent.waqti.task
 
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.whitecrescent.threetenabp.millis
+import uk.whitecrescent.threetenabp.now
+import uk.whitecrescent.threetenabp.seconds
 import uk.whitecrescent.waqti.FinalSince
 import uk.whitecrescent.waqti.WaqtiVersion
 import uk.whitecrescent.waqti.after
@@ -19,16 +22,13 @@ import uk.whitecrescent.waqti.backend.task.TaskStateException
 import uk.whitecrescent.waqti.backend.task.UNMET
 import uk.whitecrescent.waqti.constraintProperty
 import uk.whitecrescent.waqti.hiddenProperty
-import uk.whitecrescent.waqti.millis
 import uk.whitecrescent.waqti.mustBe
 import uk.whitecrescent.waqti.mustBeEmpty
 import uk.whitecrescent.waqti.mustEqual
 import uk.whitecrescent.waqti.mustHaveSizeOf
 import uk.whitecrescent.waqti.mustNotThrow
 import uk.whitecrescent.waqti.mustThrow
-import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.on
-import uk.whitecrescent.waqti.seconds
 import uk.whitecrescent.waqti.simpleProperty
 import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTimeFuture

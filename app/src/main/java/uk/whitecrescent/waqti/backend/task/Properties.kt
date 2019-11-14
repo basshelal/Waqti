@@ -2,8 +2,8 @@ package uk.whitecrescent.waqti.backend.task
 
 import com.google.gson.annotations.SerializedName
 import io.objectbox.converter.PropertyConverter
-import uk.whitecrescent.waqti.Duration
-import uk.whitecrescent.waqti.Time
+import org.threeten.bp.Duration
+import org.threeten.bp.LocalDateTime
 import uk.whitecrescent.waqti.extensions.fromJsonTo
 import uk.whitecrescent.waqti.extensions.toJson
 
@@ -13,11 +13,11 @@ class TimeProperty(
         @SerializedName("V")
         override var isVisible: Boolean = false,
         @SerializedName("v")
-        override var value: Time = DEFAULT_TIME,
+        override var value: LocalDateTime = DEFAULT_TIME,
         @SerializedName("C")
         override var isConstrained: Boolean = false,
         @SerializedName("M")
-        override var isMet: Boolean = false) : Property<Time>(isVisible, value, isConstrained, isMet)
+        override var isMet: Boolean = false) : Property<LocalDateTime>(isVisible, value, isConstrained, isMet)
 
 class DurationProperty(
         @SerializedName("V")
@@ -182,7 +182,7 @@ class TaskStateConverter : PropertyConverter<TaskState, String> {
     override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo TaskState::class.java
 }
 
-class TimeArrayList : ArrayList<Time>()
+class TimeArrayList : ArrayList<LocalDateTime>()
 
 class TimeArrayListConverter : PropertyConverter<TimeArrayList, String> {
 
@@ -191,11 +191,11 @@ class TimeArrayListConverter : PropertyConverter<TimeArrayList, String> {
     override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo TimeArrayList::class.java
 }
 
-class TimeConverter : PropertyConverter<Time, String> {
+class TimeConverter : PropertyConverter<LocalDateTime, String> {
 
-    override fun convertToDatabaseValue(entityProperty: Time?) = entityProperty.toJson
+    override fun convertToDatabaseValue(entityProperty: LocalDateTime?) = entityProperty.toJson
 
-    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo Time::class.java
+    override fun convertToEntityProperty(databaseValue: String?) = databaseValue fromJsonTo LocalDateTime::class.java
 
 }
 

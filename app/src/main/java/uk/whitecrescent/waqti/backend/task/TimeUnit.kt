@@ -3,7 +3,7 @@ package uk.whitecrescent.waqti.backend.task
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
-import uk.whitecrescent.waqti.Duration
+import org.threeten.bp.Duration
 import uk.whitecrescent.waqti.backend.Cacheable
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.extensions.hash
