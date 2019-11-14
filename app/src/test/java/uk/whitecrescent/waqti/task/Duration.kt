@@ -2,11 +2,16 @@ package uk.whitecrescent.waqti.task
 
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.Duration
+import org.threeten.bp.Duration
+import uk.whitecrescent.threetenabp.at
+import uk.whitecrescent.threetenabp.hours
+import uk.whitecrescent.threetenabp.millis
+import uk.whitecrescent.threetenabp.minutes
+import uk.whitecrescent.threetenabp.seconds
+import uk.whitecrescent.threetenabp.tomorrow
 import uk.whitecrescent.waqti.FinalSince
 import uk.whitecrescent.waqti.WaqtiVersion
 import uk.whitecrescent.waqti.after
-import uk.whitecrescent.waqti.at
 import uk.whitecrescent.waqti.backend.task.CannotHidePropertyException
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DURATION
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DURATION_PROPERTY
@@ -21,9 +26,6 @@ import uk.whitecrescent.waqti.backend.task.TimeUnit
 import uk.whitecrescent.waqti.backend.task.UNMET
 import uk.whitecrescent.waqti.constraintProperty
 import uk.whitecrescent.waqti.hiddenProperty
-import uk.whitecrescent.waqti.hours
-import uk.whitecrescent.waqti.millis
-import uk.whitecrescent.waqti.minutes
 import uk.whitecrescent.waqti.mustBe
 import uk.whitecrescent.waqti.mustBeEmpty
 import uk.whitecrescent.waqti.mustBeIn
@@ -34,12 +36,10 @@ import uk.whitecrescent.waqti.mustNotBeEmpty
 import uk.whitecrescent.waqti.mustNotThrow
 import uk.whitecrescent.waqti.mustThrow
 import uk.whitecrescent.waqti.on
-import uk.whitecrescent.waqti.seconds
 import uk.whitecrescent.waqti.simpleProperty
 import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testDuration
 import uk.whitecrescent.waqti.testTimeUnit
-import uk.whitecrescent.waqti.tomorrow
 
 /**
  *

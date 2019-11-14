@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.Duration
-import uk.whitecrescent.waqti.Time
+import org.threeten.bp.Duration
+import org.threeten.bp.LocalDateTime
+import uk.whitecrescent.threetenabp.now
 import uk.whitecrescent.waqti.backend.task.Checklist
 import uk.whitecrescent.waqti.backend.task.Label
 import uk.whitecrescent.waqti.backend.task.MANDATORY
@@ -15,7 +16,6 @@ import uk.whitecrescent.waqti.backend.task.OPTIONAL
 import uk.whitecrescent.waqti.backend.task.Priority
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.extensions.ids
-import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.sleep
 
 @DisplayName("Other Task Tests")
@@ -62,7 +62,7 @@ class OtherTask : BaseTaskTest() {
     @DisplayName("Task Equals State")
     @Test
     fun testTaskEqualsState() {
-        val time = Time.from(now.plusDays(7))
+        val time = LocalDateTime.from(now.plusDays(7))
         val task1 = Task("Task").setTimeConstraintValue(time)
         val task2 = Task("Task")
 
@@ -148,7 +148,7 @@ class OtherTask : BaseTaskTest() {
     @DisplayName("Task Equals Time")
     @Test
     fun testTaskEqualsTime() {
-        val time = Time.from(now.plusDays(7))
+        val time = LocalDateTime.from(now.plusDays(7))
         val task1 = Task("Task").setTimePropertyValue(time)
         val task2 = Task("Task").setTimePropertyValue(time)
 
@@ -169,7 +169,7 @@ class OtherTask : BaseTaskTest() {
     @DisplayName("Task Equals Duration")
     @Test
     fun testTaskEqualsDuration() {
-        val duration = Duration.ofSeconds(30)
+        val duration = org.threeten.bp.Duration.ofSeconds(30)
         val task1 = Task("Task").setDurationPropertyValue(duration)
         val task2 = Task("Task").setDurationPropertyValue(duration)
 
@@ -272,7 +272,7 @@ class OtherTask : BaseTaskTest() {
     @DisplayName("Task Equals Deadline")
     @Test
     fun testTaskEqualsDeadline() {
-        val deadline = Time.from(now.plusDays(7))
+        val deadline = LocalDateTime.from(now.plusDays(7))
         val task1 = Task("Task").setDeadlinePropertyValue(deadline)
         val task2 = Task("Task").setDeadlinePropertyValue(deadline)
 
@@ -373,14 +373,14 @@ class OtherTask : BaseTaskTest() {
         val priority = Priority("Priority", 5)
 
         val task = Task("My Task")
-                .setTimePropertyValue(Time.of(2018, 5, 5, 5, 5))
-                .setDurationPropertyValue(Duration.ofMinutes(30))
+                .setTimePropertyValue(LocalDateTime.of(2018, 5, 5, 5, 5))
+                .setDurationPropertyValue(org.threeten.bp.Duration.ofMinutes(30))
                 .setPriorityValue(priority)
                 .setLabelsValue(label1, label2)
                 .setOptionalValue(OPTIONAL)
                 .setDescriptionValue("Description")
                 .setChecklistPropertyValue(Checklist("ZERO", "ONE", "TWO"))
-                .setDeadlinePropertyValue(Time.of(2018, 6, 6, 6, 6))
+                .setDeadlinePropertyValue(LocalDateTime.of(2018, 6, 6, 6, 6))
                 .setTargetConstraintValue("My Target")
                 .setBeforePropertyValue(beforeTask)
                 .setSubTasksPropertyValue(arrayListOf(subTask1, subTask2).ids)
@@ -391,7 +391,7 @@ class OtherTask : BaseTaskTest() {
         assertTrue(task.allUnmetAndShowingConstraints.isEmpty())
 
         assertFalse(task.time.isConstrained)
-        assertEquals(Time.of(2018, 5, 5, 5, 5), task.time.value)
+        assertEquals(LocalDateTime.of(2018, 5, 5, 5, 5), task.time.value)
         assertTrue(task.time.isVisible)
 
         assertFalse(task.duration.isConstrained)
@@ -419,7 +419,7 @@ class OtherTask : BaseTaskTest() {
         assertTrue(task.checklist.isVisible)
 
         assertFalse(task.deadline.isConstrained)
-        assertEquals(Time.of(2018, 6, 6, 6, 6), task.deadline.value)
+        assertEquals(LocalDateTime.of(2018, 6, 6, 6, 6), task.deadline.value)
         assertTrue(task.deadline.isVisible)
 
         assertFalse(task.target.isConstrained)

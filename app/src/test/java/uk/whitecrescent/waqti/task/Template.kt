@@ -5,7 +5,11 @@ import org.junit.jupiter.api.Assertions.assertNotEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.at
+import uk.whitecrescent.threetenabp.at
+import uk.whitecrescent.threetenabp.hours
+import uk.whitecrescent.threetenabp.minutes
+import uk.whitecrescent.threetenabp.now
+import uk.whitecrescent.threetenabp.tomorrow
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.Checklist
 import uk.whitecrescent.waqti.backend.task.DEFAULT_BEFORE_PROPERTY
@@ -25,10 +29,6 @@ import uk.whitecrescent.waqti.backend.task.Priority
 import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.backend.task.Template
 import uk.whitecrescent.waqti.extensions.ids
-import uk.whitecrescent.waqti.hours
-import uk.whitecrescent.waqti.minutes
-import uk.whitecrescent.waqti.now
-import uk.whitecrescent.waqti.tomorrow
 
 @DisplayName("Template Task Tests")
 class Template : BaseTaskTest() {

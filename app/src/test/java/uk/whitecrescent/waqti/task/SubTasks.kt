@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import uk.whitecrescent.threetenabp.seconds
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.CONSTRAINED
 import uk.whitecrescent.waqti.backend.task.DEFAULT_SUB_TASKS
@@ -22,7 +23,6 @@ import uk.whitecrescent.waqti.extensions.ids
 import uk.whitecrescent.waqti.extensions.tasks
 import uk.whitecrescent.waqti.extensions.toArrayList
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.seconds
 import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTask
 

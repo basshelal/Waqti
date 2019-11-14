@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.Duration
-import uk.whitecrescent.waqti.Time
+import org.threeten.bp.Duration
+import org.threeten.bp.LocalDateTime
+import uk.whitecrescent.threetenabp.now
 import uk.whitecrescent.waqti.backend.task.CONSTRAINED
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DEADLINE
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DEADLINE_PROPERTY
@@ -19,7 +20,6 @@ import uk.whitecrescent.waqti.backend.task.TaskState
 import uk.whitecrescent.waqti.backend.task.TaskStateException
 import uk.whitecrescent.waqti.backend.task.UNMET
 import uk.whitecrescent.waqti.getTasks
-import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTask
 
@@ -42,11 +42,11 @@ class Deadline : BaseTaskTest() {
     fun testTaskSetDeadlineProperty() {
         val task = testTask
                 .setDeadlineProperty(
-                        Property(SHOWING, Time.of(1970, 1, 1, 1, 1), NOT_CONSTRAINED, UNMET)
+                        Property(SHOWING, LocalDateTime.of(1970, 1, 1, 1, 1), NOT_CONSTRAINED, UNMET)
                 )
 
         assertFalse(task.deadline.isConstrained)
-        assertEquals(Time.of(1970, 1, 1, 1, 1), task.deadline.value)
+        assertEquals(LocalDateTime.of(1970, 1, 1, 1, 1), task.deadline.value)
         assertTrue(task.deadline.isVisible)
 
 
@@ -59,11 +59,11 @@ class Deadline : BaseTaskTest() {
     fun testTaskSetDeadlinePropertyValue() {
         val task = testTask
                 .setDeadlinePropertyValue(
-                        Time.of(1970, 1, 1, 1, 1)
+                        LocalDateTime.of(1970, 1, 1, 1, 1)
                 )
 
         assertFalse(task.deadline.isConstrained)
-        assertEquals(Time.of(1970, 1, 1, 1, 1), task.deadline.value)
+        assertEquals(LocalDateTime.of(1970, 1, 1, 1, 1), task.deadline.value)
         assertTrue(task.deadline.isVisible)
 
         task.hideDeadline()
@@ -75,11 +75,11 @@ class Deadline : BaseTaskTest() {
     fun testTaskSetDeadlinePropertyWithConstraint() {
         val task = testTask
                 .setDeadlineProperty(
-                        Property(SHOWING, Time.of(1970, 1, 1, 1, 1), CONSTRAINED, UNMET)
+                        Property(SHOWING, LocalDateTime.of(1970, 1, 1, 1, 1), CONSTRAINED, UNMET)
                 )
 
         assertTrue(task.deadline.isConstrained)
-        assertEquals(Time.of(1970, 1, 1, 1, 1), task.deadline.value)
+        assertEquals(LocalDateTime.of(1970, 1, 1, 1, 1), task.deadline.value)
         assertTrue(task.deadline.isVisible)
         assertTrue(task.deadline.isMet)
     }
@@ -88,10 +88,10 @@ class Deadline : BaseTaskTest() {
     @Test
     fun testTaskSetDeadlineConstraintValue() {
         val task = testTask
-                .setDeadlineConstraintValue(Time.of(1970, 1, 1, 1, 1))
+                .setDeadlineConstraintValue(LocalDateTime.of(1970, 1, 1, 1, 1))
 
         assertTrue(task.deadline.isConstrained)
-        assertEquals(Time.of(1970, 1, 1, 1, 1), task.deadline.value)
+        assertEquals(LocalDateTime.of(1970, 1, 1, 1, 1), task.deadline.value)
         assertTrue(task.deadline.isVisible)
         assertTrue(task.deadline.isMet)
     }
@@ -213,7 +213,7 @@ class Deadline : BaseTaskTest() {
     @Test
     fun testTaskDeadlineUnConstraining() {
         val task = testTask
-                .setDeadlineConstraintValue(Time.from(now.plusDays(7)))
+                .setDeadlineConstraintValue(LocalDateTime.from(now.plusDays(7)))
 
         sleep(1)
         task.setDeadlineProperty((task.deadline).unConstrain())
@@ -230,11 +230,11 @@ class Deadline : BaseTaskTest() {
     @Test
     fun testTaskDeadlineConstraintReSet() {
         val task = testTask
-                .setDeadlineConstraintValue(Time.from(now.plusDays(7)))
+                .setDeadlineConstraintValue(LocalDateTime.from(now.plusDays(7)))
 
         sleep(1)
 
-        val newDeadline = Time.from(now.plusSeconds(1))
+        val newDeadline = LocalDateTime.from(now.plusSeconds(1))
 
         task.setDeadlineConstraintValue(newDeadline)
         assertEquals(newDeadline, task.deadline.value)
@@ -247,7 +247,7 @@ class Deadline : BaseTaskTest() {
     @DisplayName("Deadline Hiding")
     @Test
     fun testDeadlineHiding() {
-        val deadline = Time.from(now.plusDays(7))
+        val deadline = LocalDateTime.from(now.plusDays(7))
 
         val task = testTask
                 .setDeadlinePropertyValue(deadline)

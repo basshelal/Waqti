@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.waqti.Time
+import org.threeten.bp.LocalDateTime
+import uk.whitecrescent.threetenabp.now
 import uk.whitecrescent.waqti.backend.task.TaskState
 import uk.whitecrescent.waqti.backend.task.TaskStateException
-import uk.whitecrescent.waqti.now
 import uk.whitecrescent.waqti.sleep
 import uk.whitecrescent.waqti.testTask
 
@@ -44,7 +44,7 @@ class Lifecycle : BaseTaskTest() {
     @Test
     fun testTaskSleepingToExisting() {
         val task = testTask
-                .setTimeConstraintValue(Time.from(now.plusSeconds(1)))
+                .setTimeConstraintValue(LocalDateTime.from(now.plusSeconds(1)))
 
         assertEquals(TaskState.SLEEPING, task.state)
 
@@ -133,7 +133,7 @@ class Lifecycle : BaseTaskTest() {
         assertThrows(TaskStateException::class.java, { task.fail() })
 
         assertEquals(TaskState.SLEEPING, task.state)
-        task.setTimeConstraintValue(Time.from(now.plusSeconds(1)))
+        task.setTimeConstraintValue(LocalDateTime.from(now.plusSeconds(1)))
         assertEquals(TaskState.SLEEPING, task.state)
 
         sleep(3)
@@ -161,7 +161,7 @@ class Lifecycle : BaseTaskTest() {
         assertEquals(TaskState.SLEEPING, task.state)
 
         // To go to EXISTING we go through SLEEPING
-        task.setTimeConstraintValue(Time.from(now.plusSeconds(1)))
+        task.setTimeConstraintValue(LocalDateTime.from(now.plusSeconds(1)))
         assertEquals(TaskState.SLEEPING, task.state)
 
         sleep(3)
@@ -188,7 +188,7 @@ class Lifecycle : BaseTaskTest() {
 
         assertThrows(TaskStateException::class.java, { task.sleep() })
 
-        task.setTimeConstraintValue(Time.from(now.plusSeconds(1)))
+        task.setTimeConstraintValue(LocalDateTime.from(now.plusSeconds(1)))
         assertEquals(TaskState.KILLED, task.state)
         sleep(3)
         assertEquals(TaskState.KILLED, task.state)
