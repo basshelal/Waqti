@@ -10,12 +10,12 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.basshelal.threetenktx.threetenabp.now
 import me.everything.android.ui.overscroll.HorizontalOverScrollBounceEffectDecorator
 import me.everything.android.ui.overscroll.OverScrollBounceEffectDecoratorBase
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter
 import org.threeten.bp.LocalDateTime
-import uk.whitecrescent.threetenabp.now
 import uk.whitecrescent.waqti.extensions.D
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.I

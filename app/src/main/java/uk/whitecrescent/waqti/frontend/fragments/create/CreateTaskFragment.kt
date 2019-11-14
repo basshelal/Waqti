@@ -9,11 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
+import com.github.basshelal.threetenktx.threetenabp.rfcFormatted
 import kotlinx.android.synthetic.main.fragment_create_task.*
 import kotlinx.android.synthetic.main.property_card.view.*
 import org.jetbrains.anko.backgroundColor
 import org.threeten.bp.LocalDateTime
-import uk.whitecrescent.threetenabp.rfcFormatted
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DESCRIPTION

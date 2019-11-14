@@ -1,11 +1,11 @@
 package uk.whitecrescent.waqti.task
 
+import com.github.basshelal.threetenktx.threetenabp.now
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.threeten.bp.LocalDateTime
-import uk.whitecrescent.threetenabp.now
 import uk.whitecrescent.waqti.backend.task.TaskState
 import uk.whitecrescent.waqti.backend.task.TaskStateException
 import uk.whitecrescent.waqti.sleep

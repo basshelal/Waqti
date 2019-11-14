@@ -1,10 +1,10 @@
 package uk.whitecrescent.waqti.task
 
+import com.github.basshelal.threetenktx.threetenabp.millis
+import com.github.basshelal.threetenktx.threetenabp.now
+import com.github.basshelal.threetenktx.threetenabp.seconds
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.threetenabp.millis
-import uk.whitecrescent.threetenabp.now
-import uk.whitecrescent.threetenabp.seconds
 import uk.whitecrescent.waqti.FinalSince
 import uk.whitecrescent.waqti.WaqtiVersion
 import uk.whitecrescent.waqti.after

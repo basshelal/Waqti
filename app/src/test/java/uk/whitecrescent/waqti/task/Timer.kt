@@ -1,10 +1,10 @@
 package uk.whitecrescent.waqti.task
 
+import com.github.basshelal.threetenktx.threetenabp.secs
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.threetenabp.secs
 import uk.whitecrescent.waqti.backend.task.Timer
 import uk.whitecrescent.waqti.message
 import uk.whitecrescent.waqti.sleep

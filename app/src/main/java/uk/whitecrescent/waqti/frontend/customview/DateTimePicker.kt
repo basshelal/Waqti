@@ -7,8 +7,8 @@ import android.view.View
 import android.widget.DatePicker
 import android.widget.FrameLayout
 import android.widget.TimePicker
+import com.github.basshelal.threetenktx.threetenabp.time
 import org.threeten.bp.LocalDateTime
-import uk.whitecrescent.threetenabp.time
 import uk.whitecrescent.waqti.R
 
 class DateTimePicker

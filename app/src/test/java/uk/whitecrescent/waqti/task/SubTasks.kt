@@ -1,12 +1,12 @@
 package uk.whitecrescent.waqti.task
 
+import com.github.basshelal.threetenktx.threetenabp.seconds
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
-import uk.whitecrescent.threetenabp.seconds
 import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.task.CONSTRAINED
 import uk.whitecrescent.waqti.backend.task.DEFAULT_SUB_TASKS

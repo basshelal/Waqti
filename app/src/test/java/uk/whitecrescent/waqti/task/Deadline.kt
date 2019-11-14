@@ -1,5 +1,6 @@
 package uk.whitecrescent.waqti.task
 
+import com.github.basshelal.threetenktx.threetenabp.now
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertThrows
@@ -8,7 +9,6 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
-import uk.whitecrescent.threetenabp.now
 import uk.whitecrescent.waqti.backend.task.CONSTRAINED
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DEADLINE
 import uk.whitecrescent.waqti.backend.task.DEFAULT_DEADLINE_PROPERTY

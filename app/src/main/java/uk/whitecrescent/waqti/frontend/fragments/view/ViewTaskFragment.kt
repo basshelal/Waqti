@@ -11,11 +11,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import com.github.basshelal.threetenktx.threetenabp.rfcFormatted
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_view_task.*
 import kotlinx.android.synthetic.main.task_options.view.*
-import uk.whitecrescent.threetenabp.rfcFormatted
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.TaskList

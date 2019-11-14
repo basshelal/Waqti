@@ -3,6 +3,8 @@
 package uk.whitecrescent.waqti.backend.task
 
 import android.annotation.SuppressLint
+import com.github.basshelal.threetenktx.threetenabp.isInThePast
+import com.github.basshelal.threetenktx.threetenabp.now
 import io.objectbox.annotation.Convert
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
@@ -12,8 +14,6 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import org.threeten.bp.Duration
 import org.threeten.bp.LocalDateTime
-import uk.whitecrescent.threetenabp.isInThePast
-import uk.whitecrescent.threetenabp.now
 import uk.whitecrescent.waqti.MissingFeature
 import uk.whitecrescent.waqti.NonFinal
 import uk.whitecrescent.waqti.TestedDocumentedAndFinalSince

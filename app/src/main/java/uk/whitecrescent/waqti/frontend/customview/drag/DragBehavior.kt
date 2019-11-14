@@ -41,13 +41,14 @@ open class DragBehavior(val view: View) {
     var synthesizedEvent: MotionEvent? = null
 
     protected val onTouchListener = View.OnTouchListener { v, event ->
-        if (event != synthesizedEvent) {
+        if (event !== synthesizedEvent) {
             logE("Recycled Synthesized event!")
             synthesizedEvent?.recycle()
             synthesizedEvent = null
+            return@OnTouchListener true
         }
         touchPoint.set(event.rawX, event.rawY)
-        if (isDragging) {
+        if (isDragging && event === synthesizedEvent) {
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> {
                     onDown(event)
@@ -55,17 +56,17 @@ open class DragBehavior(val view: View) {
                 MotionEvent.ACTION_MOVE -> {
                     onMove(event)
                 }
-                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
+                MotionEvent.ACTION_UP -> {
                     endDrag()
                 }
                 else -> {
                     logE("SOMETHING ELSE!")
-                    // view.onTouchEvent(event)
+                    view.onTouchEvent(event)
                 }
             }
             true
         } else {
-            true
+            false
         }
     }
 
@@ -78,7 +79,6 @@ open class DragBehavior(val view: View) {
     fun drag(event: MotionEvent) {
         if (event === synthesizedEvent) {
             logE("Recycled Original event!")
-            view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
             event.recycle()
             view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
             startObserver(event)
@@ -98,21 +98,12 @@ open class DragBehavior(val view: View) {
                                 synthesizedEvent = null
                             }
                             view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
-                            //view.dispatchTouchEvent(event)
-                            onTouchListener.onTouch(view, event)
+                            view.dispatchTouchEvent(event)
                             if (it.rem(100L) == 0L) {
                                 logE(event)
                                 logE(synthesizedEvent)
                                 logE(event == synthesizedEvent)
                                 logE(event === synthesizedEvent)
-                            }
-
-                            view.parents.forEach {
-                                it.isClickable = false
-                                it.stopNestedScroll()
-                                it.requestDisallowInterceptTouchEvent(true)
-                                it.isEnabled = false
-                                it.cancelPendingInputEvents()
                             }
                         },
                         onError = {
@@ -134,14 +125,12 @@ open class DragBehavior(val view: View) {
             dPoint.x = view.x - event.rawX
             dPoint.y = view.y - event.rawY
             touchPoint.set(event.rawX, event.rawY)
-            view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
             downCalled = true
         }
     }
 
     protected open fun onMove(event: MotionEvent) {
         onDown(event)
-        view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
         view.x = event.rawX + dPoint.x
         view.y = event.rawY + dPoint.y
         touchPoint.set(event.rawX, event.rawY)
@@ -211,13 +200,11 @@ open class DragBehavior(val view: View) {
         // synthesized one, OR the actual point is different, both mean the passed in event is
         // not the synthesized one) then we can proceed as usual and do dragging
 
+
         otherView.parents.forEach {
-            it.isClickable = false
-            it.stopNestedScroll()
             it.requestDisallowInterceptTouchEvent(true)
-            it.isEnabled = false
-            it.cancelPendingInputEvents()
         }
+
 
         synthesizedEvent = MotionEvent.obtain(
                 SystemClock.uptimeMillis(),
