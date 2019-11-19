@@ -58,6 +58,8 @@ open class WaqtiColor(val value: String) {
         return WaqtiColor(newValue)
     }
 
+    inline fun inv(): WaqtiColor = this.toAndroidColor.inv().toColor
+
     override fun hashCode() = value.hashCode()
 
     override fun equals(other: Any?) = other.toString() == value

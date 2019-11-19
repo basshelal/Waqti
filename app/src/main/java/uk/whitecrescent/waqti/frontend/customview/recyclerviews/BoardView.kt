@@ -215,7 +215,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         if (snapHelper != null) {
             boardView.onFlingListener = null
             snapHelper?.attachToRecyclerView(boardView)
-            boardView.addVelocityTrackerOnFlingListener()
         }
     }
 

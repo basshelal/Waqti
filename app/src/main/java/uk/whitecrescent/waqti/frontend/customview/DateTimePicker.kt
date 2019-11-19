@@ -7,7 +7,6 @@ import android.view.View
 import android.widget.DatePicker
 import android.widget.FrameLayout
 import android.widget.TimePicker
-import com.github.basshelal.threetenktx.threetenabp.time
 import org.threeten.bp.LocalDateTime
 import uk.whitecrescent.waqti.R
 
@@ -31,10 +30,10 @@ class DateTimePicker
     }
 
     fun switchToTimePicker() {
-        this.time = time(datePicker.year, datePicker.month + 1,
+        this.time = LocalDateTime.of(datePicker.year, datePicker.month + 1,
                 datePicker.dayOfMonth, timePicker.hour, timePicker.minute)
         timePicker.setOnTimeChangedListener { _, hourOfDay, minute ->
-            this.time = time(datePicker.year, datePicker.month + 1, datePicker.dayOfMonth, hourOfDay, minute)
+            this.time = LocalDateTime.of(datePicker.year, datePicker.month + 1, datePicker.dayOfMonth, hourOfDay, minute)
         }
 
         datePicker.visibility = View.INVISIBLE

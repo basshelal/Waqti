@@ -5,21 +5,20 @@ package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.basshelal.threetenktx.threetenabp.now
 import me.everything.android.ui.overscroll.HorizontalOverScrollBounceEffectDecorator
-import me.everything.android.ui.overscroll.OverScrollBounceEffectDecoratorBase
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter
-import org.threeten.bp.LocalDateTime
 import uk.whitecrescent.waqti.extensions.D
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.I
 import uk.whitecrescent.waqti.extensions.addOnScrollListener
+import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 
 /**
@@ -35,12 +34,9 @@ constructor(context: Context,
 ) : RecyclerView(context, attributeSet, defStyle) {
 
     var savedState: SavedState? = null
+        private set
 
-    var scrollBarColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT.colorScheme.text
-
-    val currentPosition: Int
-        get() = (layoutManager as? LinearLayoutManager)
-                ?.findFirstCompletelyVisibleItemPosition() ?: 0
+    var scrollBarColor: WaqtiColor = WaqtiColor.WAQTI_DEFAULT.colorScheme.text.inv()
 
     inline val linearLayoutManager: LinearLayoutManager? get() = layoutManager as? LinearLayoutManager
 
@@ -50,20 +46,17 @@ constructor(context: Context,
     inline val maxHorizontalScroll: Int get() = computeHorizontalScrollRange() - computeHorizontalScrollExtent()
     inline val maxVerticalScroll: Int get() = computeVerticalScrollRange() - computeVerticalScrollExtent()
 
-    var flingVelocityX: Int = 0
-        protected set
+    private var flingVelocityX: Int = 0
+    private var flingVelocityY: Int = 0
 
-    var flingVelocityY: Int = 0
-        protected set
-
-    var overScroller: OverScrollBounceEffectDecoratorBase? = null
+    var overScroller: OverScroller? = null
 
     var horizontalScrollSpeed: Int = 0
     var verticalScrollSpeed: Int = 0
 
     private var oldHorizontalScrollOffset: Int = 0
     private var oldVerticalScrollOffset: Int = 0
-    private var oldTime: LocalDateTime = LocalDateTime.MIN
+    private var oldTime: Long = System.currentTimeMillis()
 
     override fun setLayoutManager(layoutManager: LayoutManager?) {
         super.setLayoutManager(layoutManager)
@@ -78,32 +71,37 @@ constructor(context: Context,
                 VerticalOverScroller(this) else HorizontalOverScroller(this)
         }
 
-        addVelocityTrackerOnFlingListener()
+        isScrollbarFadingEnabled = true
+        scrollBarFadeDuration = 500
+        overScrollMode = View.OVER_SCROLL_NEVER
 
         addOnScrollListener(
                 onScrolled = { dx, dy ->
                     val dY = verticalScrollOffset.D - oldVerticalScrollOffset.D
                     val dX = horizontalScrollOffset.D - oldHorizontalScrollOffset.D
-                    val dSecs = (now.nano - oldTime.nano).D / 1E9.D
+
+                    val dSecs = (System.currentTimeMillis() - oldTime).D * 1E-3.D
+
+                    logE(dSecs)
 
                     verticalScrollSpeed = (dY / dSecs).I
                     horizontalScrollSpeed = (dX / dSecs).I
 
                     if (dy != 0 && scrollState == SCROLL_STATE_SETTLING &&
                             (verticalScrollOffset == 0 || verticalScrollOffset == maxVerticalScroll)) {
-                        (overScroller as? VerticalOverScroller)?.overScroll()
+                        overScroller?.overScroll((verticalScrollSpeed.F * overScrollMultiplier.F) / height.F)
                     }
 
                     if (dx != 0 && scrollState == SCROLL_STATE_SETTLING &&
                             (horizontalScrollOffset == 0 || horizontalScrollOffset == maxHorizontalScroll)) {
-                        (overScroller as? HorizontalOverScroller)?.overScroll()
+                        overScroller?.overScroll((horizontalScrollSpeed.F * overScrollMultiplier.F) / width.F)
                     }
 
                     oldVerticalScrollOffset = verticalScrollOffset
                     oldHorizontalScrollOffset = horizontalScrollOffset
-                    oldTime = now
-                },
-                onScrollStateChanged = { newState -> }
+
+                    oldTime = System.currentTimeMillis()
+                }
         )
     }
 
@@ -160,9 +158,7 @@ constructor(context: Context,
      */
     @Suppress("unused")
     protected fun onDrawHorizontalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
-        scrollBar.setBounds(l, t, r, b)
-        scrollBar.draw(canvas)
+        drawScrollBar(canvas, scrollBar, l, t, r, b)
     }
 
     /**
@@ -170,7 +166,11 @@ constructor(context: Context,
      */
     @Suppress("unused")
     protected fun onDrawVerticalScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
-        scrollBar.setColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC_ATOP)
+        drawScrollBar(canvas, scrollBar, l, t, r, b)
+    }
+
+    protected inline fun drawScrollBar(canvas: Canvas, scrollBar: Drawable, l: Int, t: Int, r: Int, b: Int) {
+        scrollBar.colorFilter = PorterDuffColorFilter(scrollBarColor.toAndroidColor, PorterDuff.Mode.SRC)
         scrollBar.setBounds(l, t, r, b)
         scrollBar.draw(canvas)
     }
@@ -190,42 +190,31 @@ abstract class WaqtiViewHolder<V : View>(view: V) : RecyclerView.ViewHolder(view
 
 }
 
-private const val overScrollThreshold = 20.0
+private const val overScrollMultiplier = 37.0
+
+interface OverScroller {
+    fun overScroll(amount: Float)
+}
 
 private class VerticalOverScroller(val recyclerView: WaqtiRecyclerView) :
         VerticalOverScrollBounceEffectDecorator(
-                RecyclerViewOverScrollDecorAdapter(recyclerView)) {
+                RecyclerViewOverScrollDecorAdapter(recyclerView)), OverScroller {
 
-    inline fun overScroll() {
-        val threshold = (recyclerView.height.D / overScrollThreshold)
-
-        val amount = -(recyclerView.verticalScrollSpeed.F / threshold.F)
-
+    override fun overScroll(amount: Float) {
         issueStateTransition(mOverScrollingState)
-
-        translateView(recyclerView, amount)
-
+        translateView(recyclerView, -amount)
         issueStateTransition(mBounceBackState)
-
     }
 }
 
 private class HorizontalOverScroller(val recyclerView: WaqtiRecyclerView) :
         HorizontalOverScrollBounceEffectDecorator(
-                RecyclerViewOverScrollDecorAdapter(recyclerView)) {
+                RecyclerViewOverScrollDecorAdapter(recyclerView)), OverScroller {
 
-    inline fun overScroll() {
-
-        val threshold = (recyclerView.width.D / overScrollThreshold)
-
-        val amount = -(recyclerView.horizontalScrollSpeed.F / threshold.F)
-
+    override fun overScroll(amount: Float) {
         issueStateTransition(mOverScrollingState)
-
-        translateView(recyclerView, amount)
-
+        translateView(recyclerView, -amount)
         issueStateTransition(mBounceBackState)
-
     }
 
 }
