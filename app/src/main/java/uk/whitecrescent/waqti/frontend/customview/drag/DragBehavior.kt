@@ -210,8 +210,8 @@ open class DragBehavior(val view: View) {
                 SystemClock.uptimeMillis(),
                 SystemClock.uptimeMillis(),
                 MotionEvent.ACTION_MOVE,
-                view.mainActivity.currentTouchPoint.x,
-                view.mainActivity.currentTouchPoint.y,
+                view.mainActivity.touchPoint.x,
+                view.mainActivity.touchPoint.y,
                 0
         )
 

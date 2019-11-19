@@ -3,6 +3,7 @@
 package uk.whitecrescent.waqti.frontend.customview
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
@@ -10,13 +11,16 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import com.google.android.material.shape.CornerFamily
 import com.google.android.material.shape.MaterialShapeDrawable
+import com.google.android.material.shape.ShapeAppearanceModel
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.view_appbar.view.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.hintTextColor
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.extensions.convertDpToPx
 import uk.whitecrescent.waqti.extensions.invoke
 import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.frontend.ANY_FRAGMENT
@@ -76,6 +80,7 @@ class AppBar
 
         setColorScheme(ColorScheme.WAQTI_DEFAULT)
 
+        //roundedCorners()
     }
 
     inline fun leftImageBack() {
@@ -111,8 +116,20 @@ class AppBar
         rightImageDrawable?.setTint(colorScheme.text.toAndroidColor)
     }
 
+    private inline fun roundedCorners() {
+        materialShapeDrawable.apply {
+            shapeAppearanceModel = ShapeAppearanceModel.Builder()
+                    .setBottomLeftCorner(CornerFamily.ROUNDED, context.convertDpToPx(16))
+                    .setBottomRightCorner(CornerFamily.ROUNDED, context.convertDpToPx(16))
+                    .build()
+        }
+    }
+
     override fun setBackgroundColor(color: Int) {
-        background = materialShapeDrawable.apply { setTint(color) }
+        super.setBackgroundColor(Color.TRANSPARENT)
+        background = materialShapeDrawable.apply {
+            setTint(color)
+        }
     }
 
 }

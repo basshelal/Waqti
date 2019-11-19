@@ -38,7 +38,7 @@ import uk.whitecrescent.waqti.extensions.doInBackgroundDelayed
 import uk.whitecrescent.waqti.extensions.getViewModel
 import uk.whitecrescent.waqti.extensions.globalVisibleRect
 import uk.whitecrescent.waqti.extensions.invoke
-import uk.whitecrescent.waqti.extensions.onClickOutside
+import uk.whitecrescent.waqti.extensions.onTouchOutside
 import uk.whitecrescent.waqti.extensions.rootViewGroup
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
@@ -56,10 +56,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var viewModel: MainActivityViewModel
     lateinit var preferences: WaqtiPreferences
-    val currentTouchPoint = PointF()
+    val touchPoint = PointF()
     val onTouchOutSideListeners = HashMap<View, (View) -> Unit>()
-
-    var onTouch: (MotionEvent) -> Unit = {}
 
     override fun onCreate(savedInstanceState: Bundle?) {
         preferences = WaqtiPreferences(this)
@@ -168,15 +166,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        appBar.editTextView.onClickOutside {
+        appBar.editTextView.onTouchOutside {
             it.clearFocusAndHideKeyboard()
         }
     }
 
     override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         val spr = super.dispatchTouchEvent(event)
-        currentTouchPoint.set(event.rawX, event.rawY)
-        onTouch(event)
+        touchPoint.set(event.rawX, event.rawY)
         if (event.action == MotionEvent.ACTION_DOWN) {
             onTouchOutSideListeners.forEach {
                 val (view, onClick) = it

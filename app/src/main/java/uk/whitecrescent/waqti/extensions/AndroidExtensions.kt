@@ -20,8 +20,8 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
-import android.view.inputmethod.InputMethodManager
 import android.widget.EdgeEffect
+import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
@@ -42,6 +42,7 @@ import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.SeekParams
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.find
+import org.jetbrains.anko.inputMethodManager
 import uk.whitecrescent.waqti.BuildConfig
 import uk.whitecrescent.waqti.frontend.FABOnScrollListener
 import uk.whitecrescent.waqti.frontend.MainActivity
@@ -69,13 +70,12 @@ inline val View.mainActivityViewModel: MainActivityViewModel
     get() = mainActivity.viewModel
 
 inline fun View.hideKeyboard() {
-    (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
-            .hideSoftInputFromWindow(this.windowToken, 0)
+    if (this is EditText) this.setSelection(0)
+    context.inputMethodManager.hideSoftInputFromWindow(this.windowToken, 0)
 }
 
 inline fun View.showKeyboard() {
-    (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
-            .showSoftInput(this, 0)
+    context.inputMethodManager.showSoftInput(this, 0)
 }
 
 inline fun View.requestFocusAndShowKeyboard() {
@@ -118,10 +118,8 @@ inline val View.isClear: Boolean
 
 inline fun View.removeOnClickListener() = this.setOnClickListener(null)
 
-inline fun View.onClickOutside(crossinline onClickOutside: (View) -> Unit) {
-    mainActivity.onTouchOutSideListeners.putIfAbsent(this) {
-        onClickOutside(this)
-    }
+inline fun View.onTouchOutside(crossinline onClickOutside: (View) -> Unit) {
+    mainActivity.onTouchOutSideListeners.putIfAbsent(this, { onClickOutside(this) })
 }
 
 val View.parents: List<ViewGroup>

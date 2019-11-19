@@ -492,8 +492,8 @@ private class ShadowBuilder(view: View) : View.DragShadowBuilder(view) {
 
         val viewPoint = view.locationOnScreen
 
-        val x = view.mainActivity.currentTouchPoint.x - viewPoint.x
-        val y = view.mainActivity.currentTouchPoint.y - viewPoint.y
+        val x = view.mainActivity.touchPoint.x - viewPoint.x
+        val y = view.mainActivity.touchPoint.y - viewPoint.y
         outShadowTouchPoint?.set(x.I, y.I)
     }
 

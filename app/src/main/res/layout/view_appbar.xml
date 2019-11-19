@@ -22,15 +22,15 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <uk.whitecrescent.waqti.frontend.customview.EditTextView
-        android:textAlignment="center"
-        android:textColor="@color/black"
-        android:textSize="32sp"
         android:id="@+id/appBar_editTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:maxLines="5"
+        android:textAlignment="center"
+        android:textColor="@color/black"
+        android:textSize="32sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/appBar_rightImageView"
         app:layout_constraintStart_toEndOf="@+id/appBar_leftImageView"

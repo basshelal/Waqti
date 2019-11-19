@@ -14,10 +14,9 @@
         android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
         android:layout_marginEnd="4dp"
-        android:layout_marginBottom="4dp"
         app:cardBackgroundColor="@color/taskCardBackgroundColor"
-        app:cardCornerRadius="6dp"
-        app:cardElevation="10dp"
+        app:cardCornerRadius="10dp"
+        app:cardElevation="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -39,6 +38,8 @@
         android:id="@+id/taskList_recyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
         android:scrollbars="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/taskListHeader"

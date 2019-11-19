@@ -18,7 +18,6 @@ import uk.whitecrescent.waqti.extensions.D
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.I
 import uk.whitecrescent.waqti.extensions.addOnScrollListener
-import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 
 /**
@@ -81,8 +80,6 @@ constructor(context: Context,
                     val dX = horizontalScrollOffset.D - oldHorizontalScrollOffset.D
 
                     val dSecs = (System.currentTimeMillis() - oldTime).D * 1E-3.D
-
-                    logE(dSecs)
 
                     verticalScrollSpeed = (dY / dSecs).I
                     horizontalScrollSpeed = (dX / dSecs).I
