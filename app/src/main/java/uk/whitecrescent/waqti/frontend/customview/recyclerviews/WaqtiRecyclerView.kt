@@ -84,13 +84,11 @@ constructor(context: Context,
                     verticalScrollSpeed = (dY / dSecs).I
                     horizontalScrollSpeed = (dX / dSecs).I
 
-                    if (dy != 0 && scrollState == SCROLL_STATE_SETTLING &&
-                            (verticalScrollOffset == 0 || verticalScrollOffset == maxVerticalScroll)) {
+                    if (dy != 0 && (verticalScrollOffset == 0 || verticalScrollOffset == maxVerticalScroll)) {
                         overScroller?.overScroll((verticalScrollSpeed.F * overScrollMultiplier.F) / height.F)
                     }
 
-                    if (dx != 0 && scrollState == SCROLL_STATE_SETTLING &&
-                            (horizontalScrollOffset == 0 || horizontalScrollOffset == maxHorizontalScroll)) {
+                    if (dx != 0 && (horizontalScrollOffset == 0 || horizontalScrollOffset == maxHorizontalScroll)) {
                         overScroller?.overScroll((horizontalScrollSpeed.F * overScrollMultiplier.F) / width.F)
                     }
 

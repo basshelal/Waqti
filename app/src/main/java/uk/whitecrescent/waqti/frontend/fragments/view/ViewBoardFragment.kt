@@ -58,7 +58,6 @@ import uk.whitecrescent.waqti.extensions.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.extensions.horizontalPercentInverted
 import uk.whitecrescent.waqti.extensions.invoke
 import uk.whitecrescent.waqti.extensions.logE
-import uk.whitecrescent.waqti.extensions.longSnackBar
 import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.mainActivityViewModel
 import uk.whitecrescent.waqti.extensions.setColorScheme
@@ -607,6 +606,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
 
         mainActivity.drawerLayout.boardOptions_navigationView {
+            boardOptions_scrollView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = mainActivity.appBar.height
+            }
             setBackgroundColor(board.barColor.toAndroidColor)
             appBarColor_boardOption {
                 setOnClickListener {
@@ -704,9 +706,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
             boardImage_boardOption {
                 setOnClickListener {
                     val photoPicker = PhotoPickerDialog().apply {
-                        onClick = {
-                            setBackgroundImage(it)
-                        }
+                        onClick = {}
                         onCancel = {
                             setBackground()
                             dismiss()
@@ -714,6 +714,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         onConfirm = {
                             board.backgroundPhoto = it
                             board.backgroundType = BackgroundType.UNSPLASH_PHOTO
+                            setBackgroundImage(it)
                             dismiss()
                         }
                     }
@@ -721,7 +722,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         add(R.id.fragmentContainer, photoPicker, "PhotoPicker")
                         addToBackStack(null)
                     }
-                    mainActivity.appBar.longSnackBar("Long click to View, touch to select ")
                     mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
                 }
             }

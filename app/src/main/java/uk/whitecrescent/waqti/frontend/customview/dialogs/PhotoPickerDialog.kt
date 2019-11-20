@@ -26,7 +26,7 @@ class PhotoPickerDialog : WaqtiFragment() {
         set(value) {
             field = value
             confirm_button {
-                alpha = if (value == null) 0.5F else 1F
+                alpha = if (value == null) 0.3F else 1F
                 isEnabled = value != null
             }
         }
@@ -47,12 +47,16 @@ class PhotoPickerDialog : WaqtiFragment() {
 
         photoPicker {
             clickOpensPhoto = false
+            longClickSelectsPhoto = false
+            isMultipleSelection = false
             onClickPhoto = { photo, _ ->
                 selectedPhoto = photo
                 onClick(photo)
+                selectPhoto(photo)
+                showPhoto(photo, PhotoSize.REGULAR)
             }
             onLongClickPhoto = { photo, _ ->
-                showPhoto(photo, PhotoSize.REGULAR)
+                selectPhoto(photo)
             }
         }
 
@@ -60,7 +64,7 @@ class PhotoPickerDialog : WaqtiFragment() {
             setOnClickListener {
                 selectedPhoto?.also {
                     onConfirm(it)
-                    UnsplashPhotoPicker.downloadPhotos(listOf(it))
+                    UnsplashPhotoPicker.downloadPhoto(it)
                 }
             }
         }

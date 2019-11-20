@@ -41,7 +41,7 @@ class AppBar
 ) : FrameLayout(context, attributeSet, defStyle) {
 
     companion object {
-        val DEFAULT_ELEVATION = 16F
+        const val DEFAULT_ELEVATION = 16F
     }
 
     private val materialShapeDrawable = MaterialShapeDrawable(context, attributeSet, defStyle, 0)
@@ -129,6 +129,7 @@ class AppBar
         super.setBackgroundColor(Color.TRANSPARENT)
         background = materialShapeDrawable.apply {
             setTint(color)
+            elevation = DEFAULT_ELEVATION
         }
     }
 

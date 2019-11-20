@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import com.github.basshelal.threetenktx.threetenabp.rfcFormatted
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
@@ -160,6 +161,9 @@ class ViewTaskFragment : WaqtiViewFragment() {
         }
 
         mainActivity.drawerLayout.taskOptions_navigationView {
+            taskOptions_scrollView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
+                topMargin = mainActivity.appBar.height
+            }
             setBackgroundColor(board.cardColor.toAndroidColor)
             deleteTask_taskOption {
                 setOnClickListener {

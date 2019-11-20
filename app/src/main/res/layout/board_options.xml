@@ -7,11 +7,14 @@
     android:layout_height="match_parent"
     android:layout_gravity="end"
     android:fitsSystemWindows="false"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/boardOptions_scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_marginTop="50dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,12 +26,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginEnd="2dp"
                 android:layout_marginBottom="4dp"
                 app:color="@color/md_grey_200"
                 app:image="@drawable/menu_icon"
-                app:radius="8dp"
+                app:radius="12dp"
                 app:text="App Bar Color" />
 
             <uk.whitecrescent.waqti.frontend.customview.OptionsItem
@@ -41,7 +44,7 @@
                 android:layout_marginBottom="4dp"
                 app:color="@color/md_grey_200"
                 app:image="@drawable/list_icon"
-                app:radius="8dp"
+                app:radius="12dp"
                 app:text="List Header Color" />
 
             <uk.whitecrescent.waqti.frontend.customview.OptionsItem
@@ -54,7 +57,7 @@
                 android:layout_marginBottom="4dp"
                 app:color="@color/md_grey_200"
                 app:image="@drawable/card_icon"
-                app:radius="8dp"
+                app:radius="12dp"
                 app:text="Card Color" />
 
             <uk.whitecrescent.waqti.frontend.customview.OptionsItem
@@ -67,7 +70,7 @@
                 android:layout_marginBottom="4dp"
                 app:color="@color/md_grey_200"
                 app:image="@drawable/color_icon"
-                app:radius="8dp"
+                app:radius="12dp"
                 app:text="Background Color" />
 
             <uk.whitecrescent.waqti.frontend.customview.OptionsItem
@@ -80,7 +83,7 @@
                 android:layout_marginBottom="8dp"
                 app:color="@color/md_grey_200"
                 app:image="@drawable/image_icon"
-                app:radius="8dp"
+                app:radius="12dp"
                 app:text="Background Image" />
 
             <View style="@style/Divider.Horizontal" />
@@ -95,7 +98,7 @@
                 android:layout_marginBottom="2dp"
                 app:color="@color/errorColor"
                 app:image="@drawable/delete_icon"
-                app:radius="8dp"
+                app:radius="12dp"
                 app:text="@string/deleteBoard" />
 
         </LinearLayout>

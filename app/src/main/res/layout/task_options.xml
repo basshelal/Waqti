@@ -7,11 +7,14 @@
     android:layout_height="match_parent"
     android:layout_gravity="end"
     android:fitsSystemWindows="false"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/taskOptions_scrollView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_marginTop="50dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,12 +26,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="2dp"
                 android:layout_marginEnd="2dp"
                 android:layout_marginBottom="4dp"
                 app:color="@color/errorColor"
                 app:image="@drawable/delete_icon"
-                app:radius="8dp"
+                app:radius="12dp"
                 app:text="@string/deleteTask" />
 
         </LinearLayout>
