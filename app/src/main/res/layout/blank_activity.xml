@@ -7,15 +7,26 @@
     android:fitsSystemWindows="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:background="?attr/colorSurface"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurface">
 
         <FrameLayout
             android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/activity_appBar" />
+
+        <ProgressBar
+            android:id="@+id/activity_progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/activity_appBar" />
 
         <uk.whitecrescent.waqti.frontend.customview.AppBar
@@ -32,6 +43,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
+        android:background="?attr/colorSurface"
         android:fitsSystemWindows="false"
         app:headerLayout="@layout/navigation_header"
         app:menu="@menu/menu_nav_drawer" />

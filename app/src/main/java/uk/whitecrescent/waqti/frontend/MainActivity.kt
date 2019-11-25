@@ -20,9 +20,7 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.navigation_header.view.*
-import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.collections.forEachReversedByIndex
-import org.jetbrains.anko.colorAttr
 import org.jetbrains.anko.configuration
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.textColor
@@ -75,8 +73,23 @@ class MainActivity : AppCompatActivity() {
 
         if (supportFragmentManager.fragments.isEmpty()) {
             ViewBoardListFragment.show(this)
-            navigationView.setCheckedItem(R.id.allBoards_navDrawerItem)
+            navigationView?.setCheckedItem(R.id.allBoards_navDrawerItem)
         }
+
+        addOnBackPressedCallback {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START) ||
+                    drawerLayout.isDrawerOpen(GravityCompat.END)) {
+                drawerLayout.closeDrawers()
+                return@addOnBackPressedCallback
+            }
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                @FragmentNavigation(from = ANY_FRAGMENT, to = PREVIOUS_FRAGMENT)
+                supportFragmentManager.popBackStack()
+            } else this@MainActivity.supportFinishAfterTransition()
+        }
+
+        // TODO: 20-Nov-19 Below is getting too messy! We should make an
+        //  onFragmentChangedListener of some sort to fix this
 
         drawerLayout {
             setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, GravityCompat.END)
@@ -84,16 +97,6 @@ class MainActivity : AppCompatActivity() {
             useCustomBehavior(GravityCompat.END)
             setViewScrimColor(GravityCompat.END, Color.TRANSPARENT)
             setViewElevation(GravityCompat.END, 0F)
-            addOnBackPressedCallback {
-                if (isDrawerOpen(GravityCompat.START) || isDrawerOpen(GravityCompat.END)) {
-                    closeDrawers()
-                    return@addOnBackPressedCallback
-                }
-                if (supportFragmentManager.backStackEntryCount > 0) {
-                    @FragmentNavigation(from = ANY_FRAGMENT, to = PREVIOUS_FRAGMENT)
-                    supportFragmentManager.popBackStack()
-                } else this@MainActivity.supportFinishAfterTransition()
-            }
             addDrawerListener(object : DrawerLayout.SimpleDrawerListener() {
 
                 private val DEFAULT_SCRIM_COLOR = -0x67000000
@@ -132,7 +135,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         navigationView {
-            backgroundColor = colorAttr(R.attr.colorSurface)
             setNavigationItemSelectedListener {
                 drawerLayout.closeDrawers()
                 when (it.itemId) {

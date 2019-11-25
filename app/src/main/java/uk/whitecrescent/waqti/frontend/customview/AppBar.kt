@@ -42,6 +42,7 @@ class AppBar
 
     companion object {
         const val DEFAULT_ELEVATION = 16F
+        const val CORNER_RADIUS = 10
     }
 
     private val materialShapeDrawable = MaterialShapeDrawable(context, attributeSet, defStyle, 0)
@@ -119,8 +120,8 @@ class AppBar
     private inline fun roundedCorners() {
         materialShapeDrawable.apply {
             shapeAppearanceModel = ShapeAppearanceModel.Builder()
-                    .setBottomLeftCorner(CornerFamily.ROUNDED, context.convertDpToPx(16))
-                    .setBottomRightCorner(CornerFamily.ROUNDED, context.convertDpToPx(16))
+                    .setBottomLeftCorner(CornerFamily.ROUNDED, context.convertDpToPx(CORNER_RADIUS))
+                    .setBottomRightCorner(CornerFamily.ROUNDED, context.convertDpToPx(CORNER_RADIUS))
                     .build()
         }
     }
