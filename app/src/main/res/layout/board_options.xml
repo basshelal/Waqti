@@ -2,12 +2,12 @@
 
 <com.google.android.material.navigation.NavigationView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/boardOptions_navigationView"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
     android:layout_gravity="end"
     android:fitsSystemWindows="false"
-    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical">
 
     <androidx.core.widget.NestedScrollView
@@ -86,7 +86,9 @@
                 app:radius="12dp"
                 app:text="Background Image" />
 
-            <View style="@style/Divider.Horizontal" />
+            <View
+                android:id="@+id/boardOptions_divider"
+                style="@style/Divider.Horizontal" />
 
             <uk.whitecrescent.waqti.frontend.customview.OptionsItem
                 android:id="@+id/deleteBoard_boardOption"

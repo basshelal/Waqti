@@ -20,6 +20,7 @@ import com.afollestad.materialdialogs.color.colorChooser
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_view_list.*
 import kotlinx.android.synthetic.main.list_options.view.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.vibrator
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
@@ -262,6 +263,9 @@ class ViewListFragment : WaqtiViewFragment() {
                     mainActivity.drawerLayout.closeDrawer(this@listOptions_navigationView)
                 }
             }
+            listOptions_divider {
+                backgroundColor = headerColorScheme.text.toAndroidColor
+            }
             clearList_listOption {
                 setOnClickListener {
                     ConfirmDialog().apply {
@@ -312,6 +316,9 @@ class ViewListFragment : WaqtiViewFragment() {
         mainActivity.setColorScheme(colorScheme)
         mainActivity.drawerLayout.listOptions_navigationView {
             setBackgroundColor(colorScheme.main.toAndroidColor)
+            listOptions_divider {
+                backgroundColor = headerColorScheme.text.toAndroidColor
+            }
         }
         addTask_floatingButton.setColorScheme(colorScheme)
         taskList_recyclerView {

@@ -34,6 +34,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.textColor
 import org.jetbrains.anko.vibrator
 import uk.whitecrescent.waqti.ForLater
@@ -725,6 +726,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
                 }
             }
+            boardOptions_divider {
+                backgroundColor = board.barColor.colorScheme.text.toAndroidColor
+            }
             deleteBoard_boardOption {
                 setOnClickListener {
                     ConfirmDialog().apply {
@@ -797,6 +801,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
         mainActivity.setColorScheme(colorScheme)
         mainActivity.drawerLayout.boardOptions_navigationView {
             setBackgroundColor(colorScheme.main.toAndroidColor)
+            boardOptions_divider {
+                backgroundColor = colorScheme.text.toAndroidColor
+            }
         }
         addList_floatingButton.setColorScheme(colorScheme)
         boardView.setEdgeEffectColor(colorScheme.dark)
