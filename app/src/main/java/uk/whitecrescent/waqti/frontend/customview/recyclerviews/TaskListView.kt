@@ -13,7 +13,6 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.cardview.widget.CardView
-import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
@@ -27,6 +26,7 @@ import uk.whitecrescent.waqti.backend.persistence.Caches
 import uk.whitecrescent.waqti.backend.persistence.TASKS_CACHE_SIZE
 import uk.whitecrescent.waqti.backend.persistence.getParent
 import uk.whitecrescent.waqti.backend.task.ID
+import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.I
 import uk.whitecrescent.waqti.extensions.doInBackground
 import uk.whitecrescent.waqti.extensions.invoke
@@ -71,13 +71,14 @@ constructor(context: Context,
             it.isItemPrefetchEnabled = true
             it.initialPrefetchItemCount = 15
         }
-        itemAnimator = object : DefaultItemAnimator() {
+        //TODO REMOVE LATER!
+        /*itemAnimator = object : DefaultItemAnimator() {
             override fun animateAdd(holder: ViewHolder?): Boolean {
                 //holder?.itemView?.alpha = draggingViewAlpha
                 dispatchAddFinished(holder)
                 return true
             }
-        }
+        }*/
     }
 
     fun setColorScheme(colorScheme: ColorScheme) {
@@ -94,8 +95,6 @@ class TaskListAdapter(val taskListID: ID,
     var taskListView: TaskListView? = null
     var savedState: LinearLayoutManager.SavedState? = null
     var onInflate: TaskListView.() -> Unit = { }
-
-    var onStartDragTask: (TaskViewHolder) -> Unit = { }
 
     inline val linearLayoutManager: LinearLayoutManager? get() = taskListView?.linearLayoutManager
     inline val allViewHolders: List<TaskViewHolder>
@@ -432,7 +431,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
 
     init {
         doInBackground {
-            textView.textSize = mainActivity.preferences.cardTextSize.toFloat()
+            textView.textSize = mainActivity.preferences.cardTextSize.F
             cardView {
                 setOnClickListener {
                     mainActivityViewModel.taskID = taskID
@@ -440,7 +439,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                     ViewTaskFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
-                    adapter.onStartDragTask(this@TaskViewHolder)
+                    adapter.boardAdapter.onStartDragTask(this@TaskViewHolder)
                     true
                 }
             }

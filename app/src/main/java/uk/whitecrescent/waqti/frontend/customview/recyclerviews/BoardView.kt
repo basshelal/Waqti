@@ -103,6 +103,9 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     var onStartDragList: (BoardViewHolder) -> Unit = { }
     var onStartDragTask: (TaskViewHolder) -> Unit = { }
 
+    var isDraggingTask: Boolean = false
+    var isDraggingList: Boolean = false
+
     inline val linearLayoutManager: LinearLayoutManager? get() = boardView.linearLayoutManager
     inline val allCards: List<CardView> get() = taskListAdapters.flatMap { it.allListCards }
 
@@ -132,24 +135,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             }
             matchOrder()
             attachHelpers()
-
-
-            /*
-            How many lists can fit into one screen?
-            usableScreenWidth / tasklistWidth = ~1.4
-            How many full screens will show, remember that the pointer will never
-            reach the last list!
-
-            val usableScreenWidth = boardView.mainActivity.screenDimensions.first.toFloat()
-            val lists = usableScreenWidth.toDouble() / taskListWidth.toDouble()
-
-            logE("ScreenWidth: $usableScreenWidth")
-            logE("Percent: $percent")
-            logE("TaskListWidth: $taskListWidth")
-            logE("Lists in 1 screen: $lists")
-            logE("Number of Lists: ${taskListAdapters.size}")
-
-            */
         }
     }
 
@@ -166,6 +151,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             }
         })
 
+        // TODO REMOVE LATER!
         itemTouchHelper = ItemTouchHelper(object : SimpleItemTouchHelperCallback() {
 
             override fun isLongPressDragEnabled() = false
@@ -195,7 +181,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
             }
 
         })
-        itemTouchHelper.attachToRecyclerView(boardView)
+        itemTouchHelper.attachToRecyclerView(null)
 
         if (snapHelper != null) {
             snapHelper?.attachToRecyclerView(null)
@@ -237,7 +223,6 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     override fun onBindViewHolder(holder: BoardViewHolder, position: Int) {
         val taskList = board[position]
         holder.taskListView.adapter = getOrCreateListAdapter(taskList.id)
-        holder.taskListView.listAdapter?.onStartDragTask = onStartDragTask
         holder.headerTextView.text = taskList.name
 
         val headerColorScheme =

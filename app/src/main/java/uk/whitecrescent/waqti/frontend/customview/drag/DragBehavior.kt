@@ -63,10 +63,10 @@ open class DragBehavior(val view: View) {
                 MotionEvent.ACTION_UP -> endDrag()
                 MotionEvent.ACTION_CANCEL -> {
                 }
-                else -> view.onTouchEvent(event)
+                else -> return@OnTouchListener view.onTouchEvent(event)
             }
             true
-        } else false
+        } else return@OnTouchListener view.onTouchEvent(event)
     }
 
     init {
@@ -74,7 +74,6 @@ open class DragBehavior(val view: View) {
         view.setOnTouchListener(onTouchListener)
     }
 
-    @SuppressLint("CheckResult")
     fun drag(event: MotionEvent) {
         if (event === synthesizedEvent) {
             logE("Recycled Original event!")
