@@ -24,7 +24,10 @@ import org.jetbrains.anko.collections.forEachReversedByIndex
 import org.jetbrains.anko.configuration
 import org.jetbrains.anko.displayMetrics
 import org.jetbrains.anko.textColor
+import uk.whitecrescent.waqti.BuildConfig
 import uk.whitecrescent.waqti.R
+import uk.whitecrescent.waqti.backend.persistence.Caches
+import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.backend.task.ID
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.I
@@ -67,6 +70,9 @@ class MainActivity : AppCompatActivity() {
 
         setUpViews()
 
+        if (BuildConfig.DEBUG && Database.boards.isEmpty) {
+            Caches.seed(boards = 20, lists = 20, tasks = 100)
+        }
     }
 
     private inline fun setUpViews() {

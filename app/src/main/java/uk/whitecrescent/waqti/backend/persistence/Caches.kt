@@ -13,6 +13,7 @@ import uk.whitecrescent.waqti.backend.task.Task
 import uk.whitecrescent.waqti.backend.task.Template
 import uk.whitecrescent.waqti.backend.task.TimeUnit
 import uk.whitecrescent.waqti.extensions.doInBackgroundAsync
+import uk.whitecrescent.waqti.extensions.logD
 import uk.whitecrescent.waqti.extensions.size
 
 
@@ -104,32 +105,30 @@ object Caches {
         Caches.boardList.remove(boardID).update()
     }
 
-    inline fun seed(boards: Int = 5, lists: Int = 5, tasks: Int = 10) {
+    inline fun seed(boardListName: String = "BoardList",
+                    boards: Int = 5, lists: Int = 5, tasks: Int = 10) {
         Caches.clearAllCaches().commit()
 
-        Caches.boardLists.put(BoardList("Default"))
+        Caches.boardLists.put(BoardList(boardListName))
 
         Caches.boardList.addAll(Array(boards) {
             Board("Board").apply {
-                name = "Board $id"
+                name = "Board ${this.id}"
+                addAll(Array(lists) {
+                    TaskList("TaskList").apply {
+                        name = "TaskList ${this.id}"
+                        addAll(Array(tasks) {
+                            Task("Task").apply {
+                                changeName("Task ${this.id}")
+                                logD("Seeded: Task ${this.id}")
+                            }
+                        }.asList()).update()
+                        logD("Seeded: List ${this.id}")
+                    }
+                }.asList()).update()
+                logD("Seeded: Board ${this.id}")
             }
         }.asList()).update()
-
-        Caches.boards.forEach {
-            it.addAll(Array(lists) {
-                TaskList("TaskList").apply {
-                    name = "TaskList $id"
-                }
-            }.asList()).update()
-        }
-
-        Caches.taskLists.forEach {
-            it.addAll(Array(tasks) {
-                Task("Task").apply {
-                    changeName("Task $id")
-                }
-            }.asList()).update()
-        }
     }
 
     inline fun seedRealistic() {
