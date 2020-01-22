@@ -32,6 +32,10 @@ import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
  * center and another ImageView on the end.
  * The ImageView on the start is meant to be the navigation drawer menu and back button.
  * The ImageView on the end is meant to be the options menu.
+ *
+ * This is used because the default Android ToolBar or ActionBar did not allow for an
+ * [EditTextView] in the center and provides less than ideal control and functionality, hence
+ * this new basic custom view.
  */
 class AppBar
 @JvmOverloads constructor(

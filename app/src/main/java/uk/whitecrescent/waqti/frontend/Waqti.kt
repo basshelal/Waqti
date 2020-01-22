@@ -11,6 +11,9 @@ import uk.whitecrescent.waqti.backend.persistence.Database
 import uk.whitecrescent.waqti.keys.UNSPLASH_ACCESS_KEY
 import uk.whitecrescent.waqti.keys.UNSPLASH_SECRET_KEY
 
+/**
+ * Waqti Application class used for application-scoped content and application initialization code
+ */
 class Waqti : Application() {
 
     override fun onCreate() {

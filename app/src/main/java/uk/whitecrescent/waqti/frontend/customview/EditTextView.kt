@@ -10,6 +10,8 @@ import android.text.InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
 import android.text.TextWatcher
 import android.util.AttributeSet
 import android.view.inputmethod.EditorInfo
+import android.widget.EditText
+import android.widget.TextView
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.widget.doAfterTextChanged
 import org.jetbrains.anko.colorAttr
@@ -19,7 +21,10 @@ import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.frontend.appearance.toColor
 
 /**
- * The most basic version of an Editable TextView, used across the app especially in the [AppBar]
+ * The most basic version of an Editable TextView, used across the app especially in the [AppBar].
+ *
+ * The behavior is essentially that when not in Edit mode this will look like a regular
+ * [TextView] but if clicked it will be editable and then look like an [EditText].
  */
 class EditTextView
 @JvmOverloads constructor(

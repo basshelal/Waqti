@@ -14,7 +14,8 @@ import uk.whitecrescent.waqti.frontend.fragments.view.ViewMode
  *
  * All [SharedPreferences] used in Waqti will be found here, it is recommended against accessing
  * [SharedPreferences] directly, you should instead use one of the inline variables here to set
- * or get a specific preference.
+ * or get a specific preference. If a new type of SharedPreference is added to the application then
+ * it should be added here for better type safety and checks.
  *
  * You should only have one instance of this class at any given point and that instance will be
  * found in [MainActivity] called [MainActivity.preferences].
