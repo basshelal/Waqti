@@ -3,6 +3,7 @@ package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -102,6 +103,9 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     var onStartDragList: (BoardViewHolder) -> Unit = { }
     var onStartDragTask: (TaskViewHolder) -> Unit = { }
+
+    var onTouchEvent: (TaskViewHolder, MotionEvent) -> Unit = { _, _ -> }
+    var onInterceptTouchEvent: (TaskViewHolder, MotionEvent) -> Unit = { _, _ -> }
 
     var isDraggingTask: Boolean = false
     var isDraggingList: Boolean = false

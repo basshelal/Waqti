@@ -145,6 +145,15 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it.itemView)
             }
 
+            boardAdapter?.onInterceptTouchEvent = { vh, event ->
+                logE("onInterceptTouchEvent in ViewBoardFragment with VH and MotionEvent")
+            }
+
+            boardAdapter?.onTouchEvent = { vh, event ->
+                logE("onTouchEvent in ViewBoardFragment with VH and MotionEvent")
+                task_dragShadow?.dispatchTouchEvent(event)
+            }
+
             boardAdapter?.onStartDragList = {
                 dragListID = it.itemId
                 list_dragShadow updateToMatch it.itemView
@@ -255,30 +264,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
     private inline fun setUpTaskDrag() {
 
-        val range = (0..1080)
-
         task_dragShadow {
-
-            /*setOnLongClickListener {
-                logE("ON LONG CLICK!")
-                updateLayoutParams {
-                    width = WRAP_CONTENT
-                    height = WRAP_CONTENT
-                }
-                isVisible = true
-                alpha = 1F
-                updateToMatch(boardView.boardAdapter!!.findTaskViewHolder(1)!!.itemView)
-                dragBehavior.startDrag()
-
-
-                true
-            }
-
-
-            doInBackgroundDelayed(2000) {
-                performLongClick(500F, 0F)
-            }*/
-
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
 

@@ -4,24 +4,19 @@ package uk.whitecrescent.waqti.frontend.customview.drag
 
 import android.annotation.SuppressLint
 import android.graphics.PointF
-import android.os.SystemClock
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import org.jetbrains.anko.childrenRecursiveSequence
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.L
-import uk.whitecrescent.waqti.extensions.Observer
 import uk.whitecrescent.waqti.extensions.globalVisibleRect
 import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.parentViewGroup
 import uk.whitecrescent.waqti.extensions.parents
-import java.util.concurrent.TimeUnit
 
 open class DragBehavior(val view: View) {
 
@@ -39,23 +34,12 @@ open class DragBehavior(val view: View) {
     protected var dampingRatio = 0.6F
     protected var stiffness = 1000F
 
-    var synthesizedEvent: MotionEvent? = null
-
     val millisPerFrame = view.mainActivity.millisPerFrame.L - 1L
 
     protected val onTouchListener = View.OnTouchListener { v, event ->
-        logE("Event: ${MotionEvent.actionToString(event.action)}")
-        logE("Synth: ${MotionEvent.actionToString(synthesizedEvent?.action ?: 0)}")
-        logE("-----------------------------------------------------------------------------")
-
-        if (event !== synthesizedEvent) {
-            logE("Recycled Synthesized event!")
-            synthesizedEvent?.recycle()
-            synthesizedEvent = null
-            return@OnTouchListener true
-        }
+        logE("onTouchListener in DragBehavior")
         touchPoint.set(event.rawX, event.rawY)
-        if (isDragging && event === synthesizedEvent) {
+        if (isDragging) {
             view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> onDown(event)
@@ -72,44 +56,6 @@ open class DragBehavior(val view: View) {
     init {
         returnPoint.set(view.x, view.y)
         view.setOnTouchListener(onTouchListener)
-    }
-
-    fun drag(event: MotionEvent) {
-        if (event === synthesizedEvent) {
-            logE("Recycled Original event!")
-            event.recycle()
-            view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
-            startObserver(event)
-        }
-    }
-
-    private inline fun startObserver(event: MotionEvent) {
-        Observable.interval(millisPerFrame, TimeUnit.MILLISECONDS)
-                .takeWhile { synthesizedEvent != null }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(Observer<Long>(
-                        onNext = {
-                            if (event !== synthesizedEvent) {
-                                logE("Recycled Synthesized event!")
-                                synthesizedEvent?.recycle()
-                                synthesizedEvent = null
-                            }
-                            view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
-                            view.dispatchTouchEvent(event)
-                        },
-                        onError = {
-
-                        },
-                        onComplete = {
-                            logE("COMPLETED DRAGGING!")
-                            logE(synthesizedEvent)
-                        },
-                        onSubscribe = {
-                            logE("STARTED DRAGGING!")
-                        }
-                )
-                )
     }
 
     protected open fun onDown(event: MotionEvent) {
@@ -154,7 +100,6 @@ open class DragBehavior(val view: View) {
     }
 
     open fun endDrag() {
-        synthesizedEvent = null
         view.cancelLongPress()
         animateReturn()
     }
@@ -196,18 +141,6 @@ open class DragBehavior(val view: View) {
         otherView.parents.forEach {
             it.requestDisallowInterceptTouchEvent(true)
         }
-
-
-        synthesizedEvent = MotionEvent.obtain(
-                SystemClock.uptimeMillis(),
-                SystemClock.uptimeMillis(),
-                MotionEvent.ACTION_MOVE,
-                view.mainActivity.touchPoint.x,
-                view.mainActivity.touchPoint.y,
-                0
-        )
-
-        synthesizedEvent?.also { drag(it) }
 
         /*otherView.setOnTouchListener { v, event ->
 

@@ -2,11 +2,13 @@
 
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Point
 import android.util.AttributeSet
 import android.view.DragEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -85,6 +87,17 @@ constructor(context: Context,
     fun setColorScheme(colorScheme: ColorScheme) {
         allViewHolders.forEach { it.colorScheme = colorScheme }
         listAdapter?.notifyDataSetChanged()
+    }
+
+    override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
+        logE("onInterceptTouchEvent in TaskListView")
+        return super.onInterceptTouchEvent(e)
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(e: MotionEvent): Boolean {
+        logE("onTouchEvent in TaskListView")
+        return super.onTouchEvent(e)
     }
 
 }
@@ -435,7 +448,10 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
             textView.textSize = mainActivity.preferences.cardTextSize.F
             cardView {
                 onInterceptTouchEvent = {
-                    logE(it)
+                    adapter.boardAdapter.onInterceptTouchEvent(this@TaskViewHolder, it)
+                }
+                onTouchEvent = {
+                    adapter.boardAdapter.onTouchEvent(this@TaskViewHolder, it)
                 }
                 setOnClickListener {
                     mainActivityViewModel.taskID = taskID

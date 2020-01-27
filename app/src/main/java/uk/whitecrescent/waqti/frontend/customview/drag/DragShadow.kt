@@ -2,14 +2,17 @@
 
 package uk.whitecrescent.waqti.frontend.customview.drag
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.drawToBitmap
 import androidx.core.view.updateLayoutParams
+import uk.whitecrescent.waqti.extensions.logE
 
 /**
  * An [ImageView] used to represent the draggable "shadow" of any [View].
@@ -58,6 +61,12 @@ constructor(context: Context,
             }
         }
         this.setImageBitmap(view.drawToBitmap())
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        logE("onTouchEvent in DragShadow")
+        return super.onTouchEvent(event)
     }
 
 }
