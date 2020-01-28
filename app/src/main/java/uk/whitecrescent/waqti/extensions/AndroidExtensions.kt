@@ -17,6 +17,7 @@ import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AlphaAnimation
@@ -312,6 +313,8 @@ inline fun IndicatorSeekBar.onSeek(crossinline onSeek: (SeekParams?) -> Unit) {
 inline fun String.toEditable() = SpannableStringBuilder(this)
 
 inline val Editable?.isValid: Boolean get() = this != null && this.isNotBlank()
+
+inline val MotionEvent.actionString: String get() = MotionEvent.actionToString(this.action)
 
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.

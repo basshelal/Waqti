@@ -4,6 +4,7 @@ package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
 import android.util.AttributeSet
 import android.view.DragEvent
@@ -98,6 +99,11 @@ constructor(context: Context,
     override fun onTouchEvent(e: MotionEvent): Boolean {
         logE("onTouchEvent in TaskListView")
         return super.onTouchEvent(e)
+    }
+
+    override fun removeDetachedView(child: View, animate: Boolean) {
+        child.setBackgroundColor(Color.BLUE)
+        super.removeDetachedView(child, animate)
     }
 
 }

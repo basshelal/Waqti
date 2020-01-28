@@ -2,6 +2,7 @@
 
 package uk.whitecrescent.waqti.frontend.fragments.view
 
+import android.graphics.Color
 import android.graphics.PointF
 import android.graphics.RectF
 import android.graphics.drawable.ColorDrawable
@@ -19,6 +20,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.contains
 import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
+import androidx.core.view.postDelayed
 import androidx.core.view.updateLayoutParams
 import com.afollestad.materialdialogs.LayoutMode
 import com.afollestad.materialdialogs.MaterialDialog
@@ -50,7 +52,6 @@ import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.extensions.commitTransaction
 import uk.whitecrescent.waqti.extensions.convertDpToPx
 import uk.whitecrescent.waqti.extensions.doInBackground
-import uk.whitecrescent.waqti.extensions.doInBackgroundDelayed
 import uk.whitecrescent.waqti.extensions.fadeIn
 import uk.whitecrescent.waqti.extensions.fadeOut
 import uk.whitecrescent.waqti.extensions.getViewModel
@@ -316,7 +317,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                     draggingViewHolder = findViewHolder(dragTaskID)
 
-                    draggingViewHolder?.itemView?.alpha = 0F
+                    //draggingViewHolder?.itemView?.alpha = 0F
+                    draggingViewHolder?.itemView?.setBackgroundColor(Color.RED)
 
                     taskListView = boardView.boardAdapter!!.getListAdapter(draggingViewHolder!!.taskListID)!!.taskListView!!
 
@@ -332,7 +334,23 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     // TODO: 04-Nov-19 When dragging a ViewHolder that will be touched by a "notify" method call,
                     //  the drag we have is let go for some reason
 
-                    doInBackgroundDelayed(2000) {
+                    // TODO: 28-Jan-20 When a "notify" method is called the drag is released
+                    //  because many views including the one that is receiving the drag event is
+                    //  being detached from the TaskListView, see RecyclerView line 6165, a
+                    //  detached view will always lose any of its previous interactions as is
+                    //  showin in ViewGroup.removeDetachedView at line 5690.
+                    //  The question that remains is *why* the view is being detached, the only
+                    //  info I can gather is that the Recycler is determining this in
+                    //  RecyclerView.Recycler.tryGetViewHolderForPositionByDeadline in line 6140.
+                    //  How this relates to our notify methods I still don't know, they may not
+                    //  be directly related and instead the detachment is simply a side effect of
+                    //  the notify rather than a direct result of it, meaning that after the
+                    //  notify is done (which calls a requestLayout) the new layout pass
+                    //  determines it needs to detach views including the one receiving our
+                    //  dragging view and then later it will be reattached. This all makes sense,
+                    //  but how do we counter this or solve it???
+
+                    postDelayed(2000) {
                         taskListView.listAdapter?.notifyItemRemoved(1)
                     }
 

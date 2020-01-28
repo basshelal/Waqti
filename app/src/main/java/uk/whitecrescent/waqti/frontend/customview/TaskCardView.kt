@@ -6,7 +6,7 @@ import android.util.AttributeSet
 import android.view.MotionEvent
 import com.google.android.material.card.MaterialCardView
 import uk.whitecrescent.waqti.extensions.logE
-import uk.whitecrescent.waqti.extensions.shortSnackBar
+import uk.whitecrescent.waqti.extensions.longSnackBar
 
 class TaskCardView
 @JvmOverloads
@@ -17,13 +17,6 @@ constructor(context: Context,
 
     var onInterceptTouchEvent: (event: MotionEvent) -> Unit = {}
     var onTouchEvent: (event: MotionEvent) -> Unit = {}
-
-    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
-        super.onLayout(changed, left, top, right, bottom)
-        logE("LAYOUT!\n" +
-                "-----------------------------------------------------")
-        shortSnackBar("LAYOUT!!!!")
-    }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         logE("onInterceptTouchEvent in TaskCardView")
@@ -38,7 +31,7 @@ constructor(context: Context,
         if (event.actionMasked == MotionEvent.ACTION_CANCEL) {
             logE("CANCELLED in TaskCardView\n" +
                     "-----------------------------------------------------")
-            shortSnackBar("CANCELLED in TaskCardView")
+            longSnackBar("CANCELLED in TaskCardView")
         }
         return super.onTouchEvent(event)
     }
