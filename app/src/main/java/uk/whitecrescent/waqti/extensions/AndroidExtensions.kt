@@ -5,6 +5,7 @@
 package uk.whitecrescent.waqti.extensions
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.pm.PackageManager
@@ -13,10 +14,12 @@ import android.graphics.Point
 import android.graphics.PointF
 import android.graphics.Rect
 import android.graphics.RectF
+import android.os.SystemClock
 import android.text.Editable
 import android.text.SpannableStringBuilder
 import android.util.DisplayMetrics
 import android.util.Log
+import android.view.InputDevice
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
@@ -315,6 +318,12 @@ inline fun String.toEditable() = SpannableStringBuilder(this)
 inline val Editable?.isValid: Boolean get() = this != null && this.isNotBlank()
 
 inline val MotionEvent.actionString: String get() = MotionEvent.actionToString(this.action)
+
+@SuppressLint("Recycle")
+inline fun obtainTouchEvent(action: Int, x: Number, y: Number): MotionEvent =
+        MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
+                action, x.F, y.F, 0)
+                .also { it.source = InputDevice.SOURCE_TOUCHSCREEN }
 
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.

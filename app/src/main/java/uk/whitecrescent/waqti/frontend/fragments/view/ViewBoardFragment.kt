@@ -350,8 +350,25 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     //  dragging view and then later it will be reattached. This all makes sense,
                     //  but how do we counter this or solve it???
 
+                    /* Possible solution?
+                     * All TaskCardViews receive their touchEvents as normal UNTIL a request for
+                     * start dragging is sent, in which case the events will NEVER deal with the
+                     * TaskCardView and instead deal straight with the DragShadow, this means
+                     * that no matter what happens to the original TaskCardView (ie, it gets
+                     * detached from its parent, the TaskListView), the DragShadow will still
+                     * receive all events and no ACTION_CANCEL will be sent.
+                     *
+                     * How in the hell can we go about this though?? Is there a way for events to
+                     * change their target? Or for them to go to one View then after a while
+                     * never go to that View and go to another? This is tricky and needs testing
+                     * and experimenting, I haven't found much documentation on this online but I
+                     * will try to look again.
+                     */
+
                     postDelayed(2000) {
                         taskListView.listAdapter?.notifyItemRemoved(1)
+                        // taskListView.dispatchTouchEvent(obtainTouchEvent(MotionEvent.ACTION_CANCEL, 0, 0))
+                        // task_dragShadow?.dispatchTouchEvent(obtainTouchEvent(MotionEvent.ACTION_MOVE, 0, 0))
                     }
 
                 }

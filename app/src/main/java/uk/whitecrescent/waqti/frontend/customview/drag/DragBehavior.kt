@@ -13,7 +13,6 @@ import org.jetbrains.anko.childrenRecursiveSequence
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.L
 import uk.whitecrescent.waqti.extensions.globalVisibleRect
-import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.parentViewGroup
 import uk.whitecrescent.waqti.extensions.parents
@@ -36,8 +35,34 @@ open class DragBehavior(val view: View) {
 
     val millisPerFrame = view.mainActivity.millisPerFrame.L - 1L
 
-    protected val onTouchListener = View.OnTouchListener { v, event ->
-        logE("onTouchListener in DragBehavior")
+    init {
+        returnPoint.set(view.x, view.y)
+    }
+
+    /**
+     * This function will perform all of the dragging work for you, it is up to you to choose
+     * where to call it.
+     * You can place this inside your [View]'s [View.OnTouchListener] as follows:
+     * ```
+     * val dragBehavior = ObservableDragBehavior(myView)
+     * myView.setOnTouchListener { v, event -> onTouchEvent(event); true }
+     * ```
+     * Or if you are making your own Custom [View] just add it in your [View]'s
+     * [View.onTouchEvent]. This way you can save your [View.OnTouchListener]. As follows:
+     * ```
+     * class MyView : View(...) {
+     *     val dragBehavior = ObservableDragBehavior(this)
+     *     ...
+     *     override fun onTouchEvent(event: MotionEvent): Boolean {
+     *         dragBehavior.onTouchEvent(event)
+     *         return super.onTouchEvent(event)
+     *     }
+     * }
+     * ```
+     *
+     * @param event The [MotionEvent] that this [DragBehavior] will respond to
+     */
+    open fun onTouchEvent(event: MotionEvent) {
         touchPoint.set(event.rawX, event.rawY)
         if (isDragging) {
             view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
@@ -47,15 +72,8 @@ open class DragBehavior(val view: View) {
                 MotionEvent.ACTION_UP -> endDrag()
                 MotionEvent.ACTION_CANCEL -> {
                 }
-                else -> return@OnTouchListener view.onTouchEvent(event)
             }
-            true
-        } else return@OnTouchListener view.onTouchEvent(event)
-    }
-
-    init {
-        returnPoint.set(view.x, view.y)
-        view.setOnTouchListener(onTouchListener)
+        }
     }
 
     protected open fun onDown(event: MotionEvent) {
@@ -170,10 +188,6 @@ open class DragBehavior(val view: View) {
             }
         }*/
     }
-
-    inline fun onTouchEvent(event: MotionEvent) = this.view.onTouchEvent(event)
-
-    inline fun dispatchTouchEvent(event: MotionEvent) = this.view.dispatchTouchEvent(event)
 
     companion object {
 

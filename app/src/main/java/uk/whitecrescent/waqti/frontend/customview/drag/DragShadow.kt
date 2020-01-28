@@ -66,6 +66,7 @@ constructor(context: Context,
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         logE("onTouchEvent in DragShadow")
+        dragBehavior.onTouchEvent(event)
         return super.onTouchEvent(event)
     }
 
