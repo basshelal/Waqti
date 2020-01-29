@@ -365,6 +365,32 @@ class ViewBoardFragment : WaqtiViewFragment() {
                      * will try to look again.
                      */
 
+                    /*
+                     * Possible solution?
+                     * Look into using TouchDelegate! It is able to pass events from one view to
+                     * another but I'm not sure if it can allow it to not delegate until we tell
+                     * it, likely we can though, something like:
+                     * in TaskCardView:
+                     * override fun onTouchEvent(){
+                     *     return if(!delegated) super.onTouchEvent()
+                     *         else delegateView.onTouchEvent()
+                     * }
+                     * I don't know, it's a maybe but we should definitely look into
+                     * TouchDelegate as it seems to be of some potential value for us
+                     */
+
+                    /*
+                     * Good solution?
+                     * onInterceptTouchEvent of TaskListView, make the shadow be in the place of
+                     * the touched position, make sure it receives all further touch Events and
+                     * NOT the TaskCardView, even if the shadow is invisible. Then in the
+                     * shadow's onTouch, let it call the onTouch of the TaskCardView its on top
+                     * of UNTIL a drag is requested. This way all of the events from the very
+                     * beginning are going to the shadow and the Card is receiving the events (in
+                     * addition to the shadow) only when a drag is not happening, thus clicks and
+                     * animations will still work properly.
+                     */
+
                     postDelayed(2000) {
                         taskListView.listAdapter?.notifyItemRemoved(1)
                         // taskListView.dispatchTouchEvent(obtainTouchEvent(MotionEvent.ACTION_CANCEL, 0, 0))

@@ -40,6 +40,7 @@ import uk.whitecrescent.waqti.extensions.mainActivityViewModel
 import uk.whitecrescent.waqti.extensions.notifySwapped
 import uk.whitecrescent.waqti.extensions.recycledViewPool
 import uk.whitecrescent.waqti.extensions.setIndeterminateColor
+import uk.whitecrescent.waqti.extensions.shortSnackBar
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
@@ -92,6 +93,7 @@ constructor(context: Context,
 
     override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
         logE("onInterceptTouchEvent in TaskListView")
+        shortSnackBar("${e.rawX}, ${e.rawY}")
         return super.onInterceptTouchEvent(e)
     }
 
