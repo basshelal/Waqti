@@ -13,6 +13,7 @@ import org.jetbrains.anko.childrenRecursiveSequence
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.L
 import uk.whitecrescent.waqti.extensions.globalVisibleRect
+import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.parentViewGroup
 import uk.whitecrescent.waqti.extensions.parents
@@ -45,7 +46,7 @@ open class DragBehavior(val view: View) {
      * You can place this inside your [View]'s [View.OnTouchListener] as follows:
      * ```
      * val dragBehavior = ObservableDragBehavior(myView)
-     * myView.setOnTouchListener { v, event -> onTouchEvent(event); true }
+     * myView.setOnTouchListener { v, event -> onTouchEvent(event) }
      * ```
      * Or if you are making your own Custom [View] just add it in your [View]'s
      * [View.onTouchEvent]. This way you can save your [View.OnTouchListener]. As follows:
@@ -54,17 +55,19 @@ open class DragBehavior(val view: View) {
      *     val dragBehavior = ObservableDragBehavior(this)
      *     ...
      *     override fun onTouchEvent(event: MotionEvent): Boolean {
-     *         dragBehavior.onTouchEvent(event)
-     *         return super.onTouchEvent(event)
+     *         return super.onTouchEvent(event) || dragBehavior.onTouchEvent(event)
      *     }
      * }
      * ```
      *
      * @param event The [MotionEvent] that this [DragBehavior] will respond to
+     * @return true if a drag event was performed and false otherwise, use this to determine if
+     * the touch event was handled or not in [View.OnTouchListener] or [View.onTouchEvent]
      */
-    open fun onTouchEvent(event: MotionEvent) {
+    open fun onTouchEvent(event: MotionEvent): Boolean {
+        logE("onTouchEvent in DragBehavior")
         touchPoint.set(event.rawX, event.rawY)
-        if (isDragging) {
+        return if (isDragging) {
             view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
             when (event.actionMasked) {
                 MotionEvent.ACTION_DOWN -> onDown(event)
@@ -73,7 +76,8 @@ open class DragBehavior(val view: View) {
                 MotionEvent.ACTION_CANCEL -> {
                 }
             }
-        }
+            true
+        } else false
     }
 
     protected open fun onDown(event: MotionEvent) {
