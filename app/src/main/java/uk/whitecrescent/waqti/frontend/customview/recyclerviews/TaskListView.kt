@@ -60,6 +60,9 @@ constructor(context: Context,
             defStyle: Int = 0
 ) : WaqtiRecyclerView(context, attributeSet, defStyle) {
 
+    var onInterceptTouchEvent: (event: MotionEvent) -> Unit = {}
+    var onTouchEvent: (event: MotionEvent) -> Unit = {}
+
     inline val listAdapter: TaskListAdapter?
         get() = adapter as TaskListAdapter?
 
@@ -91,16 +94,19 @@ constructor(context: Context,
         listAdapter?.notifyDataSetChanged()
     }
 
-    override fun onInterceptTouchEvent(e: MotionEvent): Boolean {
+    override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         logE("onInterceptTouchEvent in TaskListView")
-        shortSnackBar("${e.rawX}, ${e.rawY}")
-        return super.onInterceptTouchEvent(e)
+        shortSnackBar("${event.rawX}, ${event.rawY}")
+        onInterceptTouchEvent.invoke(event)
+        super.onInterceptTouchEvent(event)
+        return true
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(e: MotionEvent): Boolean {
+    override fun onTouchEvent(event: MotionEvent): Boolean {
         logE("onTouchEvent in TaskListView")
-        return super.onTouchEvent(e)
+        onTouchEvent.invoke(event)
+        return super.onTouchEvent(event)
     }
 
     override fun removeDetachedView(child: View, animate: Boolean) {
@@ -456,10 +462,10 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
             textView.textSize = mainActivity.preferences.cardTextSize.F
             cardView {
                 onInterceptTouchEvent = {
-                    adapter.boardAdapter.onInterceptTouchEvent(this@TaskViewHolder, it)
+                    adapter.boardAdapter.taskVHOnInterceptTouchEvent(this@TaskViewHolder, it)
                 }
                 onTouchEvent = {
-                    adapter.boardAdapter.onTouchEvent(this@TaskViewHolder, it)
+                    adapter.boardAdapter.taskVHOnTouchEvent(this@TaskViewHolder, it)
                 }
                 setOnClickListener {
                     mainActivityViewModel.taskID = taskID

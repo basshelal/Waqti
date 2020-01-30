@@ -146,13 +146,36 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it.itemView)
             }
 
-            boardAdapter?.onInterceptTouchEvent = { vh, event ->
-                logE("onInterceptTouchEvent in ViewBoardFragment with VH and MotionEvent")
+            boardAdapter?.boardVHOnInterceptTouchEvent = { vh, event ->
+                vh.taskListView.findChildViewUnder(event.x, event.y)?.also {
+                    task_dragShadow updateToMatch it
+                    this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it)
+                }
+                task_dragShadow.updateLayoutParams {
+                    width = WRAP_CONTENT
+                    height = WRAP_CONTENT
+                }
+                task_dragShadow.isVisible = true
+                task_dragShadow.alpha = 1F
+                task_dragShadow.dispatchTouchEvent(event)
+                logE("onInterceptTouchEvent BoardVH in ViewBoardFragment with VH and MotionEvent")
+                postDelayed(2000) {
+                    vh.taskListView.listAdapter?.notifyItemRemoved(1)
+                }
             }
 
-            boardAdapter?.onTouchEvent = { vh, event ->
-                logE("onTouchEvent in ViewBoardFragment with VH and MotionEvent")
-                task_dragShadow?.dispatchTouchEvent(event)
+            boardAdapter?.boardVHOnTouchEvent = { vh, event ->
+                task_dragShadow.dispatchTouchEvent(event)
+                logE("onTouchEvent BoardVH in ViewBoardFragment with VH and MotionEvent")
+            }
+
+            boardAdapter?.taskVHOnInterceptTouchEvent = { vh, event ->
+                logE("onInterceptTouchEvent TaskVH in ViewBoardFragment with VH and MotionEvent")
+            }
+
+            boardAdapter?.taskVHOnTouchEvent = { vh, event ->
+                logE("onTouchEvent TaskVH in ViewBoardFragment with VH and MotionEvent")
+                // task_dragShadow?.dispatchTouchEvent(event)
             }
 
             boardAdapter?.onStartDragList = {
@@ -223,7 +246,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
             }
 
-            setUpTaskDrag()
+            //setUpTaskDrag()
             setUpListDrag()
 
             boardFragment_progressBar?.visibility = View.GONE
@@ -417,7 +440,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
-                    when (newState) {
+                    /*when (newState) {
                         ObservableDragBehavior.DragState.IDLE -> {
                             task_dragShadow.isVisible = false
                         }
@@ -428,7 +451,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         ObservableDragBehavior.DragState.SETTLING -> {
                             task_dragShadow.alpha = 1F
                         }
-                    }
+                    }*/
                 }
 
                 private inline fun updateViewHolders(touchPoint: PointF) {
