@@ -4,6 +4,7 @@ package uk.whitecrescent.waqti.frontend.customview.drag
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -12,14 +13,21 @@ import android.widget.ImageView
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.view.drawToBitmap
 import androidx.core.view.updateLayoutParams
+import androidx.fragment.app.Fragment
+import uk.whitecrescent.waqti.extensions.F
+import uk.whitecrescent.waqti.extensions.globalVisibleRect
 import uk.whitecrescent.waqti.extensions.logE
+import uk.whitecrescent.waqti.extensions.parentViewGroup
 
 /**
  * An [ImageView] used to represent the draggable "shadow" of any [View].
  *
  * Instead of making a [View] draggable, one can just have one [DragShadow] for every draggable
- * [View] in the Fragment, this saves on performance and allows the draggable element appear to
- * move all across the Fragment view even outside the parent of the View it is mirroring.
+ * [View] in the container (such as a [Fragment] or a [ViewGroup]), this saves on performance and
+ * allows the draggable element appear to move all across the container view even outside the
+ * parent of the View it is mirroring. So even if the View being mirrored is heavily nested, the
+ * [DragShadow] can make it appear to be movable in any area in the [DragShadow]'s parent which
+ * may be an ancestor of the original View's parent.
  *
  * This is useful in Waqti's case for draggable Task Cards, the Board Fragment can have one
  * single [DragShadow] which represents the currently dragging Task, the shadow is a child of the
@@ -40,13 +48,16 @@ constructor(context: Context,
             defStyle: Int = 0
 ) : AppCompatImageView(context, attributeSet, defStyle) {
 
-    constructor(view: View) : this(view.context) {
-        this updateToMatch view
-    }
-
     val dragBehavior: ObservableDragBehavior = this.addObservableDragBehavior()
 
     inline infix fun updateToMatch(view: View) {
+        updateToMatchLayoutParamsOf(view)
+        updateToMatchBitmapOf(view)
+        updateToMatchPositionOf(view)
+        this.bringToFront()
+    }
+
+    inline infix fun updateToMatchLayoutParamsOf(view: View) {
         if (view.layoutParams != null) {
             if (this.layoutParams == null) {
                 this.layoutParams = ViewGroup.LayoutParams(
@@ -60,7 +71,19 @@ constructor(context: Context,
                 }
             }
         }
+    }
+
+    inline infix fun updateToMatchBitmapOf(view: View) {
         this.setImageBitmap(view.drawToBitmap())
+        this.setBackgroundColor(Color.RED)
+    }
+
+    inline infix fun updateToMatchPositionOf(view: View) {
+        val parentBounds = this.parentViewGroup!!.globalVisibleRect
+        val viewBounds = view.globalVisibleRect
+
+        this.x = viewBounds.left.F - parentBounds.left.F
+        this.y = viewBounds.top.F - parentBounds.top.F
     }
 
     @SuppressLint("ClickableViewAccessibility")

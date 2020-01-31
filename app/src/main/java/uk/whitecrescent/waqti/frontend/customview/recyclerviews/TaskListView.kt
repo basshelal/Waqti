@@ -4,7 +4,6 @@ package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.graphics.Point
 import android.util.AttributeSet
 import android.view.DragEvent
@@ -79,14 +78,6 @@ constructor(context: Context,
             it.isItemPrefetchEnabled = true
             it.initialPrefetchItemCount = 15
         }
-        //TODO REMOVE LATER!
-        /*itemAnimator = object : DefaultItemAnimator() {
-            override fun animateAdd(holder: ViewHolder?): Boolean {
-                //holder?.itemView?.alpha = draggingViewAlpha
-                dispatchAddFinished(holder)
-                return true
-            }
-        }*/
     }
 
     fun setColorScheme(colorScheme: ColorScheme) {
@@ -96,9 +87,10 @@ constructor(context: Context,
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
         logE("onInterceptTouchEvent in TaskListView")
-        shortSnackBar("${event.rawX}, ${event.rawY}")
         onInterceptTouchEvent.invoke(event)
         super.onInterceptTouchEvent(event)
+        // return true to tell system that I will handle all further events please
+        // all further events go to this.onTouchEvent instead of any possible children
         return true
     }
 
@@ -106,12 +98,10 @@ constructor(context: Context,
     override fun onTouchEvent(event: MotionEvent): Boolean {
         logE("onTouchEvent in TaskListView")
         onTouchEvent.invoke(event)
-        return super.onTouchEvent(event)
-    }
-
-    override fun removeDetachedView(child: View, animate: Boolean) {
-        child.setBackgroundColor(Color.BLUE)
-        super.removeDetachedView(child, animate)
+        super.onTouchEvent(event)
+        // TODO: 31-Jan-20 We need to call super!
+        // return true to tell the system that the event was handled successfully
+        return true
     }
 
 }
@@ -461,19 +451,15 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
         doInBackground {
             textView.textSize = mainActivity.preferences.cardTextSize.F
             cardView {
-                onInterceptTouchEvent = {
-                    adapter.boardAdapter.taskVHOnInterceptTouchEvent(this@TaskViewHolder, it)
-                }
-                onTouchEvent = {
-                    adapter.boardAdapter.taskVHOnTouchEvent(this@TaskViewHolder, it)
-                }
                 setOnClickListener {
                     mainActivityViewModel.taskID = taskID
                     mainActivityViewModel.listID = taskListID
                     ViewTaskFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
-                    adapter.boardAdapter.onStartDragTask(this@TaskViewHolder)
+                    shortSnackBar("LONG CLICK!")
+                    adapter.boardAdapter.isDraggingTask = true
+                    // adapter.boardAdapter.onStartDragTask(this@TaskViewHolder)
                     true
                 }
             }

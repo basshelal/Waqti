@@ -16,7 +16,6 @@ import uk.whitecrescent.waqti.extensions.globalVisibleRect
 import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.parentViewGroup
-import uk.whitecrescent.waqti.extensions.parents
 
 open class DragBehavior(val view: View) {
 
@@ -148,54 +147,10 @@ open class DragBehavior(val view: View) {
         this.view.x = viewBounds.left.F - parentBounds.left.F
         this.view.y = viewBounds.top.F - parentBounds.top.F
         startDrag()
-
-        // continuously run a synthesized drag loop (synthesized MotionEvent) until the user
-        // actually starts dragging themselves in which case we will recycle the synthesized
-        // MotionEvent and use the user's MotionEvent for Drags
-        // How will we know? Well the Synthesized Event won't actually move anything, it'll act
-        // and behave like a MOVE but it will be in the same spot, the touch point that is
-        // triggering this start drag, this needs to be a new parameter, if onMove is called and
-        // the touch point is different from the current one (either the event passed is not the
-        // synthesized one, OR the actual point is different, both mean the passed in event is
-        // not the synthesized one) then we can proceed as usual and do dragging
-
-
-        otherView.parents.forEach {
-            it.requestDisallowInterceptTouchEvent(true)
-        }
-
-        /*otherView.setOnTouchListener { v, event ->
-
-            /*
-             * The otherView, (the one this comment is inside its touchListener) is having its
-             * touch event cancelled when a notify function is called because that other View is
-             * a member of the RecyclerView which is being redrawn and re-laid-out so naturally
-             * it must cancel its touch events, but ideally this shouldn't effect us as the
-             * dragBehavior since we only care about this.view
-             *
-             * So, either we look into a solution inside here to fix this, or we make it such
-             * that when the user touches any Task, the dragShadow is placed there and matched
-             * there and a long press will occur on it not the item. I really should try to fix
-             * it here but that might not be possible, we'll see
-             */
-
-            v.backgroundColor = ColorScheme.getAllColorSchemes().random().main.toAndroidColor
-            if (isDragging) {
-                touchPoint.set(event.rawX, event.rawY)
-                this.view.dispatchTouchEvent(event)
-                this.view.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
-                v.onTouchEvent(event)
-                v.parentViewGroup?.requestDisallowInterceptTouchEvent(true)
-                true
-            } else {
-                false
-            }
-        }*/
     }
 
     companion object {
-
-        val longPressTime: Int
+        inline val longPressTime: Int
             get() = ViewConfiguration.getLongPressTimeout()
     }
 
@@ -211,7 +166,7 @@ open class ObservableDragBehavior(view: View) : DragBehavior(view) {
             value?.onDragStateChanged(view, dragState)
         }
 
-    protected var dragState: DragState = DragState.IDLE
+    var dragState: DragState = DragState.IDLE
         private set(value) {
             field = value
             dragListener?.onDragStateChanged(view, value)

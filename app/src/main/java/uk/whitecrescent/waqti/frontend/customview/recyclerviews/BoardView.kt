@@ -104,11 +104,10 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     var onStartDragList: (BoardViewHolder) -> Unit = { }
     var onStartDragTask: (TaskViewHolder) -> Unit = { }
 
-    var boardVHOnTouchEvent: (BoardViewHolder, MotionEvent) -> Unit = { _, _ -> }
-    var boardVHOnInterceptTouchEvent: (BoardViewHolder, MotionEvent) -> Unit = { _, _ -> }
-
-    var taskVHOnTouchEvent: (TaskViewHolder, MotionEvent) -> Unit = { _, _ -> }
-    var taskVHOnInterceptTouchEvent: (TaskViewHolder, MotionEvent) -> Unit = { _, _ -> }
+    var taskListViewOnTouchEvent: (taskListView: TaskListView, motionEvent: MotionEvent) -> Unit =
+            { taskListView, motionEvent -> }
+    var taskListViewOnInterceptTouchEvent: (taskListView: TaskListView, motionEvent: MotionEvent) -> Unit =
+            { taskListView, motionEvent -> }
 
     var isDraggingTask: Boolean = false
     var isDraggingList: Boolean = false
@@ -429,12 +428,10 @@ class BoardViewHolder(view: View,
             headerTextView { textSize = adapter.listHeaderTextSize.F }
             taskListView {
                 onInterceptTouchEvent = {
-                    this@BoardViewHolder.adapter
-                            .boardVHOnInterceptTouchEvent(this@BoardViewHolder, it)
+                    this@BoardViewHolder.adapter.taskListViewOnInterceptTouchEvent(this, it)
                 }
                 onTouchEvent = {
-                    this@BoardViewHolder.adapter
-                            .boardVHOnTouchEvent(this@BoardViewHolder, it)
+                    this@BoardViewHolder.adapter.taskListViewOnTouchEvent(this, it)
                 }
                 addOnScrollListener(addButton.verticalFABOnScrollListener)
             }

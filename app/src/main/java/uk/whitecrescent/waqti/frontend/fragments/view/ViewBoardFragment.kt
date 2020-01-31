@@ -137,19 +137,19 @@ class ViewBoardFragment : WaqtiViewFragment() {
             adapter = mainActivityVM.boardAdapter
 
             boardAdapter?.onStartDragTask = {
-                dragTaskID = it.itemId
+                /*dragTaskID = it.itemId
                 task_dragShadow updateToMatch it.itemView
                 task_dragShadow.updateLayoutParams {
                     width = WRAP_CONTENT
                     height = WRAP_CONTENT
                 }
-                this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it.itemView)
+                this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it.itemView)*/
             }
 
-            boardAdapter?.boardVHOnInterceptTouchEvent = { vh, event ->
-                vh.taskListView.findChildViewUnder(event.x, event.y)?.also {
+            boardAdapter?.taskListViewOnInterceptTouchEvent = { taskListView, event ->
+                taskListView.findChildViewUnder(event.x, event.y)?.also {
                     task_dragShadow updateToMatch it
-                    this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it)
+                    //this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it)
                 }
                 task_dragShadow.updateLayoutParams {
                     width = WRAP_CONTENT
@@ -157,25 +157,35 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
                 task_dragShadow.isVisible = true
                 task_dragShadow.alpha = 1F
-                task_dragShadow.dispatchTouchEvent(event)
+                boardAdapter?.isDraggingTask = false
+                //task_dragShadow.dispatchTouchEvent(event)
                 logE("onInterceptTouchEvent BoardVH in ViewBoardFragment with VH and MotionEvent")
-                postDelayed(2000) {
-                    vh.taskListView.listAdapter?.notifyItemRemoved(1)
+            }
+
+            boardAdapter?.taskListViewOnTouchEvent = { taskListView, event ->
+                if (boardAdapter!!.isDraggingTask) {
+                    taskListView.findChildViewUnder(event.x, event.y)?.also {
+                        task_dragShadow updateToMatch it
+                        this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it)
+                    }
+                    task_dragShadow.updateLayoutParams {
+                        width = WRAP_CONTENT
+                        height = WRAP_CONTENT
+                    }
                 }
-            }
-
-            boardAdapter?.boardVHOnTouchEvent = { vh, event ->
-                task_dragShadow.dispatchTouchEvent(event)
+                when (task_dragShadow.dragBehavior.dragState) {
+                    ObservableDragBehavior.DragState.DRAGGING -> {
+                        task_dragShadow.dispatchTouchEvent(event)
+                    }
+                    else -> {
+                        taskListView.findChildViewUnder(event.x, event.y)?.also {
+                            it.dispatchTouchEvent(event)
+                            // for clicks and shit, make sure we don't do it
+                            // for when dragging happens
+                        }
+                    }
+                }
                 logE("onTouchEvent BoardVH in ViewBoardFragment with VH and MotionEvent")
-            }
-
-            boardAdapter?.taskVHOnInterceptTouchEvent = { vh, event ->
-                logE("onInterceptTouchEvent TaskVH in ViewBoardFragment with VH and MotionEvent")
-            }
-
-            boardAdapter?.taskVHOnTouchEvent = { vh, event ->
-                logE("onTouchEvent TaskVH in ViewBoardFragment with VH and MotionEvent")
-                // task_dragShadow?.dispatchTouchEvent(event)
             }
 
             boardAdapter?.onStartDragList = {
@@ -426,6 +436,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 override fun onEndDrag(dragView: View) {
+
+                    boardView?.boardAdapter?.isDraggingTask = false
 
                     draggingViewHolder?.itemView?.alpha = 1F
 
