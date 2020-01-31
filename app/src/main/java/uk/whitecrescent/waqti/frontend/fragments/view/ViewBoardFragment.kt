@@ -147,30 +147,23 @@ class ViewBoardFragment : WaqtiViewFragment() {
             }
 
             boardAdapter?.taskListViewOnInterceptTouchEvent = { taskListView, event ->
-                taskListView.findChildViewUnder(event.x, event.y)?.also {
-                    task_dragShadow updateToMatch it
-                    //this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it)
-                }
-                task_dragShadow.updateLayoutParams {
-                    width = WRAP_CONTENT
-                    height = WRAP_CONTENT
-                }
                 task_dragShadow.isVisible = true
                 task_dragShadow.alpha = 1F
                 boardAdapter?.isDraggingTask = false
                 //task_dragShadow.dispatchTouchEvent(event)
-                logE("onInterceptTouchEvent BoardVH in ViewBoardFragment with VH and MotionEvent")
             }
 
             boardAdapter?.taskListViewOnTouchEvent = { taskListView, event ->
                 if (boardAdapter!!.isDraggingTask) {
+                    taskListView.overScroller?.isEnabled = false
                     taskListView.findChildViewUnder(event.x, event.y)?.also {
+                        boardView.requestDisallowInterceptTouchEvent(true)
                         task_dragShadow updateToMatch it
-                        this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it)
-                    }
-                    task_dragShadow.updateLayoutParams {
-                        width = WRAP_CONTENT
-                        height = WRAP_CONTENT
+                        task_dragShadow.updateLayoutParams {
+                            width = WRAP_CONTENT
+                            height = WRAP_CONTENT
+                        }
+                        task_dragShadow.dragBehavior.startDrag()
                     }
                 }
                 when (task_dragShadow.dragBehavior.dragState) {
@@ -178,14 +171,20 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         task_dragShadow.dispatchTouchEvent(event)
                     }
                     else -> {
+                        taskListView.overScroller?.isEnabled = true
                         taskListView.findChildViewUnder(event.x, event.y)?.also {
-                            it.dispatchTouchEvent(event)
+                            if (taskListView.overScroller?.isOverScrolling == false) {
+                                shortSnackBar("ASSSSSSSSSSSSSSSS")
+                                it.dispatchTouchEvent(event)
+                            } else {
+                                it.cancelPendingInputEvents()
+                                it.cancelLongPress()
+                            }
                             // for clicks and shit, make sure we don't do it
                             // for when dragging happens
                         }
                     }
                 }
-                logE("onTouchEvent BoardVH in ViewBoardFragment with VH and MotionEvent")
             }
 
             boardAdapter?.onStartDragList = {

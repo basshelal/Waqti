@@ -98,8 +98,9 @@ constructor(context: Context,
     override fun onTouchEvent(event: MotionEvent): Boolean {
         logE("onTouchEvent in TaskListView")
         onTouchEvent.invoke(event)
-        super.onTouchEvent(event)
-        // TODO: 31-Jan-20 We need to call super!
+        if (listAdapter?.boardAdapter?.isDraggingTask == false) {
+            super.onTouchEvent(event)
+        }
         // return true to tell the system that the event was handled successfully
         return true
     }

@@ -12,6 +12,7 @@ import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import me.everything.android.ui.overscroll.HorizontalOverScrollBounceEffectDecorator
+import me.everything.android.ui.overscroll.IOverScrollState
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter
 import uk.whitecrescent.waqti.extensions.D
@@ -188,12 +189,25 @@ abstract class WaqtiViewHolder<V : View>(view: V) : RecyclerView.ViewHolder(view
 private const val overScrollMultiplier = 37.0
 
 interface OverScroller {
+    var isEnabled: Boolean
+    val isOverScrolling: Boolean
     fun overScroll(amount: Float)
 }
 
 private class VerticalOverScroller(val recyclerView: WaqtiRecyclerView) :
         VerticalOverScrollBounceEffectDecorator(
                 RecyclerViewOverScrollDecorAdapter(recyclerView)), OverScroller {
+
+    var isAttached: Boolean = true
+
+    override var isEnabled: Boolean
+        get() = this.isAttached
+        set(value) {
+            isAttached = value
+            if (value) this.attach() else this.detach()
+        }
+    override val isOverScrolling: Boolean
+        get() = currentState != IOverScrollState.STATE_IDLE
 
     override fun overScroll(amount: Float) {
         issueStateTransition(mOverScrollingState)
@@ -205,6 +219,17 @@ private class VerticalOverScroller(val recyclerView: WaqtiRecyclerView) :
 private class HorizontalOverScroller(val recyclerView: WaqtiRecyclerView) :
         HorizontalOverScrollBounceEffectDecorator(
                 RecyclerViewOverScrollDecorAdapter(recyclerView)), OverScroller {
+
+    var isAttached: Boolean = true
+
+    override var isEnabled: Boolean
+        get() = this.isAttached
+        set(value) {
+            isAttached = value
+            if (value) this.attach() else this.detach()
+        }
+    override val isOverScrolling: Boolean
+        get() = currentState != IOverScrollState.STATE_IDLE
 
     override fun overScroll(amount: Float) {
         issueStateTransition(mOverScrollingState)
