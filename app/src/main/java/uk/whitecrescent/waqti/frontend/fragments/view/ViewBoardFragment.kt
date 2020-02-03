@@ -64,6 +64,7 @@ import uk.whitecrescent.waqti.extensions.invoke
 import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.mainActivityViewModel
+import uk.whitecrescent.waqti.extensions.obtainCopy
 import uk.whitecrescent.waqti.extensions.setColorScheme
 import uk.whitecrescent.waqti.extensions.setEdgeEffectColor
 import uk.whitecrescent.waqti.extensions.shortSnackBar
@@ -150,23 +151,13 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
             var latestEvent: MotionEvent? = null
 
-            boardAdapter?.taskCardViewOnLongClick = {
-                it.shortSnackBar("LONG CLICK!")
-                it.dispatchTouchEvent(latestEvent?.cancel())
-            }
+            // called once after long click detected
+            boardAdapter?.taskCardViewOnLongClick = { taskCardView, taskListView ->
+                taskCardView.shortSnackBar("LONG CLICK!")
 
-            boardAdapter?.taskListViewOnInterceptTouchEvent = { taskListView, event ->
-                task_dragShadow.isVisible = true
-                task_dragShadow.alpha = 1F
-                boardAdapter?.isDraggingTask = false
-                latestEvent = event
-                //task_dragShadow.dispatchTouchEvent(event)
-            }
-
-            boardAdapter?.taskListViewOnTouchEvent = { taskListView, event ->
                 if (boardAdapter!!.isDraggingTask) {
-                    taskListView.overScroller?.isEnabled = false
-                    taskListView.findChildViewUnder(event.x, event.y)?.also {
+                    taskListView!!.overScroller?.isEnabled = false
+                    taskListView.findChildViewUnder(latestEvent!!.x, latestEvent!!.y)?.also {
                         boardView.requestDisallowInterceptTouchEvent(true)
                         task_dragShadow updateToMatch it
                         task_dragShadow.updateLayoutParams {
@@ -176,6 +167,26 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         task_dragShadow.dragBehavior.startDrag()
                     }
                 }
+
+                latestEvent?.obtainCopy()
+                        ?.also { it.action = MotionEvent.ACTION_CANCEL }
+                        ?.let {
+                            taskCardView.dispatchTouchEvent(it)
+                            it.recycle()
+                        }
+            }
+
+            boardAdapter?.taskListViewOnInterceptTouchEvent = { taskListView, event ->
+                task_dragShadow.isVisible = true
+                task_dragShadow.alpha = 1F
+                boardAdapter?.isDraggingTask = false
+                latestEvent = event.obtainCopy()
+                //task_dragShadow.dispatchTouchEvent(event)
+            }
+
+            // called repeatedly, should be used with care
+            boardAdapter?.taskListViewOnTouchEvent = { taskListView, event ->
+                latestEvent = event.obtainCopy()
                 when (task_dragShadow.dragBehavior.dragState) {
                     ObservableDragBehavior.DragState.DRAGGING -> {
                         task_dragShadow.dispatchTouchEvent(event)
@@ -186,6 +197,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                             if (taskListView.overScroller?.isOverScrolling == false) {
                                 it.dispatchTouchEvent(event)
                             } else {
+                                it.dispatchTouchEvent(event.cancel())
                                 it.cancelPendingInputEvents()
                                 it.cancelLongPress()
                             }
@@ -194,7 +206,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         }
                     }
                 }
-                latestEvent = event
+                latestEvent = event.obtainCopy()
             }
 
             boardAdapter?.onStartDragList = {

@@ -4,7 +4,6 @@ package uk.whitecrescent.waqti.frontend.customview.drag
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -75,7 +74,6 @@ constructor(context: Context,
 
     inline infix fun updateToMatchBitmapOf(view: View) {
         this.setImageBitmap(view.drawToBitmap())
-        this.setBackgroundColor(Color.RED)
     }
 
     inline infix fun updateToMatchPositionOf(view: View) {

@@ -110,7 +110,8 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     var taskListViewOnInterceptTouchEvent: (taskListView: TaskListView, motionEvent: MotionEvent) -> Unit =
             { taskListView, motionEvent -> }
 
-    var taskCardViewOnLongClick: (taskCardView: TaskCardView) -> Unit = { taskCardView -> }
+    var taskCardViewOnLongClick: (taskCardView: TaskCardView, taskListView: TaskListView?) -> Unit =
+            { taskCardView, taskListView -> }
 
     var isDraggingTask: Boolean = false
     var isDraggingList: Boolean = false

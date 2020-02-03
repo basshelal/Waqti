@@ -458,7 +458,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                 }
                 setOnLongClickListener {
                     adapter.boardAdapter.isDraggingTask = true
-                    adapter.boardAdapter.taskCardViewOnLongClick(this)
+                    adapter.boardAdapter.taskCardViewOnLongClick(this, adapter.taskListView)
                     // adapter.boardAdapter.onStartDragTask(this@TaskViewHolder)
                     true
                 }

@@ -204,7 +204,11 @@ private class VerticalOverScroller(val recyclerView: WaqtiRecyclerView) :
         get() = this.isAttached
         set(value) {
             isAttached = value
-            if (value) this.attach() else this.detach()
+            if (value) {
+                this.attach()
+            } else if (!isOverScrolling) {
+                this.detach()
+            }
         }
     override val isOverScrolling: Boolean
         get() = currentState != IOverScrollState.STATE_IDLE

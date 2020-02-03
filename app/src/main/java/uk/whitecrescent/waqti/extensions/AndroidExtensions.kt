@@ -319,6 +319,8 @@ inline val Editable?.isValid: Boolean get() = this != null && this.isNotBlank()
 
 inline val MotionEvent.actionString: String get() = MotionEvent.actionToString(this.action)
 
+inline fun MotionEvent.obtainCopy(): MotionEvent = MotionEvent.obtain(this)
+
 @SuppressLint("Recycle")
 inline fun obtainTouchEvent(action: Int, x: Number, y: Number): MotionEvent =
         MotionEvent.obtain(SystemClock.uptimeMillis(), SystemClock.uptimeMillis(),
