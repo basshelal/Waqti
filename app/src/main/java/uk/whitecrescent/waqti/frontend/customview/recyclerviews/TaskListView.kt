@@ -39,7 +39,6 @@ import uk.whitecrescent.waqti.extensions.mainActivityViewModel
 import uk.whitecrescent.waqti.extensions.notifySwapped
 import uk.whitecrescent.waqti.extensions.recycledViewPool
 import uk.whitecrescent.waqti.extensions.setIndeterminateColor
-import uk.whitecrescent.waqti.extensions.shortSnackBar
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
@@ -458,8 +457,8 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                     ViewTaskFragment.show(mainActivity)
                 }
                 setOnLongClickListener {
-                    shortSnackBar("LONG CLICK!")
                     adapter.boardAdapter.isDraggingTask = true
+                    adapter.boardAdapter.taskCardViewOnLongClick(this)
                     // adapter.boardAdapter.onStartDragTask(this@TaskViewHolder)
                     true
                 }

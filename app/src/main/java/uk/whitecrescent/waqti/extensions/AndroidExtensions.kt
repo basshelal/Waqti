@@ -325,6 +325,9 @@ inline fun obtainTouchEvent(action: Int, x: Number, y: Number): MotionEvent =
                 action, x.F, y.F, 0)
                 .also { it.source = InputDevice.SOURCE_TOUCHSCREEN }
 
+inline fun MotionEvent.cancel(): MotionEvent =
+        this.also { it.action = MotionEvent.ACTION_CANCEL }
+
 /**
  * This method converts dp unit to equivalent pixels, depending on device density.
  *

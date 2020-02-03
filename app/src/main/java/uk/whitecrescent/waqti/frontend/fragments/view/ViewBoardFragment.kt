@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.text.SpannableStringBuilder
 import android.view.DragEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
@@ -48,6 +49,7 @@ import uk.whitecrescent.waqti.extensions.D
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.L
 import uk.whitecrescent.waqti.extensions.addOnScrollListener
+import uk.whitecrescent.waqti.extensions.cancel
 import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
 import uk.whitecrescent.waqti.extensions.commitTransaction
 import uk.whitecrescent.waqti.extensions.convertDpToPx
@@ -146,10 +148,18 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it.itemView)*/
             }
 
+            var latestEvent: MotionEvent? = null
+
+            boardAdapter?.taskCardViewOnLongClick = {
+                it.shortSnackBar("LONG CLICK!")
+                it.dispatchTouchEvent(latestEvent?.cancel())
+            }
+
             boardAdapter?.taskListViewOnInterceptTouchEvent = { taskListView, event ->
                 task_dragShadow.isVisible = true
                 task_dragShadow.alpha = 1F
                 boardAdapter?.isDraggingTask = false
+                latestEvent = event
                 //task_dragShadow.dispatchTouchEvent(event)
             }
 
@@ -174,7 +184,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         taskListView.overScroller?.isEnabled = true
                         taskListView.findChildViewUnder(event.x, event.y)?.also {
                             if (taskListView.overScroller?.isOverScrolling == false) {
-                                shortSnackBar("ASSSSSSSSSSSSSSSS")
                                 it.dispatchTouchEvent(event)
                             } else {
                                 it.cancelPendingInputEvents()
@@ -185,6 +194,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                         }
                     }
                 }
+                latestEvent = event
             }
 
             boardAdapter?.onStartDragList = {
