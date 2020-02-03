@@ -42,7 +42,6 @@ import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.SimpleItemTouchHelperCallback
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
-import uk.whitecrescent.waqti.frontend.customview.TaskCardView
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.LINEAR
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.NONE
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.ScrollSnapMode.PAGED
@@ -103,15 +102,13 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
     var onInflate: BoardView.() -> Unit = {}
 
     var onStartDragList: (BoardViewHolder) -> Unit = { }
-    var onStartDragTask: (TaskViewHolder) -> Unit = { }
 
     var taskListViewOnTouchEvent: (taskListView: TaskListView, motionEvent: MotionEvent) -> Unit =
             { taskListView, motionEvent -> }
     var taskListViewOnInterceptTouchEvent: (taskListView: TaskListView, motionEvent: MotionEvent) -> Unit =
             { taskListView, motionEvent -> }
 
-    var taskCardViewOnLongClick: (taskCardView: TaskCardView, taskListView: TaskListView?) -> Unit =
-            { taskCardView, taskListView -> }
+    var taskCardViewOnLongClick: (taskVH: TaskViewHolder) -> Unit = { taskVH -> }
 
     var isDraggingTask: Boolean = false
     var isDraggingList: Boolean = false

@@ -429,7 +429,7 @@ class TaskListAdapter(val taskListID: ID,
 
 }
 
-class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHolder(view) {
+class TaskViewHolder(view: View, val adapter: TaskListAdapter) : ViewHolder(view) {
 
     var taskID: ID = 0L
     var taskListID: ID = adapter.taskListID
@@ -458,8 +458,7 @@ class TaskViewHolder(view: View, private val adapter: TaskListAdapter) : ViewHol
                 }
                 setOnLongClickListener {
                     adapter.boardAdapter.isDraggingTask = true
-                    adapter.boardAdapter.taskCardViewOnLongClick(this, adapter.taskListView)
-                    // adapter.boardAdapter.onStartDragTask(this@TaskViewHolder)
+                    adapter.boardAdapter.taskCardViewOnLongClick(this@TaskViewHolder)
                     true
                 }
             }

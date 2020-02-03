@@ -105,6 +105,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private var dragTaskID: ID = 0L
     private var dragListID: ID = 0L
 
+    var latestEvent: MotionEvent? = null
+
     private inline val realScreenWidth get() = mainActivity.realScreenWidth
     private inline val realScreenHeight get() = mainActivity.realScreenHeight
 
@@ -139,25 +141,19 @@ class ViewBoardFragment : WaqtiViewFragment() {
             }
             adapter = mainActivityVM.boardAdapter
 
-            boardAdapter?.onStartDragTask = {
-                /*dragTaskID = it.itemId
-                task_dragShadow updateToMatch it.itemView
-                task_dragShadow.updateLayoutParams {
-                    width = WRAP_CONTENT
-                    height = WRAP_CONTENT
-                }
-                this@ViewBoardFragment.task_dragShadow.dragBehavior.startDragFromView(it.itemView)*/
-            }
-
-            var latestEvent: MotionEvent? = null
-
             // called once after long click detected
-            boardAdapter?.taskCardViewOnLongClick = { taskCardView, taskListView ->
+            boardAdapter?.taskCardViewOnLongClick = { taskVH ->
+                dragTaskID = taskVH.itemId
+
+                val taskCardView = taskVH.cardView
+                val taskListView = taskVH.adapter.taskListView
+
                 taskCardView.shortSnackBar("LONG CLICK!")
 
                 if (boardAdapter!!.isDraggingTask) {
-                    taskListView!!.overScroller?.isEnabled = false
-                    taskListView.findChildViewUnder(latestEvent!!.x, latestEvent!!.y)?.also {
+                    taskListView?.overScroller?.isEnabled = false
+                    taskListView?.findChildViewUnder(latestEvent?.x ?: 0F,
+                            latestEvent?.y ?: 0F)?.also {
                         boardView.requestDisallowInterceptTouchEvent(true)
                         task_dragShadow updateToMatch it
                         task_dragShadow.updateLayoutParams {
@@ -181,7 +177,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 task_dragShadow.alpha = 1F
                 boardAdapter?.isDraggingTask = false
                 latestEvent = event.obtainCopy()
-                //task_dragShadow.dispatchTouchEvent(event)
             }
 
             // called repeatedly, should be used with care
@@ -194,6 +189,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     else -> {
                         taskListView.overScroller?.isEnabled = true
                         taskListView.findChildViewUnder(event.x, event.y)?.also {
+                            shortSnackBar(taskListView.overScroller?.isOverScrolling.toString())
+                            logE(taskListView.overScroller?.isOverScrolling.toString())
                             if (taskListView.overScroller?.isOverScrolling == false) {
                                 it.dispatchTouchEvent(event)
                             } else {

@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import me.everything.android.ui.overscroll.HorizontalOverScrollBounceEffectDecorator
 import me.everything.android.ui.overscroll.IOverScrollState
+import me.everything.android.ui.overscroll.OverScrollBounceEffectDecoratorBase
 import me.everything.android.ui.overscroll.VerticalOverScrollBounceEffectDecorator
 import me.everything.android.ui.overscroll.adapters.RecyclerViewOverScrollDecorAdapter
 import uk.whitecrescent.waqti.extensions.D
@@ -57,6 +58,15 @@ constructor(context: Context,
     private var oldHorizontalScrollOffset: Int = 0
     private var oldVerticalScrollOffset: Int = 0
     private var oldTime: Long = System.currentTimeMillis()
+
+    var overScrollStateChangeListener: (oldState: Int, newState: Int) -> Unit = { oldState, newState -> }
+        set(value) {
+            field = value
+            (overScroller as? OverScrollBounceEffectDecoratorBase)
+                    ?.setOverScrollStateListener { decor, oldState, newState ->
+                        overScrollStateChangeListener(oldState, newState)
+                    }
+        }
 
     override fun setLayoutManager(layoutManager: LayoutManager?) {
         super.setLayoutManager(layoutManager)
