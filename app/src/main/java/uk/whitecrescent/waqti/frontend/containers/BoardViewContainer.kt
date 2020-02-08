@@ -1,33 +1,24 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package uk.whitecrescent.waqti.frontend.fragments.view
+package uk.whitecrescent.waqti.frontend.containers
 
+import android.content.Context
 import android.graphics.Color
 import android.graphics.PointF
 import android.graphics.RectF
 import android.graphics.drawable.ColorDrawable
 import android.net.Uri
-import android.os.Bundle
-import android.text.SpannableStringBuilder
+import android.util.AttributeSet
 import android.view.DragEvent
-import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.view.inputmethod.EditorInfo
+import android.widget.FrameLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.graphics.contains
-import androidx.core.view.GravityCompat
 import androidx.core.view.isVisible
 import androidx.core.view.postDelayed
 import androidx.core.view.updateLayoutParams
-import com.afollestad.materialdialogs.LayoutMode
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.bottomsheets.BottomSheet
-import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
-import com.afollestad.materialdialogs.color.colorChooser
 import com.github.basshelal.unsplashpicker.data.UnsplashPhoto
 import com.squareup.picasso.Picasso
 import io.reactivex.Observable
@@ -36,7 +27,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.board_options.view.*
-import kotlinx.android.synthetic.main.fragment_board_view.*
+import kotlinx.android.synthetic.main.container_board_view.view.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.textColor
 import org.jetbrains.anko.vibrator
@@ -50,13 +41,10 @@ import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.L
 import uk.whitecrescent.waqti.extensions.addOnScrollListener
 import uk.whitecrescent.waqti.extensions.cancel
-import uk.whitecrescent.waqti.extensions.clearFocusAndHideKeyboard
-import uk.whitecrescent.waqti.extensions.commitTransaction
 import uk.whitecrescent.waqti.extensions.convertDpToPx
 import uk.whitecrescent.waqti.extensions.doInBackground
 import uk.whitecrescent.waqti.extensions.fadeIn
 import uk.whitecrescent.waqti.extensions.fadeOut
-import uk.whitecrescent.waqti.extensions.getViewModel
 import uk.whitecrescent.waqti.extensions.globalVisibleRectF
 import uk.whitecrescent.waqti.extensions.horizontalFABOnScrollListener
 import uk.whitecrescent.waqti.extensions.horizontalPercentInverted
@@ -70,18 +58,12 @@ import uk.whitecrescent.waqti.extensions.setEdgeEffectColor
 import uk.whitecrescent.waqti.extensions.shortSnackBar
 import uk.whitecrescent.waqti.extensions.verticalPercent
 import uk.whitecrescent.waqti.extensions.verticalPercentInverted
-import uk.whitecrescent.waqti.frontend.FragmentNavigation
-import uk.whitecrescent.waqti.frontend.MainActivity
-import uk.whitecrescent.waqti.frontend.PREVIOUS_FRAGMENT
-import uk.whitecrescent.waqti.frontend.VIEW_BOARD_FRAGMENT
-import uk.whitecrescent.waqti.frontend.VIEW_BOARD_LIST_FRAGMENT
 import uk.whitecrescent.waqti.frontend.appearance.BackgroundType
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
 import uk.whitecrescent.waqti.frontend.appearance.toColor
-import uk.whitecrescent.waqti.frontend.customview.AppBar.Companion.DEFAULT_ELEVATION
 import uk.whitecrescent.waqti.frontend.customview.dialogs.ConfirmDialog
-import uk.whitecrescent.waqti.frontend.customview.dialogs.PhotoPickerDialog
+import uk.whitecrescent.waqti.frontend.customview.drag.DragShadow
 import uk.whitecrescent.waqti.frontend.customview.drag.ObservableDragBehavior
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.BoardViewHolder
@@ -90,56 +72,55 @@ import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListAdapter
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskListView
 import uk.whitecrescent.waqti.frontend.customview.recyclerviews.TaskViewHolder
 import uk.whitecrescent.waqti.frontend.fragments.create.CreateListFragment
-import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragment
-import uk.whitecrescent.waqti.frontend.fragments.parents.WaqtiViewFragmentViewModel
 import uk.whitecrescent.waqti.frontend.vibrateCompat
 import java.util.concurrent.TimeUnit
 import kotlin.math.roundToInt
 
-class ViewBoardFragment : WaqtiViewFragment() {
+class BoardViewContainer
+@JvmOverloads
+constructor(context: Context,
+            attributeSet: AttributeSet? = null,
+            defStyle: Int = 0
+) : FrameLayout(context, attributeSet, defStyle) {
 
     private var boardID: ID = 0L
-    private lateinit var viewModel: ViewBoardFragmentViewModel
-    private lateinit var board: Board
+    private var board: Board
 
     private var dragTaskID: ID = 0L
     private var dragListID: ID = 0L
 
-    var latestEvent: MotionEvent? = null
+    private var latestEvent: MotionEvent? = null
 
     private inline val realScreenWidth get() = mainActivity.realScreenWidth
     private inline val realScreenHeight get() = mainActivity.realScreenHeight
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_board_view, container, false)
-    }
+    private inline val taskDragShadow: DragShadow
+        get() = this.task_dragShadow
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    init {
 
-        boardID = mainActivityVM.boardID
+        View.inflate(context, R.layout.container_board_view, this)
+
+        boardID = mainActivityViewModel.boardID
         board = Caches.boards[boardID]
 
-        viewModel = getViewModel()
-
-        if (mainActivityVM.boardAdapter == null ||
-                mainActivityVM.boardAdapter?.boardID != boardID) {
-            mainActivityVM.boardAdapter = BoardAdapter(boardID)
+        if (mainActivityViewModel.boardAdapter == null ||
+                mainActivityViewModel.boardAdapter?.boardID != boardID) {
+            mainActivityViewModel.boardAdapter = BoardAdapter(boardID)
         }
 
         setUpViews()
     }
 
-    override fun setUpViews() {
+    fun setUpViews() {
         setBackground()
 
         boardView {
-            if (mainActivityVM.settingsChanged) {
+            if (mainActivityViewModel.settingsChanged) {
                 invalidateBoard()
-                mainActivityVM.settingsChanged = false
+                mainActivityViewModel.settingsChanged = false
             }
-            adapter = mainActivityVM.boardAdapter
+            adapter = mainActivityViewModel.boardAdapter
 
             // called once after long click detected
             boardAdapter?.taskCardViewOnLongClick = { taskVH ->
@@ -155,12 +136,12 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     taskListView?.findChildViewUnder(latestEvent?.x ?: 0F,
                             latestEvent?.y ?: 0F)?.also {
                         boardView.requestDisallowInterceptTouchEvent(true)
-                        task_dragShadow updateToMatch it
-                        task_dragShadow.updateLayoutParams {
-                            width = WRAP_CONTENT
-                            height = WRAP_CONTENT
+                        taskDragShadow updateToMatch it
+                        taskDragShadow.updateLayoutParams {
+                            width = ViewGroup.LayoutParams.WRAP_CONTENT
+                            height = ViewGroup.LayoutParams.WRAP_CONTENT
                         }
-                        task_dragShadow.dragBehavior.startDrag()
+                        taskDragShadow.dragBehavior.startDrag()
                     }
                 }
 
@@ -173,8 +154,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
             }
 
             boardAdapter?.taskListViewOnInterceptTouchEvent = { taskListView, event ->
-                task_dragShadow.isVisible = true
-                task_dragShadow.alpha = 1F
+                taskDragShadow.isVisible = true
+                taskDragShadow.alpha = 1F
                 boardAdapter?.isDraggingTask = false
                 latestEvent = event.obtainCopy()
             }
@@ -182,9 +163,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
             // called repeatedly, should be used with care
             boardAdapter?.taskListViewOnTouchEvent = { taskListView, event ->
                 latestEvent = event.obtainCopy()
-                when (task_dragShadow.dragBehavior.dragState) {
+                when (taskDragShadow.dragBehavior.dragState) {
                     ObservableDragBehavior.DragState.DRAGGING -> {
-                        task_dragShadow.dispatchTouchEvent(event)
+                        taskDragShadow.dispatchTouchEvent(event)
                     }
                     else -> {
                         taskListView.overScroller?.isEnabled = true
@@ -209,7 +190,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
             boardAdapter?.onStartDragList = {
                 dragListID = it.itemId
                 list_dragShadow updateToMatch it.itemView
-                this@ViewBoardFragment.list_dragShadow.dragBehavior.startDragFromView(it.header)
+                this@BoardViewContainer.list_dragShadow.dragBehavior.startDragFromView(it.header)
             }
 
             if (boardAdapter?.board?.isEmpty() == true) {
@@ -218,11 +199,10 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 emptyState_scrollView.isVisible = true
                 addList_floatingButton.customSize = (mainActivity convertDpToPx 85).roundToInt()
             }
-            addOnScrollListener(this@ViewBoardFragment.addList_floatingButton.horizontalFABOnScrollListener)
+            addOnScrollListener(this@BoardViewContainer.addList_floatingButton.horizontalFABOnScrollListener)
             //parallaxImage(board.backgroundPhoto)
         }
         doInBackground {
-            setUpAppBar()
             addList_floatingButton {
                 setOnClickListener {
                     mainActivityViewModel.boardID = board.id
@@ -248,11 +228,11 @@ class ViewBoardFragment : WaqtiViewFragment() {
                             }
                             DragEvent.ACTION_DROP -> {
                                 ConfirmDialog().apply {
-                                    title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteTaskQuestion)
+                                    title = this@BoardViewContainer.mainActivity.getString(R.string.deleteTaskQuestion)
                                     onConfirm = {
                                         val taskName = Caches.tasks[draggingState.taskID].name
                                         Caches.deleteTask(draggingState.taskID, draggingState.taskListID)
-                                        this@ViewBoardFragment.boardView.boardAdapter
+                                        this@BoardViewContainer.boardView.boardAdapter
                                                 ?.getListAdapter(draggingState.taskListID)?.apply {
                                                     taskListView?.findViewHolderForItemId(draggingState.taskID)
                                                             ?.adapterPosition?.also {
@@ -281,42 +261,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
     }
 
-    override fun setUpAppBar() {
-        this.setColorScheme(board.barColor.colorScheme)
-        mainActivity.appBar {
-            elevation = DEFAULT_ELEVATION
-            leftImageBack()
-            editTextView {
-                isEditable = true
-                hint = getString(R.string.boardNameHint)
-                fun update() {
-                    text.also {
-                        if (it != null &&
-                                it.isNotBlank() &&
-                                it.isNotEmpty() &&
-                                it.toString() != board.name)
-                            board.name = it.toString()
-                    }
-                }
-                textChangedListener = { update() }
-                text = SpannableStringBuilder(board.name)
-                setOnEditorActionListener { _, actionId, _ ->
-                    if (actionId == EditorInfo.IME_ACTION_DONE) {
-                        update()
-                        clearFocusAndHideKeyboard()
-                        true
-                    } else false
-                }
-            }
-            rightImageView.isVisible = true
-            rightImage = R.drawable.overflow_icon
-        }
-        mainActivity.setColorScheme(board.barColor.colorScheme)
-    }
-
     private inline fun setUpTaskDrag() {
 
-        task_dragShadow {
+        taskDragShadow {
 
             dragBehavior.dragListener = object : ObservableDragBehavior.SimpleDragListener() {
 
@@ -445,7 +392,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     postDelayed(2000) {
                         taskListView.listAdapter?.notifyItemRemoved(1)
                         // taskListView.dispatchTouchEvent(obtainTouchEvent(MotionEvent.ACTION_CANCEL, 0, 0))
-                        // task_dragShadow?.dispatchTouchEvent(obtainTouchEvent(MotionEvent.ACTION_MOVE, 0, 0))
+                        // taskDragShadow?.dispatchTouchEvent(obtainTouchEvent(MotionEvent
+                        // .ACTION_MOVE, 0,
+                        // 0))
                     }
 
                 }
@@ -472,14 +421,14 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 override fun onDragStateChanged(dragView: View, newState: ObservableDragBehavior.DragState) {
                     /*when (newState) {
                         ObservableDragBehavior.DragState.IDLE -> {
-                            task_dragShadow.isVisible = false
+                            taskDragShadow.isVisible = false
                         }
                         ObservableDragBehavior.DragState.DRAGGING -> {
-                            task_dragShadow.isVisible = true
-                            task_dragShadow.alpha = 0.8F
+                            taskDragShadow.isVisible = true
+                            taskDragShadow.alpha = 0.8F
                         }
                         ObservableDragBehavior.DragState.SETTLING -> {
-                            task_dragShadow.alpha = 1F
+                            taskDragShadow.alpha = 1F
                         }
                     }*/
                 }
@@ -555,10 +504,10 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 private inline fun findViewHolder(id: ID) =
-                        this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(id)
+                        this@BoardViewContainer.boardView.boardAdapter?.findTaskViewHolder(id)
 
                 private inline fun findViewHolder(view: View) =
-                        this@ViewBoardFragment.boardView.boardAdapter?.findTaskViewHolder(view)
+                        this@BoardViewContainer.boardView.boardAdapter?.findTaskViewHolder(view)
 
                 private inline fun findViewHolderUnder(point: PointF): TaskViewHolder? {
                     mainActivity.findViewUnder(point)?.also {
@@ -583,7 +532,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                         dragBehavior.returnPoint.set(newReturnPoint)
 
-                        this@ViewBoardFragment.boardView.boardAdapter?.swapTaskViewHolders(
+                        this@BoardViewContainer.boardView.boardAdapter?.swapTaskViewHolders(
                                 oldViewHolder, newViewHolder
                         )
                     }
@@ -651,7 +600,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                             dragBehavior.returnPoint.set(newReturnPoint)
 
-                            this@ViewBoardFragment.boardView.boardAdapter?.swapBoardViewHolders(
+                            this@BoardViewContainer.boardView.boardAdapter?.swapBoardViewHolders(
                                     draggingViewHolder!!, currentViewHolder!!
                             )
                         }
@@ -659,10 +608,10 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 }
 
                 inline fun findViewHolder(id: ID) =
-                        this@ViewBoardFragment.boardView.findViewHolderForItemId(id) as? BoardViewHolder
+                        this@BoardViewContainer.boardView.findViewHolderForItemId(id) as? BoardViewHolder
 
                 inline fun findViewHolder(view: View) =
-                        this@ViewBoardFragment.boardView.findContainingViewHolder(view) as? BoardViewHolder
+                        this@BoardViewContainer.boardView.findContainingViewHolder(view) as? BoardViewHolder
 
                 inline fun findViewHolderUnder(pointF: PointF): BoardViewHolder? {
                     mainActivity.findViewUnder(pointF)?.also {
@@ -678,203 +627,19 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
     }
 
-    override fun onStart() {
-        super.onStart()
-
-        createOptionsMenu()
-    }
-
-    override fun onStop() {
-        super.onStop()
-
-        destroyOptionsMenu()
-    }
-
-    override fun finish() {
-        @FragmentNavigation(from = VIEW_BOARD_FRAGMENT, to = PREVIOUS_FRAGMENT)
-        mainActivity.supportFragmentManager.popBackStack()
-    }
-
-    private inline fun createOptionsMenu() {
-
-        LayoutInflater.from(context).inflate(R.layout.board_options,
-                mainActivity.drawerLayout, true)
-
-        mainActivity.appBar {
-            rightImageView.setOnClickListener {
-                mainActivity.drawerLayout.openDrawer(GravityCompat.END)
-            }
-        }
-
-        mainActivity.drawerLayout.boardOptions_navigationView {
-            boardOptions_scrollView.updateLayoutParams<ViewGroup.MarginLayoutParams> {
-                topMargin = mainActivity.appBar.height
-            }
-            setBackgroundColor(board.barColor.toAndroidColor)
-            appBarColor_boardOption {
-                setOnClickListener {
-                    MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                        title(text = "App Bar Color")
-                        setPeekHeight(Int.MAX_VALUE)
-                        positiveButton(text = "Confirm")
-                        colorChooser(colors = ColorScheme.materialDialogsMainColors(),
-                                subColors = ColorScheme.materialDialogsAllColors(),
-                                initialSelection = board.barColor.toAndroidColor,
-                                changeActionButtonsColor = true,
-                                waitForPositiveButton = false,
-                                selection = { dialog, colorInt ->
-                                    val colorScheme = colorInt.toColor.colorScheme
-                                    if (mainActivity.preferences.changeNavBarColor)
-                                        dialog.window?.navigationBarColor = colorScheme.main.toAndroidColor
-                                    this@ViewBoardFragment.setColorScheme(colorScheme)
-                                    board.barColor = colorScheme.main
-                                }
-                        )
-                    }
-                    mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
-                }
-            }
-            listHeaderColor_boardOption {
-                setOnClickListener {
-                    MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                        title(text = "List Header Color")
-                        setPeekHeight(Int.MAX_VALUE)
-                        positiveButton(text = "Confirm")
-                        colorChooser(colors = ColorScheme.materialDialogsMainColors(),
-                                subColors = ColorScheme.materialDialogsAllColors(),
-                                initialSelection = board.listColor.toAndroidColor,
-                                changeActionButtonsColor = true,
-                                waitForPositiveButton = false,
-                                selection = { _, colorInt ->
-                                    val colorScheme = colorInt.toColor.colorScheme
-                                    this@ViewBoardFragment.boardView
-                                            .boardAdapter?.setHeadersColorScheme(colorScheme)
-                                    board.listColor = colorScheme.main
-                                }
-                        )
-                    }
-                    mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
-                }
-            }
-            cardColor_boardOption {
-                setOnClickListener {
-                    MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                        title(text = "Card Color")
-                        setPeekHeight(Int.MAX_VALUE)
-                        positiveButton(text = "Confirm")
-                        colorChooser(colors = ColorScheme.materialDialogsMainColors(),
-                                subColors = ColorScheme.materialDialogsAllColors(),
-                                initialSelection = board.cardColor.toAndroidColor,
-                                changeActionButtonsColor = true,
-                                waitForPositiveButton = false,
-                                selection = { _, colorInt ->
-                                    val colorScheme = colorInt.toColor.colorScheme
-                                    this@ViewBoardFragment.boardView
-                                            .boardAdapter?.setListsColorScheme(colorScheme)
-                                    board.cardColor = colorScheme.main
-                                }
-                        )
-                    }
-                    mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
-                }
-            }
-            boardColor_boardOption {
-                setOnClickListener {
-                    MaterialDialog(context, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
-                        title(text = "Background Color")
-                        setPeekHeight(Int.MAX_VALUE)
-                        positiveButton(text = "Confirm")
-                        colorChooser(colors = ColorScheme.materialDialogsMainColors(),
-                                subColors = ColorScheme.materialDialogsAllColors(),
-                                initialSelection = board.backgroundColor.toAndroidColor,
-                                changeActionButtonsColor = true,
-                                waitForPositiveButton = false,
-                                selection = { _, colorInt ->
-                                    val waqtiColor = colorInt.toColor
-                                    setBackgroundColor(waqtiColor)
-                                    board.backgroundColor = waqtiColor
-                                    board.backgroundType = BackgroundType.COLOR
-                                    if (this@ViewBoardFragment.emptyState_scrollView.isVisible) {
-                                        this@ViewBoardFragment.emptyTitle_textView.textColor = waqtiColor.colorScheme.text.toAndroidColor
-                                        this@ViewBoardFragment.emptySubtitle_textView.textColor = waqtiColor.colorScheme.text.toAndroidColor
-                                    }
-                                }
-                        )
-                    }
-                    mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
-                }
-            }
-            boardImage_boardOption {
-                setOnClickListener {
-                    val photoPicker = PhotoPickerDialog().apply {
-                        onClick = {}
-                        onCancel = {
-                            setBackground()
-                            dismiss()
-                        }
-                        onConfirm = {
-                            board.backgroundPhoto = it
-                            board.backgroundType = BackgroundType.UNSPLASH_PHOTO
-                            setBackgroundImage(it)
-                            dismiss()
-                        }
-                    }
-                    mainActivity.supportFragmentManager.commitTransaction {
-                        add(R.id.fragmentContainer, photoPicker, "PhotoPicker")
-                        addToBackStack(null)
-                    }
-                    mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
-                }
-            }
-            boardOptions_divider {
-                backgroundColor = board.barColor.colorScheme.text.toAndroidColor
-            }
-            deleteBoard_boardOption {
-                setOnClickListener {
-                    ConfirmDialog().apply {
-                        title = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardQuestion)
-                        message = this@ViewBoardFragment.mainActivity.getString(R.string.deleteBoardDetails)
-                        onConfirm = {
-                            val boardName = Caches.boards[boardID].name
-                            dismiss()
-                            Caches.deleteBoard(boardID)
-                            mainActivity.appBar.shortSnackBar(getString(R.string.deletedBoard)
-                                    + " $boardName")
-                            finish()
-                        }
-                    }.show(mainActivity.supportFragmentManager, "ConfirmDialog")
-                    mainActivity.drawerLayout.closeDrawer(this@boardOptions_navigationView)
-                }
-            }
-        }
-    }
-
-    private inline fun destroyOptionsMenu() {
-        mainActivity.drawerLayout {
-            boardOptions_navigationView?.also {
-                closeDrawer(it)
-                removeView(it)
-            }
-        }
-    }
-
     private inline fun setBackground() {
         doInBackground {
             when (board.backgroundType) {
-                BackgroundType.COLOR -> {
-                    setBackgroundColor(board.backgroundColor)
-                }
-                BackgroundType.UNSPLASH_PHOTO -> {
-                    setBackgroundImage(board.backgroundPhoto)
-                }
+                BackgroundType.COLOR -> setBackgroundColor(board.backgroundColor)
+                BackgroundType.UNSPLASH_PHOTO -> setBackgroundImage(board.backgroundPhoto)
             }
         }
     }
 
     private inline fun setBackgroundImage(photo: UnsplashPhoto) {
         background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            width = MATCH_PARENT
-            height = MATCH_PARENT
+            width = ViewGroup.LayoutParams.MATCH_PARENT
+            height = ViewGroup.LayoutParams.MATCH_PARENT
         }
         Picasso.get().load(Uri.parse(photo.urls.regular)).apply {
             fetch()
@@ -888,8 +653,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
     private inline fun setBackgroundColor(waqtiColor: WaqtiColor) {
         background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
-            width = MATCH_PARENT
-            height = MATCH_PARENT
+            width = ViewGroup.LayoutParams.MATCH_PARENT
+            height = ViewGroup.LayoutParams.MATCH_PARENT
         }
 
         background_imageView.setImageDrawable(null)
@@ -897,7 +662,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
         boardView.scrollBarColor = waqtiColor.colorScheme.text
     }
 
-    private inline fun setColorScheme(colorScheme: ColorScheme) {
+    inline fun setColorScheme(colorScheme: ColorScheme) {
         mainActivity.setColorScheme(colorScheme)
         mainActivity.drawerLayout.boardOptions_navigationView {
             setBackgroundColor(colorScheme.main.toAndroidColor)
@@ -913,8 +678,8 @@ class ViewBoardFragment : WaqtiViewFragment() {
     private inline fun parallaxImage(photo: UnsplashPhoto) {
         doInBackground {
             background_imageView.updateLayoutParams<ConstraintLayout.LayoutParams> {
-                width = WRAP_CONTENT
-                height = WRAP_CONTENT
+                width = ViewGroup.LayoutParams.WRAP_CONTENT
+                height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
 
             Picasso.get()
@@ -934,15 +699,4 @@ class ViewBoardFragment : WaqtiViewFragment() {
         }
     }
 
-    companion object {
-        inline fun show(mainActivity: MainActivity) {
-            mainActivity.supportFragmentManager.commitTransaction {
-                @FragmentNavigation(from = VIEW_BOARD_LIST_FRAGMENT, to = VIEW_BOARD_FRAGMENT)
-                replace(R.id.fragmentContainer, ViewBoardFragment(), VIEW_BOARD_FRAGMENT)
-                addToBackStack(null)
-            }
-        }
-    }
 }
-
-class ViewBoardFragmentViewModel : WaqtiViewFragmentViewModel()
