@@ -15,7 +15,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import uk.whitecrescent.waqti.extensions.F
 import uk.whitecrescent.waqti.extensions.globalVisibleRect
-import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.parentViewGroup
 
 /**
@@ -47,7 +46,7 @@ constructor(context: Context,
             defStyle: Int = 0
 ) : AppCompatImageView(context, attributeSet, defStyle) {
 
-    val dragBehavior: ObservableDragBehavior = this.addObservableDragBehavior()
+    val dragBehavior: ObservableDragBehavior = ObservableDragBehavior(this)
 
     inline infix fun updateToMatch(view: View) {
         updateToMatchLayoutParamsOf(view)
@@ -86,7 +85,6 @@ constructor(context: Context,
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        logE("onTouchEvent in DragShadow")
         return super.onTouchEvent(event) || dragBehavior.onTouchEvent(event)
     }
 

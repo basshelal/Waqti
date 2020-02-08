@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
+import com.google.android.material.card.MaterialCardView
 import kotlinx.android.synthetic.main.task_card.view.*
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
@@ -33,7 +34,6 @@ import uk.whitecrescent.waqti.extensions.doInBackground
 import uk.whitecrescent.waqti.extensions.invoke
 import uk.whitecrescent.waqti.extensions.lastPosition
 import uk.whitecrescent.waqti.extensions.locationOnScreen
-import uk.whitecrescent.waqti.extensions.logE
 import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.mainActivityViewModel
 import uk.whitecrescent.waqti.extensions.notifySwapped
@@ -42,7 +42,6 @@ import uk.whitecrescent.waqti.extensions.setIndeterminateColor
 import uk.whitecrescent.waqti.frontend.MainActivity
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
 import uk.whitecrescent.waqti.frontend.appearance.WaqtiColor
-import uk.whitecrescent.waqti.frontend.customview.TaskCardView
 import uk.whitecrescent.waqti.frontend.fragments.view.ViewTaskFragment
 import kotlin.math.roundToInt
 
@@ -85,7 +84,6 @@ constructor(context: Context,
     }
 
     override fun onInterceptTouchEvent(event: MotionEvent): Boolean {
-        logE("onInterceptTouchEvent in TaskListView")
         onInterceptTouchEvent.invoke(event)
         super.onInterceptTouchEvent(event)
         // return true to tell system that I will handle all further events please
@@ -95,7 +93,6 @@ constructor(context: Context,
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        logE("onTouchEvent in TaskListView")
         onTouchEvent.invoke(event)
         if (listAdapter?.boardAdapter?.isDraggingTask == false) {
             super.onTouchEvent(event)
@@ -433,7 +430,7 @@ class TaskViewHolder(view: View, val adapter: TaskListAdapter) : ViewHolder(view
 
     var taskID: ID = 0L
     var taskListID: ID = adapter.taskListID
-    val cardView: TaskCardView = itemView.task_cardView
+    val cardView: MaterialCardView = itemView.task_cardView
     val progressBar: ProgressBar = itemView.taskCard_progressBar
     val textView: TextView = itemView.task_textView
 

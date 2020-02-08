@@ -91,9 +91,6 @@ constructor(context: Context,
 
     private var latestEvent: MotionEvent? = null
 
-    private inline val realScreenWidth get() = mainActivity.realScreenWidth
-    private inline val realScreenHeight get() = mainActivity.realScreenHeight
-
     private inline val taskDragShadow: DragShadow
         get() = this.task_dragShadow
 
@@ -170,8 +167,6 @@ constructor(context: Context,
                     else -> {
                         taskListView.overScroller?.isEnabled = true
                         taskListView.findChildViewUnder(event.x, event.y)?.also {
-                            shortSnackBar(taskListView.overScroller?.isOverScrolling.toString())
-                            logE(taskListView.overScroller?.isOverScrolling.toString())
                             if (taskListView.overScroller?.isOverScrolling == false) {
                                 it.dispatchTouchEvent(event)
                             } else {
@@ -283,7 +278,7 @@ constructor(context: Context,
                 private val scrollDownBounds: RectF
                     get() = taskListView.globalVisibleRectF.apply {
                         top = bottom - (taskListView.height.F * 0.05F)
-                        bottom = realScreenHeight.F
+                        bottom = mainActivity.realScreenHeight.F
                     }
                 private val scrollLeftBounds: RectF
                     get() = taskListView.globalVisibleRectF.apply {
@@ -293,7 +288,7 @@ constructor(context: Context,
                 private val scrollRightBounds: RectF
                     get() = taskListView.globalVisibleRectF.apply {
                         left = right
-                        right = realScreenWidth.F
+                        right = mainActivity.realScreenWidth.F
                     }
 
                 private val currentTouchPoint = PointF()

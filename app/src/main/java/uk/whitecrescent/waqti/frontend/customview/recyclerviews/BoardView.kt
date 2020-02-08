@@ -89,6 +89,7 @@ constructor(context: Context,
     }
 }
 
+@Suppress("NOTHING_TO_INLINE")
 class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     val board = Caches.boards[boardID]
@@ -246,12 +247,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         holder.listColorScheme = listColorScheme
     }
 
-    override fun onViewAttachedToWindow(holder: BoardViewHolder) {
-        /*holder.itemView.startAnimation(AnimationUtils.loadAnimation(boardView.context,
-                R.anim.task_list_show_anim))*/
-    }
-
-    private fun matchOrder() {
+    private inline fun matchOrder() {
 
         val taskListAdaptersCopy = ArrayList(taskListAdapters)
         if (doesNotMatchOrder()) {
@@ -267,7 +263,7 @@ class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
         }
     }
 
-    private fun doesNotMatchOrder(): Boolean {
+    private inline fun doesNotMatchOrder(): Boolean {
         val adapterIDs = taskListAdapters.map { it.taskListID }
         return adapterIDs != board.take(adapterIDs.size).map { it.id }
     }

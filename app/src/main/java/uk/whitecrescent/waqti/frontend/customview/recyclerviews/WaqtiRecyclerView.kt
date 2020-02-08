@@ -47,9 +47,6 @@ constructor(context: Context,
     inline val maxHorizontalScroll: Int get() = computeHorizontalScrollRange() - computeHorizontalScrollExtent()
     inline val maxVerticalScroll: Int get() = computeVerticalScrollRange() - computeVerticalScrollExtent()
 
-    private var flingVelocityX: Int = 0
-    private var flingVelocityY: Int = 0
-
     var overScroller: OverScroller? = null
 
     var horizontalScrollSpeed: Int = 0
@@ -109,17 +106,6 @@ constructor(context: Context,
                     oldTime = System.currentTimeMillis()
                 }
         )
-    }
-
-    fun addVelocityTrackerOnFlingListener() {
-        val originalOnFlingListener = onFlingListener
-        onFlingListener = object : OnFlingListener() {
-            override fun onFling(velocityX: Int, velocityY: Int): Boolean {
-                flingVelocityX = velocityX
-                flingVelocityY = velocityY
-                return originalOnFlingListener?.onFling(velocityX, velocityY) ?: false
-            }
-        }
     }
 
     fun saveState(): SavedState? {

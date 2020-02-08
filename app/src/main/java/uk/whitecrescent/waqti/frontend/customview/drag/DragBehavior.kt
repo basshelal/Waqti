@@ -11,10 +11,8 @@ import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
 import org.jetbrains.anko.childrenRecursiveSequence
 import uk.whitecrescent.waqti.extensions.F
-import uk.whitecrescent.waqti.extensions.L
 import uk.whitecrescent.waqti.extensions.globalVisibleRect
 import uk.whitecrescent.waqti.extensions.logE
-import uk.whitecrescent.waqti.extensions.mainActivity
 import uk.whitecrescent.waqti.extensions.parentViewGroup
 
 open class DragBehavior(val view: View) {
@@ -32,8 +30,6 @@ open class DragBehavior(val view: View) {
 
     protected var dampingRatio = 0.6F
     protected var stiffness = 1000F
-
-    val millisPerFrame = view.mainActivity.millisPerFrame.L - 1L
 
     init {
         returnPoint.set(view.x, view.y)
@@ -261,7 +257,3 @@ open class ObservableDragBehavior(view: View) : DragBehavior(view) {
     }
 
 }
-
-inline fun View.addDragBehavior() = DragBehavior(this)
-
-inline fun View.addObservableDragBehavior() = ObservableDragBehavior(this)
