@@ -150,7 +150,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
                 taskCardView.shortSnackBar("LONG CLICK!")
 
-                if (boardAdapter!!.isDraggingTask) {
+                if (task_dragShadow.dragBehavior.dragState != ObservableDragBehavior.DragState.DRAGGING) {
                     taskListView?.overScroller?.isEnabled = false
                     taskListView?.findChildViewUnder(latestEvent?.x ?: 0F,
                             latestEvent?.y ?: 0F)?.also {
@@ -175,7 +175,6 @@ class ViewBoardFragment : WaqtiViewFragment() {
             boardAdapter?.taskListViewOnInterceptTouchEvent = { taskListView, event ->
                 task_dragShadow.isVisible = true
                 task_dragShadow.alpha = 1F
-                boardAdapter?.isDraggingTask = false
                 latestEvent = event.obtainCopy()
             }
 
