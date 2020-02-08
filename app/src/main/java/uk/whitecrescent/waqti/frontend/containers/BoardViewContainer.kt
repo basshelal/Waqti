@@ -627,7 +627,7 @@ constructor(context: Context,
         }
     }
 
-    private inline fun setBackground() {
+    fun setBackground() {
         doInBackground {
             when (board.backgroundType) {
                 BackgroundType.COLOR -> setBackgroundColor(board.backgroundColor)

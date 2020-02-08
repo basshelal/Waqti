@@ -230,9 +230,9 @@ class ViewBoardFragment : WaqtiViewFragment() {
                                 waitForPositiveButton = false,
                                 selection = { _, colorInt ->
                                     val waqtiColor = colorInt.toColor
-                                    //setBackgroundColor(waqtiColor)
                                     board.backgroundColor = waqtiColor
                                     board.backgroundType = BackgroundType.COLOR
+                                    this@ViewBoardFragment.boardViewContainer.setBackground()
                                     /*if (this@ViewBoardFragment.emptyState_scrollView.isVisible) {
                                         this@ViewBoardFragment.emptyTitle_textView.textColor = waqtiColor.colorScheme.text.toAndroidColor
                                         this@ViewBoardFragment.emptySubtitle_textView.textColor = waqtiColor.colorScheme.text.toAndroidColor
@@ -248,13 +248,13 @@ class ViewBoardFragment : WaqtiViewFragment() {
                     val photoPicker = PhotoPickerDialog().apply {
                         onClick = {}
                         onCancel = {
-                            //setBackground()
+                            this@ViewBoardFragment.boardViewContainer.setBackground()
                             dismiss()
                         }
                         onConfirm = {
                             board.backgroundPhoto = it
                             board.backgroundType = BackgroundType.UNSPLASH_PHOTO
-                            //setBackgroundImage(it)
+                            this@ViewBoardFragment.boardViewContainer.setBackground()
                             dismiss()
                         }
                     }
@@ -305,7 +305,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
                 backgroundColor = colorScheme.text.toAndroidColor
             }
         }
-        boardViewContainer.setColorScheme(colorScheme)
+        this@ViewBoardFragment.boardViewContainer.setColorScheme(colorScheme)
     }
 
     companion object {
