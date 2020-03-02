@@ -8,7 +8,9 @@
     <item android:drawable="@color/primaryColor" />
 
     <item
-        android:drawable="@drawable/waqti_icon_half"
+        android:width="256dp"
+        android:height="256dp"
+        android:drawable="@drawable/waqti_icon_full"
         android:gravity="center" />
 
 </layer-list>
