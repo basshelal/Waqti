@@ -14,9 +14,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import com.github.basshelal.threetenktx.threetenabp.rfcFormatted
 import kotlinx.android.synthetic.main.blank_activity.*
-import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.fragment_view_task.*
-import kotlinx.android.synthetic.main.task_options.view.*
+import kotlinx.android.synthetic.main.options_board.view.*
+import kotlinx.android.synthetic.main.options_task.view.*
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
 import uk.whitecrescent.waqti.backend.collections.TaskList
@@ -151,7 +151,7 @@ class ViewTaskFragment : WaqtiViewFragment() {
 
     private inline fun createOptionsMenu() {
 
-        LayoutInflater.from(context).inflate(R.layout.task_options,
+        LayoutInflater.from(context).inflate(R.layout.options_task,
                 mainActivity.drawerLayout, true)
 
         mainActivity.appBar {

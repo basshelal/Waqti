@@ -5,7 +5,7 @@ import android.text.SpannableStringBuilder
 import android.util.AttributeSet
 import android.view.View
 import com.google.android.material.card.MaterialCardView
-import kotlinx.android.synthetic.main.options_item.view.*
+import kotlinx.android.synthetic.main.view_options_item.view.*
 import org.jetbrains.anko.image
 import org.jetbrains.anko.textColor
 import uk.whitecrescent.waqti.R
@@ -21,7 +21,7 @@ class OptionsItem
 ) : MaterialCardView(context, attributeSet, defStyle) {
     init {
 
-        View.inflate(context, R.layout.options_item, this)
+        View.inflate(context, R.layout.view_options_item, this)
 
         val attributes = context.obtainStyledAttributes(attributeSet, R.styleable.OptionsItem)
 

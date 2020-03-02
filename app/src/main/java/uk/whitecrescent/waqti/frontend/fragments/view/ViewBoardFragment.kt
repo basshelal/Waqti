@@ -17,9 +17,9 @@ import com.afollestad.materialdialogs.bottomsheets.BottomSheet
 import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
 import com.afollestad.materialdialogs.color.colorChooser
 import kotlinx.android.synthetic.main.blank_activity.*
-import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.container_board_view.view.*
 import kotlinx.android.synthetic.main.fragment_board_view.*
+import kotlinx.android.synthetic.main.options_board.view.*
 import org.jetbrains.anko.backgroundColor
 import uk.whitecrescent.waqti.R
 import uk.whitecrescent.waqti.backend.collections.Board
@@ -136,7 +136,7 @@ class ViewBoardFragment : WaqtiViewFragment() {
 
     private inline fun createOptionsMenu() {
 
-        LayoutInflater.from(context).inflate(R.layout.board_options,
+        LayoutInflater.from(context).inflate(R.layout.options_board,
                 mainActivity.drawerLayout, true)
 
         mainActivity.appBar {

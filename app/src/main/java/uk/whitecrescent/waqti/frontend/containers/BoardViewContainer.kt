@@ -26,8 +26,8 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.blank_activity.*
-import kotlinx.android.synthetic.main.board_options.view.*
 import kotlinx.android.synthetic.main.container_board_view.view.*
+import kotlinx.android.synthetic.main.options_board.view.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.textColor
 import org.jetbrains.anko.vibrator

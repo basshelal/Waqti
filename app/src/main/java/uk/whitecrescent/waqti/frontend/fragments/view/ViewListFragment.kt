@@ -19,7 +19,7 @@ import com.afollestad.materialdialogs.bottomsheets.setPeekHeight
 import com.afollestad.materialdialogs.color.colorChooser
 import kotlinx.android.synthetic.main.blank_activity.*
 import kotlinx.android.synthetic.main.fragment_view_list.*
-import kotlinx.android.synthetic.main.list_options.view.*
+import kotlinx.android.synthetic.main.options_list.view.*
 import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.vibrator
 import uk.whitecrescent.waqti.R
@@ -204,7 +204,7 @@ class ViewListFragment : WaqtiViewFragment() {
 
     private inline fun createOptionsMenu() {
 
-        LayoutInflater.from(context).inflate(R.layout.list_options,
+        LayoutInflater.from(context).inflate(R.layout.options_list,
                 mainActivity.drawerLayout, true)
 
         mainActivity.appBar {
