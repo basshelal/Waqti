@@ -45,6 +45,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.warkiz.widget.IndicatorSeekBar
 import com.warkiz.widget.SeekParams
 import org.jetbrains.anko.childrenRecursiveSequence
+import org.jetbrains.anko.contentView
 import org.jetbrains.anko.find
 import org.jetbrains.anko.inputMethodManager
 import uk.whitecrescent.waqti.BuildConfig
@@ -251,6 +252,15 @@ inline fun Any.logD(message: Any?, tag: String = this::class.simpleName.toString
 
 inline fun Any.logI(message: Any?, tag: String = this::class.simpleName.toString()) {
     if (BuildConfig.DEBUG) Log.i(tag, message.toString())
+}
+
+inline fun Any.log(message: Any?, tag: String = this::class.simpleName.toString()) {
+    logE(message, tag)
+    when (this) {
+        is View -> this.shortSnackBar(message.toString())
+        is Fragment -> this.view?.shortSnackBar(message.toString())
+        is Activity -> this.contentView?.shortSnackBar(message.toString())
+    }
 }
 
 inline fun Activity.checkWritePermission() {

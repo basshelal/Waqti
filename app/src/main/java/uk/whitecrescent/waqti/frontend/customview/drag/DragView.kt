@@ -15,7 +15,6 @@ import android.widget.FrameLayout
 import androidx.annotation.LayoutRes
 import androidx.dynamicanimation.animation.DynamicAnimation
 import androidx.dynamicanimation.animation.SpringAnimation
-import androidx.recyclerview.widget.RecyclerView
 import org.jetbrains.anko.childrenRecursiveSequence
 import org.jetbrains.anko.collections.forEachReversedByIndex
 import uk.whitecrescent.waqti.extensions.F
@@ -27,9 +26,6 @@ import uk.whitecrescent.waqti.frontend.customview.drag.DragView.DragState.IDLE
 import uk.whitecrescent.waqti.frontend.customview.drag.DragView.DragState.SETTLING
 import kotlin.math.roundToInt
 
-// TODO: 08-Aug-19 Callback or event when View bounds go out of bounds of Parent
-//  and when they reach a certain percentage of proximity to the Parent's bounds,
-//  this allows to take scrolling action
 class DragView
 @JvmOverloads
 constructor(context: Context,
@@ -290,7 +286,6 @@ constructor(context: Context,
 
     companion object {
 
-        // TODO: 28-Sep-19 Use this later so we make long press have a nice fade before starting maybe
         val longPressTime: Int
             get() = ViewConfiguration.getLongPressTimeout()
 
@@ -429,62 +424,3 @@ constructor(context: Context,
     }
 
 }
-
-
-/* TODO: 28-Sep-19 For new Drag Implementation:
- *  Make a dragListener in each possible draggable RecyclerView
- *  then make any Fragment with any draggables implement listeners for each recyclerView
- *  independently. The DragViews are actually in the Fragment as separate Views and not
- *  actually part of the RecyclerViews
- */
-
-/*
- * itemView should be the DEFAULT View look of a DragView which will change when bind() is
- * called, otherwise the default look will show which would just be one of the R.layout files
- *
- */
-abstract class DragViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
-    abstract val itemViewId: Int
-
-    /* Here you change the the itemView's look */
-    abstract fun bind()
-}
-
-/*
- * TODO remove later
- * An idea to implement dragging in a more controllable and flexible way
- * instead of using ItemTouchHelper or startDragAndDrop().
- *
- * This is a FrameLayout because it is a wrapper to allow dragging on any View.
- *
- * If you want dragging functionality in a ViewGroup such as BoardView or TaskListView,
- * you must have 1 DragView placed in the ViewGroup which will contain the bounds of the
- * dragging.
- *
- * Let's use BoardView as the example here since it's the main difficulty we're dealing with.
- *
- * We would add 1 DragView as a child of BoardView, it can be anywhere, doesn't matter because
- * it will be View.GONE until a drag operation is initiated by long click.
- *
- * When a long click happens, we find the position of the long click and place this DragView over
- * the view that was long clicked and we update it to look the same (worry about this later).
- *
- * We then hide (alpha = 0F) the original view and now this DragView will be being moved.
- *
- * DragView will have callbacks when it is begun, over a new view, left a view, ended, and
- * when updated location, like the Drag and Drop API. Except in this case it will be done in
- * DragView, not in the view that's being dragged over. Within these callbacks you can access
- * the view that has been entered or exited so that you can do stuff, so in our case we'd find
- * the ViewHolder and TaskListView that contains that View and do stuff accordingly.
- *
- * This is really good and intuitive, the only hard part will inevitably be actually
- * implementing the dragging functionality, especially in an efficient way (it might work but
- * it could be demanding?)
- *
- * This implementation gives us the most control and flexibility, this way we can restrict the
- * dragging View to be shown only in the ViewGroup it is relevant in and get convenient
- * callbacks for when new events occur, which will give us the Views we are over or leaving.
- *
- *
- * */

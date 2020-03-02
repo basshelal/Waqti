@@ -39,7 +39,7 @@ import uk.whitecrescent.waqti.extensions.doInBackgroundDelayed
 import uk.whitecrescent.waqti.extensions.getViewModel
 import uk.whitecrescent.waqti.extensions.globalVisibleRect
 import uk.whitecrescent.waqti.extensions.invoke
-import uk.whitecrescent.waqti.extensions.logE
+import uk.whitecrescent.waqti.extensions.log
 import uk.whitecrescent.waqti.extensions.onTouchOutside
 import uk.whitecrescent.waqti.extensions.rootViewGroup
 import uk.whitecrescent.waqti.frontend.appearance.ColorScheme
@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         setUpViews()
 
         if (BuildConfig.DEBUG && Database.boards.isEmpty) {
-            logE("Database is empty in Debug mode! Seeding Database!!!")
+            log("Database is empty in Debug mode! Seeding Database!!!")
             Caches.seed(boards = 20, lists = 20, tasks = 100)
         }
     }
