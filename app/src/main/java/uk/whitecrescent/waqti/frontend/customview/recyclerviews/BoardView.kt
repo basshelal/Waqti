@@ -1,3 +1,5 @@
+@file:Suppress("NOTHING_TO_INLINE")
+
 package uk.whitecrescent.waqti.frontend.customview.recyclerviews
 
 import android.content.Context
@@ -89,7 +91,6 @@ constructor(context: Context,
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
 class BoardAdapter(val boardID: ID) : RecyclerView.Adapter<BoardViewHolder>() {
 
     val board = Caches.boards[boardID]

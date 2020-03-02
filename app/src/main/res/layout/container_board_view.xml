@@ -53,7 +53,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
-        android:id="@+id/boardFragment_progressBar"
+        android:id="@+id/boardContainer_progressBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:indeterminate="true"
@@ -119,13 +119,17 @@
         android:id="@+id/list_dragShadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_height="50dp"
+        tools:layout_width="300dp" />
 
     <uk.whitecrescent.waqti.frontend.customview.drag.DragShadow
         android:id="@+id/task_dragShadow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        tools:ignore="MissingConstraints" />
+        tools:ignore="MissingConstraints"
+        tools:layout_height="700dp"
+        tools:layout_width="300dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -112,91 +112,8 @@ constructor(context: Context,
     fun setUpViews() {
         setBackground()
 
-        boardView {
-            if (mainActivityViewModel.settingsChanged) {
-                invalidateBoard()
-                mainActivityViewModel.settingsChanged = false
-            }
-            adapter = mainActivityViewModel.boardAdapter
+        boardView()
 
-            // called once after long click detected
-            boardAdapter?.taskCardViewOnLongClick = { taskVH ->
-                dragTaskID = taskVH.itemId
-
-                val taskCardView = taskVH.cardView
-                val taskListView = taskVH.adapter.taskListView
-
-                taskCardView.shortSnackBar("LONG CLICK!")
-
-                if (boardAdapter!!.isDraggingTask) {
-                    taskListView?.overScroller?.isEnabled = false
-                    taskListView?.findChildViewUnder(latestEvent?.x ?: 0F,
-                            latestEvent?.y ?: 0F)?.also {
-                        boardView.requestDisallowInterceptTouchEvent(true)
-                        taskDragShadow updateToMatch it
-                        taskDragShadow.updateLayoutParams {
-                            width = ViewGroup.LayoutParams.WRAP_CONTENT
-                            height = ViewGroup.LayoutParams.WRAP_CONTENT
-                        }
-                        taskDragShadow.dragBehavior.startDrag()
-                    }
-                }
-
-                latestEvent?.obtainCopy()
-                        ?.also { it.action = MotionEvent.ACTION_CANCEL }
-                        ?.let {
-                            taskCardView.dispatchTouchEvent(it)
-                            it.recycle()
-                        }
-            }
-
-            boardAdapter?.taskListViewOnInterceptTouchEvent = { taskListView, event ->
-                taskDragShadow.isVisible = true
-                taskDragShadow.alpha = 1F
-                boardAdapter?.isDraggingTask = false
-                latestEvent = event.obtainCopy()
-            }
-
-            // called repeatedly, should be used with care
-            boardAdapter?.taskListViewOnTouchEvent = { taskListView, event ->
-                latestEvent = event.obtainCopy()
-                when (taskDragShadow.dragBehavior.dragState) {
-                    ObservableDragBehavior.DragState.DRAGGING -> {
-                        taskDragShadow.dispatchTouchEvent(event)
-                    }
-                    else -> {
-                        taskListView.overScroller?.isEnabled = true
-                        taskListView.findChildViewUnder(event.x, event.y)?.also {
-                            if (taskListView.overScroller?.isOverScrolling == false) {
-                                it.dispatchTouchEvent(event)
-                            } else {
-                                it.dispatchTouchEvent(event.cancel())
-                                it.cancelPendingInputEvents()
-                                it.cancelLongPress()
-                            }
-                            // for clicks and shit, make sure we don't do it
-                            // for when dragging happens
-                        }
-                    }
-                }
-                latestEvent = event.obtainCopy()
-            }
-
-            boardAdapter?.onStartDragList = {
-                dragListID = it.itemId
-                list_dragShadow updateToMatch it.itemView
-                this@BoardViewContainer.list_dragShadow.dragBehavior.startDragFromView(it.header)
-            }
-
-            if (boardAdapter?.board?.isEmpty() == true) {
-                emptyTitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
-                emptySubtitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
-                emptyState_scrollView.isVisible = true
-                addList_floatingButton.customSize = (mainActivity convertDpToPx 85).roundToInt()
-            }
-            addOnScrollListener(this@BoardViewContainer.addList_floatingButton.horizontalFABOnScrollListener)
-            //parallaxImage(board.backgroundPhoto)
-        }
         doInBackground {
             addList_floatingButton {
                 setOnClickListener {
@@ -249,10 +166,96 @@ constructor(context: Context,
                 }
             }
 
-            //setUpTaskDrag()
-            setUpListDrag()
+            boardContainer_progressBar?.visibility = View.GONE
+        }
+    }
 
-            boardFragment_progressBar?.visibility = View.GONE
+    private inline fun boardView() {
+        boardView {
+            if (mainActivityViewModel.settingsChanged) {
+                invalidateBoard()
+                mainActivityViewModel.settingsChanged = false
+            }
+            adapter = mainActivityViewModel.boardAdapter
+
+            // called once after long click detected
+            boardAdapter?.taskCardViewOnLongClick = { taskVH ->
+                dragTaskID = taskVH.itemId
+
+                val taskCardView = taskVH.cardView
+                val taskListView = taskVH.adapter.taskListView
+
+                taskCardView.shortSnackBar("LONG CLICK!")
+
+                if (boardAdapter!!.isDraggingTask) {
+                    taskListView?.overScroller?.isEnabled = false
+                    taskListView?.findChildViewUnder(latestEvent?.x ?: 0F,
+                            latestEvent?.y ?: 0F)?.also {
+                        boardView.requestDisallowInterceptTouchEvent(true)
+                        taskDragShadow updateToMatch it
+                        taskDragShadow.updateLayoutParams {
+                            width = ViewGroup.LayoutParams.WRAP_CONTENT
+                            height = ViewGroup.LayoutParams.WRAP_CONTENT
+                        }
+                        taskDragShadow.dragBehavior.startDrag()
+                    }
+                }
+
+                latestEvent?.obtainCopy()
+                        ?.also { it.action = MotionEvent.ACTION_CANCEL }
+                        ?.let {
+                            taskCardView.dispatchTouchEvent(it)
+                            it.recycle()
+                        }
+            }
+
+            boardAdapter?.taskListViewOnInterceptTouchEvent = { taskListView, event ->
+                latestEvent = event.obtainCopy()
+                taskDragShadow.isVisible = true
+                taskDragShadow.alpha = 1F
+                boardAdapter?.isDraggingTask = false
+                latestEvent = event.obtainCopy()
+            }
+
+            // called repeatedly, should be used with care
+            boardAdapter?.taskListViewOnTouchEvent = { taskListView, event ->
+                latestEvent = event.obtainCopy()
+                when (taskDragShadow.dragBehavior.dragState) {
+                    ObservableDragBehavior.DragState.DRAGGING -> {
+                        taskDragShadow.dispatchTouchEvent(event)
+                    }
+                    else -> {
+                        taskListView.overScroller?.isEnabled = true
+                        taskListView.findChildViewUnder(event.x, event.y)?.also {
+                            if (taskListView.overScroller?.isOverScrolling == false) {
+                                it.dispatchTouchEvent(event)
+                            } else {
+                                it.dispatchTouchEvent(event.cancel())
+                                it.cancelPendingInputEvents()
+                                it.cancelLongPress()
+                            }
+                            // for clicks and shit, make sure we don't do it
+                            // for when dragging happens
+                        }
+                    }
+                }
+                latestEvent = event.obtainCopy()
+            }
+
+            boardAdapter?.onStartDragList = {
+                dragListID = it.itemId
+                list_dragShadow updateToMatch it.itemView
+                this@BoardViewContainer.list_dragShadow.dragBehavior.startDragFromView(it.header)
+            }
+
+            if (boardAdapter?.board?.isEmpty() == true) {
+                emptyTitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
+                emptySubtitle_textView.textColor = board.backgroundColor.colorScheme.text.toAndroidColor
+                emptyState_scrollView.isVisible = true
+                addList_floatingButton.customSize = (mainActivity convertDpToPx 85).roundToInt()
+            }
+            addOnScrollListener(this@BoardViewContainer.addList_floatingButton.horizontalFABOnScrollListener)
+            //parallaxImage(board.backgroundPhoto)
         }
     }
 
